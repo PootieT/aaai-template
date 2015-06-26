@@ -48,43 +48,25 @@ maintaining the admissibility of the search.
 
 [Paper Length Limit: 6+1 pages in AAAI, 8+1 pages in ICAPS]
 
-In the applications of automated planning such as Penetrating Testing,
-maintaining the diversity of the attack plans is an important requirement from the customers because
-such diversity provides a broader insight on
-the weakness of the corporation network against 
-the recent sophisticated malicious attacks (Hoffman 2004).
-To meet these demands, several diversity metrics were developped (Nguyen
-12, Roberts et al. 14, Goldman 15) along with several algorithms that
-returns a set of plans.
+In the applications of automated planning such as Penetrating Testing, Propositional Planners try to find an attack plan to take control over the corpolate network, simulatiing the behavior of the real attacker, until the network security is improved and no attack plan exists.  Here, maintaining the diversity of the attack plans is an important demand by the customers because such diversity provides a broader insight on the weakness of the corporation network (Hoffman 2004). To meet these demands, several diversity metrics were developped \cite{roberts2014evaluating,goldman2015measuring} along with several algorithms that returns a set of diverse plans \cite{srivastava2007domain,coman2011generating,nguyen2012generating}.
 
 Diversity, or more frequently referred to as the problem of \emph{exploration} versus
 \emph{exploitation}, was also considered beneficial in improving the search efficiency.
-\emph{k-Best First Search} (Felner, Kraus
-and Korf 2003) and \emph{Diverse Best First Search(DBFS)}
-(Imai and Kishimoto 11) were developped for
+\emph{k-Best First Search} \cite{felner2003kbfs} and \emph{Diverse Best First Search(DBFS)}
+\cite{imai2011novel} were developped for
 improving the search behavior of Greedy Best First Search by shifting the
 balance slightly from exploitation to exploration, because GBFS
 is sometimes misdirected by the errors in the heuristic estimates,
 and stays too narrowly focused on this wrong direction.
 
-In Robotics, RRT(Rapidly-exploring Random Tree) algorithm is a randomized
-algorithm for continuous space and is
-widely known for its provabliy good balance on exploration and exploitation.
-In this light, several work (Alcazar and
-Veloso 11, Burfoot et al. 06, Likhachev 08) have tried to merge
-RRT-based algorithms to classical, deterministic planning in discrete state space.
-They wrapped a guided search with randomized tree construction which allows the
-planner to search the state space scarcely, and its scarceness has a
-significant mathematecally good characteristics such as uniform
-distribution and convergence.
-
+In Robotics, RRT(Rapidly-exploring Random Tree) algorithm is a randomized algorithm for continuous space and is widely known for its provabliy good balance between exploration and exploitation. In this light, several work \cite{alcazar2011adapting,burfoot2006rrt,likhachev2008r} have tried to merge RRT-based algorithms to classical, deterministic planning in discrete state space. They wrapped a guided search with randomized tree construction which allows the planner to search the state space scarcely, and its scarceness has a significant mathematecally good characteristics such as uniform distribution and convergence.
 
 Despite these interests, the role of diversity in \(A^*\)-based search
 algorithm is underinvestigated.
 DBFS is a specific improvement to GBFS, and is theoretically less insightful compared
 to bare \(A^*\), which is simpler and can be admissible.
 RRT-based planners do not significantly improve upon the current
-state-of-the-art planner such as LAMA (Alcazar and Veloso 11), although it
+state-of-the-art planner such as LAMA \cite{alcazar2011adapting}, although it
 has improved in some domains. RRT-based planners are also subjective to
 the probabilistic convergence, which means the optimality is guaranteed
 only when an infinite amount of search time is provided, or they simply succumb to
@@ -92,7 +74,7 @@ inadmissible search.
 
 
 The contribution of this paper is to add a new variety of improvements to the admissible search.
-Recent work by Helmert and Roger (2008) claims that \(A^*\) fails even under an
+Recent work by Helmert and Roger \cite{helmert2008good} claims that \(A^*\) fails even under an
 assumption that an \emph{almost-perfect heuristic} exists, which is an
 optimistic and theoretical heuristic function which has only a constant error
 behind the perfect heuristics.
@@ -102,12 +84,7 @@ domain reduction, factored planning etc.
 Our diversity-based technique falls into this category, possibly
 overwrapping with some of them.
 
-The structure of this paper follows: The next section describes the background and
-preliminaries on the theoretical aspects of \(A^*\). Next, we describe the
-details of our diversified tie-breaking and its theoretical implications.
-Then we provide an empirical result of our algorithm compared to
-traditional \(A^*\) with various heuristics. Next we show several related
-works. We finally conclude with a discussion on the future work.
+This paper is organized as follows: The next section describes the background and preliminaries on the theoretical aspects of \(A^*\). Next, we describe the details of our diversified tie-breaking method and its theoretical implications.  Then we provide an empirical result of our algorithm compared to traditional \(A^*\) with various heuristics. We finally conclude with a discussion on the future work.
 
 \section{Backgrounds and Preliminary}
 \label{sec-1}
