@@ -5,7 +5,7 @@ emacs 	   = emacs
 latexmk    = latexmk/latexmk.pl
 styles     = abbrev.sty aaai_my.sty
 sources    = main.tex
-max_pages   = 8
+max_pages   = 7
 
 ncpu       = $(shell grep "processor" /proc/cpuinfo | wc -l)
 
