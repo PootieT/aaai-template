@@ -34,8 +34,344 @@ Other overall implementation strategy should be added here. When some new princi
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \begin{abstract}
-
+Maintaining the diversity in the results of heuristic search has been an
+important requirement in the applications of automated planning such as
+Penetrating Testing.
+Despite the common-sense notion of diversity that it provides a new
+perspective and better understanding of the world, little has been investigated on the
+benefit of diversity when applied to the admissible search algorithms in terms of search efficiency.
+In this paper, we propose a novel 
+diversified tie-breaking method for A* 
+which tries to expand the dissimilar branches as much as possible,
+maintaining the admissibility of the search.
 \end{abstract}
 
-\section{Introduction}
-\subsubparagraph{hidden topic}
+[Paper Length Limit: 6+1 pages in AAAI, 8+1 pages in ICAPS]
+
+In the applications of automated planning such as Penetrating Testing,
+maintaining the diversity of the attack plans is an important requirement from the customers because
+such diversity provides a broader insight on
+the weakness of the corporation network against 
+the recent sophisticated malicious attacks (Hoffman 2004).
+To meet these demands, several diversity metrics were developped (Nguyen
+12, Roberts et al. 14, Goldman 15) along with several algorithms that
+returns a set of plans.
+
+Diversity, or more frequently referred to as the problem of \emph{exploration} versus
+\emph{exploitation}, was also considered beneficial in improving the search efficiency.
+\emph{k-Best First Search} (Felner, Kraus
+and Korf 2003) and \emph{Diverse Best First Search(DBFS)}
+(Imai and Kishimoto 11) were developped for
+improving the search behavior of Greedy Best First Search by shifting the
+balance slightly from exploitation to exploration, because GBFS
+is sometimes misdirected by the errors in the heuristic estimates,
+and stays too narrowly focused on this wrong direction.
+
+In Robotics, RRT(Rapidly-exploring Random Tree) algorithm is a randomized
+algorithm for continuous space and is
+widely known for its provabliy good balance on exploration and exploitation.
+In this light, several work (Alcazar and
+Veloso 11, Burfoot et al. 06, Likhachev 08) have tried to merge
+RRT-based algorithms to classical, deterministic planning in discrete state space.
+They wrapped a guided search with randomized tree construction which allows the
+planner to search the state space scarcely, and its scarceness has a
+significant mathematecally good characteristics such as uniform
+distribution and convergence.
+
+
+Despite these interests, the role of diversity in \(A^*\)-based search
+algorithm is underinvestigated.
+DBFS is a specific improvement to GBFS, and is theoretically less insightful compared
+to bare \(A^*\), which is simpler and can be admissible.
+RRT-based planners do not significantly improve upon the current
+state-of-the-art planner such as LAMA (Alcazar and Veloso 11), although it
+has improved in some domains. RRT-based planners are also subjective to
+the probabilistic convergence, which means the optimality is guaranteed
+only when an infinite amount of search time is provided, or they simply succumb to
+inadmissible search.
+
+
+The contribution of this paper is to add a new variety of improvements to the admissible search.
+Recent work by Helmert and Roger (2008) claims that \(A^*\) fails even under an
+assumption that an \emph{almost-perfect heuristic} exists, which is an
+optimistic and theoretical heuristic function which has only a constant error
+behind the perfect heuristics.
+They conclude that the further performance improvement requires the
+techniques orthogonal to the heuristic function, such as symmetry breaking,
+domain reduction, factored planning etc.
+Our diversity-based technique falls into this category, possibly
+overwrapping with some of them.
+
+The structure of this paper follows: The next section describes the background and
+preliminaries on the theoretical aspects of \(A^*\). Next, we describe the
+details of our diversified tie-breaking and its theoretical implications.
+Then we provide an empirical result of our algorithm compared to
+traditional \(A^*\) with various heuristics. Next we show several related
+works. We finally conclude with a discussion on the future work.
+
+\section{Backgrounds and Preliminary}
+\label{sec-1}
+
+\(A^*\) search and admissibility
+
+almost-perfect heuristic function (depends on the experiments)
+
+RRT, volonoi characteristics, similar states
+
+RRT-based planners
+
+In a continuous space,
+if two nodes a, b are very close to each other (the distance is bounded within an epsilon)
+and if a, b shares a common parent c,
+\textbf{the two paths a-c and b-c are also very similar}.
+In this case, adding a new edge b-c is
+not beneficial because it is searching the \textbf{almost} same state/path twice.
+
+[ Figure ]
+
+In RRT, however, the search constructs a Rapidly-exploring Random Tree in a continuous space.
+Thanks to the randomized point selection and connection strategy in RRT,
+we can provably minimize the possibility of adding such almost-duplicated edges.
+This is the fundamental motivation of searching the space uniformly in RRT.
+In other words, RRT selects a point randomly in the search space and
+try to maximize the diversity of the search.
+
+Same thing can be applied in classical planning, especially when we no
+longer benefit from the heuristic estimates and have no clue searching the
+state space.
+This applies not only to the bogus heuristic function h=0, but also to a idealistic
+function called almost perfect heuristics h=h*-c. With almost perfect
+heuristics, it is reasonable to assume that we no longer improve the
+estimates -- it means we have a perfect heuristics.
+
+When we have a large plateau in an admissible search,
+we want to diversify the search in the plateau as much as possible.
+Within this plateau, several states are expected to be, in a sense,
+"similar" or "close" to each other. And the "similar" states are likely to
+share the "similar" property regarding the relationship to the goal:
+they are either all very close to the goal, or very far from the goal (which means
+the heuristic error is large). However, due to the setting we set
+above, we cannot improve the estimates any more. Moreover, we are assuming
+that we got "nearly all information" toward the goal and there is not much
+left in the goal-directed information.
+Instead, what was left unexploited is the information "from the initial state to the
+current state", which is the target of our contribution.
+
+In A*, the states with the best f value is expanded according to the
+tie-breaking criteria. Our contribution is a new tie-breaking tequnique
+which diversify the order of expantion within the same f-value.
+This tie-breaking is based on already-known information,
+without using any goal-directed information.
+These information cannot be obtained from the admissible heuristic function even if we
+have an almost-perfect heuristics.
+This is a kind of knowledge-free exploration similar to RRT.
+We call this new algorithm \texttt{*A*} (star-A-star), which optimizes the node
+expansion ordering within the best f, exploiting the goal-free information.
+When the expansion order is fifo, then this is equivalent to a normal A*.
+\section{Method Overview}
+\label{sec-2}
+
+[just a series of ideas, no real practice. The text is a sketch.]
+
+In \texttt{*A*}, we first create a map of the plateau based on the path similarity
+distance. This map can have an implicit or explicit representation.
+Using this map, we diversify the order of expanding each node.
+
+In RRT the map is never created explicitly.
+In fact, when there is n nodes, creating such a map requires n(n-1) computation of the distance
+between them and this could be expensive. Instead, RRT randomly selects a state
+and find the nearest node in the tree. Nearest neighbor search is O(N), and
+approximated NNS is O(log N).
+
+\subsection{Distance function}
+\label{sec-2-1}
+
+The selection of path similarity distance is very important.
+In previous attempts to adopt RRT in classical planning, such as
+RRT-Plan or RPT, they use Plan Distances between the leaf states as the
+metric. This is not so useful due to many reasons:
+
+\begin{itemize}
+\item It requires a computationally expensive explicit search each time.
+\item Computing the relaxed plan distance is still expensive.
+\item Plan distance does not reflect how similar these states are.
+\begin{itemize}
+\item Example 1: Symmetry: Although symmetric states are naturally very
+"similar", their plan distance may be very large, or even
+infinite. -- Suppose we are standing at the center of a straight
+road which is 2km long. We can go 1km to the left or 1km to the
+right. There are two goals in both ends. Although the two goals and the
+paths are symmetric, the goal distance is 2km long, which is a largest
+diameter of this search space.
+\item Example 2: Partial Order: Suppose we are in a 3x2 grid where we can go
+up or right only. Initial/Goal State is (0,0)/(2,1). Suppose the search
+frontiers have the paths (0,0)-(0,1)-(1-1) and (0,0)-(1,0)-(2-0).
+They both have a parent node
+(1,0) and the paths before this meeting point are the same in terms of
+partial order. These are not symmetric. Although these frontiers both reach
+the same goal state in 1 step, and their prefix are the same, their
+plan distance is infinite since we cannot go down or left.
+\end{itemize}
+\end{itemize}
+
+\begin{verbatim}
+g----------s----------g
+\end{verbatim}
+
+\begin{verbatim}
++--o--g
+|  |  |
+s--+--o
+\end{verbatim}
+
+We have several possibilities for computing the similarity distance. Here
+are some ideas:
+
+\begin{enumerate}
+\item We count the difference of the plan according to the D\(_{\text{stability}}\) in
+Diversity Planning(Nguyen 12). However, we also want to take the following elements
+into account:
+\item the length of the shared prefix of the paths s0-s1 and s0-s2.
+\begin{itemize}
+\item This is fast but not informative, and exploits no information in
+Symmetry and Partial Ordering.
+\item This only provides the upper bound of the plan similarity because,
+although the path s0-s1 is optimal in the admissible search, there
+may be several such optimal paths, and this path prefix distance
+does not take those multiple paths into consideration.
+\end{itemize}
+\item Convert the path into the partial order plan and compute the graph
+similarity. I suppose Graph Similarity is computationally hard problem
+but is in practice very fast. This would make the similarity
+more accurate.
+\item Path symmetry. This would also make the similarity more accurate.
+\end{enumerate}
+
+Note: these do not require those paths to be completely symmetric or
+completely isomorphic partial order path. The benefit is that we can delay
+the expansion of "mostly" symmetric path/isomorphic partial order path,
+although we may not be able to prune them completely.
+
+Note: The role is similar to globally admissible heuristics, which is in turn
+found to be a "path-dependent heuristics". However, these information are
+highly likely to be considered by an ideal "almost perfect" heuristics.
+Those ideal heuristics take into consideration \emph{any possible} information
+toward the goal, but \emph{not} about the already-known information.
+
+Note: Another problem in previous RRT-based planners is how to query a reacheable
+state randomly, uniformly and efficiently. They run "generate, test and
+dispose" approach, however we do not need this because we only apply our
+ordering algorithm to the search frontier with best-f. Open-nodes are
+always reached from the initial states.
+
+Now the problem is how to diversify the selection from the best-f states,
+without creating a distance table which runs n(n-1)/2 iteration.
+We instead create the table in an incremental fasion during the search.
+We expect a new f-value is obtained before every node is expanded.
+Since it does not modify the expansion order regarding f, the algorithm
+does not harm the admissibility.
+
+Consider we have a set of nodes n1-n5. It has the following
+pairwise distances, which is actually unknown prior to the search.
+
+\begin{center}
+\begin{tabular}{r|rrrrr|}
+ &  &  &  &  & \\
+ & 1 & 2 & 3 & 4 & 5\\
+\hline
+1 & $\backslash$ & 1 & 7 & 2 & 9\\
+2 & 1 & $\backslash$ & 3 & 8 & 5\\
+3 & 7 & 3 & $\backslash$ & 4 & 6\\
+4 & 2 & 8 & 4 & $\backslash$ & 0\\
+5 & 9 & 5 & 6 & 0 & $\backslash$\\
+\hline
+\end{tabular}
+\end{center}
+
+The first node is selected arbitrarly. Let's assume it is n1.
+The second node is the farthest node from the root node, which is n5. It
+takes 4 distance computation.
+Now which node should be the third?
+We want to select a node which is diverse from both nodes.
+From the table, we estimate n3 is far from both node.
+When multiple nodes are accounted, we use a harmonic mean of the distances.
+It implies that if some state returns a distance 0 (e.g. they are
+symmetric), it is considered only in the last. (of course, it is posible to
+prune these states\ldots{})
+\subsection{talk with alexf}
+\label{sec-2-2}
+
+is path distance really needed? (maybe just a state similarity is enough)
+compute plan similarity with zobrist-hash like fast method?
+
+\section{Results}
+\label{sec-3}
+
+{ \setlength{\tabcolsep}{0.1em}
+\begin{table}[htb]
+\caption{The coverage results of \(A^*\) and \(^*A^*\) with 30 min experiments on 2 GB machine.}
+\centering
+\begin{tabular}{l|ll|ll|ll|ll|}
+\footnotesize & blind &  & LMcut &  & Almost Perfect &  & Perfect & \\
+ &  &  &  &  & \(c=3\) &  & (\(c=0\)) & \\
+Domains & \(A^*\) & \(^*A^*\) & \(A^*\) & \(^*A^*\) & \(A^*\) & \(^*A^*\) & \(A^*\) & \(^*A^*\)\\
+\hline
+Gripper(20) & 9 & \textbf{13} &  &  &  &  &  & \\
+Depot(20) & \textbf{11} & \textbf{11} &  &  &  &  &  & \\
+Airport(30) & \ldots{} &  &  &  &  &  &  & \\
+TPP &  &  &  &  &  &  &  & \\
+CyberSec &  &  &  &  &  &  &  & \\
+Sokoban &  &  &  &  &  &  &  & \\
+\ldots{} &  &  &  &  &  &  &  & \\
+\ldots{} &  &  &  &  &  &  &  & \\
+\ldots{} &  &  &  &  &  &  &  & \\
+\ldots{} &  &  &  &  &  &  &  & \\
+\ldots{} &  &  &  &  &  &  &  & \\
+\ldots{} &  &  &  &  &  &  &  & \\
+\ldots{} &  &  &  &  &  &  &  & \\
+\ldots{} &  &  &  &  &  &  &  & \\
+\ldots{} &  &  &  &  &  &  &  & \\
+\ldots{} &  &  &  &  &  &  &  & \\
+\ldots{} &  &  &  &  &  &  &  & \\
+\ldots{} &  &  &  &  &  &  &  & \\
+\ldots{} &  &  &  &  &  &  &  & \\
+\ldots{} &  &  &  &  &  &  &  & \\
+\ldots{} &  &  &  &  &  &  &  & \\
+\ldots{} &  &  &  &  &  &  &  & \\
+\ldots{} &  &  &  &  &  &  &  & \\
+\ldots{} &  &  &  &  &  &  &  & \\
+\ldots{} &  &  &  &  &  &  &  & \\
+\ldots{} &  &  &  &  &  &  &  & \\
+\ldots{} &  &  &  &  &  &  &  & \\
+\ldots{} &  &  &  &  &  &  &  & \\
+\ldots{} &  &  &  &  &  &  &  & \\
+\ldots{} &  &  &  &  &  &  &  & \\
+\ldots{} &  &  &  &  &  &  &  & \\
+\ldots{} &  &  &  &  &  &  &  & \\
+\ldots{} &  &  &  &  &  &  &  & \\
+\ldots{} &  &  &  &  &  &  &  & \\
+\ldots{} &  &  &  &  &  &  &  & \\
+\ldots{} &  &  &  &  &  &  &  & \\
+\ldots{} &  &  &  &  &  &  &  & \\
+\ldots{} &  &  &  &  &  &  &  & \\
+\ldots{} &  &  &  &  &  &  &  & \\
+\ldots{} &  &  &  &  &  &  &  & \\
+Zenotravel &  &  &  &  &  &  &  & \\
+\hline
+Total & 800 & \textbf{900} &  &  &  &  &  & \\
+\end{tabular}
+\end{table}
+
+}
+\section{Related Work}
+\label{sec-4}
+
+globally-admissible heuristics
+
+symmetry breaking
+
+HTN
+
+factored planning, CAP
+\section{Discussion and Conclusion}
+\label{sec-5}
