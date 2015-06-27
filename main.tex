@@ -103,15 +103,24 @@ same priority.
 \subsubparagraph{almost-perfect heuristic function}
 
 $A^*$ always returns an optimal solution when the heuristic function $h$ is
-admissible, i.e., it never overestimate the true distance to the goal
+admissible, i.e., when it never overestimate the true distance to the goal
 $h^*$. Thus, the best possible heuristic function is $h^*$ itself, which is
 called perfect heuristics. However, computing $h^*$ is PSPACE-Complete,
 which is as difficult as solving the problem itself and is not
 practical. Almost perfect heuristic function is a class of similar
-impractical, theoretical functions which is PSPACE-Complete to compute.
-It has a constant error $c$ from the perfect heuristic $h^*$, menaing $h=h^*-c$.
+impractical, theoretical functions which is also PSPACE-Complete to compute \cite{helmert2008good}.
+It has a constant error $c$ from the perfect heuristic $h^*$, i.e., $h=h^*-c$.
 
 \subsubparagraph{RRT, volonoi characteristics, similar states}
+
+RRT is a stochastic algorithm designed for exploring the high-dimensional continuous space.
+Starting from the initial state, RRT proceeds as follows:
+
+[details of RRT.]
+
+As the search continues, the probability of finding the goal state approaches to 1 as the runtime approaches to infinity. This is because...
+
+[Theoretical background of RRT.]
 
 In a continuous space,
 if two nodes a, b are very close to each other (the distance is bounded within an epsilon)
@@ -122,13 +131,12 @@ not beneficial because it is searching the \textbf{almost} same state/path twice
 
 [ Figure ]
 
-In RRT, however, the search constructs a Rapidly-exploring Random Tree in a continuous space.
-Thanks to the randomized point selection and connection strategy in RRT,
-we can provably minimize the possibility of adding such almost-duplicated edges.
-This is the fundamental motivation of searching the space uniformly in RRT.
-In other words, RRT selects a point randomly in the search space and
-try to maximize the diversity of the search.
-
+% In RRT, however, the search constructs a Rapidly-exploring Random Tree in a continuous space.
+% Thanks to the randomized point selection and connection strategy in RRT,
+% we can provably minimize the possibility of adding such almost-duplicated edges.
+% This is the fundamental motivation of searching the space with uniform randomness in RRT.
+% In other words, RRT selects a point randomly in the search space and
+% try to maximize the diversity of the search.
 
 \subsubparagraph{making an analogy of RRT in the search space of planning}
 
@@ -139,6 +147,8 @@ This applies not only to the bogus heuristic function h=0, but also to a idealis
 function called almost perfect heuristics h=h*-c. With almost perfect
 heuristics, it is reasonable to assume that we no longer improve the
 estimates -- it means we have a perfect heuristics.
+
+[maybe some figure]
 
 When we have a large plateau in an admissible search,
 we want to diversify the search in the plateau as much as possible.
@@ -153,6 +163,8 @@ left in the goal-directed information.
 Instead, what was left unexploited is the information "from the initial state to the
 current state", which is the target of our contribution.
 
+[maybe some more figures]
+
 \subsubparagraph{re-emphasize our approach to avoid misunderstanding}
 
 In A*, the states with the best f value is expanded according to the
@@ -163,7 +175,7 @@ without using any goal-directed information.
 These information cannot be obtained from the admissible heuristic function even if we
 have an almost-perfect heuristics.
 This is a kind of knowledge-free exploration similar to RRT.
-We call this new algorithm \texttt{*A*} (star-A-star), which optimizes the node
+We call this new algorithm \*a* (star-A-star), which optimizes the node
 expansion ordering within the best f, exploiting the goal-free information.
 When the expansion order is fifo, then this is equivalent to a normal A*.
 \section{Method Overview}
@@ -171,7 +183,7 @@ When the expansion order is fifo, then this is equivalent to a normal A*.
 
 \todo{For Anna --- just a series of ideas, no real practice. The text is a sketch. Do not read this section.}
 
-In \texttt{*A*}, we first create a map of the plateau based on the path similarity
+In \*a*, we first create a map of the plateau based on the path similarity
 distance. This map can have an implicit or explicit representation.
 Using this map, we diversify the order of expanding each node.
 
@@ -181,7 +193,7 @@ between them and this could be expensive. Instead, RRT randomly selects a state
 and find the nearest node in the tree. Nearest neighbor search is O(N), and
 approximated NNS is O(log N).
 
-\subsection{Distance function}
+\subsection{Distance Function}
 \label{sec-2-1}
 
 The selection of path similarity distance is very important.
@@ -317,19 +329,19 @@ from the node to the goal using optimal planning with LMcut. Thus, the
 problem instances used in these settings are limited to the small instances.
 
 
-The results in \reftbl{tbl:main} show that our approach improves significantly across tractable functions, and also on intractable functions\todo{Oh, I hope so!}. We also show that the number of expansions in \verb~*A*~ is significantly smaller than that of $A^*$. Note that the number of expansion when the heuristic estimate is larger than zero is the same between these two algorithms.
+The coverage results in \reftbl{tbl:main} show that \*a* significantly improves upon $A^*$ across the tractable functions, and also across the intractable functions\todo{Oh, I hope so!}. We also show that the number of expansions in \*a* is significantly smaller than that of $A^*$. Note that the number of expansion when the heuristic estimate is larger than zero is the same between these two algorithms.
 
 The implications here is that the diversity information is orthogonal to the information obtained from the distance estimation. In intractable heuristics, we can assume nearly all information from the domain, current state and the goal state is obtained because we cannot improve upon perfect heuristics. The only remaining unexploied information is left in the relationship between the search nodes.
 { \setlength{\tabcolsep}{0.1em}
 \begin{table}[htb]
 \centering \relsize{-1}
-\begin{tabular}{l|ll|ll|ll|ll|}
+\begin{tabular}{l|ll|ll||ll|ll|}
  & blind &  & LMcut &  & Almost & Perfect & Perfect & \\
  &  &  &  &  & $c=3$ &  & ($c=0$) & \\
-Domains & $A^*$ & $^*A^*$ & $A^*$ & $^*A^*$ & $A^*$ & $^*A^*$ & $A^*$ & $^*A^*$\\
+Domains & $A^*$ & \*a* & $A^*$ & \*a* & $A^*$ & \*a* & $A^*$ & \*a* \\
 \hline
-Gripper(20) & 9 & \textbf{13} &  &  &  &  &  & \\
-Depot(20) & \textbf{11} & \textbf{11} &  &  &  &  &  & \\
+Gripper(20) & 9 & 10 & 12 & \textbf{13} &  &  &  & \\
+Depot(20) & 11 & 11 & 15 & \textbf{20} &  &  &  & \\
 Airport(30) & \ldots{} &  &  &  &  &  &  & \\
 TPP &  &  &  &  &  &  &  & \\
 CyberSec &  &  &  &  &  &  &  & \\
@@ -372,25 +384,29 @@ Zenotravel &  &  &  &  &  &  &  & \\
 \hline
 Total & 800 & \textbf{900} &  &  &  &  &  & \\
 \end{tabular}
-\caption{The coverage results of $A^*$ and $^*A^*$ with 30 min experiments on 2 GB machine.}
+\caption{The coverage results of $A^*$ and $^*A^*$ with 30 min experiments on 2 GB machine. Best results across the tractable heuristics are indicated in \textbf{bold}.}
 \label{tbl:main}
 \end{table}
 
 }
 
-To strengthen our claim, we plotted the transition of diversity in the plateau as the expansion continues. \refig{diversity-transition} shows that the diversity in the open list remains high in \verb~*A*~, while it quickly decreases in $A^*$. \todo{of course, the real figure should not be an ascii art!}
+In \refig{diversity-transition}, we plotted the transition of diversity in the plateau as the expansion continues. The $y$-axis, the diversity across the plateau, was computed according to the formula $D(S_o)=abc/def$ where $S_o$ is the set of states with the best f-value in the open list. The $x$-axis in the figure shows the ratio of the size of $S_o$ to the size of $S_c$, the set of states in the closed list with best f-value, indicating the search progress.
+
+It shows that the diversity in the open list remains high in \*a*, while it quickly decreases in $A^*$. It indicates that the expansion is done evenly on various kinds of nodes, rather than in a biased manner that the expansion is focused on a particular set of nodes. \todo{of course, the real figure should not be an ascii art!}
 
 \begin{figure}[htbp]
 \begin{verbatim}
 LMcut          Perfect       
-                             
-|              |             
-||\___*A*      ||\___*A*      
-|\    \____    |\    \____   
-| \        \__ | \        \__
-|  ~\ A*       |  ~\ A*      
-|    ~-_______ |    ~-_______
-+------------- +-------------
+
+D(S)             D(S)                             
+|                |             
+||\___*A*        ||\___*A*      
+|\    \____      |\    \____   
+| \        \__   | \        \__
+|  ~\ A*         |  ~\ A*      
+|    ~-_______   |    ~-_______
++------------->  +------------->
+      #(S_c)/#(S_o)     #(S_c)/#(S_o)
 \end{verbatim}
 \caption{Transition of the diversity in the unexpanded best-f nodes in the open list.}
 \label{diversity-transition}
@@ -407,4 +423,7 @@ LMcut          Perfect
 
 \section{Discussion and Conclusion}
 
-In this paper, we proposed a novel diversity-aware tie-braking method for the admissible search using $A^*$. We empirically showed that this improves the performance on various domains, and it is a heuristic-agnostic improvement to $A^*$. We showed that it has a significant impact on the final step of the search in large plateau when the distribution of optimal solutions is not uniform within the open list. We also showed that this nonunform distribution still appears when we have an almost-perfect heuristics. Future work include collaborations with symmetry breaking, dominance pruning and globally admissible heuristics.
+In this paper, we proposed a novel diversity-aware tie-braking method for the admissible search using $A^*$. We empirically showed that this improves the performance on various domains, and it is a heuristic-agnostic improvement. We showed that it has a significant impact on the final step of the search in large plateau when the distribution of optimal solutions is not uniform within the open list. We also showed that this nonunform distribution still appears when we have an almost-perfect heuristics. Future work include collaborations with symmetry breaking, dominance pruning and globally admissible heuristics.
+
+Although the diversification of the planning algorithms has a large interest driven by the practical applications, research on the performance improvement with diversity has long been neglected, especially in admissible search. This paper specifically addresses this issue. We also  contribute to the planning community by proposing the maximum scope of information that can be exploited when we have almost perfect heuristics. This, for example, may provide an observation that some of the information in symmetry or dominance pruning might be already captured by the almost-perfect heuristics, while others are not. This distinction of the goal-directed information and the past information may be helpful on designing and understanding the planning algorithms.
+
