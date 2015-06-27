@@ -75,7 +75,7 @@ inadmissible search.
 
 
 The contribution of this paper is to add a new variety of improvements to the admissible search techniques.
-Recent work by Helmert and Roger \cite{helmert2008good} claims that \(A^*\) fails even with \emph{almost-perfect heuristics}, an optimistic heuristic function which has only a constant error
+Recent work by Helmert and Roger \shortcite{helmert2008good} claims that \(A^*\) fails even with \emph{almost-perfect heuristics}, an optimistic heuristic function which has only a constant error
 behind the perfect heuristics.
 They conclude that the further performance improvement requires the
 techniques orthogonal to the heuristic function, such as symmetry breaking,
@@ -418,7 +418,7 @@ D(S)             D(S)
 
 \emph{Symmetry Breaking} \cite{Fox1998,pochter2011exploiting,domshlak2013symmetry} is the search technique that tries to prune the symmetric states in the search space. The number of symmetric states is equal to the number of permutation of variables, which grows exponentially to the number of variables and causes the memory exhaust. Notion of similarity and diversity generalizes the idea of symmetry, but since symmetry is more stricter than the similarity, our approach does not allow the states to be pruned completely, and instead just delay the expansion within the same f-value. Thus it does not decrease the worst case complexity, but in practice it performed very well, as evidenced in our experiments.
 
-\emph{HTN} \cite{erol1994} and \emph{Factored Planning} \cite{amir2003factored,brafman2006factored,Asai2015} are the framework that decompose the input problem into smaller subproblems, then build up the individual solutions into the entire solution of the problem. This area is attracting much interest in the planning community since it is also a candidate of breaking the hurdle of $A^*$. Earlier work on diversity \cite{goldman2015measuring} proposed a method to choose the best set of learning targets of HTN learner based on diversity. Similar method could be applied when the planner returns several duplicated decompositions as in CAP system \cite{Asai2015}.
+\emph{HTN} \cite{erol1994} and \emph{Factored Planning} \cite{amir2003factored,brafman2006factored,Asai2015} are the framework that decompose the input problem into smaller subproblems, then build up the individual solutions into the entire solution in a bottom-up manner. This area is gaining interest because it is also a candidate of breaking the hurdle of $A^*$. Earlier work on diversity \cite{goldman2015measuring} proposed a method to choose the best set of learning targets of HTN learner based on diversity. Similar method could be applied when the planner returns several duplicated decompositions as in CAP system \cite{Asai2015}.
 
 
 \section{Discussion and Conclusion}
