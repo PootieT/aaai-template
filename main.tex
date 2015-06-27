@@ -46,9 +46,9 @@ which tries to expand the dissimilar branches as much as possible,
 maintaining the admissibility of the search.
 \end{abstract}
 
-[Paper Length Limit: 6+1 pages in AAAI, 8+1 pages in ICAPS]
+\todo{Paper Length Limit: 6+1 pages in AAAI, 8+1 pages in ICAPS}
 
-In the applications of automated planning such as Penetrating Testing, Propositional Planners try to find an attack plan to take control over the corpolate network, simulatiing the behavior of the real attacker, until the network security is improved and no attack plan exists.  Here, maintaining the diversity of the attack plans is an important demand by the customers because such diversity provides a broader insight on the weakness of the corporation network (Hoffman 2004). To meet these demands, several diversity metrics were developped \cite{roberts2014evaluating,goldman2015measuring} along with several algorithms that returns a set of diverse plans \cite{srivastava2007domain,coman2011generating,nguyen2012generating}.
+In the applications of automated planning such as Penetrating Testing, Propositional Planners try to find an attack plan to take control over the simulated corpolate network, mimicking the behavior of the real attacker, until the network security is improved and no attack plan exists \cite{boddy2005course}.  Here, maintaining the diversity of the attack plans is an important demand by the customers because such diversity provides a broader insight on the weakness of the corporation network. To meet these demands, several diversity metrics were developped \cite{roberts2014evaluating,goldman2015measuring} along with several algorithms that returns a set of diverse plans \cite{srivastava2007domain,coman2011generating,nguyen2012generating}.
 
 Diversity, or more frequently referred to as the problem of \emph{exploration} versus
 \emph{exploitation}, was also considered beneficial in improving the search efficiency.
@@ -57,12 +57,13 @@ Diversity, or more frequently referred to as the problem of \emph{exploration} v
 improving the search behavior of Greedy Best First Search by shifting the
 balance slightly from exploitation to exploration, because GBFS
 is sometimes misdirected by the errors in the heuristic estimates,
-and stays too narrowly focused on this wrong direction.
+and stays too narrowly focused on the wrong direction.
 
-In Robotics, RRT(Rapidly-exploring Random Tree) algorithm is a randomized algorithm for continuous space and is widely known for its provabliy good balance between exploration and exploitation. In this light, several work \cite{alcazar2011adapting,burfoot2006rrt,likhachev2008r} have tried to merge RRT-based algorithms to classical, deterministic planning in discrete state space. They wrapped a guided search with randomized tree construction which allows the planner to search the state space scarcely, and its scarceness has a significant mathematecally good characteristics such as uniform distribution and convergence.
+In Robotics, RRT(Rapidly-exploring Random Tree) algorithm is a \sota randomized algorithm for high-dimensional continuous space and is widely known for its provabliy good balance between exploration and exploitation. Hence several papers \cite{alcazar2011adapting,burfoot2006rrt,likhachev2008r} have tried to merge RRT-based algorithms to forward-chaining algorithms designed for discrete state space.
+%  They wrapped a guided % search with randomized tree construction which allows the planner to search the state space scarcely, and its scarceness has a significant mathematecally good characteristics such as uniform distribution and convergence.
 
 Despite these interests, the role of diversity in \(A^*\)-based search
-algorithm is underinvestigated.
+algorithms is underinvestigated.
 DBFS is a specific improvement to GBFS, and is theoretically less insightful compared
 to bare \(A^*\), which is simpler and can be admissible.
 RRT-based planners do not significantly improve upon the current
@@ -73,29 +74,44 @@ only when an infinite amount of search time is provided, or they simply succumb 
 inadmissible search.
 
 
-The contribution of this paper is to add a new variety of improvements to the admissible search.
-Recent work by Helmert and Roger \cite{helmert2008good} claims that \(A^*\) fails even under an
-assumption that an \emph{almost-perfect heuristic} exists, which is an
-optimistic and theoretical heuristic function which has only a constant error
+The contribution of this paper is to add a new variety of improvements to the admissible search techniques.
+Recent work by Helmert and Roger \cite{helmert2008good} claims that \(A^*\) fails even with \emph{almost-perfect heuristics}, an optimistic heuristic function which has only a constant error
 behind the perfect heuristics.
 They conclude that the further performance improvement requires the
 techniques orthogonal to the heuristic function, such as symmetry breaking,
 domain reduction, factored planning etc.
-Our diversity-based technique falls into this category, possibly
-overwrapping with some of them.
+Our diversity-based technique falls into this category.
 
 This paper is organized as follows: The next section describes the background and preliminaries on the theoretical aspects of \(A^*\). Next, we describe the details of our diversified tie-breaking method and its theoretical implications.  Then we provide an empirical result of our algorithm compared to traditional \(A^*\) with various heuristics. We finally conclude with a discussion on the future work.
 
 \section{Backgrounds and Preliminary}
 \label{sec-1}
 
-\(A^*\) search and admissibility
+\todo{For Anna --- just a series of ideas, no real practice. The text is a sketch. Do not read this section.}
 
-almost-perfect heuristic function (depends on the experiments)
+\subsubparagraph{\(A^*\) search and admissibility}
 
-RRT, volonoi characteristics, similar states
+$A^*$ is a state of the art algorithm for finding an optimal path in the
+search space represented as a graph. [Details of A*...] Compared to the other algorithms which
+guarantees optimality such as $IDA^*$, it requires a large amount of memory
+to store the nodes which are already explored. The search node is stored in
+two priority queues called an open list and a closed list. While the
+implementation of priority queue varies, it has another degree of freedom
+called tie-breaking, i.e. how to select the next node to open within the
+same priority.
 
-RRT-based planners
+\subsubparagraph{almost-perfect heuristic function}
+
+$A^*$ always returns an optimal solution when the heuristic function $h$ is
+admissible, i.e., it never overestimate the true distance to the goal
+$h^*$. Thus, the best possible heuristic function is $h^*$ itself, which is
+called perfect heuristics. However, computing $h^*$ is PSPACE-Complete,
+which is as difficult as solving the problem itself and is not
+practical. Almost perfect heuristic function is a class of similar
+impractical, theoretical functions which is PSPACE-Complete to compute.
+It has a constant error $c$ from the perfect heuristic $h^*$, menaing $h=h^*-c$.
+
+\subsubparagraph{RRT, volonoi characteristics, similar states}
 
 In a continuous space,
 if two nodes a, b are very close to each other (the distance is bounded within an epsilon)
@@ -112,6 +128,9 @@ we can provably minimize the possibility of adding such almost-duplicated edges.
 This is the fundamental motivation of searching the space uniformly in RRT.
 In other words, RRT selects a point randomly in the search space and
 try to maximize the diversity of the search.
+
+
+\subsubparagraph{making an analogy of RRT in the search space of planning}
 
 Same thing can be applied in classical planning, especially when we no
 longer benefit from the heuristic estimates and have no clue searching the
@@ -134,6 +153,8 @@ left in the goal-directed information.
 Instead, what was left unexploited is the information "from the initial state to the
 current state", which is the target of our contribution.
 
+\subsubparagraph{re-emphasize our approach to avoid misunderstanding}
+
 In A*, the states with the best f value is expanded according to the
 tie-breaking criteria. Our contribution is a new tie-breaking tequnique
 which diversify the order of expantion within the same f-value.
@@ -148,7 +169,7 @@ When the expansion order is fifo, then this is equivalent to a normal A*.
 \section{Method Overview}
 \label{sec-2}
 
-[just a series of ideas, no real practice. The text is a sketch.]
+\todo{For Anna --- just a series of ideas, no real practice. The text is a sketch. Do not read this section.}
 
 In \texttt{*A*}, we first create a map of the plateau based on the path similarity
 distance. This map can have an implicit or explicit representation.
@@ -281,17 +302,31 @@ prune these states\ldots{})
 is path distance really needed? (maybe just a state similarity is enough)
 compute plan similarity with zobrist-hash like fast method?
 
-\section{Results}
+\section{Experimental Results}
 \label{sec-3}
 
+All experiments below are conducted under a cluster with Xeon 2.33GHz CPUs.
+
+We conducted experiments on 3 tractable heuristic functions, blind, $h^{\mbox{max}}$ and Landmark Cut heuristics (LMcut) \cite{Helmert2009}, as well as the intractable heuristics such as almost perfect heuristics with $c=3$ and the perfect heuristics.
+
+In evaluating our approach on tractable heuristic functions, we applied a standard competition settings of 30min.\ time limit and 2GB memory limit.
+
+In the experiments simulating almost perfect heuristics and perfect
+heuristics, time limit is not applied and the heuristic values are computed by searching
+from the node to the goal using optimal planning with LMcut. Thus, the
+problem instances used in these settings are limited to the small instances.
+
+
+The results in \reftbl{tbl:main} show that our approach improves significantly across tractable functions, and also on intractable functions\todo{Oh, I hope so!}. We also show that the number of expansions in \verb~*A*~ is significantly smaller than that of $A^*$. Note that the number of expansion when the heuristic estimate is larger than zero is the same between these two algorithms.
+
+The implications here is that the diversity information is orthogonal to the information obtained from the distance estimation. In intractable heuristics, we can assume nearly all information from the domain, current state and the goal state is obtained because we cannot improve upon perfect heuristics. The only remaining unexploied information is left in the relationship between the search nodes.
 { \setlength{\tabcolsep}{0.1em}
 \begin{table}[htb]
-\caption{The coverage results of \(A^*\) and \(^*A^*\) with 30 min experiments on 2 GB machine.}
-\centering
+\centering \relsize{-1}
 \begin{tabular}{l|ll|ll|ll|ll|}
-\footnotesize & blind &  & LMcut &  & Almost Perfect &  & Perfect & \\
- &  &  &  &  & \(c=3\) &  & (\(c=0\)) & \\
-Domains & \(A^*\) & \(^*A^*\) & \(A^*\) & \(^*A^*\) & \(A^*\) & \(^*A^*\) & \(A^*\) & \(^*A^*\)\\
+ & blind &  & LMcut &  & Almost & Perfect & Perfect & \\
+ &  &  &  &  & $c=3$ &  & ($c=0$) & \\
+Domains & $A^*$ & $^*A^*$ & $A^*$ & $^*A^*$ & $A^*$ & $^*A^*$ & $A^*$ & $^*A^*$\\
 \hline
 Gripper(20) & 9 & \textbf{13} &  &  &  &  &  & \\
 Depot(20) & \textbf{11} & \textbf{11} &  &  &  &  &  & \\
@@ -304,7 +339,7 @@ Sokoban &  &  &  &  &  &  &  & \\
 \ldots{} &  &  &  &  &  &  &  & \\
 \ldots{} &  &  &  &  &  &  &  & \\
 \ldots{} &  &  &  &  &  &  &  & \\
-\ldots{} &  &  &  &  &  &  &  & \\
+expected & wi & dth & and & hei & ght &  &  & \\
 \ldots{} &  &  &  &  &  &  &  & \\
 \ldots{} &  &  &  &  &  &  &  & \\
 \ldots{} &  &  &  &  &  &  &  & \\
@@ -337,19 +372,39 @@ Zenotravel &  &  &  &  &  &  &  & \\
 \hline
 Total & 800 & \textbf{900} &  &  &  &  &  & \\
 \end{tabular}
+\caption{The coverage results of $A^*$ and $^*A^*$ with 30 min experiments on 2 GB machine.}
+\label{tbl:main}
 \end{table}
 
 }
+
+To strengthen our claim, we plotted the transition of diversity in the plateau as the expansion continues. \refig{diversity-transition} shows that the diversity in the open list remains high in \verb~*A*~, while it quickly decreases in $A^*$. \todo{of course, the real figure should not be an ascii art!}
+
+\begin{figure}[htbp]
+\begin{verbatim}
+LMcut          Perfect       
+                             
+|              |             
+||\___*A*      ||\___*A*      
+|\    \____    |\    \____   
+| \        \__ | \        \__
+|  ~\ A*       |  ~\ A*      
+|    ~-_______ |    ~-_______
++------------- +-------------
+\end{verbatim}
+\caption{Transition of the diversity in the unexpanded best-f nodes in the open list.}
+\label{diversity-transition}
+\end{figure}
+
 \section{Related Work}
 \label{sec-4}
+\emph{Globally-admissible heuristics} \cite{karpas2012optimal} are the class of heuristics that guarantee the optimality only on a certain optimal solution. These heuristics are then found to be a path-dependent heuristics. The interesting relation between our diversity-aware tie-breaking and this globally-admissible heuristics is that they both accounts for the path from the initial state to the current state. Further research on this direction will be an interesting avenue of  future work.
 
-globally-admissible heuristics
+\emph{Symmetry Breaking} \cite{Fox1998,pochter2011exploiting,domshlak2013symmetry} is the search technique that tries to prune the symmetric states in the search space. The number of symmetric states is equal to the number of permutation of variables, which grows exponentially to the number of variables and causes the memory exhaust. Notion of similarity and diversity generalizes the idea of symmetry, but since symmetry is more stricter than the similarity, our approach does not allow the states to be pruned completely, and instead just delay the expansion within the same f-value. Thus it does not decrease the worst case complexity, but in practice it performed very well, as evidenced in our experiments.
 
-symmetry breaking
+\emph{HTN} \cite{erol1994} and \emph{Factored Planning} \cite{amir2003factored,brafman2006factored,Asai2015} are the framework that decompose the input problem into smaller subproblems, then build up the individual solutions into the entire solution of the problem. This area is attracting much interest in the planning community since it is also a candidate of breaking the hurdle of $A^*$. Earlier work on diversity \cite{goldman2015measuring} proposed a method to choose the best set of learning targets of HTN learner based on diversity. Similar method could be applied when the planner returns several duplicated decompositions as in CAP system \cite{Asai2015}.
 
-HTN
 
-factored planning, CAP
 \section{Discussion and Conclusion}
 
-In this paper, we described how can we benefit from diversity during an optimal search algorithm $A^*$. It has a significant impact on the final step of the search in large plateau when the distribution of optimal solutions is not uniform within the open list. We showed that this nonunform distribution still appears when we have an almost-perfect heuristics. Finally, we proposed a practical method of introducing a diversity in an open list. Future work include collaborations with symmetry breaking, dominance pruning and globally admissible heuristics.
+In this paper, we proposed a novel diversity-aware tie-braking method for the admissible search using $A^*$. We empirically showed that this improves the performance on various domains, and it is a heuristic-agnostic improvement to $A^*$. We showed that it has a significant impact on the final step of the search in large plateau when the distribution of optimal solutions is not uniform within the open list. We also showed that this nonunform distribution still appears when we have an almost-perfect heuristics. Future work include collaborations with symmetry breaking, dominance pruning and globally admissible heuristics.

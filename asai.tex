@@ -26,12 +26,14 @@
 % forbid the direct use of \\ref --- it results in inconsistency in styles, e.g., Figure,Fig., etc.
 % Macros are for styles!
 % !!!WARN!!! this should be removed in the camera-ready version.
-% \let\ref\relax
-% \renewcommand{\subsubparagraph}[1]{%
-% \hrule width \linewidth%
-% \marginpar[\relsize{-2} $\triangleright$ #1]{\relsize{-2} $\triangleleft$ #1}}
-% \renewcommand{\@todos}[1]{\marginpar{\tiny DONE \it #1}}
-% \renewcommand{\@todons}[1]{\marginpar{\tiny\bf #1}}
+\let\ref\relax
+\renewcommand{\subsubparagraph}[1]{%
+\hrule width \linewidth%
+\marginpar[\relsize{-2} $\triangleright$ #1]{\relsize{-2} $\triangleleft$ #1}}
+\makeatletter
+\renewcommand{\@todos}[1]{\marginpar{\tiny DONE \it #1}}
+\renewcommand{\@todons}[1]{\marginpar{\tiny\bf #1}}
+\makeatother
 %%%%%%%%%%%%%%%%%%%%%%%%%
 
 %\setcounter{secnumdepth}{2}
