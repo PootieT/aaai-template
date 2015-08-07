@@ -38,12 +38,13 @@ Maintaining the diversity in the results of heuristic search has been an
 important requirement in the applications of automated planning such as
 Penetrating Testing.
 Despite the common-sense notion of diversity that it provides a new
-perspective and better understanding of the world, little has been investigated on the
-benefit of diversity when applied to the admissible search algorithms in terms of search efficiency.
+perspective and the better understanding of the world, little has been investigated on the
+role of diversity when applied to the admissible search algorithms in terms of search efficiency.
 In this paper, we propose a novel 
 diversified tie-breaking method for A* 
-which tries to expand the dissimilar branches as much as possible,
-maintaining the admissibility of the search.
+which tries to expand the dissimilar branches as much as possible.
+We show that it outperforms the \sota optimising planners while maintaining the optimality of the solution.
+We also show that it achieves an improvement even if almost perfect heuristic functions are used, indicating that it is a candidate to overcome the overall limitation of A* based algorithms.
 \end{abstract}
 
 \todo{Paper Length Limit: 6+1 pages in AAAI, 8+1 pages in ICAPS}
@@ -423,7 +424,7 @@ D(S)             D(S)
 
 \section{Discussion and Conclusion}
 
-In this paper, we proposed a novel diversity-aware tie-braking method for the admissible search using $A^*$. We empirically showed that this improves the performance on various domains, and it is a heuristic-agnostic improvement. We showed that it has a significant impact on the final step of the search in large plateau when the distribution of optimal solutions is not uniform within the open list. We also showed that this nonunform distribution still appears when we have an almost-perfect heuristics. Future work include collaborations with symmetry breaking, dominance pruning and globally admissible heuristics.
+In this paper, we proposed a novel diversity-aware tie-braking method for the admissible search using $A^*$. We empirically showed that this improves the performance on various domains, and it is a heuristic-agnostic improvement. We showed that it has a significant impact on the final step of the search in large plateau when the distribution of optimal solutions is not uniform within the open list. We also showed that this nonunform distribution still appears when we have almost-perfect heuristics. Future work include collaborations with symmetry breaking, dominance pruning and globally admissible heuristics.
 
-Although the diversification of the planning algorithms has a large interest driven by the practical applications, research on the performance improvement with diversity has long been neglected, especially in admissible search. This paper specifically addresses this issue. We also  contribute to the planning community by proposing the maximum scope of information that can be exploited when we have almost perfect heuristics. This, for example, may provide an observation that some of the information in symmetry or dominance pruning might be already captured by the almost-perfect heuristics, while others are not. This distinction of the goal-directed information and the past information may be helpful on designing and understanding the planning algorithms.
+Although the diversification of the planning algorithms has a large interest driven by the practical applications, research on the performance improvement with diversity has long been neglected, especially in admissible search. This paper specifically addresses this issue. We also  contribute to the planning community by proposing the maximum scope of information that can be exploited when we have almost perfect heuristics. This, for example, may provide an observation that some of the information in symmetry or dominance pruning might be already captured by the almost-perfect heuristics, while others are not. This distinction of the goal-directed information and the past information may be helpful on designing and understanding the new types of future planning algorithms.
 
