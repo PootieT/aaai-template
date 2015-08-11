@@ -1,0 +1,98 @@
+
+\section{Experimental Results}
+\label{sec-3}
+
+All experiments below are conducted under a cluster with Xeon E5410@2.33GHz CPUs.
+
+We conducted experiments on 3 tractable heuristic functions, blind, $h^{\mbox{max}}$ and Landmark Cut heuristics (LMcut) \cite{Helmert2009}, as well as the intractable heuristics such as almost perfect heuristics with $c=3$ and the perfect heuristics.
+
+In evaluating our approach on tractable heuristic functions, we applied a standard competition settings of 30min.\ time limit and 2GB memory limit.
+
+In the experiments simulating almost perfect heuristics and perfect
+heuristics, time limit is not applied and the heuristic values are computed by searching
+from the node to the goal using optimal planning with LMcut. Thus, the
+problem instances used in these settings are limited to the small instances.
+
+
+The coverage results in \reftbl{tbl:main} show that \*a* significantly improves upon \astar across the tractable functions, and also across the intractable functions\todo{Oh, I hope so!}. We also show that the number of expansions in \*a* is significantly smaller than that of \astar. Note that the number of expansion when the heuristic estimate is larger than zero is the same between these two algorithms.
+
+The implications here is that the diversity information is orthogonal to the information obtained from the distance estimation. In intractable heuristics, we can assume nearly all information from the domain, current state and the goal state is obtained because we cannot improve upon perfect heuristics. The only remaining unexploited information is left in the relationship between the search nodes.
+{ \setlength{\tabcolsep}{0.1em}
+\begin{table}[htb]
+\centering \relsize{-1}
+\begin{tabular}{l|ll|ll||ll|ll|}
+ & blind &  & LMcut &  & Almost & Perfect & Perfect & \\
+ &  &  &  &  & $c=3$ &  & ($c=0$) & \\
+Domains & \astar & \*a* & \astar & \*a* & \astar & \*a* & \astar & \*a* \\
+\hline
+Gripper(20) & 9 & 10 & 12 & \textbf{13} &  &  &  & \\
+Depot(20) & 11 & 11 & 15 & \textbf{20} &  &  &  & \\
+Airport(30) & \ldots{} &  &  &  &  &  &  & \\
+TPP &  &  &  &  &  &  &  & \\
+CyberSec &  &  &  &  &  &  &  & \\
+Sokoban &  &  &  &  &  &  &  & \\
+\ldots{} &  &  &  &  &  &  &  & \\
+\ldots{} &  &  &  &  &  &  &  & \\
+\ldots{} &  &  &  &  &  &  &  & \\
+\ldots{} &  &  &  &  &  &  &  & \\
+\ldots{} &  &  &  &  &  &  &  & \\
+expected & wi & dth & and & hei & ght &  &  & \\
+\ldots{} &  &  &  &  &  &  &  & \\
+\ldots{} &  &  &  &  &  &  &  & \\
+\ldots{} &  &  &  &  &  &  &  & \\
+\ldots{} &  &  &  &  &  &  &  & \\
+\ldots{} &  &  &  &  &  &  &  & \\
+\ldots{} &  &  &  &  &  &  &  & \\
+\ldots{} &  &  &  &  &  &  &  & \\
+\ldots{} &  &  &  &  &  &  &  & \\
+\ldots{} &  &  &  &  &  &  &  & \\
+\ldots{} &  &  &  &  &  &  &  & \\
+\ldots{} &  &  &  &  &  &  &  & \\
+\ldots{} &  &  &  &  &  &  &  & \\
+\ldots{} &  &  &  &  &  &  &  & \\
+\ldots{} &  &  &  &  &  &  &  & \\
+\ldots{} &  &  &  &  &  &  &  & \\
+\ldots{} &  &  &  &  &  &  &  & \\
+\ldots{} &  &  &  &  &  &  &  & \\
+\ldots{} &  &  &  &  &  &  &  & \\
+\ldots{} &  &  &  &  &  &  &  & \\
+\ldots{} &  &  &  &  &  &  &  & \\
+\ldots{} &  &  &  &  &  &  &  & \\
+\ldots{} &  &  &  &  &  &  &  & \\
+\ldots{} &  &  &  &  &  &  &  & \\
+\ldots{} &  &  &  &  &  &  &  & \\
+\ldots{} &  &  &  &  &  &  &  & \\
+\ldots{} &  &  &  &  &  &  &  & \\
+\ldots{} &  &  &  &  &  &  &  & \\
+\ldots{} &  &  &  &  &  &  &  & \\
+Zenotravel &  &  &  &  &  &  &  & \\
+\hline
+Total & 800 & \textbf{900} &  &  &  &  &  & \\
+\end{tabular}
+\caption{The coverage results of \astar and $^*A^*$ with 30 min experiments on 2 GB machine. Best results across the tractable heuristics are indicated in \textbf{bold}.}
+\label{tbl:main}
+\end{table}
+
+}
+
+In \refig{diversity-transition}, we plotted the transition of diversity in the plateau as the expansion continues. The $y$-axis, the diversity across the plateau, was computed according to the formula $D(S_o)=abc/def$ where $S_o$ is the set of states with the best f-value in the open list. The $x$-axis in the figure shows the ratio of the size of $S_o$ to the size of $S_c$, the set of states in the closed list with best f-value, indicating the search progress.
+
+It shows that the diversity in the open list remains high in \*a*, while it quickly decreases in \astar. It indicates that the expansion is done evenly on various kinds of nodes, rather than in a biased manner that the expansion is focused on a particular set of nodes. \todo{of course, the real figure should not be an ASCII art!}
+
+\begin{figure}[htbp]
+\begin{verbatim}
+LMcut          Perfect       
+
+D(S)             D(S)                             
+|                |             
+||\___*A*        ||\___*A*      
+|\    \____      |\    \____   
+| \        \__   | \        \__
+|  ~\ A*         |  ~\ A*      
+|    ~-_______   |    ~-_______
++------------->  +------------->
+      #(S_c)/#(S_o)     #(S_c)/#(S_o)
+\end{verbatim}
+\caption{Transition of the diversity in the unexpanded best-f nodes in the open list.}
+\label{diversity-transition}
+\end{figure}

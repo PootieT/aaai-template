@@ -1,0 +1,56 @@
+\subsubparagraph{RRT, volonoi characteristics, similar states}
+
+RRT is a stochastic algorithm designed for exploring the high-dimensional continuous space.
+Starting from the initial state, RRT proceeds as follows:
+
+[details of RRT.]
+
+As the search continues, the probability of finding the goal state approaches to 1 as the
+
+runtime approaches to infinity. This is because...
+
+
+[Theoretical background of RRT.]
+
+In a continuous space,
+if two nodes a, b are very close to each other (the distance is bounded within an epsilon)
+and if a, b shares a common parent c,
+\textbf{the two paths a-c and b-c are also very similar}.
+In this case, adding a new edge b-c is
+not beneficial because it is searching the \textbf{almost} same state/path twice.
+
+[ Figure ]
+
+In RRT, however, the search constructs a Rapidly-exploring Random Tree in a continuous space.
+Thanks to the randomized point selection and connection strategy in RRT,
+we can provably minimize the possibility of adding such almost-duplicated edges.
+This is the fundamental motivation of searching the space with uniform randomness in RRT.
+In other words, RRT selects a point randomly in the search space and
+try to maximize the diversity of the search.
+
+\subsubparagraph{making an analogy of RRT in the search space of planning}
+
+Same thing can be applied in classical planning, especially when we no
+longer benefit from the heuristic estimates and have no clue searching the
+state space.
+This applies not only to the bogus heuristic function h=0, but also to a idealistic
+function called almost perfect heuristics h=h*-c. With almost perfect
+heuristics, it is reasonable to assume that we no longer improve the
+estimates -- it means we have a perfect heuristics.
+
+[maybe some figure]
+
+When we have a large plateau in an admissible search,
+we want to diversify the search in the plateau as much as possible.
+Within this plateau, several states are expected to be, in a sense,
+"similar" or "close" to each other. And the "similar" states are likely to
+share the "similar" property regarding the relationship to the goal:
+they are either all very close to the goal, or very far from the goal (which means
+the heuristic error is large). However, due to the setting we set
+above, we cannot improve the estimates any more. Moreover, we are assuming
+that we got "nearly all information" toward the goal and there is not much
+left in the goal-directed information.
+Instead, what was left unexploited is the information "from the initial state to the
+current state", which is the target of our contribution.
+
+[maybe some more figures]

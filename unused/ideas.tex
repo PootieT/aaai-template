@@ -1,0 +1,132 @@
+\todo{For Anna --- just a series of ideas, no real practice. The text is a sketch. Do not read this section.}
+
+In \*a*, we first create a map of the plateau based on the path similarity
+distance. This map can have an implicit or explicit representation.
+Using this map, we diversify the order of expanding each node.
+
+In RRT the map is never created explicitly.
+In fact, when there is n nodes, creating such a map requires n(n-1) computation of the distance
+between them and this could be expensive. Instead, RRT randomly selects a state
+and find the nearest node in the tree. Nearest neighbor search is O(N), and
+approximated NNS is O(log N).
+
+\subsection{Distance Function}
+\label{sec-2-1}
+
+The selection of path similarity distance is very important.
+In previous attempts to adopt RRT in classical planning, such as
+RRT-Plan or RPT, they use Plan Distances between the leaf states as the
+metric. This is not so useful due to many reasons:
+
+\begin{itemize}
+\item It requires a computationally expensive explicit search each time.
+\item Computing the relaxed plan distance is still expensive.
+\item Plan distance does not reflect how similar these states are.
+\begin{itemize}
+\item Example 1: Symmetry: Although symmetric states are naturally very
+"similar", their plan distance may be very large, or even
+infinite. -- Suppose we are standing at the center of a straight
+road which is 2km long. We can go 1km to the left or 1km to the
+right. There are two goals in both ends. Although the two goals and the
+paths are symmetric, the goal distance is 2km long, which is a largest
+diameter of this search space.
+\item Example 2: Partial Order: Suppose we are in a 3x2 grid where we can go
+up or right only. Initial/Goal State is (0,0)/(2,1). Suppose the search
+frontiers have the paths (0,0)-(0,1)-(1-1) and (0,0)-(1,0)-(2-0).
+They both have a parent node
+(1,0) and the paths before this meeting point are the same in terms of
+partial order. These are not symmetric. Although these frontiers both reach
+the same goal state in 1 step, and their prefix are the same, their
+plan distance is infinite since we cannot go down or left.
+\end{itemize}
+\end{itemize}
+
+\begin{verbatim}
+g----------s----------g
+\end{verbatim}
+
+\begin{verbatim}
++--o--g
+|  |  |
+s--+--o
+\end{verbatim}
+
+We have several possibilities for computing the similarity distance. Here
+are some ideas:
+
+\begin{enumerate}
+\item We count the difference of the plan according to the D\(_{\text{stability}}\) in
+Diversity Planning(Nguyen 12). However, we also want to take the following elements
+into account:
+\item the length of the shared prefix of the paths s0-s1 and s0-s2.
+\begin{itemize}
+\item This is fast but not informative, and exploits no information in
+Symmetry and Partial Ordering.
+\item This only provides the upper bound of the plan similarity because,
+although the path s0-s1 is optimal in the admissible search, there
+may be several such optimal paths, and this path prefix distance
+does not take those multiple paths into consideration.
+\end{itemize}
+\item Convert the path into the partial order plan and compute the graph
+similarity. I suppose Graph Similarity is computationally hard problem
+but is in practice very fast. This would make the similarity
+more accurate.
+\item Path symmetry. This would also make the similarity more accurate.
+\end{enumerate}
+
+Note: these do not require those paths to be completely symmetric or
+completely isomorphic partial order path. The benefit is that we can delay
+the expansion of "mostly" symmetric path/isomorphic partial order path,
+although we may not be able to prune them completely.
+
+Note: The role is similar to globally admissible heuristics, which is in turn
+found to be a "path-dependent heuristics". However, these information are
+highly likely to be considered by an ideal "almost perfect" heuristics.
+Those ideal heuristics take into consideration \emph{any possible} information
+toward the goal, but \emph{not} about the already-known information.
+
+Note: Another problem in previous RRT-based planners is how to query a reachable
+state randomly, uniformly and efficiently. They run "generate, test and
+dispose" approach, however we do not need this because we only apply our
+ordering algorithm to the search frontier with best-f. Open-nodes are
+always reached from the initial states.
+
+Now the problem is how to diversify the selection from the best-f states,
+without creating a distance table which runs n(n-1)/2 iteration.
+We instead create the table in an incremental fashion during the search.
+We expect a new f-value is obtained before every node is expanded.
+Since it does not modify the expansion order regarding f, the algorithm
+does not harm the admissibility.
+
+Consider we have a set of nodes n1-n5. It has the following
+pairwise distances, which is actually unknown prior to the search.
+
+\begin{center}
+\begin{tabular}{r|rrrrr|}
+ &  &  &  &  & \\
+ & 1 & 2 & 3 & 4 & 5\\
+\hline
+1 & $\backslash$ & 1 & 7 & 2 & 9\\
+2 & 1 & $\backslash$ & 3 & 8 & 5\\
+3 & 7 & 3 & $\backslash$ & 4 & 6\\
+4 & 2 & 8 & 4 & $\backslash$ & 0\\
+5 & 9 & 5 & 6 & 0 & $\backslash$\\
+\hline
+\end{tabular}
+\end{center}
+
+The first node is selected arbitrarily. Let's assume it is n1.
+The second node is the farthest node from the root node, which is n5. It
+takes 4 distance computation.
+Now which node should be the third?
+We want to select a node which is diverse from both nodes.
+From the table, we estimate n3 is far from both node.
+When multiple nodes are accounted, we use a harmonic mean of the distances.
+It implies that if some state returns a distance 0 (e.g. they are
+symmetric), it is considered only in the last. (of course, it is possible to
+prune these states\ldots{})
+\subsection{talk with alexf}
+\label{sec-2-2}
+
+is path distance really needed? (maybe just a state similarity is enough)
+compute plan similarity with zobrist-hash like fast method?
