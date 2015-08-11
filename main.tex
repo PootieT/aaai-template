@@ -37,14 +37,16 @@ Other overall implementation strategy should be added here. When some new princi
 Maintaining the diversity in the results of heuristic search has been an
 important requirement in the applications of automated planning such as
 Penetrating Testing.
-Despite the common-sense notion of diversity that it provides a new
-perspective and the better understanding of the world, little has been investigated on the
-role of diversity when applied to the admissible search algorithms in terms of search efficiency.
-In this paper, we propose a novel 
-diversified tie-breaking method for A* 
-which tries to expand the dissimilar branches as much as possible.
-We show that it outperforms the \sota optimising planners while maintaining the optimality of the solution.
-We also show that it achieves an improvement even if almost perfect heuristic functions are used, indicating that it is a candidate to overcome the overall limitation of A* based algorithms.
+Despite the common-sense notion of diversity, such as gender and nationality,
+that it quickly provides a new
+perspective and the better understanding of the world which are otherwise hard to achieve,
+little has been investigated on the
+role of diversity when applied to the AI Planning in terms of search efficiency and performance.
+
+In this paper, we propose two novel diversified tie-breaking method for the \sota search algorithm A*.
+The first one is a portfolio-based approach which alternates between the different expansion strategy within the same f-value, while caching the f-value to avoid the costly heuristic computation. We provide a theoretical upper limit for the number of evaluation of the heuristic funciton.
+The second contribution of this paper is a novel probabilistic tie-breaking strategy which tries to expand the dissimilar branches as much as possible. This also preserve the expansion ordering in terms of f-value, thus maintaining the optimality of the solution.
+We show that both outperform the \sota optimizing planners and that it also achieves an improvement even if almost perfect heuristic functions are used, indicating that it is a candidate to overcome the overall limitation of A* based algorithms.
 \end{abstract}
 
 \todo{Paper Length Limit: 6+1 pages in AAAI, 8+1 pages in ICAPS}
@@ -54,19 +56,19 @@ In the applications of automated planning such as Penetrating Testing, Propositi
 Diversity, or more frequently referred to as the problem of \emph{exploration} versus
 \emph{exploitation}, was also considered beneficial in improving the search efficiency.
 \emph{k-Best First Search} \cite{felner2003kbfs} and \emph{Diverse Best First Search(DBFS)}
-\cite{imai2011novel} were developped for
+\cite{imai2011novel} were developed for
 improving the search behavior of Greedy Best First Search by shifting the
 balance slightly from exploitation to exploration, because GBFS
 is sometimes misdirected by the errors in the heuristic estimates,
 and stays too narrowly focused on the wrong direction.
 
-In Robotics, RRT(Rapidly-exploring Random Tree) algorithm is a \sota randomized algorithm for high-dimensional continuous space and is widely known for its provabliy good balance between exploration and exploitation. Hence several papers \cite{alcazar2011adapting,burfoot2006rrt,likhachev2008r} have tried to merge RRT-based algorithms to forward-chaining algorithms designed for discrete state space.
-%  They wrapped a guided % search with randomized tree construction which allows the planner to search the state space scarcely, and its scarceness has a significant mathematecally good characteristics such as uniform distribution and convergence.
+In Robotics, RRT (Rapidly-exploring Random Tree) algorithm \cite{lavalle2001randomized} is a \sota randomized algorithm for high-dimensional, \emph{continuous} space and is widely known for its provably good balance between exploration and exploitation. Unlike \astar, this algorithm is not guided at all, i.e.\ it does not use any heuristic functions, although there are various attempts to implement it \cite{urmson2003approaches,urmson2003approaches}. Hence several papers \cite{alcazar2011adapting,burfoot2006rrt,likhachev2008r} have tried to merge RRT-based algorithms to \astar, which is designed for discrete state spaces.
+%  They wrapped a guided % search with randomized tree construction which allows the planner to search the state space scarcely, and its scarceness has a significant mathematically good characteristics such as uniform distribution and convergence.
 
 Despite these interests, the role of diversity in \(A^*\)-based search
 algorithms is underinvestigated.
 DBFS is a specific improvement to GBFS, and is theoretically less insightful compared
-to bare \(A^*\), which is simpler and can be admissible.
+to bare \(A^*\) since GBFS is generally inadmissible.
 RRT-based planners do not significantly improve upon the current
 state-of-the-art planner such as LAMA \cite{alcazar2011adapting}, although it
 has improved in some domains. RRT-based planners are also subjective to
@@ -88,237 +90,242 @@ This paper is organized as follows: The next section describes the background an
 \section{Backgrounds and Preliminary}
 \label{sec-1}
 
-\todo{For Anna --- just a series of ideas, no real practice. The text is a sketch. Do not read this section.}
+\todo{For Anna --- 
+Since % this paper is a part of the ongoing research, some details are not well formed. also,
+I am doing this work both as a class assignment and also as my ``slum-dunk'' research, I decided to add a side note for the nonexperts, in order to optimize the overall effort for both. However, those side notes could also be included in the final version of this paper, if the explanation was found to be also helpful for the reviewer.}
 
-\subsubparagraph{\(A^*\) search and admissibility}
+\subsubparagraph{\astar and perfect heuristics}
 
-$A^*$ is a state of the art algorithm for finding an optimal path in the
-search space represented as a graph. [Details of A*...] Compared to the other algorithms which
-guarantees optimality such as $IDA^*$, it requires a large amount of memory
-to store the nodes which are already explored. The search node is stored in
-two priority queues called an open list and a closed list. While the
-implementation of priority queue varies, it has another degree of freedom
-called tie-breaking, i.e. how to select the next node to open within the
-same priority.
-
-\subsubparagraph{almost-perfect heuristic function}
-
-$A^*$ always returns an optimal solution when the heuristic function $h$ is
+\astar is a state of the art algorithm for finding an optimal path in the
+search space represented as a graph. 
+\astar always returns an optimal solution when the heuristic function $h$ is
 admissible, i.e., when it never overestimate the true distance to the goal
-$h^*$. Thus, the best possible heuristic function is $h^*$ itself, which is
-called perfect heuristics. However, computing $h^*$ is PSPACE-Complete,
+$h^*$.
+% , and the nodes are first ordered according to $f$
+% 
+Thus, the best possible admissible heuristic function is $h^*$ itself, which is
+called \emph{perfect heuristics}. However, computing $h^*$ is PSPACE-Complete,
 which is as difficult as solving the problem itself and is not
-practical. Almost perfect heuristic function is a class of similar
+practical. It is known that with a perfect heuristics the planner do not have to conduct any search: There are no multiple possibilities that the planner should examine on each node.
+
+\emph{Almost perfect} heuristic function $h_c$ is a class of similar
 impractical, theoretical functions which is also PSPACE-Complete to compute \cite{helmert2008good}.
-It has a constant error $c$ from the perfect heuristic $h^*$, i.e., $h=h^*-c$.
+It has a constant error $c$ from the perfect heuristic $h^*$, i.e., $h_c=h^*-c$.
+The important finding by \citeauthor{helmert2008good} is that even with this intractable and impractical heuristic function, the number of the nodes in the last plateau of the search becomes exponentially large as the problem size increases (\refig{hc-fails}).
+Using this fact, they showed that relying only on the improvement of the heuristic functions is not fruitful in the near future, and the researchers should seek the other, orthorgonal improvement.
 
-\subsubparagraph{RRT, volonoi characteristics, similar states}
+\begin{figure}[htbp]
+ \centering
+ \includegraphics{img/hc-fails.png}
+ \caption{Even with an almost-perfect heuristics $h_c$, the number of the nodes in the rectangular area (the ``plateau'' of the search) is still very high.}
+ \label{hc-fails}
+\end{figure}
 
-RRT is a stochastic algorithm designed for exploring the high-dimensional continuous space.
-Starting from the initial state, RRT proceeds as follows:
+These intractable heuristics are of course very hard and expensive to compute. However, even the practical, tractable heuristic functions which can be computed in polynomial time, such as \lmcut and M\&S, are also very computationally expensive. Compared to the other functions, these functions dominate the search time over the other factors of planning algorithms, such as node insertion and deletion.
 
-[details of RRT.]
+\section{Tie Breaking Criteria in \astar}
 
-As the search continues, the probability of finding the goal state approaches to 1 as the runtime approaches to infinity. This is because...
+% Compared to the other algorithms which
+% guarantee optimality such as $IDA^*$ \cite{korf1985depth}, \astar requires a large amount of % memory to store the search nodes.
 
-[Theoretical background of RRT.]
+\astar stores the search nodes into two priority queues called an \emph{open list} and a \emph{closed list}, sorted based on $f$ value. While the implementation of the priority queue varies, it has another degree of freedom called tie-breaking, i.e. how to select the next node to open within the same priority.
 
-In a continuous space,
-if two nodes a, b are very close to each other (the distance is bounded within an epsilon)
-and if a, b shares a common parent c,
-\textbf{the two paths a-c and b-c are also very similar}.
-In this case, adding a new edge b-c is
-not beneficial because it is searching the \textbf{almost} same state/path twice.
+In the current implementation of the \sota admissible planning systen Fast Downward (FD) \cite{Helmert2006}, the standard \astar search breaks ties based on $h$, meaning that if two nodes have the same $f$ value, the nodes with smaller $h$ will be selected, in other words favoring the nodes with larger $g$ values (since $f=g+h$). The intension behind this is that the $h$ values are just an \emph{estimate} to the goal, while $g$ values are the \emph{actual} distance from the initial state and more reliable.
 
-[ Figure ]
+Another thing we have to note is that in FD, when even the $h$ values are the same, then the second tiebreaking behavior is basically a FIFO order: The planner selects the nodes that is inserted earlier.  \todo{Note for anna --- FIFO order = first-in, first-out order, LIFO --- last-in, first-out order}
 
-% In RRT, however, the search constructs a Rapidly-exploring Random Tree in a continuous space.
-% Thanks to the randomized point selection and connection strategy in RRT,
-% we can provably minimize the possibility of adding such almost-duplicated edges.
-% This is the fundamental motivation of searching the space with uniform randomness in RRT.
-% In other words, RRT selects a point randomly in the search space and
-% try to maximize the diversity of the search.
+However, in fact, these tiebreaking methods are not necessary when we are only concerned with  maintaining the optimality. These tiebreaking criteria are just the result of heuristic, ad-hoc selection by humans and have no theoretical background.
+% In particular, we first observed that this FIFO order has not legitimate reason to support.
 
-\subsubparagraph{making an analogy of RRT in the search space of planning}
+We therefore ran a preliminary experiments on various benchmark domains, comparing a simple FIFO-order, LIFO-order and Random order using 5 minutes runtime cutoff. 
+All experiments below are conducted on a cluster with Xeon E5410@2.33GHz CPUs.
+We observed that even such a slightest difference can change the performance significantly, depending on the domains.
+\refig{single-eval} compares the number of node evaluation (computations of \lmcut)
+by LIFO, FIFO and Random second tiebreaking.
+According to the figure, LIFO has smaller number of evaluations than the others in Openstacks, but Random dominates the others in Miconic and Nomystery, indicating that there are no dominance relationship between these three.
+\reftbl{single-coverage} shows the coverage result (number of problems solved) by each strategy.
+Overall, LIFO strategy achieved a higher coverage.
 
-Same thing can be applied in classical planning, especially when we no
-longer benefit from the heuristic estimates and have no clue searching the
-state space.
-This applies not only to the bogus heuristic function h=0, but also to a idealistic
-function called almost perfect heuristics h=h*-c. With almost perfect
-heuristics, it is reasonable to assume that we no longer improve the
-estimates -- it means we have a perfect heuristics.
+Note that, although LIFO dominated the others, we consider this is just by a coincidence due to our selection of problems, time limit and domains. we \emph{are not trying to claim that any of LIFO or FIFO or Random order dominates the other}. However, there are noticeable performance difference cause by these different tiebreaking strategies.
 
-[maybe some figure]
+\begin{figure}[htbp]
+ \centering
+ \relsize{-2}
+ \includegraphics{tables/aaai16-evaluated-lmcut_ff-lmcut_r.pdf}
+ \includegraphics{tables/opt11-evaluated-lmcut_ff-lmcut_lf.pdf}
+ \includegraphics{tables/opt11-evaluated-lmcut_lf-lmcut_r.pdf}
+\caption{Comparison of the number of node evaluations (computations of \lmcut) by FIFO and LIFO tie breaking, on IPC2011 optimal track instance. LIFO order dominates FIFO and Random order especially in openstacks instances, and the gap is more than one the order of 10.}
+ \label{single-eval}
+\end{figure}
 
-When we have a large plateau in an admissible search,
-we want to diversify the search in the plateau as much as possible.
-Within this plateau, several states are expected to be, in a sense,
-"similar" or "close" to each other. And the "similar" states are likely to
-share the "similar" property regarding the relationship to the goal:
-they are either all very close to the goal, or very far from the goal (which means
-the heuristic error is large). However, due to the setting we set
-above, we cannot improve the estimates any more. Moreover, we are assuming
-that we got "nearly all information" toward the goal and there is not much
-left in the goal-directed information.
-Instead, what was left unexploited is the information "from the initial state to the
-current state", which is the target of our contribution.
+\begin{table}[htbp]
+ \centering
+ \relsize{-2}
+ \input{tables/1_1_vs_seedonly30-aaai16-prelim3-opt11-concat.tex}
+ \caption{Preliminary experiments comparing the performance of FIFO, LIFO and Random second-level tiebreaking using Fast Downward. Each cell denotes the problem solved with 5 minutes runtime, 2GB memory limitation. \textbf{Boldface} denotes the case where it achieved the best result among configurations. LIFO tiebreaking was obtained by modifying the TieBreakingOpenList in FD. Both FIFO and LIFO use $[g+h,h]$ as a sorting criteria, where $h=$\lmcut. For Random tiebreaking, we implemented a so-called ``random heuristics'' $r$, which always returns a random value, then used it as the second tiebreaking, i.e., $[g+h,h,r]$. The seed is initialized to 1.}
+ \label{single-coverage}
+\end{table}
 
-[maybe some more figures]
+We also observed such differences occur especially in the problems which have the huge search plateau, i.e., the problems where the planner relies heavily on the tiebreaking criteria.  \refig{plateau-h} shows the size of the bucket in a priority queue when the solution is found, compared to the total amount of effort in the search. 
+The nodes in a same bucket shares the same $[f,h]$ value, therefore it cannot be guided by the  heuristic functions within this bucket.
+Some domains clearly exhibits the large amount of effort is spent on searching through the last plateau, and those domains are greatly affected by the difference in the second tiebreaking such as LIFO, FIFO or Random, according to the previous figures.
 
-\subsubparagraph{re-emphasize our approach to avoid misunderstanding}
+In \refig{plateau-h}, we also compared the similar statistics where the $h$-based tiebreaking is disabled. We observed that much higher amount of effort is spent on the plateau based on single-element tiebreaking vector $[f]$.
 
-In A*, the states with the best f value is expanded according to the
-tie-breaking criteria. Our contribution is a new tie-breaking tequnique
-which diversify the order of expantion within the same f-value.
-This tie-breaking is based on already-known information,
-without using any goal-directed information.
-These information cannot be obtained from the admissible heuristic function even if we
-have an almost-perfect heuristics.
-This is a kind of knowledge-free exploration similar to RRT.
-We call this new algorithm \*a* (star-A-star), which optimizes the node
-expansion ordering within the best f, exploiting the goal-free information.
-When the expansion order is fifo, then this is equivalent to a normal A*.
-\section{Method Overview}
-\label{sec-2}
+\begin{figure}[htbp]
+ \centering
+ \relsize{-2}
+ \includegraphics{tables/aaai16-front-vs-evaluated.pdf}
+ \caption{Comparison of the size of the search plateau compared to the total evaluation. Data were obtained by the result of standard FIFO tiebreaking on the standard benchmark instances. Both axes are logarithmic. Each dotted line represents 10x, 100x ... lines.  Openstacks,  clearly has the large plateaus.}
+ \label{plateau-h}
+\end{figure}
 
-\todo{For Anna --- just a series of ideas, no real practice. The text is a sketch. Do not read this section.}
+\begin{figure}[htbp]
+ \centering
+ \relsize{-2}
+ \includegraphics{tables/aaai16-front-vs-evaluated.pdf}
+ \caption{Comparison of the size of the search plateau compared to the total evaluation. Data were obtained by the result of running \astar on the standard benchmark instances, with FIFO but without the tiebreaking by $h$. Both axes are logarithmic. Each dotted line represents 10x, 100x ... lines.}
+ \label{plateau-f}
+\end{figure}
 
-In \*a*, we first create a map of the plateau based on the path similarity
-distance. This map can have an implicit or explicit representation.
-Using this map, we diversify the order of expanding each node.
 
-In RRT the map is never created explicitly.
-In fact, when there is n nodes, creating such a map requires n(n-1) computation of the distance
-between them and this could be expensive. Instead, RRT randomly selects a state
-and find the nearest node in the tree. Nearest neighbor search is O(N), and
-approximated NNS is O(log N).
+We can have several important observations from these results.  Firstly, in a plateau, \textbf{the heuristic functions are not used at all, nor the search is guided at all}. This observation holds even if we combine several nondominating heuristics for tie breaking e.g. \lmcut and M\&S.  It is still possible that a plateau is encountered, since their combination is not a perfect heuristics yet!
 
-\subsection{Distance Function}
-\label{sec-2-1}
+Secondly, such a plateau is known to be inevitable even if we have an almost perfect heuristics $h_c$, and it is impossible to improve upon $h_c$ --- if it could, the result would be a perfect heuristics or an inadmissible heuristics. Therefore, this problem \textbf{cannot be solved by improving the heuristic accuracy, which is the currently dominating meta-strategy to improve the planner performance.}  Note that combining multiple heuristic functions by taking their maximum is still an attempt to improve the accuracy, therefore it does not solve this problem.
 
-The selection of path similarity distance is very important.
-In previous attempts to adopt RRT in classical planning, such as
-RRT-Plan or RPT, they use Plan Distances between the leaf states as the
-metric. This is not so useful due to many reasons:
+Thirdly, there is no legitimate reason which supports each tiebreaking strategy. \textbf{$h$ and FIFO are just heuristically chosen by the implementer of the planner.} Nor are there any reason to choose LIFO, or Random tie breaking. Notably, it iscan be easily inferred that the different seed value of a Random tiebreaking yield the different search behavior and different result. (In all of our experiment we fixed the seed to 1.)
 
-\begin{itemize}
-\item It requires a computationally expensive explicit search each time.
-\item Computing the relaxed plan distance is still expensive.
-\item Plan distance does not reflect how similar these states are.
-\begin{itemize}
-\item Example 1: Symmetry: Although symmetric states are naturally very
-"similar", their plan distance may be very large, or even
-infinite. -- Suppose we are standing at the center of a straight
-road which is 2km long. We can go 1km to the left or 1km to the
-right. There are two goals in both ends. Although the two goals and the
-paths are symmetric, the goal distance is 2km long, which is a largest
-diameter of this search space.
-\item Example 2: Partial Order: Suppose we are in a 3x2 grid where we can go
-up or right only. Initial/Goal State is (0,0)/(2,1). Suppose the search
-frontiers have the paths (0,0)-(0,1)-(1-1) and (0,0)-(1,0)-(2-0).
-They both have a parent node
-(1,0) and the paths before this meeting point are the same in terms of
-partial order. These are not symmetric. Although these frontiers both reach
-the same goal state in 1 step, and their prefix are the same, their
-plan distance is infinite since we cannot go down or left.
-\end{itemize}
-\end{itemize}
+Based on these observation, the next step we have taken is to develop a new
+portfolio-based multi-tiebreaking strategy \textbf{which is orthogonal to
+the approach of improving the heuristic accuracy.}
 
-\begin{verbatim}
-g----------s----------g
-\end{verbatim}
+\section{MultiSearch Engine}
 
-\begin{verbatim}
-+--o--g
-|  |  |
-s--+--o
-\end{verbatim}
+We call our new search algorithm within \astar a \emph{MultiSearch}.
+It simulates multiple search engines using the same heuristic functions,
+but with the different tiebreaking strategies.  Each engine has completely
+separate open list and closed list.  However, there is a
+globally shared hash table which fully caches the result of heuristic
+functions.  Whenever a search engine expands a state, it checks if the
+result of a heuristic is already computed, and if yes, it reuses the
+result.  Each search engine expands a state in turns, sequencially. The algorithm
+finishes when some engine finds the solution.
 
-We have several possibilities for computing the similarity distance. Here
-are some ideas:
+Assume now we use two \astar engines, both using $f=g+h$ where $h=$\lmcut, both using $h$ as the first tiebreaking, and each using FIFO and LIFO as the second tiebreaking.
+The amount of memory used for the open/closed list is doubled, and the effort to push/pop the search nodes is also doubled.
+However, the computation of \lmcut is so heavy that those wasted efforts are negligeble.
+We first verified this by running a MultiSearch search engine with two same search engines, each using \lmcut and FIFO queue, and compared its runtime agains the single engine using \lmcut and FIFO. The result in \refig{ffff} shows that the extra cost of duplicated effort is negligeble.
 
-\begin{enumerate}
-\item We count the difference of the plan according to the D\(_{\text{stability}}\) in
-Diversity Planning(Nguyen 12). However, we also want to take the following elements
-into account:
-\item the length of the shared prefix of the paths s0-s1 and s0-s2.
-\begin{itemize}
-\item This is fast but not informative, and exploits no information in
-Symmetry and Partial Ordering.
-\item This only provides the upper bound of the plan similarity because,
-although the path s0-s1 is optimal in the admissible search, there
-may be several such optimal paths, and this path prefix distance
-does not take those multiple paths into consideration.
-\end{itemize}
-\item Convert the path into the partial order plan and compute the graph
-similarity. I suppose Graph Similarity is computationally hard problem
-but is in practice very fast. This would make the similarity
-more accurate.
-\item Path symmetry. This would also make the similarity more accurate.
-\end{enumerate}
+\begin{figure}[htbp]
+ \centering
+ \relsize{-2}
+ \includegraphics{tables/opt11-time-lmcut_ff-lmcut_ffff.pdf}
+ \caption{Comparison of runtime on problems solved by both single FIFO search engine (ff) and a MultiSearch engine with 2 different instances of the same FIFO engine (ffff). The runtime difference was on average below a factor of x1.1, if we ignore the subsecond differences.}
+ \label{ffff}
+\end{figure}
 
-Note: these do not require those paths to be completely symmetric or
-completely isomorphic partial order path. The benefit is that we can delay
-the expansion of "mostly" symmetric path/isomorphic partial order path,
-although we may not be able to prune them completely.
+This portfolio strategy has several interesting theoretical characteristics. First, if we ignore the negligeble cost of insertion and deletion to the open/closed list, we do not have to pay the extra cost evaluating the heuristic function for states $f<f^*$ thanks to the caching.
+Recall that \astar always has to expand the states whose $f$ values are below $f^*$, the true distance from the initial state to the goal. If the heuristic estimate $h$, and in turn $f=g+h$ is the same, any tiebreaking strategy expands and evaluates the same set of nodes in $f<f*$.
+Therefore, in region $f<f*$, our caching mechanism fully works and completely eliminates the possibility of extra evaluation caused by adding another queues.
 
-Note: The role is similar to globally admissible heuristics, which is in turn
-found to be a "path-dependent heuristics". However, these information are
-highly likely to be considered by an ideal "almost perfect" heuristics.
-Those ideal heuristics take into consideration \emph{any possible} information
-toward the goal, but \emph{not} about the already-known information.
+Second, since the search terminates when \emph{some} engine finds a solution, and since the expansion happens in turns, the search effort within the final plateau is upper-bound by \emph{twice} the \emph{minimum} of the search efforts required by LIFO or FIFO engine. This is desirable because, as we saw in the last section, in some domains the gap between the best and worst tiebreaking strategy can be more than 10 times (Openstacks, for example).
+When there are $n$ engines, then this increases to $n\times$ minimum amount of effort by each single engine.
 
-Note: Another problem in previous RRT-based planners is how to query a reacheable
-state randomly, uniformly and efficiently. They run "generate, test and
-dispose" approach, however we do not need this because we only apply our
-ordering algorithm to the search frontier with best-f. Open-nodes are
-always reached from the initial states.
+Finally, we conducted experiments for evaluating our MultiSearch strategy.
+% the number of evaluations and expansions, along with 
+\refig{portfolio-ff} to \refig{portfolio-r} shows the runtime between different combinations of 2 or 3 tiebreaking strategies (FIFO+LIFO, FIFO+Random, LIFO+Random, FIFO+LIFO+Random) and the single tiebreaking strategies. The results support our claim that the evaluation never exceeds twice/thirds of the single search engine and, in practice, the evaluations are mostly the same with the single search engine, and in some domains with large plateaus, the search effort used by MultiSearch is more than ten times less than by the single strategy.
 
-Now the problem is how to diversify the selection from the best-f states,
-without creating a distance table which runs n(n-1)/2 iteration.
-We instead create the table in an incremental fasion during the search.
-We expect a new f-value is obtained before every node is expanded.
-Since it does not modify the expansion order regarding f, the algorithm
-does not harm the admissibility.
+\begin{figure}[htbp]
+ \centering
+ \relsize{-2}
+ \includegraphics{tables/opt11-evaluated-lmcut_ff-lmcut_fflf.pdf}
+ \includegraphics{tables/opt11-evaluated-lmcut_ff-lmcut_ffr.pdf}
+ \includegraphics{tables/opt11-evaluated-lmcut_ff-lmcut_fflfr.pdf}
+ \caption{}
+ \label{portfolio-ff}
+\end{figure}
 
-Consider we have a set of nodes n1-n5. It has the following
-pairwise distances, which is actually unknown prior to the search.
+\begin{figure}[htbp]
+ \centering
+ \relsize{-2}
+ \includegraphics{tables/opt11-evaluated-lmcut_lf-lmcut_fflf.pdf}
+ \includegraphics{tables/opt11-evaluated-lmcut_lf-lmcut_lfr.pdf}
+ \includegraphics{tables/opt11-evaluated-lmcut_lf-lmcut_fflfr.pdf}
+ \caption{}
+ \label{portfolio-lf}
+\end{figure}
 
-\begin{center}
-\begin{tabular}{r|rrrrr|}
- &  &  &  &  & \\
- & 1 & 2 & 3 & 4 & 5\\
-\hline
-1 & $\backslash$ & 1 & 7 & 2 & 9\\
-2 & 1 & $\backslash$ & 3 & 8 & 5\\
-3 & 7 & 3 & $\backslash$ & 4 & 6\\
-4 & 2 & 8 & 4 & $\backslash$ & 0\\
-5 & 9 & 5 & 6 & 0 & $\backslash$\\
-\hline
-\end{tabular}
-\end{center}
+\begin{figure}[htbp]
+ \centering
+ \relsize{-2}
+ \includegraphics{tables/opt11-evaluated-lmcut_r-lmcut_ffr.pdf}
+ \includegraphics{tables/opt11-evaluated-lmcut_r-lmcut_lfr.pdf}
+ \includegraphics{tables/opt11-evaluated-lmcut_r-lmcut_fflfr.pdf}
+ \caption{}
+ \label{portfolio-r}
+\end{figure}
 
-The first node is selected arbitrarly. Let's assume it is n1.
-The second node is the farthest node from the root node, which is n5. It
-takes 4 distance computation.
-Now which node should be the third?
-We want to select a node which is diverse from both nodes.
-From the table, we estimate n3 is far from both node.
-When multiple nodes are accounted, we use a harmonic mean of the distances.
-It implies that if some state returns a distance 0 (e.g. they are
-symmetric), it is considered only in the last. (of course, it is posible to
-prune these states\ldots{})
-\subsection{talk with alexf}
-\label{sec-2-2}
 
-is path distance really needed? (maybe just a state similarity is enough)
-compute plan similarity with zobrist-hash like fast method?
 
-\section{Experimental Results}
+\section{Automatically Diversifying Tie-breaking using OpenTrees}
+
+Although the above technique provides an interesting worst case guarantee, the coverage results in \reftbl{single-coverage} are not so overwhelmingly good compared to single LIFO strategy. The next step we have is whether there is a dominating strategy which outperforms all such vaiants.
+
+In the previous section we observed that the search in a plateau is \emph{knowledge free} in terms of $f$ or $h$ value. The \sota knowledge free search algorithm widely used in the Robotics community is Rapidily-exploring Random Tree(RRT), which quickly expands a space-filling tree in a coninuous space using a state sampling.  RRT has a tree whose node is a state and the edge is a path between those states.
+RRT uniformly samples a state in the state space, find its nearest neighboring node in the current tree, then extend the node by adding a new edge and node which slightly approach to the sampled state. The path is computed by a local planner.
+This allows the motion planner to search the most unexplored volonoi region of the space and stochastically achieves an asymptotically complete space-filling tree.
+In contrast, a trivial strategy to expand the tree by picking a node randomly out of the nodes in a tree does not achieve the same space-filling behavior. This is because by this strategy, the node near the root is selected in the same probability as the node that are far from the root.
+
+\begin{figure}[htbp]
+ \centering
+ \relsize{-2}
+ \includegraphics{img/static/trivial-vs-rrt.png}
+ \caption{Trivial vs Rapidly exploring Random Tree with 2000 vertices. Picture is taken from \cite{lavalle2001randomized}.}
+ \label{rrt}
+\end{figure}
+
+The difficulty in adapting RRT to a discrete state space search is how to sample the state uniformly, as well as $O(n^2)$ distance computations required in each step of adding a new node to the tree \cite{alcazar2011adapting}. The previous approaches tacked the first issue by sampling states which are reachable from the initial state \cite{alcazar2011adapting}. The second issue is far more problematic: In particular, let alone the $O(n^2)$ computation on each node expansion is very expensive since actually this $n$ is exponentially large, each distance computation is same as an individual planning problem, which is computationally intractable. Previous approaches tried to overcome this issue by relaxing the plan distance to distance estimate which can be computed in polynomial time, such as \ff heuristics. 
+However, \ff heuristics are also decently computationally heavy compared to the euclidean distance used in motion plannning community.
+
+\subsection{OpenTrees}
+
+Now we introduce OpenTrees, which replaces the traditional open list and tiebreaking approaches and achieves the similar behavior as RRT.
+It does not require the expensive distance computation, nor imply the plan distance between the states.
+Notably, the use of OpenTrees does not violate admissibility. Both previous approaches in adapting RRT to planning are aimed at satisficing planning setting because they use RRT as the overall framework, while \sota approaches like $A^*$ only as the local planner. In contrast, we use the similar approach only in searching the plateau \emph{within} the same $f$ value. Moreover, search on plateaus is \emph{essentially knowledge free} and naturally suitable for RRT-like algorithms.
+
+OpenTrees is a priority queue whose elements are the trees instead of arrays. Each nodes of the tree corresponds to a search state and each edge corresponds to an action.
+The root node is the initial state and the the open states are stored in the leaf nodes.
+The non-leaf nodes, including the root, are called a \emph{helper} nodes.
+
+When an insertion of a new node happens, it first selects a tree with the same $f$ as the node, and then tries to insert the path from the initial state to the node into the tree. If a node is removed from the OpenTree, then unnecessary helper nodes should also be removed. The next state to expand are selected as follows: Starting from the root node of the current minimum $f$ value, select one branch at random at each step, until the node is a leaf node. Finally, return the leaf node.
+
+\begin{figure}[htbp]
+ \centering
+ \relsize{-2}
+ \includegraphics{img/trees.png}
+ \caption{Figure depicting OpenTrees.}
+ \label{trees}
+\end{figure}
+
+\subsection{Theoretical Analysis of OpenTrees}
+
+An OpenTrees stochastically returns a state in a branch of the search tree with the least number of leaf nodes. Consider two nodes $n_1,n_2$ in \refig{probability}. These are directly generated from a parent node $n_p$ by different actions $a_1,a_2$. Their paths from the initial state only differs in this single step, in other words they share the very long path prefix. The probability of selecting the branch of $n_p$ is evenly shared by $n_1,n_2$ -- it becomes the half of selecting $n_p$. Thus, a path which have a longer prefix shared with another path has a smaller probability to be opened first (although they should be opened eventually when the current OpenTrees is exhausted), and OpenTrees returns the most surprizing node in terms of path difference.
+This results in maximising the surprisal of the path that leads to the returned node.
+% This results in returning a state which has the largest ``surprise'' in terms of the pathes that leads to the open nodes.
+
+\begin{figure}[htbp]
+ \centering
+ \relsize{-2}
+ \includegraphics{img/open-tree-probability.png}
+ \caption{The probability of each leaf node to be opened, along with the probability of the helper nodes to be visited. The nodes in a branch already heavily expanded are selected in a smaller possibility, and the nodes in a narrower branch gets the higher possibility. It thus manages the diversity of the search.}
+ \label{probability}
+\end{figure}
+
+The novelty of this algrithm compared to the previous RRT-A* combinations is that we adopted the edit distance of the paths instead of state distance e.g. plan distance or relaxed plan distance.
+Comppared to the plan distance, path distance is very easy to compute. Also, OpenTree implicitly balances the diversity of the search avoiding the costly $O(n^2)$ Nearest Neighbor Search.
+
+\subsection{Experimental Results}
 \label{sec-3}
-
-All experiments below are conducted under a cluster with Xeon 2.33GHz CPUs.
 
 We conducted experiments on 3 tractable heuristic functions, blind, $h^{\mbox{max}}$ and Landmark Cut heuristics (LMcut) \cite{Helmert2009}, as well as the intractable heuristics such as almost perfect heuristics with $c=3$ and the perfect heuristics.
 
@@ -329,17 +336,16 @@ heuristics, time limit is not applied and the heuristic values are computed by s
 from the node to the goal using optimal planning with LMcut. Thus, the
 problem instances used in these settings are limited to the small instances.
 
+The coverage results in \reftbl{tbl:main} show that OpenTrees significantly improves upon \astar across the tractable functions, and also across the intractable functions. We also show that the number of expansions in OpenTrees is significantly smaller than that of \astar. Note that the number of expansion when the heuristic estimate is larger than zero is the same between these two algorithms.
 
-The coverage results in \reftbl{tbl:main} show that \*a* significantly improves upon $A^*$ across the tractable functions, and also across the intractable functions\todo{Oh, I hope so!}. We also show that the number of expansions in \*a* is significantly smaller than that of $A^*$. Note that the number of expansion when the heuristic estimate is larger than zero is the same between these two algorithms.
-
-The implications here is that the diversity information is orthogonal to the information obtained from the distance estimation. In intractable heuristics, we can assume nearly all information from the domain, current state and the goal state is obtained because we cannot improve upon perfect heuristics. The only remaining unexploied information is left in the relationship between the search nodes.
+%The implications here is that the diversity information is orthogonal to the information %obtained from the distance estimation. In intractable heuristics, we can assume nearly all %information from the domain, current state and the goal state is obtained because we cannot %improve upon perfect heuristics. The only remaining unexploited information is left in the %relationship between the search nodes.
 { \setlength{\tabcolsep}{0.1em}
-\begin{table}[htb]
+\begin{table}[htbp]
 \centering \relsize{-1}
 \begin{tabular}{l|ll|ll||ll|ll|}
  & blind &  & LMcut &  & Almost & Perfect & Perfect & \\
  &  &  &  &  & $c=3$ &  & ($c=0$) & \\
-Domains & $A^*$ & \*a* & $A^*$ & \*a* & $A^*$ & \*a* & $A^*$ & \*a* \\
+Domains & \astar & OpenTrees & \astar & OpenTrees & \astar & OpenTrees & \astar & OpenTrees \\
 \hline
 Gripper(20) & 9 & 10 & 12 & \textbf{13} &  &  &  & \\
 Depot(20) & 11 & 11 & 15 & \textbf{20} &  &  &  & \\
@@ -385,7 +391,7 @@ Zenotravel &  &  &  &  &  &  &  & \\
 \hline
 Total & 800 & \textbf{900} &  &  &  &  &  & \\
 \end{tabular}
-\caption{The coverage results of $A^*$ and $^*A^*$ with 30 min experiments on 2 GB machine. Best results across the tractable heuristics are indicated in \textbf{bold}.}
+\caption{The coverage results of \astar and $^*A^*$ with 30 min experiments on 2 GB machine. Best results across the tractable heuristics are indicated in \textbf{bold}.}
 \label{tbl:main}
 \end{table}
 
@@ -393,18 +399,19 @@ Total & 800 & \textbf{900} &  &  &  &  &  & \\
 
 In \refig{diversity-transition}, we plotted the transition of diversity in the plateau as the expansion continues. The $y$-axis, the diversity across the plateau, was computed according to the formula $D(S_o)=abc/def$ where $S_o$ is the set of states with the best f-value in the open list. The $x$-axis in the figure shows the ratio of the size of $S_o$ to the size of $S_c$, the set of states in the closed list with best f-value, indicating the search progress.
 
-It shows that the diversity in the open list remains high in \*a*, while it quickly decreases in $A^*$. It indicates that the expansion is done evenly on various kinds of nodes, rather than in a biased manner that the expansion is focused on a particular set of nodes. \todo{of course, the real figure should not be an ascii art!}
+It shows that the diversity in the open list remains high in OpenTrees, while it quickly decreases in \astar. It indicates that the expansion is done evenly on various kinds of nodes, rather than in a biased manner that the expansion is focused on a particular set of nodes.
+% \todo{of course, the real figure should not be an ASCII art!}
 
 \begin{figure}[htbp]
 \begin{verbatim}
-LMcut          Perfect       
+LMcut          Almost Perfect       
 
 D(S)             D(S)                             
 |                |             
-||\___*A*        ||\___*A*      
+||\___OpenTrees  ||\___OpenTrees
 |\    \____      |\    \____   
 | \        \__   | \        \__
-|  ~\ A*         |  ~\ A*      
+|  ~\ A*+FIFO    |  ~\ A*+FIFO 
 |    ~-_______   |    ~-_______
 +------------->  +------------->
       #(S_c)/#(S_o)     #(S_c)/#(S_o)
@@ -417,14 +424,20 @@ D(S)             D(S)
 \label{sec-4}
 \emph{Globally-admissible heuristics} \cite{karpas2012optimal} are the class of heuristics that guarantee the optimality only on a certain optimal solution. These heuristics are then found to be a path-dependent heuristics. The interesting relation between our diversity-aware tie-breaking and this globally-admissible heuristics is that they both accounts for the path from the initial state to the current state. Further research on this direction will be an interesting avenue of  future work.
 
-\emph{Symmetry Breaking} \cite{Fox1998,pochter2011exploiting,domshlak2013symmetry} is the search technique that tries to prune the symmetric states in the search space. The number of symmetric states is equal to the number of permutation of variables, which grows exponentially to the number of variables and causes the memory exhaust. Notion of similarity and diversity generalizes the idea of symmetry, but since symmetry is more stricter than the similarity, our approach does not allow the states to be pruned completely, and instead just delay the expansion within the same f-value. Thus it does not decrease the worst case complexity, but in practice it performed very well, as evidenced in our experiments.
+\emph{Symmetry Breaking} \cite{Fox1998,pochter2011exploiting,domshlak2013symmetry} is the search technique that tries to prune the symmetric states in the search space. Symmetric states are expected to have the same $f$ value and therefore increases the size of the plateau. Also, the number of symmetric states is equal to the number of permutation of variables, which grows exponentially to the number of variables and causes the memory exhaust. Notion of similarity and diversity generalizes the idea of symmetry, but since symmetry is more stricter than the similarity, our approach does not allow the states to be pruned completely, and instead just delay the expansion within the same f-value. Thus it does not decrease the worst case complexity, but in practice it performed very well, as evidenced in our experiments.
 
-\emph{HTN} \cite{erol1994} and \emph{Factored Planning} \cite{amir2003factored,brafman2006factored,Asai2015} are the framework that decompose the input problem into smaller subproblems, then build up the individual solutions into the entire solution in a bottom-up manner. This area is gaining interest because it is also a candidate of breaking the hurdle of $A^*$. Earlier work on diversity \cite{goldman2015measuring} proposed a method to choose the best set of learning targets of HTN learner based on diversity. Similar method could be applied when the planner returns several duplicated decompositions as in CAP system \cite{Asai2015}.
+\emph{Partial Order Reduction}, \emph{Strong Stubbern Sets} and \emph{Expansion Core} are the techniques which prune the intermediate states that reach to the same goal using the same set of actions but in the different orders. \emph{Dominance Pruning} \cite{erol1994} is a technique which exploits additional information from the problem after the heuristics are computed. Instead of computing the absolute distance, these class of methods proves if a state is strictly relatively better or worse than the other nodes. These techniques reduces the size of a plateau while not violating the admissibility criteria.
 
+\emph{HTN} \cite{erol1994} and \emph{Factored Planning} \cite{amir2003factored,brafman2006factored,Asai2015} are the framework that decompose the input problem into smaller subproblems, then build up the individual solutions into the entire solution in a bottom-up manner. This area is gaining interest because it is also a candidate of breaking the hurdle of \astar. Earlier work on diversity \cite{goldman2015measuring} proposed a method to choose the best set of learning targets of HTN learner based on diversity. Similar method could be applied when the planner returns several duplicated decompositions as in CAP system \cite{Asai2015}.
+
+The plan diversity research by \cite{goldman2015measuring} makes use of Normalized Compression Distance(NCD), which approximates Normalized Information Distance(NID), devised by Kolmogolov complexity theory and only semicomputable. NCD approximates NID by using a common or a \sota compression algorithms such as gzip, bzip or ppmz. NCD and NID are both the distance between the  \emph{strings}, and thus are suitable for computing the difference of paths. Now considering Edit Distance also approximates NID\cite{someone}, our approach is sharing the same spirit.
 
 \section{Discussion and Conclusion}
 
-In this paper, we proposed a novel diversity-aware tie-braking method for the admissible search using $A^*$. We empirically showed that this improves the performance on various domains, and it is a heuristic-agnostic improvement. We showed that it has a significant impact on the final step of the search in large plateau when the distribution of optimal solutions is not uniform within the open list. We also showed that this nonunform distribution still appears when we have almost-perfect heuristics. Future work include collaborations with symmetry breaking, dominance pruning and globally admissible heuristics.
+In this paper, we proposed two novel diversity-aware tie-braking methods for the admissible search using \astar. We empirically showed that they improve the performance on various domains, and they are heuristic-agnostic improvements. We showed that they have a significant impact on the final step of the search in large plateau.
+ % when the distribution of optimal solutions is not uniform within the open list.
+% We also showed that this nonuniform distribution still appears when we have almost-perfect % heuristics.
+Our method differs from the other pruning techniques such as symmetry breaking, dominance pruning or partial-order-pruning because we actually do not prune any states, nor from the other general improvements in the heuristic accuracy because we just change the expansion order within the same $f$.
 
 Although the diversification of the planning algorithms has a large interest driven by the practical applications, research on the performance improvement with diversity has long been neglected, especially in admissible search. This paper specifically addresses this issue. We also  contribute to the planning community by proposing the maximum scope of information that can be exploited when we have almost perfect heuristics. This, for example, may provide an observation that some of the information in symmetry or dominance pruning might be already captured by the almost-perfect heuristics, while others are not. This distinction of the goal-directed information and the past information may be helpful on designing and understanding the new types of future planning algorithms.
 
