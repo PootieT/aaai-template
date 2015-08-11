@@ -90,10 +90,6 @@ This paper is organized as follows: The next section describes the background an
 \section{Backgrounds and Preliminary}
 \label{sec-1}
 
-\todo{For Anna --- 
-Since % this paper is a part of the ongoing research, some details are not well formed. also,
-I am doing this work both as a class assignment and also as my ``slum-dunk'' research, I decided to add a side note for the nonexperts, in order to optimize the overall effort for both. However, those side notes could also be included in the final version of this paper, if the explanation was found to be also helpful for the reviewer.}
-
 \subsubparagraph{\astar and perfect heuristics}
 
 \astar is a state of the art algorithm for finding an optimal path in the
@@ -111,15 +107,8 @@ practical. It is known that with a perfect heuristics the planner do not have to
 \emph{Almost perfect} heuristic function $h_c$ is a class of similar
 impractical, theoretical functions which is also PSPACE-Complete to compute \cite{helmert2008good}.
 It has a constant error $c$ from the perfect heuristic $h^*$, i.e., $h_c=h^*-c$.
-The important finding by \citeauthor{helmert2008good} is that even with this intractable and impractical heuristic function, the number of the nodes in the last plateau of the search becomes exponentially large as the problem size increases (\refig{hc-fails}).
+The important finding by \citeauthor{helmert2008good} is that even with this intractable and impractical heuristic function, the number of the nodes in the last plateau of the search becomes exponentially large as the problem size increases.
 Using this fact, they showed that relying only on the improvement of the heuristic functions is not fruitful in the near future, and the researchers should seek the other, orthorgonal improvement.
-
-\begin{figure}[htbp]
- \centering
- \includegraphics{img/hc-fails.png}
- \caption{Even with an almost-perfect heuristics $h_c$, the number of the nodes in the rectangular area (the ``plateau'' of the search) is still very high.}
- \label{hc-fails}
-\end{figure}
 
 These intractable heuristics are of course very hard and expensive to compute. However, even the practical, tractable heuristic functions which can be computed in polynomial time, such as \lmcut and M\&S, are also very computationally expensive. Compared to the other functions, these functions dominate the search time over the other factors of planning algorithms, such as node insertion and deletion.
 
@@ -132,7 +121,7 @@ These intractable heuristics are of course very hard and expensive to compute. H
 
 In the current implementation of the \sota admissible planning systen Fast Downward (FD) \cite{Helmert2006}, the standard \astar search breaks ties based on $h$, meaning that if two nodes have the same $f$ value, the nodes with smaller $h$ will be selected, in other words favoring the nodes with larger $g$ values (since $f=g+h$). The intension behind this is that the $h$ values are just an \emph{estimate} to the goal, while $g$ values are the \emph{actual} distance from the initial state and more reliable.
 
-Another thing we have to note is that in FD, when even the $h$ values are the same, then the second tiebreaking behavior is basically a FIFO order: The planner selects the nodes that is inserted earlier.  \todo{Note for anna --- FIFO order = first-in, first-out order, LIFO --- last-in, first-out order}
+Another thing we have to note is that in FD, when even the $h$ values are the same, then the second tiebreaking behavior is basically a FIFO order: The planner selects the nodes that is inserted earlier. 
 
 However, in fact, these tiebreaking methods are not necessary when we are only concerned with  maintaining the optimality. These tiebreaking criteria are just the result of heuristic, ad-hoc selection by humans and have no theoretical background.
 % In particular, we first observed that this FIFO order has not legitimate reason to support.
