@@ -1,91 +1,84 @@
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\begin{hidden}
- 
-Like any other software, the key part of collaborative development is *documentation*. In this camera-ready version, I added a macro \subsubparagraph, which does not exist in aaai style and does not violate the camera-ready submission rule. This macro adds a horizontal line and a small note in the marginpar. The code is in asai.tex, and it should be commented out finally (and it becomes a \relax ).
-
-Other overall implementation strategy should be added here. When some new principle is introduced, it should be here.
- 
-1. Not to say ``CAP is designed for decomposable problems''. It gives an wrong impression that it cannot solve nondecomposable problem. Instead, ``CAP is able to solve large problems, detecting the decomposable parts of the problem in an automated manner. If the problem is not decomposable, then it's ability to solve it solely depends on the underlying MainPlanner. If MainPlanner X can or cannot solve it, then CAP(X) can or cannot solve it, respectively.''
-
-2. too much ``''s make the sentence look scattered and visually less recognizable. ``e.g.'' also.
-
-3. \em, \bf, \it are all obsolete \TeX primitives, and it does not take effect properly --- for example, {\bf {\it aaa}} shows ``aaa'' in italic but NOT IN BOLD. Use \emph{}, \textit{}, \textbf{} and so on.
-
-4. always use \ff, \fd, \cea, \pr, \mv , and do not use it directly, e.g. FF, FD/LAMA2011, etc. 
-
-5. use of footnotes should be minimized.
-
-6. No more mention on R2 or R1 of marvin, because it just cause a confusion.
-
-7. IPC2011 should always be \ipc . The definition can later be modified in abbrev.sty .
-
-8. assembly instances are 20.
-
-9. macro actions -> operators.
-10. always use \domind and never ``domain-independent'' nor ``domain independent''.
-11. ``planner independent'', not ``planner-independent''.
-12. "best first", not "best-first"
-13. "mass manufacturing", not "mass-manufacturing"
-14. "Component Abstraction", not "component-abstraction"
-15. Table, Figure, Fig., are not allowed. Always use \refig and \reftbl. When the development flag is enabled, direct use of \ref signals an error.
-16. Caption ends with a period. 
-\end{hidden}
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
 \begin{abstract}
 Maintaining the diversity in the results of heuristic search has been an
 important requirement in the applications of automated planning such as
-Penetrating Testing.
-Despite the common-sense notion of diversity, such as gender and nationality,
-that it quickly provides a new
-perspective and the better understanding of the world which are otherwise hard to achieve,
-little has been investigated on the
-role of diversity when applied to the AI Planning in terms of search efficiency and performance.
+Penetrating Testing. Also, several inadmissible algorithms incorpolating
+diversity are shown to outperform those without it. However, currently,
+little has been investigated on the role of diversity in the admissible
+search algorithms like A*. 
 
-In this paper, we propose two novel diversified tie-breaking method for the \sota search algorithm A*.
-The first one is a portfolio-based approach which alternates between the different expansion strategy within the same f-value, while caching the f-value to avoid the costly heuristic computation. We provide a theoretical upper limit for the number of evaluation of the heuristic funciton.
-The second contribution of this paper is a novel probabilistic tie-breaking strategy which tries to expand the dissimilar branches as much as possible. This also preserve the expansion ordering in terms of f-value, thus maintaining the optimality of the solution.
-We show that both outperform the \sota optimizing planners and that it also achieves an improvement even if almost perfect heuristic functions are used, indicating that it is a candidate to overcome the overall limitation of A* based algorithms.
+In this paper, we propose two novel diversified tie-breaking strategies
+for A*. The first one is a portfolio-based approach which alternates
+between the different expansion strategy like LIFO, FIFO within the same
+f-value, while caching the f-value to avoid the costly heuristic
+computation. We provide a theoretical worst case guarantee of the number
+of heuristic evaluation, and empirically show that the actual
+performance is better than the worst case.  The second strategy called
+OpenTrees replaces the common bucket-based open list with a tree-based
+open list in order to maximize the surprize encountered by expanding the
+next node. Both methods preserve the expansion ordering in terms of
+f-value, thus maintaining the optimality of the solution.
 \end{abstract}
 
-\todo{Paper Length Limit: 6+1 pages in AAAI, 8+1 pages in ICAPS}
+In the applications of automated planning such as Penetrating Testing,
+Propositional Planners try to find an attack plan to take control over
+the simulated corpolate network, mimicking the behavior of the real
+attacker, until the network security is improved and no attack plan
+exists \cite{boddy2005course}.  Here, maintaining the diversity of the
+attack plans is an important demand by the customers because such
+diversity provides a broader insight on the weakness of the corporation
+network. To meet these demands, several diversity metrics were
+developped \cite{roberts2014evaluating,goldman2015measuring} along with
+several algorithms that returns a set of diverse plans
+\cite{srivastava2007domain,coman2011generating,nguyen2012generating}.
 
-In the applications of automated planning such as Penetrating Testing, Propositional Planners try to find an attack plan to take control over the simulated corpolate network, mimicking the behavior of the real attacker, until the network security is improved and no attack plan exists \cite{boddy2005course}.  Here, maintaining the diversity of the attack plans is an important demand by the customers because such diversity provides a broader insight on the weakness of the corporation network. To meet these demands, several diversity metrics were developped \cite{roberts2014evaluating,goldman2015measuring} along with several algorithms that returns a set of diverse plans \cite{srivastava2007domain,coman2011generating,nguyen2012generating}.
+Diversity, or more frequently referred to as the problem of
+\emph{exploration} versus \emph{exploitation}, was also considered
+beneficial in improving the search efficiency.  \emph{k-Best First
+Search} \cite{felner2003kbfs} and \emph{Diverse Best First Search(DBFS)}
+\cite{imai2011novel} were developed for improving the search behavior of
+Greedy Best First Search by shifting the balance slightly from
+exploitation to exploration, because GBFS is sometimes misdirected by
+the errors in the heuristic estimates, and stays too narrowly focused on
+the wrong direction.
 
-Diversity, or more frequently referred to as the problem of \emph{exploration} versus
-\emph{exploitation}, was also considered beneficial in improving the search efficiency.
-\emph{k-Best First Search} \cite{felner2003kbfs} and \emph{Diverse Best First Search(DBFS)}
-\cite{imai2011novel} were developed for
-improving the search behavior of Greedy Best First Search by shifting the
-balance slightly from exploitation to exploration, because GBFS
-is sometimes misdirected by the errors in the heuristic estimates,
-and stays too narrowly focused on the wrong direction.
-
-In Robotics, RRT (Rapidly-exploring Random Tree) algorithm \cite{lavalle2001randomized} is a \sota randomized algorithm for high-dimensional, \emph{continuous} space and is widely known for its provably good balance between exploration and exploitation. Unlike \astar, this algorithm is not guided at all, i.e.\ it does not use any heuristic functions, although there are various attempts to implement it \cite{urmson2003approaches,urmson2003approaches}. Hence several papers \cite{alcazar2011adapting,burfoot2006rrt,likhachev2008r} have tried to merge RRT-based algorithms to \astar, which is designed for discrete state spaces.
+In Robotics, RRT (Rapidly-exploring Random Tree) algorithm
+\cite{lavalle2001randomized} is a \sota randomized algorithm for
+high-dimensional, \emph{continuous} space and is widely known for its
+provably good balance between exploration and exploitation. Unlike
+\astar, this algorithm is not guided at all, i.e.\ it does not use any
+heuristic functions, although there are various attempts to implement it
+\cite{urmson2003approaches,urmson2003approaches}. Hence several papers
+\cite{alcazar2011adapting,burfoot2006rrt,likhachev2008r} have tried to
+merge RRT-based algorithms to \astar, which is designed for discrete
+state spaces.
 %  They wrapped a guided % search with randomized tree construction which allows the planner to search the state space scarcely, and its scarceness has a significant mathematically good characteristics such as uniform distribution and convergence.
 
 Despite these interests, the role of diversity in \(A^*\)-based search
 algorithms is underinvestigated.
-DBFS is a specific improvement to GBFS, and is theoretically less insightful compared
-to bare \(A^*\) since GBFS is generally inadmissible.
-RRT-based planners do not significantly improve upon the current
-state-of-the-art planner such as LAMA \cite{alcazar2011adapting}, although it
-has improved in some domains. RRT-based planners are also subjective to
-the probabilistic convergence, which means the optimality is guaranteed
-only when an infinite amount of search time is provided, or they simply succumb to
-inadmissible search.
+KBFS, DBFS and GBFS are all inadmissible.
+% RRT-based planners do not significantly improve upon the current
+% state-of-the-art planner such as LAMA \cite{alcazar2011adapting}, although it
+% has improved in some domains.
+RRT-based planners are also subjective to the probabilistic convergence,
+which means the optimality is guaranteed only when an infinite amount of
+search time is provided, or they simply succumb to inadmissible search.
 
 
-The contribution of this paper is to add a new variety of improvements to the admissible search techniques.
-Recent work by Helmert and Roger \shortcite{helmert2008good} claims that \(A^*\) fails even with \emph{almost-perfect heuristics}, an optimistic heuristic function which has only a constant error
-behind the perfect heuristics.
-They conclude that the further performance improvement requires the
-techniques orthogonal to the heuristic function, such as symmetry breaking,
-domain reduction, factored planning etc.
-Our diversity-based technique falls into this category.
+The contribution of this paper is to add a new variety of improvements
+to the admissible search techniques.  Recent work by Helmert and Roger
+\shortcite{helmert2008good} claims that, even with an optimistic
+assumption of \emph{almost-perfect heuristics}, \astar still has an
+exponentially large plateau. They conclude that the further performance
+improvement requires the techniques orthogonal to the heuristic
+function, such as symmetry breaking, domain reduction, factored planning
+etc.  Our diversity-based technique falls into this category.
 
-This paper is organized as follows: The next section describes the background and preliminaries on the theoretical aspects of \(A^*\). Next, we describe the details of our diversified tie-breaking method and its theoretical implications.  Then we provide an empirical result of our algorithm compared to traditional \(A^*\) with various heuristics. We finally conclude with a discussion on the future work.
+This paper is organized as follows: The next section describes the
+background and preliminaries on the theoretical aspects of
+\astar. Next, we describe the details of our diversified tie-breaking
+method and its theoretical implications.  Then we provide an empirical
+result of our algorithm compared to traditional \astar with various
+heuristics. We finally conclude with a discussion on the future work.
 
 \section{Backgrounds and Preliminary}
 \label{sec-1}
@@ -102,15 +95,30 @@ $h^*$.
 Thus, the best possible admissible heuristic function is $h^*$ itself, which is
 called \emph{perfect heuristics}. However, computing $h^*$ is PSPACE-Complete,
 which is as difficult as solving the problem itself and is not
-practical. It is known that with a perfect heuristics the planner do not have to conduct any search: There are no multiple possibilities that the planner should examine on each node.
+practical.
+
+%It is known that with a perfect heuristics the planner do not have to
+% conduct any search: There are no multiple possibilities that the
+% planner should examine on each node.
 
 \emph{Almost perfect} heuristic function $h_c$ is a class of similar
-impractical, theoretical functions which is also PSPACE-Complete to compute \cite{helmert2008good}.
-It has a constant error $c$ from the perfect heuristic $h^*$, i.e., $h_c=h^*-c$.
-The important finding by \citeauthor{helmert2008good} is that even with this intractable and impractical heuristic function, the number of the nodes in the last plateau of the search becomes exponentially large as the problem size increases.
-Using this fact, they showed that relying only on the improvement of the heuristic functions is not fruitful in the near future, and the researchers should seek the other, orthorgonal improvement.
+impractical, theoretical functions which is also PSPACE-Complete to
+compute \cite{helmert2008good}.  It has a constant error $c$ from the
+perfect heuristic $h^*$, i.e., $h_c=h^*-c$.  The important finding by
+\citeauthor{helmert2008good} is that even with this intractable and
+impractical heuristic function, the number of the nodes in the last
+plateau of the search becomes exponentially large as the problem size
+increases.  Using this fact, they showed that relying only on the
+improvement of the heuristic functions is not fruitful in the near
+future, and the researchers should seek the other,
+orthorgonal improvement.
 
-These intractable heuristics are of course very hard and expensive to compute. However, even the practical, tractable heuristic functions which can be computed in polynomial time, such as \lmcut and M\&S, are also very computationally expensive. Compared to the other functions, these functions dominate the search time over the other factors of planning algorithms, such as node insertion and deletion.
+These intractable heuristics are of course very hard and expensive to
+compute. However, even the practical, tractable heuristic functions
+which can be computed in polynomial time, such as \lmcut and M\&S, are
+also very computationally expensive. Compared to the other functions,
+these functions dominate the search time over the other factors of
+planning algorithms, such as node insertion and deletion.
 
 \section{Tie Breaking Criteria in \astar}
 
@@ -268,7 +276,7 @@ In contrast, a trivial strategy to expand the tree by picking a node randomly ou
 \begin{figure}[htbp]
  \centering
  \relsize{-2}
- \includegraphics{img/static/trivial-vs-rrt.png}
+ \includegraphics{img/trivial-vs-rrt.png}
  \caption{Trivial vs Rapidly exploring Random Tree with 2000 vertices. Picture is taken from \cite{lavalle2001randomized}.}
  \label{rrt}
 \end{figure}
@@ -302,13 +310,13 @@ An OpenTrees stochastically returns a state in a branch of the search tree with 
 This results in maximising the surprisal of the path that leads to the returned node.
 % This results in returning a state which has the largest ``surprise'' in terms of the pathes that leads to the open nodes.
 
-\begin{figure}[htbp]
- \centering
- \relsize{-2}
- \includegraphics{img/open-tree-probability.png}
- \caption{The probability of each leaf node to be opened, along with the probability of the helper nodes to be visited. The nodes in a branch already heavily expanded are selected in a smaller possibility, and the nodes in a narrower branch gets the higher possibility. It thus manages the diversity of the search.}
- \label{probability}
-\end{figure}
+% \begin{figure}[htbp]
+%  \centering
+%  \relsize{-2}
+%  \includegraphics{img/open-tree-probability.png}
+%  \caption{The probability of each leaf node to be opened, along with the probability of the helper % nodes to be visited. The nodes in a branch already heavily expanded are selected in a smaller % possibility, and the nodes in a narrower branch gets the higher possibility. It thus manages the % diversity of the search.}
+%  \label{probability}
+% \end{figure}
 
 The novelty of this algrithm compared to the previous RRT-A* combinations is that we adopted the edit distance of the paths instead of state distance e.g. plan distance or relaxed plan distance.
 Comppared to the plan distance, path distance is very easy to compute. Also, OpenTree implicitly balances the diversity of the search avoiding the costly $O(n^2)$ Nearest Neighbor Search.
@@ -331,54 +339,35 @@ The coverage results in \reftbl{tbl:main} show that OpenTrees significantly impr
 { \setlength{\tabcolsep}{0.1em}
 \begin{table}[htbp]
 \centering \relsize{-1}
-\begin{tabular}{l|ll|ll||ll|ll|}
- & blind &  & LMcut &  & Almost & Perfect & Perfect & \\
- &  &  &  &  & $c=3$ &  & ($c=0$) & \\
-Domains & \astar & OpenTrees & \astar & OpenTrees & \astar & OpenTrees & \astar & OpenTrees \\
+\begin{tabular}{|l|ll|ll||ll|}
 \hline
-Gripper(20) & 9 & 10 & 12 & \textbf{13} &  &  &  & \\
-Depot(20) & 11 & 11 & 15 & \textbf{20} &  &  &  & \\
-Airport(30) & \ldots{} &  &  &  &  &  &  & \\
-TPP &  &  &  &  &  &  &  & \\
-CyberSec &  &  &  &  &  &  &  & \\
-Sokoban &  &  &  &  &  &  &  & \\
-\ldots{} &  &  &  &  &  &  &  & \\
-\ldots{} &  &  &  &  &  &  &  & \\
-\ldots{} &  &  &  &  &  &  &  & \\
-\ldots{} &  &  &  &  &  &  &  & \\
-\ldots{} &  &  &  &  &  &  &  & \\
-expected & wi & dth & and & hei & ght &  &  & \\
-\ldots{} &  &  &  &  &  &  &  & \\
-\ldots{} &  &  &  &  &  &  &  & \\
-\ldots{} &  &  &  &  &  &  &  & \\
-\ldots{} &  &  &  &  &  &  &  & \\
-\ldots{} &  &  &  &  &  &  &  & \\
-\ldots{} &  &  &  &  &  &  &  & \\
-\ldots{} &  &  &  &  &  &  &  & \\
-\ldots{} &  &  &  &  &  &  &  & \\
-\ldots{} &  &  &  &  &  &  &  & \\
-\ldots{} &  &  &  &  &  &  &  & \\
-\ldots{} &  &  &  &  &  &  &  & \\
-\ldots{} &  &  &  &  &  &  &  & \\
-\ldots{} &  &  &  &  &  &  &  & \\
-\ldots{} &  &  &  &  &  &  &  & \\
-\ldots{} &  &  &  &  &  &  &  & \\
-\ldots{} &  &  &  &  &  &  &  & \\
-\ldots{} &  &  &  &  &  &  &  & \\
-\ldots{} &  &  &  &  &  &  &  & \\
-\ldots{} &  &  &  &  &  &  &  & \\
-\ldots{} &  &  &  &  &  &  &  & \\
-\ldots{} &  &  &  &  &  &  &  & \\
-\ldots{} &  &  &  &  &  &  &  & \\
-\ldots{} &  &  &  &  &  &  &  & \\
-\ldots{} &  &  &  &  &  &  &  & \\
-\ldots{} &  &  &  &  &  &  &  & \\
-\ldots{} &  &  &  &  &  &  &  & \\
-\ldots{} &  &  &  &  &  &  &  & \\
-\ldots{} &  &  &  &  &  &  &  & \\
-Zenotravel &  &  &  &  &  &  &  & \\
+ & blind &  & LMcut &  & Almost & Perfect  \\
+ &  &  &  &  & $c=3$ &   \\
+Domains & \astar & OT & \astar & OT & \astar & OT  \\
 \hline
-Total & 800 & \textbf{900} &  &  &  &  &  & \\
+Gripper(20) & 9 & 10 & 12 & \textbf{13} &  &   \\
+Depot(20) & 11 & 11 & 15 & \textbf{20} &  &   \\
+Airport(30) & \ldots{} &  &  &  &  &  \\
+TPP &  &  &  &  &  &   \\
+CyberSec &  &  &  &  &  & \\
+Sokoban &  &  &  &  &  &  \\
+\ldots{} &  &  &  &  &  &  \\
+\ldots{} &  &  &  &  &  &  \\
+\ldots{} &  &  &  &  &  &  \\
+\ldots{} &  &  &  &  &  &  \\
+\ldots{} &  &  &  &  &  &  \\
+expected & wi & dth & and & hei & ght & \\
+\ldots{} &  &  &  &  &  & \\
+\ldots{} &  &  &  &  &  & \\
+\ldots{} &  &  &  &  &  & \\
+\ldots{} &  &  &  &  &  & \\
+\ldots{} &  &  &  &  &  & \\
+\ldots{} &  &  &  &  &  & \\
+\ldots{} &  &  &  &  &  & \\
+Zenotravel &  &  &  &  &  & \\
+\hline
+Total & 800 & \textbf{900} &  &  &  & \\
+\hline
 \end{tabular}
 \caption{The coverage results of \astar and $^*A^*$ with 30 min experiments on 2 GB machine. Best results across the tractable heuristics are indicated in \textbf{bold}.}
 \label{tbl:main}
@@ -411,17 +400,15 @@ D(S)             D(S)
 
 \section{Related Work}
 \label{sec-4}
-\emph{Globally-admissible heuristics} \cite{karpas2012optimal} are the class of heuristics that guarantee the optimality only on a certain optimal solution. These heuristics are then found to be a path-dependent heuristics. The interesting relation between our diversity-aware tie-breaking and this globally-admissible heuristics is that they both accounts for the path from the initial state to the current state. Further research on this direction will be an interesting avenue of  future work.
 
-\emph{Symmetry Breaking} \cite{Fox1998,pochter2011exploiting,domshlak2013symmetry} is the search technique that tries to prune the symmetric states in the search space. Symmetric states are expected to have the same $f$ value and therefore increases the size of the plateau. Also, the number of symmetric states is equal to the number of permutation of variables, which grows exponentially to the number of variables and causes the memory exhaust. Notion of similarity and diversity generalizes the idea of symmetry, but since symmetry is more stricter than the similarity, our approach does not allow the states to be pruned completely, and instead just delay the expansion within the same f-value. Thus it does not decrease the worst case complexity, but in practice it performed very well, as evidenced in our experiments.
+\emph{Symmetry Breaking} \cite{Fox1998,pochter2011exploiting,domshlak2013symmetry} is the search technique that tries to prune the states with symmetric paths. \emph{Partial Order Reduction}, \emph{Strong Stubbern Sets} and \emph{Expansion Core} are also the techniques which prune the intermediate states that reach to the same goal using the different orders of same actions. \emph{Dominance Pruning} \cite{erol1994} is a technique which exploits additional information from the problem after the heuristics are computed. Instead of computing the absolute distance, it  proves if a state is strictly relatively better than the other nodes. Since path similarity is weaker than symmetry or other criteria, our approach does not prune states, and instead just delay the expansion within the same f-value.
 
-\emph{Partial Order Reduction}, \emph{Strong Stubbern Sets} and \emph{Expansion Core} are the techniques which prune the intermediate states that reach to the same goal using the same set of actions but in the different orders. \emph{Dominance Pruning} \cite{erol1994} is a technique which exploits additional information from the problem after the heuristics are computed. Instead of computing the absolute distance, these class of methods proves if a state is strictly relatively better or worse than the other nodes. These techniques reduces the size of a plateau while not violating the admissibility criteria.
+The plan diversity research by \cite{goldman2015measuring} makes use of Normalized Compression Distance(NCD), which approximates Normalized Information Distance(NID), devised by Kolmogolov complexity theory and only semicomputable. NCD approximates NID by using a common or a \sota compression algorithms such as gzip, bzip or ppmz. NCD and NID are both the distance between the  \emph{strings}, and thus are suitable for computing the difference of paths. Edit distance in OpenTree is a much cheper approximation to NID.
 
-\emph{HTN} \cite{erol1994} and \emph{Factored Planning} \cite{amir2003factored,brafman2006factored,Asai2015} are the framework that decompose the input problem into smaller subproblems, then build up the individual solutions into the entire solution in a bottom-up manner. This area is gaining interest because it is also a candidate of breaking the hurdle of \astar. Earlier work on diversity \cite{goldman2015measuring} proposed a method to choose the best set of learning targets of HTN learner based on diversity. Similar method could be applied when the planner returns several duplicated decompositions as in CAP system \cite{Asai2015}.
+One application of diversity-based technique is \emph{HTN} \cite{erol1994} and \emph{Factored Planning} \cite{amir2003factored,brafman2006factored,Asai2015}. Earlier work on diversity \cite{goldman2015measuring} proposed a method to choose the best set of learning targets of HTN learner based on diversity. Similar method could be applied to choose the best set of factors in the framework.
 
-The plan diversity research by \cite{goldman2015measuring} makes use of Normalized Compression Distance(NCD), which approximates Normalized Information Distance(NID), devised by Kolmogolov complexity theory and only semicomputable. NCD approximates NID by using a common or a \sota compression algorithms such as gzip, bzip or ppmz. NCD and NID are both the distance between the  \emph{strings}, and thus are suitable for computing the difference of paths. Now considering Edit Distance also approximates NID\cite{someone}, our approach is sharing the same spirit.
 
-\section{Discussion and Conclusion}
+\section{Conclusion}
 
 In this paper, we proposed two novel diversity-aware tie-braking methods for the admissible search using \astar. We empirically showed that they improve the performance on various domains, and they are heuristic-agnostic improvements. We showed that they have a significant impact on the final step of the search in large plateau.
  % when the distribution of optimal solutions is not uniform within the open list.
