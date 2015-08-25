@@ -1,0 +1,8 @@
+
+In this paper, we proposed two novel diversity-aware tie-braking methods for the admissible search using \astar. We empirically showed that they improve the performance on various domains, and they are heuristic-agnostic improvements. We showed that they have a significant impact on the final step of the search in large plateau.
+ % when the distribution of optimal solutions is not uniform within the open list.
+% We also showed that this nonuniform distribution still appears when we have almost-perfect % heuristics.
+Our method differs from the other pruning techniques such as symmetry breaking, dominance pruning or partial-order-pruning because we actually do not prune any states, nor from the other general improvements in the heuristic accuracy because we just change the expansion order within the same $f$.
+
+
+Although the diversification of the planning algorithms has a large interest driven by the practical applications, research on the performance improvement with diversity has long been neglected, especially in admissible search. This paper specifically addresses this issue. We also  contribute to the planning community by proposing the maximum scope of information that can be exploited when we have almost perfect heuristics. This, for example, may provide an observation that some of the information in symmetry or dominance pruning might be already captured by the almost-perfect heuristics, while others are not. This distinction of the goal-directed information and the past information may be helpful on designing and understanding the new types of future planning algorithms.

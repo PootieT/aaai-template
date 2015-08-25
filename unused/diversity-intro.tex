@@ -1,0 +1,46 @@
+% intro
+
+In the applications of automated planning such as Penetrating Testing,
+Propositional Planners try to find an attack plan to take control over
+the simulated corpolate network, mimicking the behavior of the real
+attacker, until the network security is improved and no attack plan
+exists \cite{boddy2005course}.  Here, maintaining the diversity of the
+attack plans is an important demand by the customers because such
+diversity provides a broader insight on the weakness of the corporation
+network. To meet these demands, several diversity metrics were
+developped \cite{roberts2014evaluating,goldman2015measuring} along with
+several algorithms that returns a set of diverse plans
+\cite{srivastava2007domain,coman2011generating,nguyen2012generating}.
+
+Diversity, or more frequently referred to as the problem of
+\emph{exploration} versus \emph{exploitation}, was also considered
+beneficial in improving the search efficiency.  \emph{k-Best First
+Search} \cite{felner2003kbfs} and \emph{Diverse Best First Search(DBFS)}
+\cite{imai2011novel} were developed for improving the search behavior of
+Greedy Best First Search by shifting the balance slightly from
+exploitation to exploration, because GBFS is sometimes misdirected by
+the errors in the heuristic estimates, and stays too narrowly focused on
+the wrong direction.
+
+In Robotics, RRT (Rapidly-exploring Random Tree) algorithm
+\cite{lavalle2001randomized} is a \sota randomized algorithm for
+high-dimensional, \emph{continuous} space and is widely known for its
+provably good balance between exploration and exploitation. Unlike
+\astar, this algorithm is not guided at all, i.e.\ it does not use any
+heuristic functions, although there are various attempts to implement it
+\cite{urmson2003approaches,urmson2003approaches}. Hence several papers
+\cite{alcazar2011adapting,burfoot2006rrt,likhachev2008r} have tried to
+merge RRT-based algorithms to \astar, which is designed for discrete
+state spaces.
+%  They wrapped a guided % search with randomized tree construction which allows the planner to search the state space scarcely, and its scarceness has a significant mathematically good characteristics such as uniform distribution and convergence.
+
+Despite these interests, the role of diversity in \(A^*\)-based search
+algorithms is underinvestigated.
+KBFS, DBFS and GBFS are all inadmissible.
+% RRT-based planners do not significantly improve upon the current
+% state-of-the-art planner such as LAMA \cite{alcazar2011adapting}, although it
+% has improved in some domains.
+RRT-based planners are also subjective to the probabilistic convergence,
+which means the optimality is guaranteed only when an infinite amount of
+search time is provided, or they simply succumb to inadmissible search.
+
