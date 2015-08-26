@@ -1,3 +1,6 @@
+
+Since path similarity is weaker than symmetry or other criteria, our approach does not prune states, and instead just delay the expansion within the same f-value.
+
 The plan diversity research by \cite{goldman2015measuring} makes use of Normalized Compression Distance(NCD), which approximates Normalized Information Distance(NID), devised by Kolmogolov complexity theory and only semicomputable. NCD approximates NID by using a common or a \sota compression algorithms such as gzip, bzip or ppmz. NCD and NID are both the distance between the  \emph{strings}, and thus are suitable for computing the difference of paths. Edit distance in OpenTree is a much cheper approximation to NID.
 
 One application of diversity-based technique is \emph{HTN} \cite{erol1994} and \emph{Factored Planning} \cite{amir2003factored,brafman2006factored,Asai2015}. Earlier work on diversity \cite{goldman2015measuring} proposed a method to choose the best set of learning targets of HTN learner based on diversity. Similar method could be applied to choose the best set of factors in the framework.

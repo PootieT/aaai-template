@@ -49,6 +49,21 @@ same f-value and does not alter the expansion order wrto f-value.
 % maintaining all of its charactristics: memory-greedy yet efficient
 % optimal algorithm.
 
+More specifically, we show several important findings regarding the
+existing tiebreaking strategy for \astar as follows.
+% 
+First, in implementing the open list of \astar, priority queue based on
+LIFO-buckets is more efficient than that of FIFO-buckets.
+% 
+Second, with LIFO-based implementation, $h$-based tiebreaking which
+frequently appears in the heuristic search literatures have little
+impact on the performance.
+% 
+Third, the LIFO-based bucket implementation and $h$-based tiebreaking
+both share the greedy search pattern within the plateau of the
+search space, and thus one crucial essense of tiebreaking is the
+\emph{depth within the plateau}.
+
 The rest of paper is organized as follows: The next section describes the
 preliminary background of \astar.
 Next we compares several trivially-simple and well-known tiebreaking
@@ -93,25 +108,44 @@ future, and the researchers should seek the other,
 orthorgonal improvement.
 
 These intractable heuristics are of course very hard and expensive to
-compute. However, even the practical, tractable heuristic functions
-which can be computed in polynomial time, such as \lmcut and IP-based
-heuristics, are also very CPU intensive functions that renders the
-space-greedy characteristics of \astar negligeble. Also, compared to the
-other functions, these functions dominate the search time over the other
-factors of planning algorithms, such as node insertion and deletion.
+compute. However, even the practical, tractable heuristic functions for
+STRIPS Planning, such as \lmcut and IP-based heuristics, are so heavily
+CPU intensive that they outweighs the space-greedy nature of
+\astar. Also, compared to the other functions, these functions dominate
+the search time over the other factors of planning algorithms, such as
+node insertion and deletion.
 
 % M\&S ?
 
-\section{Tie Breaking Criteria in \astar}
+\subsection{Tie Breaking Criteria in \astar}
 
 % Compared to the other algorithms which
 % guarantee optimality such as $IDA^*$ \cite{korf1985depth}, \astar requires a large amount of % memory to store the search nodes.
 
-\astar stores the search nodes into two priority queues called an \emph{open list} and a \emph{closed list}, sorted based on $f$ value. While the implementation of the priority queue varies, it has another degree of freedom called tie-breaking, i.e. how to select the next node to open within the same priority.
+\astar stores the search nodes into two priority queues called an
+\emph{open list} and a \emph{closed list}. In these queues, the search
+nodes are sorted based on $f$ value, which is a sum of the actual cost
+$g$ from the initial state and the cost estimate $h$ to the goal
+state.
+% On each iteration, \astar expands the open nodes with the
+% smallest $f$ value and mark them as closed. Its successor nodes are
+% accordingly inserted back to the open list or closed list, while
+% sometimes the parent node is updated so that it has the shortest path
+% from the initial state.
 
+While the implementation of the priority queue varies, it has a degree
+of freedom called tie-breaking, i.e. how to select the next node to open
+within the same $f$.
 In the current implementation of the \sota admissible planner Fast Downward (FD) \cite{Helmert2006}, the standard \astar search breaks ties based on $h$, meaning that if two nodes have the same $f$ value, the nodes with smaller $h$ will be selected, favoring the nodes with larger $g$ values (since $f=g+h$). The intension behind this is that the $h$ values are just an \emph{estimate} to the goal, while $g$ values are the \emph{actual} distance from the initial state and more reliable.
 
-Another thing we have to note is that in FD, when even the $h$ values are the same, then the second tiebreaking behavior is basically a FIFO order: The planner selects the nodes that is inserted earlier. 
+This tiebreaking strategy is very historically established and cited and
+used in a lot of papers X, Y, Z. XXXXXXXYYYYY YYYYYYYYYYYYY
+YYYYYYYYYYYYY YYYYYYY YYYYYY YYYYYYYY YYYYYYYYYYYY YYYYYYYYY
+YYYYYYYYYYYYY YYYYYYYYYY YYYYYYYYYYYYYYYYY yYYYYYYYY YYYYYYYYYY
+YYYYYYYYYYYYY yYYYYYYY YYYYYYYYYYYYYYY YYYYYYYYY
+
+Another thing we note is that the nodes are stored in a FIFO order
+within the same $h$ value. The planner selects the nodes that is inserted earlier. 
 However, in fact, these tiebreaking methods are not necessary when we are only concerned with  maintaining the optimality. They are just the result of heuristic, ad-hoc selection by humans and have no theoretical background.
 % In particular, we first observed that this FIFO order has not legitimate reason to support.
 
@@ -141,45 +175,57 @@ tiebreaking.
 % Note that, although LIFO dominated the others, we consider this is just by a coincidence due to our selection of problems, time limit and domains. we \emph{are not trying to claim that any of LIFO or FIFO or Random order dominates the other}. However, there are noticeable performance difference cause by these different tiebreaking strategies.
 
 % \begin{figure}[htbp]
-%  \centering
-%  \relsize{-2}
+%  \centering \relsize{-2}
 %  \includegraphics{tables/aaai16-evaluated-lmcut_ff-lmcut_r.pdf}
 %  \includegraphics{tables/opt11-evaluated-lmcut_ff-lmcut_lf.pdf}
 %  \includegraphics{tables/opt11-evaluated-lmcut_lf-lmcut_r.pdf}
-% \caption{Comparison of the number of node evaluations (computations of \lmcut) by FIFO and LIFO tie breaking, on IPC2011 optimal track instance. LIFO order dominates FIFO and Random order especially in openstacks instances, and the gap is more than one the order of 10.}
+%  \caption{Comparison of the number of node evaluations (computations of
+%  \lmcut) by FIFO, LIFO and Random tiebreaking, on IPC2011 optimal track
+%  instance. LIFO order dominates FIFO and Random order especially in
+%  openstacks instances, and the gap is more than one the order of 10.}
 %  \label{single-eval}
 % \end{figure}
 % 
-% \begin{table}[htbp]
-%  \centering
-%  \relsize{-2}
-%  \input{tables/1_1_vs_seedonly30-aaai16-prelim3-opt11-concat.tex}
-%  \caption{Preliminary experiments comparing the performance of FIFO, LIFO and Random second-level tiebreaking using Fast Downward. Each cell denotes the problem solved with 5 minutes runtime, 2GB memory limitation. \textbf{Boldface} denotes the case where it achieved the best result among configurations. LIFO tiebreaking was obtained by modifying the TieBreakingOpenList in FD. Both FIFO and LIFO use $[g+h,h]$ as a sorting criteria, where $h=$\lmcut. For Random tiebreaking, we implemented a so-called ``random heuristics'' $r$, which always returns a random value, then used it as the second tiebreaking, i.e., $[g+h,h,r]$. The seed is initialized to 1.}
-%  \label{single-coverage}
-% \end{table}
+\begin{table*}[htbp]
+ \centering \relsize{-3}
+ \input{tables/aaai16-5min/1_1_vs_seedonly30-aaai16-prelim3-zerocost-concat.tex}
+ \caption{Preliminary experiments comparing the performance of FIFO,
+ LIFO and Random second-level tiebreaking using Fast Downward. Each cell
+ denotes the problem solved with 30 minutes runtime, 2GB memory
+ limitation. \textbf{Boldface} denotes the case where it achieved the
+ best result among configurations.} \label{single-coverage}
+\end{table*}
 
-We also observed such differences occur especially in the problems which
+We also observed that, such differences occur especially in the problems which
 have the huge search plateau, i.e., the problems where the heuristic
 function is not informative and the planner relies heavily on the
-tiebreaking criteria.  \refig{plateau-f-h} shows the initial size of the
+tiebreaking criteria.
+% 
+\refig{plateau-f-h} shows the initial size of the
 tiebreaking bucket in which the goal node was found, compared to the
-total amount of search effort measured by node evaluation. It uses FIFO
-as the second tiebreaking criteria.  The nodes in a same bucket shares
-the same $[f,h]$ value, therefore the planner cannot be guided by the
-heuristic functions within this bucket. In Openstacks and Cyberspecs, the planner
-appears to spend almost half the time on searching through the last
-plateau, and those domains are greatly affected by the difference in the
-second tiebreaking such as LIFO, FIFO or Random, according to the
-previous figures.
+total amount of search effort measured by node evaluation.
+Tiebreaking bucket is a set of open nodes in which the nodes share
+the same $[f,h]$ value.
+This is a result from [$f$,$h$,FIFO] tiebreaking, and in theory the size of the bucket
+does not change among [$f$,$h$,FIFO], [$f$,$h$,LIFO] and [$f$,$h$,Random].
+% 
+% Since the nodes in a same bucket shares
+% the same $[f,h]$ value, the planner cannot be guided by the
+% heuristic functions within this bucket.
+% 
+According to the plot of Openstacks and Cyberspecs, 
+the planner appears to spend almost half the runtime on searching through the final
+plateau, indicating that these domains are greatly affected by the difference in the
+second-level tiebreaking.
 In \refig{plateau-h}, we also compared the similar statistics where the $h$-based tiebreaking is disabled. We observed that much higher amount of effort is spent on the plateau based on single-element tiebreaking vector $[f]$.
 
-% \begin{figure}[htbp]
-%  \centering
-%  \relsize{-2}
-%  \includegraphics{tables/aaai16-front-vs-evaluated.pdf}
-%  \caption{Comparison of the size of the search plateau compared to the total evaluation. Data were obtained by the result of standard FIFO tiebreaking on the standard benchmark instances. Both axes are logarithmic. Each dotted line represents 10x, 100x ... lines.  Openstacks,  clearly has the large plateaus.}
-%  \label{plateau-h}
-% \end{figure}
+\begin{figure}[htbp]
+ \centering
+ \relsize{-3}
+ \includegraphics{tables/aaai16-front-vs-evaluated.pdf}
+ \caption{Comparison of the size of the search plateau compared to the total evaluation. Data were obtained by the result of standard FIFO tiebreaking on the standard benchmark instances. Both axes are logarithmic. Each dotted line represents 10x, 100x ... lines.  Openstacks,  clearly has the large plateaus.}
+ \label{plateau-h}
+\end{figure}
 % 
 % \begin{figure}[htbp]
 %  \centering
@@ -194,7 +240,7 @@ We can have several important observations from these results.  Firstly, in a pl
 
 Secondly, such a plateau is known to be inevitable even if we have an almost perfect heuristics $h_c$, and it is impossible to improve upon $h_c$ --- if it could, the result would be a perfect heuristics or an inadmissible heuristics. Therefore, this problem \textbf{cannot be solved by improving the heuristic accuracy, which is the currently dominating meta-strategy to improve the planner performance.}  Note that combining multiple heuristic functions by taking their maximum is still an attempt to improve the accuracy, therefore it does not solve this problem.
 
-Thirdly, there is no legitimate reason which supports each tiebreaking strategy. \textbf{$h$ and FIFO are just heuristically chosen by the implementer of the planner.} Nor are there any reason to choose LIFO, or Random tie breaking. Notably, it iscan be easily inferred that the different seed value of a Random tiebreaking yield the different search behavior and different result. (In all of our experiment we fixed the seed to 1.)
+Thirdly, there is no legitimate reason which supports each tiebreaking strategy. \textbf{$h$ and FIFO are just heuristically chosen by the implementer of the planner.} Nor are there any reason to choose LIFO, or Random tie breaking. Moreover, the different seed value of a Random tiebreaking yield the different search behavior and different result. (In all of our experiment we fixed the seed to 1.)
 
 % Based on these observation, the next step we have taken is to develop a new
 % portfolio-based multi-tiebreaking strategy \textbf{which is orthogonal to
@@ -202,9 +248,12 @@ Thirdly, there is no legitimate reason which supports each tiebreaking strategy.
 
 \section{Domains with Large Plateau}
 
-Limiting our observation only to 2 domains is not a promising
-result. Therefore, we created several domains where the \sota heuristic
-functions fail to provide a menaingful guidance.
+Currently, most benchmark domains except Openstacks and Cybersec do not
+have the large plateau thanks to the powerful heuristic
+estimates. However, limiting our effective experiments only to 2 domains
+would bias our observation. To avoid this issue, we created several
+domains where the \sota heuristic functions fail to provide a
+menaingful guidance.
 
 One important characteristics shared by Openstacks and Cybersec is that they both
 have large number of zero-cost actions. In such situations, both LMcut
@@ -212,10 +261,10 @@ and M\&S fail to find a meaningful heuristic estimate because LMcut fails to
 find a good cost partitioning with non-zero values, and most edges in the abstraction space of
 M\&S have zero costs.
 
-We therefore modified various domains to have zero-cost actions.
+We therefore modified various domains to have many zero-cost actions.
 For example, miconic-up is a domain which minimizes the energy
 consumption caused by ``up'' action, which moves the elevator up, and
-ignores other factors.  Another example is driverlog-fuel, where only
+all other actions have zero-cost. Another example is driverlog-fuel, where only
 the ``drive'' action has cost 1 and all other actions are zero-cost.
 This in fact reflects the practical application compared to the original
 unit-cost domains where driving and manual labor is equally accounted.
@@ -224,14 +273,57 @@ they are unit-costs, and describe such options as ``inadmissible'',
 solving domains which are unit-cost by origin is not called
 ``inadmissible''. Above domain modification addresses this problem.
 
+Modification was mainly conducted so that it is practically reasonable
+in a sense of cost minimization. Most transportation-type domains are
+modified so that they use less fuel. Assembly-type domains are modified
+so that it minimizes the resource usage such as ink or wood.
+
+\section{Depth-based Tiebreaking}
+
+In order to solve this kind of problem with the large final plateau, the
+planner needs to run an efficient knowledge-free search within plateau.
+One useful measure for such situation might be the number of steps from
+the entrance of the plateau.
+
+The \emph{depth} of a node is an integer equal to the depth of its
+parent node plus one. If the parent node is from the other plateau,
+e.g., different $f$-value, or different $h$-value used for the first
+tiebreaking, the depth is 0. Nodes are stored in a bucket each associated with
+particular depth.
+
+This method is very similar to inadmissible search technique in LAMA
+planner \cite{richter2010lama} which increases every action costs by 1,
+called PLUSONE cost-type.
+It is explicitly targeted at zero-cost actions observed in Openstacks, and resulted in a
+significantly better performance in IPC-6.
+
+The major difference of our tiebreaking from there strategy is twofold. First, the
+depth used for tiebreaking does not affect the cost, thus does not lose
+the admissibility. Next, we \emph{do not favor smaller depth over
+higher depth} --- In PLUSONE, three successive applications of zero-cost operators result in
+cost 3, and two applications result in a cost 2, and smaller cost is
+preferred, just as \astar always expands the node with smaller $f$-value.
+However, in the knowledge-free search within the plateau of admissible search,
+all nodes have the same $f$-value
+and it is impossible to guess whether the goal is near the entrance or
+far away from the entrance.
+In the formar case, the search should be focused around the entrance
+(smaller depths). However, in the latter case, the planner should
+greedily explore the various area of the plateau by preferring larger depth.
+This ``greediness'' is different from the normal sense of ``greedy
+search'' --- since this greediness only holds within the plateau,
+admissibility is still maintained.
+
 
 
 \section{Related Work}
 \label{sec-4}
 
-\emph{Symmetry Breaking} \cite{Fox1998,pochter2011exploiting,domshlak2013symmetry} is the search technique that tries to prune the states with symmetric paths. \emph{Partial Order Reduction}, \emph{Strong Stubbern Sets} and \emph{Expansion Core} are also the techniques which prune the intermediate states that reach to the same goal using the different orders of same actions. \emph{Dominance Pruning} \cite{erol1994} is a technique which exploits additional information from the problem after the heuristics are computed. Instead of computing the absolute distance, it  proves if a state is strictly relatively better than the other nodes. Since path similarity is weaker than symmetry or other criteria, our approach does not prune states, and instead just delay the expansion within the same f-value.
+\emph{Symmetry Breaking} \cite{Fox1998,pochter2011exploiting,domshlak2013symmetry} is the search technique that tries to prune the states with symmetric paths. \emph{Partial Order Reduction}, \emph{Strong Stubbern Sets} and \emph{Expansion Core} are also the techniques which prune the intermediate states that reach to the same goal using the different orders of same actions. \emph{Dominance Pruning} \cite{erol1994} is a technique which exploits additional information from the problem after the heuristics are computed. Instead of computing the absolute distance, it  proves if a state is strictly relatively better than the other nodes.
 
-LA*
+LA* is an extension of \astar which employs a \emph{lookahead} to each
+expansion of a node. Lookahead is a Depth First Search from the frontier
+node which allows to find nodes whose 
 
 \section{Conclusion}
 
