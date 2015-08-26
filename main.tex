@@ -139,10 +139,8 @@ within the same $f$.
 In the current implementation of the \sota admissible planner Fast Downward (FD) \cite{Helmert2006}, the standard \astar search breaks ties based on $h$, meaning that if two nodes have the same $f$ value, the nodes with smaller $h$ will be selected, favoring the nodes with larger $g$ values (since $f=g+h$). The intension behind this is that the $h$ values are just an \emph{estimate} to the goal, while $g$ values are the \emph{actual} distance from the initial state and more reliable.
 
 This tiebreaking strategy is very historically established and cited and
-used in a lot of papers X, Y, Z. XXXXXXXYYYYY YYYYYYYYYYYYY
-YYYYYYYYYYYYY YYYYYYY YYYYYY YYYYYYYY YYYYYYYYYYYY YYYYYYYYY
-YYYYYYYYYYYYY YYYYYYYYYY YYYYYYYYYYYYYYYYY yYYYYYYYY YYYYYYYYYY
-YYYYYYYYYYYYY yYYYYYYY YYYYYYYYYYYYYYY YYYYYYYYY
+used in a lot of papers X, Y, Z.
+Korf et al 
 
 Another thing we note is that the nodes are stored in a FIFO order
 within the same $h$ value. The planner selects the nodes that is inserted earlier. 
@@ -170,7 +168,8 @@ between these three.  \reftbl{f-h-coverage} shows the coverage result
 Moreover, we also ran the same experiment but this time without $h$-based
 first-level tiebreaking. Results in \reftbl{f-coverage} shows that the
 coverage by LIFO-tiebreaking is almost comparable to those with $h$-based
-tiebreaking.
+tiebreaking, indicating that $h$-based tiebreaking is not essentially necessary.
+This is a surprising result considering that almost all of the past literature assume the importance of the $h$-based tiebreaking and modern forward search planners employs this tiebreaking.
 
 % Note that, although LIFO dominated the others, we consider this is just by a coincidence due to our selection of problems, time limit and domains. we \emph{are not trying to claim that any of LIFO or FIFO or Random order dominates the other}. However, there are noticeable performance difference cause by these different tiebreaking strategies.
 
@@ -202,22 +201,24 @@ function is not informative and the planner relies heavily on the
 tiebreaking criteria.
 % 
 \refig{plateau-f-h} shows the initial size of the
-tiebreaking bucket in which the goal node was found, compared to the
-total amount of search effort measured by node evaluation.
+tiebreaking bucket in which the goal node was found, compared to the total number of evaluation.
 Tiebreaking bucket is a set of open nodes in which the nodes share
 the same $[f,h]$ value.
-This is a result from [$f$,$h$,FIFO] tiebreaking, and in theory the size of the bucket
+This is a result from [$f$,$h$,FIFO] tiebreaking, however in theory the size of the bucket
 does not change among [$f$,$h$,FIFO], [$f$,$h$,LIFO] and [$f$,$h$,Random].
 % 
 % Since the nodes in a same bucket shares
 % the same $[f,h]$ value, the planner cannot be guided by the
 % heuristic functions within this bucket.
 % 
+
 According to the plot of Openstacks and Cyberspecs, 
 the planner appears to spend almost half the runtime on searching through the final
-plateau, indicating that these domains are greatly affected by the difference in the
-second-level tiebreaking.
-In \refig{plateau-h}, we also compared the similar statistics where the $h$-based tiebreaking is disabled. We observed that much higher amount of effort is spent on the plateau based on single-element tiebreaking vector $[f]$.
+plateau.
+This indicates that these domains have very large variance in the time required to solve the problem because the runtime heavily depends on whether the goal nodes exist near the beginning of the bucket or near the end of the bucket.
+In this kind of situation the second level tiebreaking like FIFO and LIFO greatly affects the performance.
+\refig{plateau-h} is a similar plot result without the $h$-based tiebreaking.
+As expected, much larger effort is spent on the final plateau without $h$-based tiebreaking.
 
 \begin{figure}[htbp]
  \centering
@@ -235,16 +236,17 @@ In \refig{plateau-h}, we also compared the similar statistics where the $h$-base
 %  \label{plateau-f}
 % \end{figure}
 
+We can have several important observations from these results.  Firstly, in a plateau, \textbf{the heuristic functions are not used at all, nor the search is guided at all}. This observation holds even if we combine several nondominating heuristics e.g. \lmcut and M\&S, regardress of the method, e.g., taking the maximum, using portfolio or utilize them as the first tiebreaking strategy. It is still possible that a plateau is encountered, since it is not a perfect heuristics yet!
+Such a plateau is known to be inevitable even if we have an almost perfect heuristics $h_c$, and it is impossible to improve upon $h_c$ --- if it could, the result would be a perfect heuristics or an inadmissible heuristics. Therefore, this problem cannot be solved by improving the heuristic accuracy, which is the currently dominating meta-strategy to improve the planner performance.
 
-We can have several important observations from these results.  Firstly, in a plateau, \textbf{the heuristic functions are not used at all, nor the search is guided at all}. This observation holds even if we combine several nondominating heuristics for tie breaking e.g. \lmcut and M\&S.  It is still possible that a plateau is encountered, since their combination is not a perfect heuristics yet!
-
-Secondly, such a plateau is known to be inevitable even if we have an almost perfect heuristics $h_c$, and it is impossible to improve upon $h_c$ --- if it could, the result would be a perfect heuristics or an inadmissible heuristics. Therefore, this problem \textbf{cannot be solved by improving the heuristic accuracy, which is the currently dominating meta-strategy to improve the planner performance.}  Note that combining multiple heuristic functions by taking their maximum is still an attempt to improve the accuracy, therefore it does not solve this problem.
-
-Thirdly, there is no legitimate reason which supports each tiebreaking strategy. \textbf{$h$ and FIFO are just heuristically chosen by the implementer of the planner.} Nor are there any reason to choose LIFO, or Random tie breaking. Moreover, the different seed value of a Random tiebreaking yield the different search behavior and different result. (In all of our experiment we fixed the seed to 1.)
+Secondly, there is no legitimate reason which supports each tiebreaking strategy.
+As long as $f$-value is the first sort key, any tiebreaking criteria are admissible. \textbf{$h$ and FIFO are just heuristically chosen by the implementer of the planner.} Nor are there any reason to choose LIFO or Random tie breaking. Moreover, the different seed value of a Random tiebreaking yield the different search behavior and different result. (In all of our experiment we fixed the seed to 1.)
 
 % Based on these observation, the next step we have taken is to develop a new
 % portfolio-based multi-tiebreaking strategy \textbf{which is orthogonal to
 % the approach of improving the heuristic accuracy.}
+
+The following sections are devoted to giving further analysis on the reason behind their behavior.
 
 \section{Domains with Large Plateau}
 
@@ -280,39 +282,76 @@ so that it minimizes the resource usage such as ink or wood.
 
 \section{Depth-based Tiebreaking}
 
-In order to solve this kind of problem with the large final plateau, the
-planner needs to run an efficient knowledge-free search within plateau.
-One useful measure for such situation might be the number of steps from
+In order to solve this kind of problem with a large final plateau, the
+planner needs to run an efficient knowledge-free search within the plateau.
+One useful measure for such situation is the number of steps from
 the entrance of the plateau.
 
 The \emph{depth} of a node is an integer equal to the depth of its
 parent node plus one. If the parent node is from the other plateau,
 e.g., different $f$-value, or different $h$-value used for the first
-tiebreaking, the depth is 0. Nodes are stored in a bucket each associated with
-particular depth.
+tiebreaking, the depth is 0.
 
-This method is very similar to inadmissible search technique in LAMA
-planner \cite{richter2010lama} which increases every action costs by 1,
-called PLUSONE cost-type.
-It is explicitly targeted at zero-cost actions observed in Openstacks, and resulted in a
-significantly better performance in IPC-6.
+With this simple notion of depth, we developed the third level tiebreaking method that stores the nodes in the different buckets each associated with particular depth.  This method is very similar to inadmissible search technique in LAMA planner \cite{richter2010lama} which increases every action costs by 1, called PLUSONE cost-type.  It is explicitly targeted at zero-cost actions observed in Openstacks, and resulted in a significantly better performance in IPC-6.  The major difference of our depth-based tiebreaking from there strategy is twofold.  First, the depth used for tiebreaking does not affect the cost, thus does not lose the admissibility. Next, we \emph{do not favor smaller depth over higher depth} --- In PLUSONE, three successive applications of zero-cost operators result in cost 3, and two applications result in a cost 2, and smaller cost is preferred, just as \astar always expands the node with smaller $f$-value.  However, in the knowledge-free search within the plateau of admissible search, all nodes have the same $f$-value and it is impossible to guess whether the goal is near the entrance or far away from the entrance.  In the formar case, the search should be focused around the entrance favoring the smaller depths, and the behavior is much like Breadth First Search. However, in the latter case, the planner should greedily explore the various area of the plateau by preferring larger depth, much like a Depth First Search.
+This ``greediness'' is different from the normal sense of ``greedy search'' --- since this greediness only holds within the plateau, admissibility is still maintained.
 
-The major difference of our tiebreaking from there strategy is twofold. First, the
-depth used for tiebreaking does not affect the cost, thus does not lose
-the admissibility. Next, we \emph{do not favor smaller depth over
-higher depth} --- In PLUSONE, three successive applications of zero-cost operators result in
-cost 3, and two applications result in a cost 2, and smaller cost is
-preferred, just as \astar always expands the node with smaller $f$-value.
-However, in the knowledge-free search within the plateau of admissible search,
-all nodes have the same $f$-value
-and it is impossible to guess whether the goal is near the entrance or
-far away from the entrance.
-In the formar case, the search should be focused around the entrance
-(smaller depths). However, in the latter case, the planner should
-greedily explore the various area of the plateau by preferring larger depth.
-This ``greediness'' is different from the normal sense of ``greedy
-search'' --- since this greediness only holds within the plateau,
-admissibility is still maintained.
+\section{MultiSearch Engine}
+
+As noted previously, it is unknown prior to the search whether the goal is near the entrance of the plateau or not. In particular, when almost perfect heuristics was used and a plateau is encountered, it is very unlikely that there is a room of obtaining further information from the problem. 
+% 
+However, it would be affected by the domain and problem.
+in fact, \refig{xxx} shows that the second-level random tiebraking significantly outperforms LIFO tiebraking in Cyberspecs, YYY, ZZZ.
+
+Based on this fact, 
+
+
+
+
+
+
+We call our new search algorithm within \astar a \emph{MultiSearch}.
+It simulates multiple search engines using the same heuristic functions,
+but with the different tiebreaking strategies.  Each engine has completely
+separate open list and closed list.  However, there is a
+globally shared hash table which fully caches the result of heuristic
+functions.  Whenever a search engine expands a state, it checks if the
+result of a heuristic is already computed, and if yes, it reuses the
+result.  Each search engine expands a state in turns, sequencially. The algorithm
+finishes when some engine finds the solution.
+
+Assume now we use two \astar engines, both using $f=g+h$ where $h=$\lmcut, both using $h$ as the first tiebreaking, and each using FIFO and LIFO as the second tiebreaking.
+The amount of memory used for the open/closed list is doubled, and the effort to push/pop the search nodes is also doubled.
+However, the computation of \lmcut is so heavy that those wasted efforts are negligeble.
+We first verified this by running a MultiSearch search engine with two same search engines, each using \lmcut and FIFO queue, and compared its runtime agains the single engine using \lmcut and FIFO. The result in \refig{ffff} shows that the extra cost of duplicated effort is negligeble.
+
+\begin{figure}[htbp]
+ \centering
+ \relsize{-2}
+ \includegraphics{tables/opt11-time-lmcut_ff-lmcut_ffff.pdf}
+ \caption{Comparison of runtime on problems solved by both single FIFO search engine (ff) and a MultiSearch engine with 2 different instances of the same FIFO engine (ffff). The runtime difference was on average below a factor of x1.1, if we ignore the subsecond differences.}
+ \label{ffff}
+\end{figure}
+
+This portfolio strategy has several interesting theoretical characteristics. First, if we ignore the negligeble cost of insertion and deletion to the open/closed list, we do not have to pay the extra cost evaluating the heuristic function for states $f<f^*$ thanks to the caching.
+Recall that \astar always has to expand the states whose $f$ values are below $f^*$, the true distance from the initial state to the goal. If the heuristic estimate $h$, and in turn $f=g+h$ is the same, any tiebreaking strategy expands and evaluates the same set of nodes in $f<f*$.
+Therefore, in region $f<f*$, our caching mechanism fully works and completely eliminates the possibility of extra evaluation caused by adding another queues.
+
+Second, since the search terminates when \emph{some} engine finds a solution, and since the expansion happens in turns, the search effort within the final plateau is upper-bound by \emph{twice} the \emph{minimum} of the search efforts required by LIFO or FIFO engine. This is desirable because, as we saw in the last section, in some domains the gap between the best and worst tiebreaking strategy can be more than 10 times (Openstacks, for example).
+When there are $n$ engines, then this increases to $n\times$ minimum amount of effort by each single engine.
+
+Finally, we conducted experiments for evaluating our MultiSearch strategy.
+% the number of evaluations and expansions, along with 
+\refig{portfolio-ff} to \refig{portfolio-r} shows the runtime between different combinations of 2 or 3 tiebreaking strategies (FIFO+LIFO, FIFO+Random, LIFO+Random, FIFO+LIFO+Random) and the single tiebreaking strategies. The results support our claim that the evaluation never exceeds twice/thirds of the single search engine and, in practice, the evaluations are mostly the same with the single search engine, and in some domains with large plateaus, the search effort used by MultiSearch is more than ten times less than by the single strategy.
+
+\begin{figure}[htbp]
+ \centering
+ \relsize{-2}
+ % \includegraphics{tables/opt11-evaluated-lmcut_ff-lmcut_fflf.pdf}
+ % \includegraphics{tables/opt11-evaluated-lmcut_ff-lmcut_ffr.pdf}
+ % \includegraphics{tables/opt11-evaluated-lmcut_ff-lmcut_fflfr.pdf}
+ \caption{}
+ \label{portfolio-ff}
+\end{figure}
 
 
 
