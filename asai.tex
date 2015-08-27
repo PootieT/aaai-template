@@ -12,6 +12,7 @@
 \usepackage{graphicx}
 \usepackage{abbrev}
 \usepackage{multirow}
+\usepackage{multirow}
 
 \frenchspacing
 \setlength{\pdfpagewidth}{8.5in}
@@ -29,11 +30,12 @@
 \let\ref\relax
 \renewcommand{\subsubparagraph}[1]{%
 \hrule width \linewidth%
-\marginpar[\relsize{-2} $\triangleright$ #1]{\relsize{-2} $\triangleleft$ #1}}
+\marginpar[\hfill\relsize{-1} \protect{\rotatebox[origin=c]{90}{#1}} $\triangleright$]{\relsize{-1} $\triangleleft$ \protect{\rotatebox[origin=c]{-90}{#1}}}}
 \makeatletter
 \renewcommand{\@todos}[1]{\marginpar{\tiny DONE \it #1}}
 \renewcommand{\@todons}[1]{\marginpar{\tiny\bf #1}}
 \makeatother
+\setlength{\columnsep}{0.5em}
 %%%%%%%%%%%%%%%%%%%%%%%%%
 
 %\setcounter{secnumdepth}{2}
