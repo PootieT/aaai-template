@@ -147,6 +147,8 @@ factors of planning algorithms, such as node insertion and deletion.
 In contrast, another class of \sota heuristic functions called abstraction-based heuristics
 such as PDB \cite{edelkamp2001planning} and M\&S \cite{helmert2007flexible}
 are known to allow for faster node expansion while providing a good estimate.
+In particular, depending on the domain and Merge \& Shrinke strategy,
+M\&S sometimes yields a perfect heuristics.
 However, they tend to consume large amount of preprocessing time and also
 the large amount of memory to constract and maintain the abstraction
 space,
@@ -471,14 +473,73 @@ without $h$-based tiebreaking.
 
 \subsection{Evaluating Depth-based Tiebreaking}
 
+Next, we evaluated the 3 depth-based tiebreaking methods combined with 3
+bucket implementations, resulting in 9 configurations.
 
+Note that, the node evaluation order of $[\cdot,\fd,\fifo]$ and $[\cdot,\ld,\lifo]$
+are exactly the same as those without the second-level
+depth-based tiebreaking, i.e.\ $[\cdot,\fifo]$ and $[\cdot,\lifo]$.
+Yet these results are useful in assessing the extra cost of managing the
+depth-based buckets.
+
+\refig{depth} shows various experiments on all domains including
+zerocost domains. Zerocost domains are created due to the fact that the
+standard domains do not exhibit large plateaus in terms of $[f,h]$, as
+shown in the previous section.
+
+The result shows that in most variants, LastDepth strategy is
+dominant. However, RandomDepth and FirstDepth still exhibits a
+significantly better performance in Cybersec and Airport, respectively,
+regardless of the third-level tiebreaking.  These result suggests that
+the performance of $[\cdot,\fifo]$, $[\cdot,\lifo]$ and $[\cdot,\ro]$
+was actually caused by its FirstDepth/LastDepth/RandomDepth search
+pattern, and not by the implementation of LIFO, FIFO and RO
+by themselves.
+
+In particular, in variations within the same second-level tiebreaking,
+the FIFO third-level tiebreaking tends to be dominant among the other
+strategies. Note that FIFO is actually bad in terms of memory access
+pattern since the insertion and deletion happens in the opposite side of
+the bucket, and machine-level efficiency is actually in favor of LIFO
+third-level tiebreaking.  However, interestingly, in RandomDepth
+second-level tiebreaking the RandomOrder third-level tiebreaking is good
+in airport-fuel and mprime-succumb.
+
+These trend mostly applies to the cases where M\&S heuristics are used.
+However, the trend is changed by the fact that it quickly exhaust the 2GB
+memory limit.
+
+\begin{figure}[htbp]
+ \centering
+ \relsize{-2}
+ % \includegraphics{tables/opt11-evaluated-lmcut_ff-lmcut_fflf.pdf}
+ % \includegraphics{tables/opt11-evaluated-lmcut_ff-lmcut_ffr.pdf}
+ % \includegraphics{tables/opt11-evaluated-lmcut_ff-lmcut_fflfr.pdf}
+ \caption{}
+ \label{depth}
+\end{figure}
 
 
 \subsection{Evaluating MultiSearch Strategy}
 
-Finally, we conducted experiments for evaluating our MultiSearch strategy.
+As we see in the previous section, the planner performance is greatly
+affected by the tiebreaking criteria, especially when the search plateau
+is very large. Therefore, the multisearch strategy should avoid the
+worst-case scenario caused by bad tiebreaking, and quickly find the solution.
+
+We conducted experiments for evaluating our MultiSearch
+strategy in order to show that it acutally follows the expected search
+behavior and the theoretical bounds, and also to show that it performs
+significantly better than its worst case $n \times \min$ performance.
 % the number of evaluations and expansions, along with 
-\refig{portfolio-ff} to \refig{portfolio-r} shows the runtime between different combinations of 2 or 3 tiebreaking strategies (FIFO+LIFO, FIFO+Random, LIFO+Random, FIFO+LIFO+Random) and the single tiebreaking strategies. The results support our claim that the evaluation never exceeds twice/thirds of the single search engine and, in practice, the evaluations are mostly the same with the single search engine, and in some domains with large plateaus, the search effort used by MultiSearch is more than ten times less than by the single strategy.
+\refig{portfolio-ff} to \refig{portfolio-r} shows the runtime between
+different combinations of 2 or 3 tiebreaking strategies (FIFO+LIFO,
+FIFO+Random, LIFO+Random, FIFO+LIFO+Random) and the single tiebreaking
+strategies. The results support our claim that the evaluation never
+exceeds twice/thirds of the single search engine and, in practice, the
+evaluations are mostly the same with the single search engine, and in
+some domains with large plateaus, the search effort used by MultiSearch
+is more than ten times less than by the worst single strategy.
 
 \begin{figure}[htbp]
  \centering
@@ -494,11 +555,49 @@ Finally, we conducted experiments for evaluating our MultiSearch strategy.
 \section{Related Work}
 \label{sec-4}
 
-\emph{Symmetry Breaking} \cite{Fox1998,pochter2011exploiting,domshlak2013symmetry} is the search technique that tries to prune the states with symmetric paths. \emph{Partial Order Reduction}, \emph{Strong Stubbern Sets} and \emph{Expansion Core} are also the techniques which prune the intermediate states that reach to the same goal using the different orders of same actions. \emph{Dominance Pruning} \cite{erol1994} is a technique which exploits additional information from the problem after the heuristics are computed. Instead of computing the absolute distance, it  proves if a state is strictly relatively better than the other nodes.
+\emph{Symmetry Breaking}
+\cite{Fox1998,pochter2011exploiting,domshlak2013symmetry} is the search
+technique that tries to prune the states with symmetric
+paths. \emph{Partial Order Reduction}, \emph{Strong Stubbern Sets} and
+\emph{Expansion Core} are also the techniques which prune the
+intermediate states that reach to the same goal using the different
+orders of same actions. \emph{Dominance Pruning} \cite{hall2013faster} is a
+technique which prunes a state if it can be proven to be worse than the other nodes.
+% 
+\emph{Path-dependent globally admissible
+heurisitics} \cite{karpas2012optimal} is a class of heuristics which is
+admissible only on a particular optimal path, and generalizes the above
+techniques because pruning a node is equivalent to assigining an
+infinite cost to some nodes on the other optimal paths (thus, not
+per-state admissible).
+From a slightly different category, Pathmax \cite{mero1984heuristic} and
+Bidirectional Pathmax \cite{felner2011inconsistent} are the techniques
+which converts an inconsistent heuristics into non-decreasing,
+consistent heuristics.
+All of these methods are the
+attempt to improve the heuristic estimates. Although in some particular
+case they may be able to return a perfect heuristics, they are still not
+always a perfect heuristics, implying that the plateau is unavoidable.
+In contrast, our tiebreaking techniques aims specifically at the case
+where the plateau is encountered and the planners are forced to run a
+knowledge-free search.
 
 LA* is an extension of \astar which employs a \emph{lookahead} to each
-expansion of a node. Lookahead is a Depth First Search from the frontier
-node which allows to find nodes whose 
+expansion of a node. Lookahead is a depth first search from the frontier
+node limited to a particular depth $k$. When
+$k=0$, called $LA^*_0$ in their paper, the greedy expansion stops within
+the same $f$-value. It is mostly the same as LastDepth strategy in our
+case, but they did not realized that it is one case of tiebreaking strategy.
+
+In the realm of inadmissible search, the work on escaping the plateau is
+abundant.  Type based bucket \cite{xie14type} is an attempt to classify
+the plateau of the greedy best first search according to the $[g,h]$
+pair.  DBFS \cite{imai2011novel} is a technique which stochastically
+backtracks GBFS to avoid being misdirected by the heuristic function.
+Marvin \cite{Coles07} learns plateau-escaping macros from the Enhanced
+Hill Climbing phase of the FF planner \cite{Hoffmann01} and later uses
+these macros to escape the plateau.  However, to our knowledge, the
+similar research on optimal planning was hardly located.
 
 \section{Conclusion}
 
