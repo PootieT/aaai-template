@@ -443,11 +443,13 @@ disabled. As expected, much larger effort is spent on the final plateau
 without $h$-based tiebreaking.
 
 \begin{figure}[htb]
- \centering
- \relsize{-3}
+ \centering \relsize{-3}
  \includegraphics{tables/aaai16-front-vs-evaluated.pdf}
- \caption{Comparison of the size of the search plateau compared to the total evaluation. Data were obtained by the result of standard FIFO tiebreaking on the standard benchmark instances. Both axes are logarithmic. Each dotted line represents 10x, 100x ... lines.  Openstacks,  clearly has the large plateaus.}
- \label{plateau-h}
+ \caption{Comparison of the size of the search plateau compared to the
+ total evaluation. Data were obtained by the result of standard FIFO
+ tiebreaking on the standard benchmark instances. Both axes are
+ logarithmic. Dotted lines represent $\times 10^n$ boundaries.
+ Openstacks clearly has the large plateaus.}  \label{plateau-h}
 \end{figure}
 
 \begin{figure}[htb]
@@ -505,9 +507,10 @@ third-level tiebreaking.  However, interestingly, in RandomDepth
 second-level tiebreaking the RandomOrder third-level tiebreaking is good
 in airport-fuel and mprime-succumb.
 
-These trend mostly applies to the cases where M\&S heuristics are used.
-However, the trend is changed by the fact that it quickly exhaust the 2GB
-memory limit.
+These trends are mostly consistent when M\&S and blind heuristics are used.
+However, we note that many instances quickly exhausted the 2GB memory limit.
+Also, interestingly, the trends do not change even if the first-level tiebreaking with
+$h$ is disabled.
 
 \begin{figure}[htbp]
  \centering
@@ -605,11 +608,12 @@ In this paper, we proposed two novel tie-braking methods for the admissible sear
  % when the distribution of optimal solutions is not uniform within the open list.
 % We also showed that this nonuniform distribution still appears when we have almost-perfect % heuristics.
 
-Our method differs from the other pruning techniques such as symmetry
-breaking, dominance pruning or partial-order-pruning because we actually
+Our method differs from the pruning techniques because we actually
 do not prune any states, nor from the other general improvements to the
 heuristic accuracy because we just change the expansion order within the
 same $f$, yet it address the fundamental problems in the limitation of
-heuristic search.  Future work includes a development of learning
+heuristic forward search.  Future work includes a development of learning
 technique for adaptively altering the search behavior in the plateau.
+
+
 
