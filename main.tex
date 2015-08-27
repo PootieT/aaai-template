@@ -582,18 +582,18 @@ In contrast, our tiebreaking techniques aims specifically at the case
 where the plateau is encountered and the planners are forced to run a
 knowledge-free search.
 
-LA* is an extension of \astar which employs a \emph{lookahead} to each
-expansion of a node. Lookahead is a depth first search from the frontier
-node limited to a particular depth $k$. When
-$k=0$, called $LA^*_0$ in their paper, the greedy expansion stops within
-the same $f$-value. It is mostly the same as LastDepth strategy in our
-case, but they did not realized that it is one case of tiebreaking strategy.
+$LA^*$ \cite{stern2010look} is an extension of \astar which employs a
+\emph{lookahead} to each expansion of a node. Lookahead is a depth first
+search from the frontier node limited to a particular depth $k$. When
+$k=0$, called $LA^*_0$ in their paper, the greedy expansion reaches only within
+the same $f$-value. It is the same as LastDepth strategy in our
+case, but there is no mention comparing $LA^*_0$ to tiebreaking strategy.
 
 In the realm of inadmissible search, the work on escaping the plateau is
-abundant.  Type based bucket \cite{xie14type} is an attempt to classify
-the plateau of the greedy best first search according to the $[g,h]$
-pair.  DBFS \cite{imai2011novel} is a technique which stochastically
-backtracks GBFS to avoid being misdirected by the heuristic function.
+abundant. DBFS \cite{imai2011novel} is a technique which stochastically
+backtracks Greedy Best First Search to avoid being misdirected by the
+heuristic function. Type based bucket \cite{xie14type} is an attempt to
+classify the plateau of GBFS according to the $[g,h]$ pair.
 Marvin \cite{Coles07} learns plateau-escaping macros from the Enhanced
 Hill Climbing phase of the FF planner \cite{Hoffmann01} and later uses
 these macros to escape the plateau.  However, to our knowledge, the
@@ -601,8 +601,15 @@ similar research on optimal planning was hardly located.
 
 \section{Conclusion}
 
-In this paper, we proposed two novel diversity-aware tie-braking methods for the admissible search using \astar. We empirically showed that they improve the performance on various domains, and they are heuristic-agnostic improvements. We showed that they have a significant impact on the final step of the search in large plateau.
+In this paper, we proposed two novel tie-braking methods for the admissible search using \astar. We empirically showed that they improve the performance on various domains, and they are heuristic-agnostic improvements. We showed that they have a significant impact on the final step of the search in large plateau.
  % when the distribution of optimal solutions is not uniform within the open list.
 % We also showed that this nonuniform distribution still appears when we have almost-perfect % heuristics.
 
-Our method differs from the other pruning techniques such as symmetry breaking, dominance pruning or partial-order-pruning because we actually do not prune any states, nor from the other general improvements in the heuristic accuracy because we just change the expansion order within the same $f$.
+Our method differs from the other pruning techniques such as symmetry
+breaking, dominance pruning or partial-order-pruning because we actually
+do not prune any states, nor from the other general improvements to the
+heuristic accuracy because we just change the expansion order within the
+same $f$, yet it address the fundamental problems in the limitation of
+heuristic search.  Future work includes a development of learning
+technique for adaptively altering the search behavior in the plateau.
+
