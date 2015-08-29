@@ -1,4 +1,6 @@
 
+% Take extra care in avoiding ``expansion'' -- stick to ``evaluation''
+
 \begin{abstract}
 Despite the recent improvements in admissible heuristic search techniques
 in classical planning, it is known that the the exponential growth of
@@ -289,25 +291,30 @@ parent node plus one. If the parent node is from the other plateau,
 e.g., different $f$-value, or different $h$-value used for the first
 tiebreaking, the depth is 0.  With this simple notion of depth, we
 developed three variations of the second level tiebreaking method,
-called FirstDepth(FD), RandomDepth(RD) and LastDepth(LD). They all
-store the nodes in the different buckets, each associated with
-particular depth. However, they choose smaller, ramdom, or larger depth
-upon expansion, respectively.
-Each variation has 3 possibilities of implementing their buckets,
-namely FIFO, LIFO and Random Order(RO), resulting in 9 configurations ---
+called FirstDepth(FD), RandomDepth(RD) and LastDepth(LD). In all three
+methods, the nodes are stored in the bucket associated with particular
+depth.  However, upon expansion, they choose the bucket with the smallest,
+a random, or the largest depth to pick a node from, respectively.
+Each variation has 3 possibilities of implementing their buckets, namely
+FIFO, LIFO and Random Order(RO), resulting in 9 configurations ---
 FD-FIFO, FD-LIFO, FD-RO, LD-FIFO --- and so on.
 
 
 
-In the knowledge-free search within the plateau of admissible search,
-all nodes have the same $f$-value and it is impossible to guess whether
-the goal is near, far away or in a particular distance from the
-entrance. In the first case, the search should be focused around the
-entrance favoring the smaller depths, and the behavior should be much
-like breadth-first. In the second case, the planner should greedily
-explore the various area of the plateau by preferring larger depth, much
-like in depth-first. In the final case where the goal node is in a
-particular depth, choosing the random depth seems the safest practice.
+%This is intentional because, 
+In the knowledge-free search within the
+plateau of admissible search, all nodes have the same $f$-value and it
+is impossible to guess whether the goal is near, far away or in a
+particular distance from the entrance. In the first case, the search
+should be focused around the entrance favoring the smaller depths, and
+the behavior should be much like breadth-first, and it corresponds to
+FirstDepth. In the second case, the planner should greedily explore the
+various area of the plateau by preferring larger depth, much like in
+depth-first, and corresponds to LastDepth. In the final case where the
+goal node is in a particular depth, choosing the random depth seems the
+safest practice. This corresponds to the case where RandomDepth would
+perform better.
+
 
 % However, this information is unlikely to be obtained in
 % practice, especially when we assume we could have an almost-perfect heuristics
@@ -323,44 +330,49 @@ As noted above, it is unknown prior to the search where the goal node
 exists in a plateau. In particular, assuming if we were to use almost
 perfect heuristics and a plateau is encountered, it is very unlikely
 that there is a room of obtaining further information from the problem.
-However, still such a characteristics would be affected by the domain
-and problem, as we show in the evaluation section.
+However, the best tiebreaking strategy seems to be affected by the domain
+characteristics, as we show in the evaluation section.
 
-Based on this fact, we developped a \emph{single-heuristics} portfolio
+Based on this observation, we developped a \emph{single-heuristics} portfolio
 algorithm within \astar called \emph{MultiSearch}.  It simulates
 multiple search engines using the same heuristic function, but with the
 different tiebreaking strategies.  Each engine has completely separate
 open list and closed list.  However, there is a globally shared hash
-table which caches the every results of heuristic functions.  Whenever a
-search engine expands a state, it checks if the result of a heuristic is
+table which caches every results of the heuristic function.  Whenever a
+search engine evaluates a state, it checks if the result of a heuristic is
 already computed, and if yes, it reuses the result.  Each search engine
-expands a state in turns, sequencially, so there is no parallelism
+evaluates a state in turns, sequencially, so there is no parallelism
 involved. The algorithm finishes when some engine finds the solution.
 
-Assume now we use two \astar engines, both using $f=g+h$ where
-$h=$\lmcut, both using $h$ as the first tiebreaking, both using
-LastDepth as the second tiebreaking, and each using FIFO and LIFO as the third tiebreaking.
-The amount of memory used for the open/closed list is doubled, and the effort to push/pop the search nodes is also doubled.
-However, the computation of \lmcut is so heavy that those wasted efforts are negligeble.
-We verified this in the results section.
+Let's assume now we use two \astar engines for MultiSearch, both using
+$f=g+h$ where $h=$\lmcut, both using $h$ as the first tiebreaking, both
+using LastDepth as the second tiebreaking, and each using FIFO and LIFO
+as the third tiebreaking.
 
-% We first verified this by running a MultiSearch search engine with two same search engines, each using \lmcut and FIFO queue, and compared its runtime agains the single engine using \lmcut and FIFO. The result in \refig{ffff} shows that the extra cost of duplicated effort is negligeble.
-% 
-% \begin{figure}[htbp]
-%  \centering
-%  \relsize{-2}
-%  % \includegraphics{tables/opt11-time-lmcut_ff-lmcut_ffff.pdf}
-%  \caption{Comparison of runtime on problems solved by both single FIFO search engine (ff) and a MultiSearch engine with 2 different instances of the same FIFO engine (ffff). The runtime difference was on average below a factor of x1.1, if we ignore the subsecond differences.}
-%  \label{ffff}
-% \end{figure}
+This portfolio strategy has several interesting characteristics.  First,
+although the amount of memory used for the open/closed list is doubled,
+and the effort to push/pop the search nodes is also doubled, the
+computation of \lmcut is so heavy that those wasted efforts are
+negligeble.  We verified this in the results section.
 
-This portfolio strategy has several interesting theoretical characteristics. First, if we ignore the negligeble cost of insertion and deletion to the open/closed list, we do not have to pay the extra cost evaluating the heuristic function for states $f<f^*$ thanks to the caching.
-Recall that \astar must always expand the states whose $f$ values are below $f^*$, the true distance from the initial state to the goal. If the heuristic estimate $h$, and in turn $f=g+h$ is the same, any tiebreaking strategy expands and evaluates the same set of nodes in $f<f*$.
+Second, if we ignore the negligeble cost of insertion and deletion to the open/closed list, we do not have to pay the extra cost evaluating the heuristic function for states $f<f^*$ thanks to the caching.
+Recall that \astar must always evaluate the states whose $f$ values are below $f^*$, the true distance from the initial state to the goal. If the heuristic estimate $h$, and in turn $f=g+h$ is the same, any tiebreaking strategy evaluates the same set of nodes in $f<f*$.
 Therefore, in region $f<f*$, our caching mechanism fully works and completely eliminates the possibility of extra evaluation caused by adding another queues.
+Note that, this is not affected by the reopening of the node caused by
+inconsitent heuristics, since the $h$-cache fully works.
 
-Second, since the search terminates when \emph{some} engine finds a solution, and since the expansion happens in turns, the search effort within the final plateau is upper-bound by \emph{twice} the \emph{minimum} of the search efforts required by LD-LIFO or LD-FIFO engine. This is desirable because, as we saw in the last section, in some domains the gap between the best and worst tiebreaking strategy can be more than 10 times (Openstacks, for example).
-When there are $n$ engines, then this increases to $n\times$ minimum
-amount of effort which would be spent by each single engine.
+Third, since the search terminates when \emph{some} engine finds a
+solution, and since the evaluation happens in turns, the search effort
+within the final plateau is \emph{twice} the \emph{minimum} of the
+search efforts required by each of LD-LIFO or LD-FIFO engine alone. This
+is desirable because, as we saw in the Results section, in some domains the
+gap between the best and worst tiebreaking strategy can be more than 10
+times (Openstacks, for example).  When there are $n$ engines, then this
+increases to $n\times$ minimum amount of effort which would be spent by
+each single engine.
+Also, thanks to the full caching, the worst number of evaluation is
+upper bounded by the total number of nodes with $f<f^*$, which is same
+as the case of single engine.
 
 \section{Experimental Results}
 
@@ -485,7 +497,7 @@ $[f,\fifo]$, $[f,\lifo]$ and $[f,\ro]$.
 
 From this figure, in some domains, the planner cound spend most of the
 runtime on searching through the final plateau in the worst case: The
-goal node is expanded in the very last iteration. It also means that
+goal node is evaluated in the very last iteration. It also means that
 these domains have very large variance in the runtime caused by the
 difference in second-level tiebreakings.  As expected, when the
 $h$-based tiebreaking is disabled, much larger effort could be spent on
@@ -599,12 +611,24 @@ affected by the tiebreaking criteria, especially when the search plateau
 is huge. Therefore, the multisearch strategy should avoid the
 worst-case scenario caused by bad tiebreaking, and quickly find the solution.
 
-We conducted experiments for evaluating our MultiSearch
+First, we show that the doubled cost of insertion and deletion by
+MultiSearch is negligeble.  
+We verified this by running a MultiSearch search engine with two same search engines, each using \lmcut and FIFO queue, and compared its runtime agains the single engine using \lmcut and FIFO. The result in \refig{ffff} shows that the extra cost of duplicated effort is negligeble.
+
+\begin{figure}[htbp]
+ \centering
+ \relsize{-2}
+ % \includegraphics{tables/opt11-time-lmcut_ff-lmcut_ffff.pdf}
+ \caption{Comparison of runtime on problems solved by both single FIFO search engine (ff) and a MultiSearch engine with 2 different instances of the same FIFO engine (ffff). The runtime difference was on average below a factor of x1.1, if we ignore the subsecond differences.}
+ \label{ffff}
+\end{figure}
+
+Next, we conducted experiments for evaluating our MultiSearch
 strategy in order to show that it acutally follows the expected search
-behavior and the theoretical bounds, and also to show that it performs
-significantly better than its worst case $n \times \min$ performance.
-% the number of evaluations and expansions, along with 
-\refig{portfolio-ff} to \refig{portfolio-r} shows the runtime between
+behavior and the theoretical bounds.
+% , and also to show that it performs
+% significantly better than its worst case $n \times \min$ performance.
+\refig{portfolio} shows the runtime between
 different combinations of 2 or 3 tiebreaking strategies (FIFO+LIFO,
 FIFO+Random, LIFO+Random, FIFO+LIFO+Random) and the single tiebreaking
 strategies. The results support our claim that the evaluation never
@@ -613,6 +637,8 @@ evaluations are mostly the same with the single search engine, and in
 some domains with large plateaus, the search effort used by MultiSearch
 is more than ten times less than by the worst single strategy.
 
+
+
 \begin{figure}[htbp]
  \centering
  \relsize{-2}
@@ -620,14 +646,14 @@ is more than ten times less than by the worst single strategy.
  % \includegraphics{tables/opt11-evaluated-lmcut_ff-lmcut_ffr.pdf}
  % \includegraphics{tables/opt11-evaluated-lmcut_ff-lmcut_fflfr.pdf}
  \caption{}
- \label{portfolio-ff}
+ \label{portfolio}
 \end{figure}
 
 
 \section{Related Work}
 \label{sec-4}
 
-% Moved
+% Moved -- PLUSONE is for satisficing planning, and not directly related to tiebreaking
 Another related techinques are found in the context of satisficing planning.
 An inadmissible search technique in LAMA planner \cite{richter2010lama}
 increases every action costs by 1, called \emph{PLUSONE} cost-type.
@@ -638,6 +664,13 @@ applications of zero-cost operators result in cost 3, and two
 applications result in a cost 2, and smaller cost is preferred, just as
 \astar always expands the node with smaller $f$-value.
 % Moved
+The major difference of our depth-based tiebreaking from PLUSONE
+strategy in LAMA is twofold.  First, the depth used for tiebreaking does
+not affect the cost, thus our algorithm does not lose the
+admissibility. Next, \emph{we do not always favor smaller depth over
+larger depth}. LAMA's PLUSONE treats the increased cost as the part of
+sorting criteria. It happens only in FirstDepth configuration.
+
 The major difference of our depth-based tiebreaking from PLUSONE
 strategy in LAMA is twofold.  First, the depth used for tiebreaking does
 not affect the cost, thus does not lose the admissibility. Next, we
@@ -701,7 +734,7 @@ In this paper, we proposed two novel tie-braking methods for the admissible sear
 
 Our method differs from the pruning techniques because we actually
 do not prune any states, nor from the other general improvements to the
-heuristic accuracy because we just change the expansion order within the
+heuristic accuracy because we just change the evaluation order within the
 same $f$, yet it address the fundamental problems in the limitation of
 heuristic forward search.  Future work includes a development of learning
 technique for adaptively altering the search behavior in the plateau.
