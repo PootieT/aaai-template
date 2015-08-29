@@ -319,12 +319,16 @@ already computed, and if yes, it reuses the result.  Each search engine
 evaluates a state in turns, sequencially, so there is no parallelism
 involved. The algorithm finishes when some engine finds the solution.
 
-Assume now we use two \astar engines, both using $f=g+h$ where
-$h=$\lmcut, both using $h$ as the first tiebreaking, both using
-LastDepth as the second tiebreaking, and each using FIFO and LIFO as the third tiebreaking.
-The amount of memory used for the open/closed list is doubled, and the effort to push/pop the search nodes is also doubled.
-However, the computation of \lmcut is so heavy that those wasted efforts are negligeble.
-We verified this in the results section.
+Let's assume now we use two \astar engines for MultiSearch, both using
+$f=g+h$ where $h=$\lmcut, both using $h$ as the first tiebreaking, both
+using LastDepth as the second tiebreaking, and each using FIFO and LIFO
+as the third tiebreaking.
+
+This portfolio strategy has several interesting characteristics.  First,
+although the amount of memory used for the open/closed list is doubled,
+and the effort to push/pop the search nodes is also doubled, the
+computation of \lmcut is so heavy that those wasted efforts are
+negligeble.  We verified this in the results section.
 
 % We first verified this by running a MultiSearch search engine with two same search engines, each using \lmcut and FIFO queue, and compared its runtime agains the single engine using \lmcut and FIFO. The result in \refig{ffff} shows that the extra cost of duplicated effort is negligeble.
 % 
@@ -336,11 +340,11 @@ We verified this in the results section.
 %  \label{ffff}
 % \end{figure}
 
-This portfolio strategy has several interesting theoretical characteristics. First, if we ignore the negligeble cost of insertion and deletion to the open/closed list, we do not have to pay the extra cost evaluating the heuristic function for states $f<f^*$ thanks to the caching.
+Second, if we ignore the negligeble cost of insertion and deletion to the open/closed list, we do not have to pay the extra cost evaluating the heuristic function for states $f<f^*$ thanks to the caching.
 Recall that \astar must always evaluate the states whose $f$ values are below $f^*$, the true distance from the initial state to the goal. If the heuristic estimate $h$, and in turn $f=g+h$ is the same, any tiebreaking strategy evaluates the same set of nodes in $f<f*$.
 Therefore, in region $f<f*$, our caching mechanism fully works and completely eliminates the possibility of extra evaluation caused by adding another queues.
 
-Second, since the search terminates when \emph{some} engine finds a solution, and since the evaluation happens in turns, the search effort within the final plateau is upper-bound by \emph{twice} the \emph{minimum} of the search efforts required by LD-LIFO or LD-FIFO engine. This is desirable because, as we saw in the last section, in some domains the gap between the best and worst tiebreaking strategy can be more than 10 times (Openstacks, for example).
+Third, since the search terminates when \emph{some} engine finds a solution, and since the evaluation happens in turns, the search effort within the final plateau is upper-bound by \emph{twice} the \emph{minimum} of the search efforts required by LD-LIFO or LD-FIFO engine. This is desirable because, as we saw in the last section, in some domains the gap between the best and worst tiebreaking strategy can be more than 10 times (Openstacks, for example).
 When there are $n$ engines, then this increases to $n\times$ minimum
 amount of effort which would be spent by each single engine.
 
