@@ -263,28 +263,33 @@ parent node plus one. If the parent node is from the other plateau,
 e.g., different $f$-value, or different $h$-value used for the first
 tiebreaking, the depth is 0.  With this simple notion of depth, we
 developed three variations of the second level tiebreaking method,
-called FirstDepth(FD), RandomDepth(RD) and LastDepth(LD). They all
-store the nodes in the different buckets, each associated with
-particular depth. However, they choose smaller, ramdom, or larger depth
-upon expansion, respectively.
-Each variation has 3 possibilities of implementing their buckets,
-namely FIFO, LIFO and Random Order(RO), resulting in 9 configurations ---
+called FirstDepth(FD), RandomDepth(RD) and LastDepth(LD). In all three
+methods, the nodes are stored in the bucket associated with particular
+depth.  However, upon expansion, they choose the bucket with the smallest,
+a random, or the largest depth to pick a node from, respectively.
+Each variation has 3 possibilities of implementing their buckets, namely
+FIFO, LIFO and Random Order(RO), resulting in 9 configurations ---
 FD-FIFO, FD-LIFO, FD-RO, LD-FIFO --- and so on.
 
 The major difference of our depth-based tiebreaking from PLUSONE
 strategy in LAMA is twofold.  First, the depth used for tiebreaking does
-not affect the cost, thus does not lose the admissibility. Next, we
-\emph{do not favor smaller depth over higher depth}. LAMA's PLUSONE
-treats the increased cost as the part of sorting criteria. In contrast,
-in the knowledge-free search within the plateau of admissible search,
-all nodes have the same $f$-value and it is impossible to guess whether
-the goal is near, far away or in a particular distance from the
-entrance. In the first case, the search should be focused around the
-entrance favoring the smaller depths, and the behavior should be much
-like breadth-first. In the second case, the planner should greedily
-explore the various area of the plateau by preferring larger depth, much
-like in depth-first. In the final case where the goal node is in a
-particular depth, choosing the random depth seems the safest practice.
+not affect the cost, thus our algorithm does not lose the
+admissibility. Next, \emph{we do not always favor smaller depth over
+larger depth}. LAMA's PLUSONE treats the increased cost as the part of
+sorting criteria. It happens only in FirstDepth configuration.
+
+This is intentional because, in the knowledge-free search within the
+plateau of admissible search, all nodes have the same $f$-value and it
+is impossible to guess whether the goal is near, far away or in a
+particular distance from the entrance. In the first case, the search
+should be focused around the entrance favoring the smaller depths, and
+the behavior should be much like breadth-first, and it corresponds to
+FirstDepth. In the second case, the planner should greedily explore the
+various area of the plateau by preferring larger depth, much like in
+depth-first, and corresponds to LastDepth. In the final case where the
+goal node is in a particular depth, choosing the random depth seems the
+safest practice. This corresponds to the case where RandomDepth would
+perform better.
 
 % However, this information is unlikely to be obtained in
 % practice, especially when we assume we could have an almost-perfect heuristics
