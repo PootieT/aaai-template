@@ -305,15 +305,15 @@ As noted above, it is unknown prior to the search where the goal node
 exists in a plateau. In particular, assuming if we were to use almost
 perfect heuristics and a plateau is encountered, it is very unlikely
 that there is a room of obtaining further information from the problem.
-However, still such a characteristics would be affected by the domain
-and problem, as we show in the evaluation section.
+However, the best tiebreaking strategy seems to be affected by the domain
+characteristics, as we show in the evaluation section.
 
-Based on this fact, we developped a \emph{single-heuristics} portfolio
+Based on this observation, we developped a \emph{single-heuristics} portfolio
 algorithm within \astar called \emph{MultiSearch}.  It simulates
 multiple search engines using the same heuristic function, but with the
 different tiebreaking strategies.  Each engine has completely separate
 open list and closed list.  However, there is a globally shared hash
-table which caches the every results of heuristic functions.  Whenever a
+table which caches every results of the heuristic function.  Whenever a
 search engine evaluates a state, it checks if the result of a heuristic is
 already computed, and if yes, it reuses the result.  Each search engine
 evaluates a state in turns, sequencially, so there is no parallelism
