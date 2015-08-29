@@ -330,16 +330,6 @@ and the effort to push/pop the search nodes is also doubled, the
 computation of \lmcut is so heavy that those wasted efforts are
 negligeble.  We verified this in the results section.
 
-% We first verified this by running a MultiSearch search engine with two same search engines, each using \lmcut and FIFO queue, and compared its runtime agains the single engine using \lmcut and FIFO. The result in \refig{ffff} shows that the extra cost of duplicated effort is negligeble.
-% 
-% \begin{figure}[htbp]
-%  \centering
-%  \relsize{-2}
-%  % \includegraphics{tables/opt11-time-lmcut_ff-lmcut_ffff.pdf}
-%  \caption{Comparison of runtime on problems solved by both single FIFO search engine (ff) and a MultiSearch engine with 2 different instances of the same FIFO engine (ffff). The runtime difference was on average below a factor of x1.1, if we ignore the subsecond differences.}
-%  \label{ffff}
-% \end{figure}
-
 Second, if we ignore the negligeble cost of insertion and deletion to the open/closed list, we do not have to pay the extra cost evaluating the heuristic function for states $f<f^*$ thanks to the caching.
 Recall that \astar must always evaluate the states whose $f$ values are below $f^*$, the true distance from the initial state to the goal. If the heuristic estimate $h$, and in turn $f=g+h$ is the same, any tiebreaking strategy evaluates the same set of nodes in $f<f*$.
 Therefore, in region $f<f*$, our caching mechanism fully works and completely eliminates the possibility of extra evaluation caused by adding another queues.
@@ -560,11 +550,24 @@ affected by the tiebreaking criteria, especially when the search plateau
 is huge. Therefore, the multisearch strategy should avoid the
 worst-case scenario caused by bad tiebreaking, and quickly find the solution.
 
-We conducted experiments for evaluating our MultiSearch
+First, we show that the doubled cost of insertion and deletion by
+MultiSearch is negligeble.  
+We verified this by running a MultiSearch search engine with two same search engines, each using \lmcut and FIFO queue, and compared its runtime agains the single engine using \lmcut and FIFO. The result in \refig{ffff} shows that the extra cost of duplicated effort is negligeble.
+
+\begin{figure}[htbp]
+ \centering
+ \relsize{-2}
+ % \includegraphics{tables/opt11-time-lmcut_ff-lmcut_ffff.pdf}
+ \caption{Comparison of runtime on problems solved by both single FIFO search engine (ff) and a MultiSearch engine with 2 different instances of the same FIFO engine (ffff). The runtime difference was on average below a factor of x1.1, if we ignore the subsecond differences.}
+ \label{ffff}
+\end{figure}
+
+Next, we conducted experiments for evaluating our MultiSearch
 strategy in order to show that it acutally follows the expected search
-behavior and the theoretical bounds, and also to show that it performs
-significantly better than its worst case $n \times \min$ performance.
-\refig{portfolio-ff} to \refig{portfolio-r} shows the runtime between
+behavior and the theoretical bounds.
+% , and also to show that it performs
+% significantly better than its worst case $n \times \min$ performance.
+\refig{portfolio} shows the runtime between
 different combinations of 2 or 3 tiebreaking strategies (FIFO+LIFO,
 FIFO+Random, LIFO+Random, FIFO+LIFO+Random) and the single tiebreaking
 strategies. The results support our claim that the evaluation never
@@ -573,6 +576,8 @@ evaluations are mostly the same with the single search engine, and in
 some domains with large plateaus, the search effort used by MultiSearch
 is more than ten times less than by the worst single strategy.
 
+
+
 \begin{figure}[htbp]
  \centering
  \relsize{-2}
@@ -580,7 +585,7 @@ is more than ten times less than by the worst single strategy.
  % \includegraphics{tables/opt11-evaluated-lmcut_ff-lmcut_ffr.pdf}
  % \includegraphics{tables/opt11-evaluated-lmcut_ff-lmcut_fflfr.pdf}
  \caption{}
- \label{portfolio-ff}
+ \label{portfolio}
 \end{figure}
 
 
