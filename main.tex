@@ -1,4 +1,6 @@
 
+% Take extra care in avoiding ``expansion'' -- stick to ``evaluation''
+
 \begin{abstract}
 Despite the recent improvements in admissible heuristic search techniques
 in classical planning, it is known that the the exponential growth of
@@ -307,9 +309,9 @@ multiple search engines using the same heuristic function, but with the
 different tiebreaking strategies.  Each engine has completely separate
 open list and closed list.  However, there is a globally shared hash
 table which caches the every results of heuristic functions.  Whenever a
-search engine expands a state, it checks if the result of a heuristic is
+search engine evaluates a state, it checks if the result of a heuristic is
 already computed, and if yes, it reuses the result.  Each search engine
-expands a state in turns, sequencially, so there is no parallelism
+evaluates a state in turns, sequencially, so there is no parallelism
 involved. The algorithm finishes when some engine finds the solution.
 
 Assume now we use two \astar engines, both using $f=g+h$ where
@@ -330,10 +332,10 @@ We verified this in the results section.
 % \end{figure}
 
 This portfolio strategy has several interesting theoretical characteristics. First, if we ignore the negligeble cost of insertion and deletion to the open/closed list, we do not have to pay the extra cost evaluating the heuristic function for states $f<f^*$ thanks to the caching.
-Recall that \astar must always expand the states whose $f$ values are below $f^*$, the true distance from the initial state to the goal. If the heuristic estimate $h$, and in turn $f=g+h$ is the same, any tiebreaking strategy expands and evaluates the same set of nodes in $f<f*$.
+Recall that \astar must always evaluate the states whose $f$ values are below $f^*$, the true distance from the initial state to the goal. If the heuristic estimate $h$, and in turn $f=g+h$ is the same, any tiebreaking strategy evaluates the same set of nodes in $f<f*$.
 Therefore, in region $f<f*$, our caching mechanism fully works and completely eliminates the possibility of extra evaluation caused by adding another queues.
 
-Second, since the search terminates when \emph{some} engine finds a solution, and since the expansion happens in turns, the search effort within the final plateau is upper-bound by \emph{twice} the \emph{minimum} of the search efforts required by LD-LIFO or LD-FIFO engine. This is desirable because, as we saw in the last section, in some domains the gap between the best and worst tiebreaking strategy can be more than 10 times (Openstacks, for example).
+Second, since the search terminates when \emph{some} engine finds a solution, and since the evaluation happens in turns, the search effort within the final plateau is upper-bound by \emph{twice} the \emph{minimum} of the search efforts required by LD-LIFO or LD-FIFO engine. This is desirable because, as we saw in the last section, in some domains the gap between the best and worst tiebreaking strategy can be more than 10 times (Openstacks, for example).
 When there are $n$ engines, then this increases to $n\times$ minimum
 amount of effort which would be spent by each single engine.
 
@@ -424,7 +426,7 @@ $[f,\fifo]$, $[f,\lifo]$ and $[f,\ro]$.
 
 From this figure, in some domains, the planner cound spend most of the
 runtime on searching through the final plateau in the worst case: The
-goal node is expanded in the very last iteration. It also means that
+goal node is evaluated in the very last iteration. It also means that
 these domains have very large variance in the runtime caused by the
 difference in second-level tiebreakings.  As expected, when the
 $h$-based tiebreaking is disabled, much larger effort could be spent on
@@ -542,7 +544,6 @@ We conducted experiments for evaluating our MultiSearch
 strategy in order to show that it acutally follows the expected search
 behavior and the theoretical bounds, and also to show that it performs
 significantly better than its worst case $n \times \min$ performance.
-% the number of evaluations and expansions, along with 
 \refig{portfolio-ff} to \refig{portfolio-r} shows the runtime between
 different combinations of 2 or 3 tiebreaking strategies (FIFO+LIFO,
 FIFO+Random, LIFO+Random, FIFO+LIFO+Random) and the single tiebreaking
@@ -618,7 +619,7 @@ In this paper, we proposed two novel tie-braking methods for the admissible sear
 
 Our method differs from the pruning techniques because we actually
 do not prune any states, nor from the other general improvements to the
-heuristic accuracy because we just change the expansion order within the
+heuristic accuracy because we just change the evaluation order within the
 same $f$, yet it address the fundamental problems in the limitation of
 heuristic forward search.  Future work includes a development of learning
 technique for adaptively altering the search behavior in the plateau.
