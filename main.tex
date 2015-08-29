@@ -343,6 +343,8 @@ negligeble.  We verified this in the results section.
 Second, if we ignore the negligeble cost of insertion and deletion to the open/closed list, we do not have to pay the extra cost evaluating the heuristic function for states $f<f^*$ thanks to the caching.
 Recall that \astar must always evaluate the states whose $f$ values are below $f^*$, the true distance from the initial state to the goal. If the heuristic estimate $h$, and in turn $f=g+h$ is the same, any tiebreaking strategy evaluates the same set of nodes in $f<f*$.
 Therefore, in region $f<f*$, our caching mechanism fully works and completely eliminates the possibility of extra evaluation caused by adding another queues.
+Note that, this is not affected by the reopening of the node caused by
+inconsitent heuristics, since the $h$-cache fully works.
 
 Third, since the search terminates when \emph{some} engine finds a solution, and since the evaluation happens in turns, the search effort within the final plateau is upper-bound by \emph{twice} the \emph{minimum} of the search efforts required by LD-LIFO or LD-FIFO engine. This is desirable because, as we saw in the last section, in some domains the gap between the best and worst tiebreaking strategy can be more than 10 times (Openstacks, for example).
 When there are $n$ engines, then this increases to $n\times$ minimum
