@@ -18,23 +18,105 @@ search performance within plateau.
  We empirically evaluate our strategies against state-of-the-art admissible planner.
 \end{abstract}
 
-Since the advent of delete-relaxation and abstraction heuristics in
-admissible Classical Planning, much of the interest was focused on improving
-the accuracy of these heuristic functions to prune more nodes from the
-search space.
+\section{Introduction}
+%Motivation: The Importance of the Last Frontier in A* and Domains with Large Plateaus
+\label{sec-1}
+
+
+
+%\subsubparagraph{\astar and perfect heuristics}
+
+\astar is a standard search algorithm for finding an optimal-cost path 
+from an initial state to some goal state in a search space represented as a graph \cite{hart1968formal}.
+In each iteration, \astar selects and {\emph expands} a node $n$ from the OPEN priority queue.
+\astar selects and expands the node which has the lowest $f$-cost, where $f(n)$ is the sum of  $g(n)$, the cost of the current path from the start state to $n$, and $h(n)$, a heuristic estimate of the cost from $n$ to a goal state.
+
+
+%and has been used extensively in
+%STRIPS planning in the recent years.
+%\astar stores the search nodes into two priority queues called an
+%\emph{open list}
+%XXX The closed list is NOT a priority queue.
+% and a \emph{closed list}. 
+
+% On each iteration, \astar expands the open nodes with the
+% smallest $f$ value and mark them as closed. Its successor nodes are
+% accordingly inserted back to the open list or closed list, while
+% sometimes the parent node is updated so that it has the shortest path
+% from the initial state.
+
+% Due to the space limitation,
+% we assume the readers are already familiar with \astar
+% and skip the details of the algorithm.
+
+\astar returns an optimal solution when $h$ is admissible, i.e., when it
+never overestimate the true distance to the goal $h^*$.
+
+
+
+
+In order to guarantee the optimality of the solution, \astar expands all nodes with $f(n) < f^*$.
+All nodes with $f(n) = k$ are be expanded before any node with $f(n)=m > k$ are expanded.
+Thus, after all nodes with $f(n) < f^*$ have been expanded, \astar expands {\emph some} of the nodes with $f(n) = f^*$ until a goal node is found.
+\astar never expands a node with $f(n) > f^*$.
+Thus, the {\emph effective search space of \astar} is the set of nodes with 
+$f(n) \leq f^*$.
+
+Much of the work in the search literature as well as the domain-independent planning literature has focused on developing accurate, admissible heuristic functions, and 
+by improving the quality of $h$, the size of the effective search space of \astar is reduced.
+
+
+In many problems, the size of the set of nodes with $f(n)=f^*$
+is quite large compared to the set of all nodes that can be considered by \astar, i.e., the set of nodes with $f(n) \leq f^*$.
+Figure \ref{fig:plateau-noh} plots the number of states with $f(n) = f^*$ (y-axis)
+versus the number of states with $f(n) \leq f^*$.
+for a set of COUNT standard IPC problem instances from IPC98-IPC11.
+Note that there are many instances where a large fraction of the nodes with $f(n) \leq f^*$ have $f(n)=f^*$.
+For example, note that in the openstacks domain, all instances are on the y=x line, indicating that almost all states with $f(n) \leq f^*$ have cost $f^*$.
+In such domains, the behavior of A* on the last frontier where $f(n)=f^*$ is critical -- the policy for determining which nodes to expand in the last frontier can have a significant impact on the performance of A*.
+
+\begin{figure}[htb]
+ \centering \relsize{-3}
+ \input{tables/1_5_4_front-aaai16-prelim3-concat.tex}
+ \caption{
+   {\bf Only the plot with no h-tiebreaking here}:
+Comparison of the size of the search plateau compared to the
+ total evaluation below $f\leq f^*$. Data were obtained by the result of standard FIFO
+ tiebreaking on the standard benchmark instances. Both axes are
+ logarithmic. Dotted lines represent $\times 10^n$ boundaries.
+ Openstacks clearly has the large plateaus.}  \label{fig:plateau-noh}
+\end{figure}
+
+To date, there has not been much previous {\emph in-depth} work on the policy for searching the last frontier.
+It is widely believed that among nodes with cost $f(n) = f^*$, ties should be broken according to $h(n)$, i.e., nodes with smaller $h$ values should be expanded first.
+While this is a useful rule of thumb in many domains,
+it turns out that the policy for breaking ties among nodes with the same $f$-cost requires more careful consideration.
+
+
+
+
+% NOTE: Let's not overemphasize the Helmert and Rogers results on almost perfect heuristics.
+% Although we'll certainly cite helmert2008good, we should not make helmrt2008good central
+% to the motivation of the paper
 % 
-However, recent work by Helmert and Roger
-\shortcite{helmert2008good} claims that, even with an optimistic
-assumption of \emph{almost-perfect heuristics}, \astar still has an
-exponentially large plateau. They conclude that the further performance
-improvement requires the techniques orthogonal to the heuristic
-function, such as symmetry breaking, domain reduction, factored planning
-etc.
+% Since the advent of delete-relaxation and abstraction heuristics in
+% admissible Classical Planning, much of the interest was focused on improving
+% the accuracy of these heuristic functions to prune more nodes from the
+% search space.
+% % 
+% However, recent work by Helmert and Roger
+% \shortcite{helmert2008good} claims that, even with an optimistic
+% assumption of \emph{almost-perfect heuristics}, \astar still has an
+% exponentially large plateau. They conclude that the further performance
+% improvement requires the techniques orthogonal to the heuristic
+% function, such as symmetry breaking, domain reduction, factored planning
+% etc.
 
 In this paper, we focus on the tiebreaking criteria of \astar.
-Sophisticated tiebreaking is a heuristic-agnostic improvement and thus 
-falls into above category of techniques.
-It trivially maintains admissibility because it works only within the
+%Sophisticated tiebreaking is a heuristic-agnostic improvement and thus 
+%falls into above category of techniques.
+
+[need better place for this] It trivially maintains admissibility because it works only within the
 same f-value and does not alter the expansion order wrto f-value.
 
 % such technique.
@@ -89,71 +171,57 @@ show that it outperforms previous strategies.
 Then we proceed to evaluate the tiebreaking portfolio.
 We finally conclude with a discussion on the future work.
 
-\section{Backgrounds and Preliminary}
-\label{sec-1}
+\section{Preliminaries and Background}
 
-\subsubparagraph{\astar and perfect heuristics}
+\subsection{Domains with Zero-cost Actions:Applications and Motivation}
+{\bf TODO: Add several paragraphs explaining why domains with zero-cost actions are an important, practical class of problem, e.g., energy consumptin minimization.  }
 
-\astar is one of the mainstream algorithms for finding an optimal path in the
-search space represented as a graph, and has been used extensively in
-STRIPS planning in the recent years.
-\astar stores the search nodes into two priority queues called an
-\emph{open list} and a \emph{closed list}. In these queues, the search
-nodes are sorted based on $f$ value, which is a sum of the actual cost
-$g$ from the initial state and the cost estimate $h$ to the goal
-state. $h$ is computed by the heuristic function.
-% On each iteration, \astar expands the open nodes with the
-% smallest $f$ value and mark them as closed. Its successor nodes are
-% accordingly inserted back to the open list or closed list, while
-% sometimes the parent node is updated so that it has the shortest path
-% from the initial state.
 
-% Due to the space limitation,
-% we assume the readers are already familiar with \astar
-% and skip the details of the algorithm.
+% XXX I'm commenting out the paragraphs below because:
+% (1) A review of heuristic functions for domain-independent learning is not really
+% necessary for this AAAI submission. 
+% (2) It's better if this paper is not so strongly associated with the ICAPS community only -- this work applies in general to search with A*, and is not strongly tied to almost-perfect heuristics, lmcut, m&s, etc.
 
-\astar returns an optimal solution when $h$ is admissible, i.e., when it
-never overestimate the true distance to the goal $h^*$.
-Trivially, the best possible admissible heuristic function is $h^*$ itself, which is
-called \emph{perfect heuristics}.
-It is known that with a perfect heuristics the planner do not have to
-conduct any search: There are no multiple possibilities that the
-planner should examine on each node.
-However, computing $h^*$ is PSPACE-Complete,
-which is as difficult as solving the problem itself and is not
-practical.
+% Trivially, the best possible admissible heuristic function is $h^*$ itself, which is
+% called \emph{perfect heuristics}.
+% It is known that with a perfect heuristics the planner do not have to
+% conduct any search: There are no multiple possibilities that the
+% planner should examine on each node.
+% However, computing $h^*$ is PSPACE-Complete,
+% which is as difficult as solving the problem itself and is not
+% practical.
 
-\emph{Almost perfect} heuristics $h_c$ is a class of similar
-impractical, theoretical functions which is also PSPACE-Complete to
-compute \cite{helmert2008good}.  It has a constant error $c$ from the
-perfect heuristic $h^*$, i.e., $h_c=h^*-c$.  The important finding by
-\citeauthor{helmert2008good} is that, even if we assume this intractable and
-optimistic heuristic function was obtained, the number of the nodes in the final
-plateau of the search space becomes exponentially large as the problem size
-increases. Based on this fact, they claimed that relying on the
-improvement of the heuristic functions has a limitation,
-and the researchers should seek the other, orthorgonal improvements.
+% \emph{Almost perfect} heuristics $h_c$ is a class of similar
+% impractical, theoretical functions which is also PSPACE-Complete to
+% compute \cite{helmert2008good}.  It has a constant error $c$ from the
+% perfect heuristic $h^*$, i.e., $h_c=h^*-c$.  The important finding by
+% \citeauthor{helmert2008good} is that, even if we assume this intractable and
+% optimistic heuristic function was obtained, the number of the nodes in the final
+% plateau of the search space becomes exponentially large as the problem size
+% increases. Based on this fact, they claimed that relying on the
+% improvement of the heuristic functions has a limitation,
+% and the researchers should seek the other, orthorgonal improvements.
 
-\subsubparagraph{\sota heuristics}
+% \subsubparagraph{\sota heuristics}
 
-These intractable heuristics are of course very hard and expensive to
-compute. However, even the practical and tractable \sota heuristic
-functions for STRIPS Planning, such as \lmcut\cite{Helmert2009} and
-IP-based heuristics[???], are so heavily CPU intensive that they
-outweighs the space-greedy nature of \astar. Also, compared to the other
-functions, these functions dominate the search time over the other
-factors of planning algorithms, such as node insertion and deletion.
+% These intractable heuristics are of course very hard and expensive to
+% compute. However, even the practical and tractable \sota heuristic
+% functions for STRIPS Planning, such as \lmcut\cite{Helmert2009} and
+% IP-based heuristics[???], are so heavily CPU intensive that they
+% outweighs the space-greedy nature of \astar. Also, compared to the other
+% functions, these functions dominate the search time over the other
+% factors of planning algorithms, such as node insertion and deletion.
 
-In contrast, another class of \sota heuristic functions called abstraction-based heuristics
-such as PDB \cite{edelkamp2001planning} and M\&S \cite{helmert2007flexible}
-are known to allow for faster node expansion while providing a good estimate.
-In particular, depending on the domain and Merge \& Shrinke strategy,
-M\&S sometimes yields a perfect heuristics.
-However, they tend to consume large amount of preprocessing time and also
-the large amount of memory to constract and maintain the abstraction
-space,
-and the performance tends to be memory-bounded rather than CPU-bounded,
-which is also doubled by the fast expansion.
+% In contrast, another class of \sota heuristic functions called abstraction-based heuristics
+% such as PDB \cite{edelkamp2001planning} and M\&S \cite{helmert2007flexible}
+% are known to allow for faster node expansion while providing a good estimate.
+% In particular, depending on the domain and Merge \& Shrinke strategy,
+% M\&S sometimes yields a perfect heuristics.
+% However, they tend to consume large amount of preprocessing time and also
+% the large amount of memory to constract and maintain the abstraction
+% space,
+% and the performance tends to be memory-bounded rather than CPU-bounded,
+% which is also doubled by the fast expansion.
 
 \subsection{Tiebreaking Strategies in \astar}
 
@@ -193,18 +261,6 @@ In contrast, current implementation of \sota \astar based planner Fast
 Downward \cite{Helmert2006} uses FIFO-queue for implementing the bucket
 of $h$-based tiebreaking, again giving no explanation to this decision.
 
-Another related techinques are found in the context of satisficing planning.
-An inadmissible search technique in LAMA planner \cite{richter2010lama}
-increases every action costs by 1, called \emph{PLUSONE} cost-type.
-It is explicitly targeted at zero-cost actions observed in Openstacks,
-and resulted in a significantly better performance in IPC-6.
-In PLUSONE, three successive
-applications of zero-cost operators result in cost 3, and two
-applications result in a cost 2, and smaller cost is preferred, just as
-\astar always expands the node with smaller $f$-value.
-Another technique in LAMA is \emph{preferred operator queue},
-which is a technique that favors those actions which decreased the
-smallest $h$ value during the search.
 
 However, in fact, these tiebreaking methods are not necessary when we
 are only concerned with maintaining the optimality. In particular, the
@@ -215,39 +271,11 @@ caused by memory access pattern, and have no theoretical background.
 % In particular, we first observed that this FIFO order has not legitimate reason to support.
 
 
-\section{Domains with Large Plateau}
 
-Currently, most benchmark domains except Openstacks and Cybersec do not
-have the large plateau thanks to the powerful heuristic estimates (which
-is verified in the later section). However, limiting our effective
-experiments only to 2 domains would bias our observation. To avoid this
-issue, we created several domains where the \sota heuristic functions
-fail to provide a menaingful guidance.
 
-One important characteristics shared by Openstacks and Cybersec is that they both
-have large number of zero-cost actions. In such situations, both LMcut
-and M\&S fail to find a meaningful heuristic estimate because LMcut fails to
-find a good cost partitioning with non-zero values, and most edges in the abstraction space of
-M\&S have zero costs.
 
-We therefore modified various domains to have many zero-cost actions.
-For example, miconic-up is a domain which minimizes the energy
-consumption caused by ``up'' action, which moves the elevator up, and
-all other actions have zero-cost. Another example is driverlog-fuel, where only
-the ``drive'' action has cost 1 and all other actions are zero-cost.
-This in fact reflects the practical application compared to the original
-unit-cost domains where driving and manual labor is equally accounted.
-Oddly, although some planners have options which treats actions as if
-they are unit-costs, and describe such options as ``inadmissible'',
-solving domains which are unit-cost by origin is not called
-``inadmissible''. Above modification addresses this problem.
 
-Modification was done in a practically reasonable manner in a sense of
-cost minimization. Most transportation-type domains are modified so that
-they use less fuel. Assembly-type domains are modified so that it
-minimizes the resource usage such as ink or wood. However, we also
-modify a same domain in the different minimization criteria, in order to
-avoid the bias on a particular domain formulation.
+
 
 \section{Depth-based Tiebreaking}
 
@@ -269,12 +297,9 @@ Each variation has 3 possibilities of implementing their buckets,
 namely FIFO, LIFO and Random Order(RO), resulting in 9 configurations ---
 FD-FIFO, FD-LIFO, FD-RO, LD-FIFO --- and so on.
 
-The major difference of our depth-based tiebreaking from PLUSONE
-strategy in LAMA is twofold.  First, the depth used for tiebreaking does
-not affect the cost, thus does not lose the admissibility. Next, we
-\emph{do not favor smaller depth over higher depth}. LAMA's PLUSONE
-treats the increased cost as the part of sorting criteria. In contrast,
-in the knowledge-free search within the plateau of admissible search,
+
+
+In the knowledge-free search within the plateau of admissible search,
 all nodes have the same $f$-value and it is impossible to guess whether
 the goal is near, far away or in a particular distance from the
 entrance. In the first case, the search should be focused around the
@@ -339,9 +364,6 @@ amount of effort which would be spent by each single engine.
 
 \section{Experimental Results}
 
-Our experimental results include 28 standard benchmark domains with
-1104 problems, 16 \emph{zerocost} domains with 640 problems, 8 \emph{shuffled-zerocost} 
-domains whose action ordering in the domain definition is shuffled.
 
 We tested various tiebreaking strategies. In the following sections, we
 use a convenient array-based notation of a combination of tiebreaking
@@ -352,6 +374,45 @@ third-level tiebreaking.
 All planners are based on the latest Fast Downward code base, and all
 experiments are run using 30 minutes runtime cutoff with 2GB memory
 limit. Also, experiments are conducted on Xeon E5410@2.33GHz CPUs.
+
+
+\subsubsection{Test Domains}
+Our experimental results include 28 standard benchmark domains with
+1104 problems, 16 \emph{zerocost} domains with 640 problems, 8 \emph{shuffled-zerocost} 
+domains whose action ordering in the domain definition is shuffled.
+
+Currently, most benchmark domains except Openstacks and Cybersec do not
+have the large plateau thanks to the powerful heuristic estimates (which
+is verified in the later section). However, limiting our effective
+experiments only to 2 domains would bias our observation. To avoid this
+issue, we created several domains where the \sota heuristic functions
+fail to provide a menaingful guidance.
+
+One important characteristics shared by Openstacks and Cybersec is that they both
+have large number of zero-cost actions. In such situations, both LMcut
+and M\&S fail to find a meaningful heuristic estimate because LMcut fails to
+find a good cost partitioning with non-zero values, and most edges in the abstraction space of
+M\&S have zero costs.
+
+We therefore modified various domains to have many zero-cost actions.
+For example, miconic-up is a domain which minimizes the energy
+consumption caused by ``up'' action, which moves the elevator up, and
+all other actions have zero-cost. Another example is driverlog-fuel, where only
+the ``drive'' action has cost 1 and all other actions are zero-cost.
+This in fact reflects the practical application compared to the original
+unit-cost domains where driving and manual labor is equally accounted.
+Oddly, although some planners have options which treats actions as if
+they are unit-costs, and describe such options as ``inadmissible'',
+solving domains which are unit-cost by origin is not called
+``inadmissible''. Above modification addresses this problem.
+
+Modification was done in a practically reasonable manner in a sense of
+cost minimization. Most transportation-type domains are modified so that
+they use less fuel. Assembly-type domains are modified so that it
+minimizes the resource usage such as ink or wood. However, we also
+modify a same domain in the different minimization criteria, in order to
+avoid the bias on a particular domain formulation.
+
 
 \subsection{Comparison of Bucket Implementations}
 
@@ -565,6 +626,28 @@ is more than ten times less than by the worst single strategy.
 
 \section{Related Work}
 \label{sec-4}
+
+% Moved
+Another related techinques are found in the context of satisficing planning.
+An inadmissible search technique in LAMA planner \cite{richter2010lama}
+increases every action costs by 1, called \emph{PLUSONE} cost-type.
+It is explicitly targeted at zero-cost actions observed in Openstacks,
+and resulted in a significantly better performance in IPC-6.
+In PLUSONE, three successive
+applications of zero-cost operators result in cost 3, and two
+applications result in a cost 2, and smaller cost is preferred, just as
+\astar always expands the node with smaller $f$-value.
+% Moved
+The major difference of our depth-based tiebreaking from PLUSONE
+strategy in LAMA is twofold.  First, the depth used for tiebreaking does
+not affect the cost, thus does not lose the admissibility. Next, we
+\emph{do not favor smaller depth over higher depth}. LAMA's PLUSONE
+treats the increased cost as the part of sorting criteria. 
+
+Another technique in LAMA is \emph{preferred operator queue},
+which is a technique that favors those actions which decreased the
+smallest $h$ value during the search.
+
 
 \emph{Symmetry Breaking}
 \cite{Fox1998,pochter2011exploiting,domshlak2013symmetry} is the search
