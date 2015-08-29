@@ -1,0 +1,12 @@
+We can have several important observations from these results.  Firstly, in a plateau, \textbf{the heuristic functions are not used at all, nor the search is guided at all}. This observation holds even if we combine several nondominating heuristics e.g. \lmcut and M\&S, regardress of the method, e.g., taking the maximum, using portfolio or utilize them as the first tiebreaking strategy. It is still possible that a plateau is encountered, since it is not a perfect heuristics yet!
+Such a plateau is known to be inevitable even if we have an almost perfect heuristics $h_c$, and it is impossible to improve upon $h_c$ --- if it could, the result would be a perfect heuristics or an inadmissible heuristics. Therefore, this problem cannot be solved by improving the heuristic accuracy, which is the currently dominating meta-strategy to improve the planner performance.
+
+Secondly, there is no legitimate reason which supports each tiebreaking strategy.
+As long as $f$-value is the first sort key, any tiebreaking criteria are admissible. \textbf{$h$ and FIFO are just heuristically chosen by the implementer of the planner.} Nor are there any reason to choose LIFO or Random tie breaking. Moreover, the different seed value of a Random tiebreaking yield the different search behavior and different result. (In all of our experiment we fixed the seed to 1.)
+
+Based on these observation, the next step we have taken is to develop a new
+portfolio-based multi-tiebreaking strategy \textbf{which is orthogonal to
+the approach of improving the heuristic accuracy.}
+
+The following sections are devoted to giving further analysis on the
+reason behind their behavior.

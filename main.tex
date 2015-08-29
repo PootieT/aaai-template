@@ -340,7 +340,7 @@ amount of effort which would be spent by each single engine.
 \section{Experimental Results}
 
 Our experimental results include 28 standard benchmark domains with
-1294 problems, 16 \emph{zerocost} domains with 380 problems, 8 \emph{shuffled-zerocost} 
+1104 problems, 16 \emph{zerocost} domains with 640 problems, 8 \emph{shuffled-zerocost} 
 domains whose action ordering in the domain definition is shuffled.
 
 We tested various tiebreaking strategies. In the following sections, we
@@ -355,20 +355,38 @@ limit. Also, experiments are conducted on Xeon E5410@2.33GHz CPUs.
 
 \subsection{Comparison of Bucket Implementations}
 
-We first compared well known $[f,h,\fifo]$ and $[f,h,\lifo]$, along with
-$[f,h,\ro]$.
-We observed that even such a slightest difference
-can change the performance significantly on some domains, shown in
-\reftbl{f-h-coverage}. Due to the space limitation, we show only the
-domains where the difference was observed. Full table is available in
-the supplemental material.
+We first compared the default $[f,h,\fifo]$ in Fast Downward with
+$[f,h,\lifo]$ and $[f,h,\ro]$.  We observed that even such a slightest
+difference can change the performance significantly on some domains,
+shown in \reftbl{f-h-coverage}. Due to the space limitation, we show
+only the domains where the difference was observed. Full table is
+available in the supplemental material.
+
+\begin{table}[htbp]
+ \centering \relsize{-3} \input{tables/1_1_basic_queues-single.tex}
+ \input{tables/1_1_basic_queues_noh-single.tex} \caption{Experiments
+ comparing the performance of FIFO, LIFO and Random second-level
+ tiebreaking using Fast Downward. For the space reason, we omitted those
+ domains whose results are the same (Full results are available in the
+ supplemental material.) Each cell denotes the problem solved with 30
+ min, 2GB setting. \textbf{Boldface} denotes the case where it achieved
+ the best result among configurations.}  \label{single-coverage}
+\end{table}
 
 According to the result, LIFO dominates the others in Openstacks, but
-Random dominates the others in Cybersec and Miconic, and FIFO dominates the others
-in Airport, indicating that there are no dominance relationship between
-these three and these differences are purely due to the
-domain characteristics.
-From this table, current benchmark set tends to be in favor of LIFO queue.
+Random dominates the others in Cybersec and Miconic, and FIFO dominates
+the others in Airport, indicating that there are no dominance
+relationship between these three and these differences are purely due to
+the domain characteristics.  From this table, current benchmark set
+tends to be in favor of LIFO queue.
+
+\begin{figure}[htbp]
+ \centering \relsize{-3}
+ \input{tables/1_5_2_evaluated-aaai16-prelim3-concat.tex}
+ \caption{Comparisons of \# of Evaluations between simple \lifo, \fifo,
+ \ro second-level tiebreaking. Each line shows $\times 2,4,6\ldots$ boundary.}
+ \label{f-h-eval}
+\end{figure}
 
 \refig{f-h-eval} gives us a more fine-grained analysis by comparing the
 number of node evaluation (computations of \lmcut) on
@@ -383,29 +401,11 @@ is not always necessary.  This is a surprising result considering
 that almost all of the past literature assume the importance of the
 $h$-based tiebreaking and modern forward search planners employ one.
 
-% Note that, although LIFO dominated the others, we consider this is just by a coincidence due to our selection of problems, time limit and domains. we \emph{are not trying to claim that any of LIFO or FIFO or Random order dominates the other}. However, there are noticeable performance difference cause by these different tiebreaking strategies.
-
-% \begin{figure}[htbp]
-%  \centering \relsize{-2}
-%  \includegraphics{tables/aaai16-evaluated-lmcut_ff-lmcut_r.pdf}
-%  \includegraphics{tables/opt11-evaluated-lmcut_ff-lmcut_lf.pdf}
-%  \includegraphics{tables/opt11-evaluated-lmcut_lf-lmcut_r.pdf}
-%  \caption{Comparison of the number of node evaluations (computations of
-%  \lmcut) by FIFO, LIFO and Random tiebreaking, on IPC2011 optimal track
-%  instance. LIFO order dominates FIFO and Random order especially in
-%  openstacks instances, and the gap is more than one the order of 10.}
-%  \label{single-eval}
-% \end{figure}
-% 
-\begin{table*}[htbp]
- \centering \relsize{-3}
- \input{tables/aaai16-5min/1_1_vs_seedonly30-aaai16-prelim3-zerocost-concat.tex}
- \caption{Preliminary experiments comparing the performance of FIFO,
- LIFO and Random second-level tiebreaking using Fast Downward. Each cell
- denotes the problem solved with 30 minutes runtime, 2GB memory
- limitation. \textbf{Boldface} denotes the case where it achieved the
- best result among configurations.} \label{single-coverage}
-\end{table*}
+Note that, although LIFO dominated the others, we consider this is just
+by a coincidence due to our selection of problems, time limit and
+domains. \emph{We are not trying to claim that any of LIFO or FIFO or
+Random order dominates the other}. However, there are noticeable
+performance difference caused by these different tiebreaking strategies.
 
 \subsection{Size of the Plateau Matters}
 
@@ -414,64 +414,33 @@ have the huge search plateau, i.e., the problems where the heuristic
 function is not informative and the planner relies heavily on the
 tiebreaking criteria.
 % 
-\refig{plateau-f-h} plots in $y$-axis the initial size of the tiebreaking bucket in
-which the goal node was found, compared to the total number of
-evaluation in $x$-axis. Tiebreaking bucket is a set of open nodes in which the
-nodes share the same sort key $[f,h]$, or $[f]$ when $h$-tiebraking is
-disabled. 
-The figure shows the result from $[f,h,\fifo]$ tiebreaking, however in
-theory the initial size of the bucket does not change among
-$[f,h,\fifo]$, $[f,h,\lifo]$ and $[f,h,\ro]$ as long as the size
-is measured when it is encountered for the first time.
+\refig{plateau} plots the size of the final search plateau with and
+without $h$-based tiebreaking. In the first plot, $y$-axis shows the
+number of nodes $f=f*, h=0$ and $x$-axis shows the total number of nodes
+$f\leq f^*$.  In the second plot, $y$-axis shows the number of nodes
+$f=f*$ (For $x$-axis, same as above.)  The size of the bucket does not
+change between $[f,h,\fifo]$, $[f,h,\lifo]$ and $[f,h,\ro]$, or between
+$[f,\fifo]$, $[f,\lifo]$ and $[f,\ro]$.
 
-Although the initial number of nodes in the plateau is only a lower
-bound of entire nodes in the plateau (including unexpanded ones), from
-this figure the planner cound spend almost tenth of the runtime on
-searching through the final plateau in the worst case. This means that
+From this figure, in some domains, the planner cound spend most of the
+runtime on searching through the final plateau in the worst case: The
+goal node is expanded in the very last iteration. It also means that
 these domains have very large variance in the runtime caused by the
-difference in second-level tiebreakings.
-
-%  For example, FIFO, LIFO and RO would respectively
-% perform better if the goal nodes exist near the beginning of the bucket,
-% near the end of the bucket, or
-% % is evenly distributed among the bucket.
-% is densely populated in a narrow region somewhere in the midst of the bucket when the
-% search proceeds to the new $[f,h]$ plateau.
-% 
-\refig{plateau-h} is a similar plot where the $h$-based tiebreaking is
-disabled. As expected, much larger effort is spent on the final plateau
-without $h$-based tiebreaking.
+difference in second-level tiebreakings.  As expected, when the
+$h$-based tiebreaking is disabled, much larger effort could be spent on
+the final plateau.
 
 \begin{figure}[htb]
  \centering \relsize{-3}
- \includegraphics{tables/aaai16-front-vs-evaluated.pdf}
+ \input{tables/1_5_4_front-aaai16-prelim3-concat.tex}
  \caption{Comparison of the size of the search plateau compared to the
- total evaluation. Data were obtained by the result of standard FIFO
+ total evaluation below $f\leq f^*$. Data were obtained by the result of standard FIFO
  tiebreaking on the standard benchmark instances. Both axes are
  logarithmic. Dotted lines represent $\times 10^n$ boundaries.
- Openstacks clearly has the large plateaus.}  \label{plateau-h}
+ Openstacks clearly has the large plateaus.}  \label{plateau}
 \end{figure}
 
-\begin{figure}[htb]
- \centering
- \relsize{-2}
- \includegraphics{tables/aaai16-front-vs-evaluated.pdf}
- \caption{Comparison of the size of the search plateau compared to the total evaluation. Data were obtained by the result of running \astar on the standard benchmark instances, with FIFO but without the tiebreaking by $h$. Both axes are logarithmic. Each dotted line represents 10x, 100x ... lines.}
- \label{plateau-f}
-\end{figure}
-
-% We can have several important observations from these results.  Firstly, in a plateau, \textbf{the heuristic functions are not used at all, nor the search is guided at all}. This observation holds even if we combine several nondominating heuristics e.g. \lmcut and M\&S, regardress of the method, e.g., taking the maximum, using portfolio or utilize them as the first tiebreaking strategy. It is still possible that a plateau is encountered, since it is not a perfect heuristics yet!
-% Such a plateau is known to be inevitable even if we have an almost perfect heuristics $h_c$, and it is impossible to improve upon $h_c$ --- if it could, the result would be a perfect heuristics or an inadmissible heuristics. Therefore, this problem cannot be solved by improving the heuristic accuracy, which is the currently dominating meta-strategy to improve the planner performance.
-% 
-% Secondly, there is no legitimate reason which supports each tiebreaking strategy.
-% As long as $f$-value is the first sort key, any tiebreaking criteria are admissible. \textbf{$h$ and FIFO are just heuristically chosen by the implementer of the planner.} Nor are there any reason to choose LIFO or Random tie breaking. Moreover, the different seed value of a Random tiebreaking yield the different search behavior and different result. (In all of our experiment we fixed the seed to 1.)
-
-% Based on these observation, the next step we have taken is to develop a new
-% portfolio-based multi-tiebreaking strategy \textbf{which is orthogonal to
-% the approach of improving the heuristic accuracy.}
-
-% The following sections are devoted to giving further analysis on the
-% reason behind their behavior.
+[Size of plateau on zerocost]
 
 \subsection{Evaluating Depth-based Tiebreaking}
 
@@ -484,42 +453,81 @@ depth-based tiebreaking, i.e.\ $[\cdot,\fifo]$ and $[\cdot,\lifo]$.
 Yet these results are useful in assessing the extra cost of managing the
 depth-based buckets.
 
-\refig{depth} shows various experiments on all domains including
-zerocost domains. Zerocost domains are created due to the fact that the
-standard domains do not exhibit large plateaus in terms of $[f,h]$, as
-shown in the previous section.
+\refig{depth} shows various experiments on benchmark domains and
+zerocost domains. Regardless of the third-level tiebreaking, LastDepth
+strategy tends to be dominant in most domains. However, RandomDepth and
+FirstDepth still exhibits a significantly better performance in Cybersec
+and Mistery-Feast, respectively, indicating there is no true dominance relationship.
 
-The result shows that in most variants, LastDepth strategy is
-dominant. However, RandomDepth and FirstDepth still exhibits a
-significantly better performance in Cybersec and Airport, respectively,
-regardless of the third-level tiebreaking.  These result suggests that
-the performance of $[\cdot,\fifo]$, $[\cdot,\lifo]$ and $[\cdot,\ro]$
-was actually caused by its FirstDepth/LastDepth/RandomDepth search
-pattern, and not by the implementation of LIFO, FIFO and RO
+This result explains why the simple $[f,h,\lifo]$ strategy has
+become successful. The fact that the performance of $[f,h,\ld,\cdot]$
+was consistently good regardless of the third-level tiebreaking means
+that the performance of $[f,h,\lifo]$ was actually caused by its
+inherent LastDepth search pattern, and not by the implementation of LIFO
 by themselves.
 
-In particular, in variations within the same second-level tiebreaking,
-the FIFO third-level tiebreaking tends to be dominant among the other
-strategies. Note that FIFO is actually bad in terms of memory access
+Supporting the above claim that the key is LastDepth and not LIFO, the
+overall dominant third-level tiebreaking (in terms of coverage) is FIFO
+when the second-level tiebreaking is the same.  For example, when we fix
+the second-level tiebreaking, the coverages are
+$[f,h,X,\fifo]>[f,h,X,\ro]>[f,h,X,\lifo]$ when $X=\ld,\rd$.
+% 
+Note that FIFO is bad in terms of low-level memory access
 pattern since the insertion and deletion happens in the opposite side of
-the bucket, and machine-level efficiency is actually in favor of LIFO
-third-level tiebreaking.  However, interestingly, in RandomDepth
-second-level tiebreaking the RandomOrder third-level tiebreaking is good
-in airport-fuel and mprime-succumb.
+the bucket. It suggests that FIFO ordering is an order of magnitude
+important in many domains compared to the low-level performance.
+% 
+Still, there does exist several domains where FIFO is not dominating
+the others.
+For example, in Pipesworld-Pushend, the dominant third-level strategy is
+RandomOrder, regardless of the second-level depth tiebreaking.
+(3,3,3 in FirstDepth, 3,4,3 in RandomDepth, and 5,6,4 in LastDepth.)
 
-These trends are mostly consistent when M\&S and blind heuristics are used.
-However, we note that many instances quickly exhausted the 2GB memory limit.
-Also, interestingly, the trends do not change even if the first-level tiebreaking with
-$h$ is disabled.
+% 
+% However, interestingly, in RandomDepth second-level tiebreaking, the
+% RandomOrder third-level tiebreaking is good in Airport-Fuel and
+% Mprime-Succumb.
 
-\begin{figure}[htbp]
+% Although above result suggests that the depth-based tiebreaking and
+% third-level tiebreaking affects the performance,
+One issue in the above analysis is that this difference might
+be caused by the accidental bias in the action order in the
+domain definitions.
+To address this issue, we also tested the zerocost domains
+in which we mechanically shuffled the action orderings in the
+domain file. The results showed the same trends as in the original
+zerocost domains. (Due to space constraint, we put this figure in the
+supplementaly material.)
+
+Another issue in this result is the lack of analysis on
+abstraction-based heuristics. We also added the results in the figures
+in the supplemental materials. Above trends are mostly consistent when
+M\&S and blind heuristics are used, regardless of first-level
+tiebreaking by $h$-value. However, we note that many instances quickly
+exhausted the 2GB memory limit with those heuristics, and is less
+informative compared to the result by LMcut.
+
+\begin{figure}[htb]
  \centering
- \relsize{-2}
- % \includegraphics{tables/opt11-evaluated-lmcut_ff-lmcut_fflf.pdf}
- % \includegraphics{tables/opt11-evaluated-lmcut_ff-lmcut_ffr.pdf}
- % \includegraphics{tables/opt11-evaluated-lmcut_ff-lmcut_fflfr.pdf}
- \caption{}
+ \relsize{-3}
+ \input{tables/1_1_lmcut-aaai16-prelim3-zerocost-2zerocost-concat.tex}
+ \caption{Experiments
+ comparing the coverages of 9 configurations (3 depth-based strategy
+ $\times$ 3 queue implementions). For the space reason, we omitted those
+ domains whose results are the same. (Full results are available in the
+ supplemental material.) Each cell denotes the problem solved with 30
+ min, 2GB setting. \textbf{Boldface} denotes the case where it achieved
+ the best result among configurations. Zerocost domains are named
+ according to [original]-[name of nonzero action].}
  \label{depth}
+\end{figure}
+
+\begin{figure}[htb]
+ \centering
+ \relsize{-3}
+ \input{tables/1_1_lmcut_noh-aaai16-prelim3-zerocost-2zerocost-concat.tex}
+ \caption{Same experiments without first-level tiebreaking by $h$-value.}
+ \label{depth-noh}
 \end{figure}
 
 
@@ -527,7 +535,7 @@ $h$ is disabled.
 
 As we see in the previous section, the planner performance is greatly
 affected by the tiebreaking criteria, especially when the search plateau
-is very large. Therefore, the multisearch strategy should avoid the
+is huge. Therefore, the multisearch strategy should avoid the
 worst-case scenario caused by bad tiebreaking, and quickly find the solution.
 
 We conducted experiments for evaluating our MultiSearch
