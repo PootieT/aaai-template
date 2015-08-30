@@ -51,13 +51,13 @@ In many problems, the size of the set of nodes with $f(n)=f^*$
 is quite large compared to the set of all nodes that can be considered by \astar, i.e., the set of nodes with $f(n) \leq f^*$.
 \refig{fig:plateau-noh} plots the number of states with $f(n) = f^*$ (y-axis)
 versus the number of states with $f(n) \leq f^*$
-for a set of 1104 standard IPC problem instances from IPC98-IPC11.
+for a set of 1104 problem instances from IPC98-IPC11.
 Note that there are many instances where a large fraction of the nodes with $f(n) \leq f^*$ have $f(n)=f^*$.
-For example, in the openstacks domain, all instances are on the y=x line, indicating that almost all states with $f(n) \leq f^*$ have cost $f^*$.
-In such domains, the behavior of A* on the last frontier where $f(n)=f^*$ is critical -- the policy for determining which nodes to expand in the last frontier can have a significant impact on the performance of A*.
+For example, in Openstacks domain, all instances are on the y=x line, indicating that almost all states with $f(n) \leq f^*$ have cost $f^*$.
+In such domains, the behavior of \astar on the last frontier where $f(n)=f^*$ is critical -- the policy for determining which nodes to expand in the last frontier can have a significant impact on the performance of \astar.
 
 \begin{figure}[htb]
- \centering \relsize{-3}
+ \centering \relsize{-3} 
  \includegraphics{tables/aaai16-frontier/aaai16prelim3/lmcut_frontier_noh-front.pdf}
  \caption{
  Comparison of the number of the nodes $f=f^*$ compared to the
@@ -66,14 +66,13 @@ In such domains, the behavior of A* on the last frontier where $f(n)=f^*$ is cri
  logarithmic. Dotted lines represent $\times 10^n$ boundaries.}  \label{fig:plateau-noh}
 \end{figure}
 
+In this paper, we focus on the tiebreaking criteria of \astar.
 To date, there has not been much previous \emph{in-depth} work on the policy for searching the last frontier.
 It is widely believed that among nodes with cost $f(n) = f^*$, ties should be broken according to $h(n)$, i.e., nodes with smaller $h$ values should be expanded first.
 While this is a useful rule of thumb in many domains,
 it turns out that the policy for breaking ties among nodes with the same $f$-cost requires more careful consideration.
 
-In this paper, we focus on the tiebreaking criteria of \astar.
-% 
-Specifically, we show several important findings regarding the
+In this paper, we first show several important findings regarding the
 existing tiebreaking strategy for \astar as follows.
 % 
 First, in implementing the open list of \astar, priority queue which holds
@@ -83,24 +82,31 @@ Second, with LIFO-based implementation, $h$-based tiebreaking which
 frequently appears in the heuristic search literatures have little
 impact on the performance.
 % 
-\todo{this is not shown yet}
-Third, the LIFO-based bucket implementation and $h$-based tiebreaking
-both share the greedy search pattern within the plateau of the
-search space.
+% \todo{this is not shown yet}
+% Third, the LIFO-based bucket implementation and $h$-based tiebreaking
+% both share the greedy search pattern within the plateau of the
+% search space.
+
+Next, based on these observations, we propose three tiebreaking methods
+based on the \emph{depth} within the plateau.  From this result, we show
+that the performance of above LIFO tiebreaking can be explained by its
+depth-first strategy and not by the machine-level efficiency of LIFO
+implementation itself.  Also, the performance comparison of different
+depth-based strategies showed that they are not dominating each other.
+
+Finally, based on the absence of dominance relationship, we propose a
+new class of portfolio strategy which alternates between several
+tiebreaking methods.
 % 
-Fourth, based on these observations, we propose a tiebreaking
-method based on the \emph{depth} within the plateau.
-%
-Finally, comparison results of different variations of depth-based
-strategy showed that they are not dominating each other. Therefore, we
-propose a new class of portfolio strategy which alternates between
-several tiebreaking methods.
-It has a theoretical worst case guarantee that it
-never evaluates the nodes any more than $N$ times the \emph{minimum} number
-of evaluation required by the best tiebreaking method among $N$ methods
-under the portfolio.
-Also, it is characteristic in that it works with a single heuristic function.
-% 
+With this portfolio strategy,
+the number of evaluations of nodes with $f<f*$ is exactly the same as
+in any single tiebreaking strategies.
+Also, it has a theoretical guarantee that
+the number of evaluations of nodes with $f=f*$ is at most $N$ times the \emph{minimum} 
+of the evaluations required by $N$ strategies in the portfolio.
+To put it simply, this portfolio does not need additional computation
+and we get a speedup for free (aside from the negligeble differences).
+% Also, it is characteristic in that it works with a single heuristic function.
 
 The rest of paper is organized as follows: The next section describes the
 preliminary backgrounds of \astar.
@@ -115,7 +121,7 @@ We finally conclude with a discussion on the future work.
 
 \section{Preliminaries and Background}
 
-\subsection{Domains with Zero-cost Actions:Applications and Motivation}
+\subsection{Domains with Zero-cost Actions: Applications and Motivation}
 {\bf TODO: Add several paragraphs explaining why domains with zero-cost actions are an important, practical class of problem, e.g., energy consumptin minimization.  }
 
 
@@ -403,15 +409,14 @@ have the huge search plateau, i.e., the problems where the heuristic
 function is not informative and the planner relies heavily on the
 tiebreaking criteria.
 % 
-\refig{plateau} plots the size of the final search plateau with and
-without $h$-based tiebreaking. In the first plot, $y$-axis shows the
+\refig{plateau} plots the size of the final search plateau with
+$h$-based tiebreaking (\refig{fig:plateau-noh} is the same figure
+without this tiebreaking). Again, in this plot, $y$-axis shows the
 number of nodes $f=f*, h=0$ and $x$-axis shows the total number of nodes
-$f\leq f^*$.  In the second plot, $y$-axis shows the number of nodes
-$f=f*$ (For $x$-axis, same as above.)  The size of the bucket does not
-change between $[f,h,\fifo]$, $[f,h,\lifo]$ and $[f,h,\ro]$, or between
-$[f,\fifo]$, $[f,\lifo]$ and $[f,\ro]$.
+$f\leq f^*$. The size of the bucket does not change between
+$[f,h,\fifo]$, $[f,h,\lifo]$ and $[f,h,\ro]$.
 
-From this figure, in some domains, the planner cound spend most of the
+Clearly, in some domains, the planner cound spend most of the
 runtime on searching through the final plateau in the worst case: The
 goal node is evaluated in the very last iteration. It also means that
 these domains have very large variance in the runtime caused by the
@@ -425,8 +430,8 @@ the final plateau.
   \caption{Comparing the size of the $[f,h]$ search plateau to the total
   evaluation below $f\leq f^*$. Data were obtained by the result of
   \lmcut on the standard benchmark instances. Both axes are
- logarithmic. Dotted lines represent $\times 10^n$ boundaries.
- Openstacks clearly has the large plateaus.}  \label{plateau}
+  logarithmic. Dotted lines represent $\times 10^n$ boundaries.
+  Openstacks clearly has the large plateaus.}  \label{plateau}
 \end{figure}
 
 [Size of plateau on zerocost]
