@@ -30,7 +30,7 @@ search performance within plateau.
 
 \astar is a standard search algorithm for finding an optimal-cost path 
 from an initial state to some goal state in a search space represented as a graph \cite{hart1968formal}.
-In each iteration, \astar selects and {\emph expands} a node $n$ from the OPEN priority queue.
+In each iteration, \astar selects and \emph{expands} a node $n$ from the OPEN priority queue.
 \astar selects and expands the node which has the lowest $f$-cost, where $f(n)$ is the sum of  $g(n)$, the cost of the current path from the start state to $n$, and $h(n)$, a heuristic estimate of the cost from $n$ to a goal state.
 \astar returns an optimal solution when $h$ is admissible, i.e., when it
 never overestimates the true distance to the goal $h^*$.
