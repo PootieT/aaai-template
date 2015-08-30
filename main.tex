@@ -58,7 +58,7 @@ In such domains, the behavior of A* on the last frontier where $f(n)=f^*$ is cri
 
 \begin{figure}[htb]
  \centering \relsize{-3}
- \includegraphics{tables/aaai16-frontier/aaai16-lmcut_frontier_noh-front-vs-expanded.pdf}
+ \includegraphics{tables/aaai16-frontier/aaai16prelim3/lmcut_frontier_noh-front.pdf}
  \caption{
  Comparison of the number of the nodes $f=f^*$ compared to the
  total evaluation below $f\leq f^*$. Data were obtained by the result of
@@ -348,8 +348,10 @@ only the domains where the difference was observed. Full table is
 available in the supplemental material.
 
 \begin{table}[htbp]
- \centering \relsize{-3} \input{tables/1_1_basic_queues-single.tex}
- \input{tables/1_1_basic_queues_noh-single.tex} \caption{Experiments
+ \centering \relsize{-3}
+ \input{tables/aaai16-5min/aaai16prelim3/1-1-basic-queues.tex}
+ \input{tables/aaai16-5min/aaai16prelim3/1-1-basic-queues-noh.tex}
+ \caption{Experiments
  comparing the performance of FIFO, LIFO and Random second-level
  tiebreaking using Fast Downward. For the space reason, we omitted those
  domains whose results are the same (Full results are available in the
@@ -367,7 +369,9 @@ tends to be in favor of LIFO queue.
 
 \begin{figure}[htbp]
  \centering \relsize{-3}
- \input{tables/1_5_2_evaluated-aaai16-prelim3-concat.tex}
+ \includegraphics{tables/aaai16-5min/aaai16prelim3/evaluated-lmcut_ff-lmcut_lf.pdf}
+ \includegraphics{tables/aaai16-5min/aaai16prelim3/evaluated-nokey-lmcut_ff-lmcut_r.pdf}
+ \includegraphics{tables/aaai16-5min/aaai16prelim3/evaluated-nokey-lmcut_r-lmcut_lf.pdf}
  \caption{Comparisons of \# of Evaluations between simple \lifo, \fifo,
  \ro second-level tiebreaking. Each line shows $\times 2,4,6\ldots$ boundary.}
  \label{f-h-eval}
@@ -417,10 +421,10 @@ the final plateau.
 
 \begin{figure}[htb]
  \centering \relsize{-3}
- \input{tables/1_5_4_front-aaai16-prelim3-concat.tex}
- \caption{Comparison of the size of the search plateau compared to the
- total evaluation below $f\leq f^*$. Data were obtained by the result of standard FIFO
- tiebreaking on the standard benchmark instances. Both axes are
+  \includegraphics{tables/aaai16-frontier/aaai16prelim3/lmcut_frontier-front.pdf}
+  \caption{Comparing the size of the $[f,h]$ search plateau to the total
+  evaluation below $f\leq f^*$. Data were obtained by the result of
+  \lmcut on the standard benchmark instances. Both axes are
  logarithmic. Dotted lines represent $\times 10^n$ boundaries.
  Openstacks clearly has the large plateaus.}  \label{plateau}
 \end{figure}
@@ -495,7 +499,7 @@ informative compared to the result by LMcut.
 \begin{figure}[htb]
  \centering
  \relsize{-3}
- \input{tables/1_1_lmcut-aaai16-prelim3-zerocost-2zerocost-concat.tex}
+ \input{tables/aaai16-5min/aaai16prelim3_zerocost_2zerocost_zrandom/1-1-depth-queues.tex}
  \caption{Experiments
  comparing the coverages of 9 configurations (3 depth-based strategy
  $\times$ 3 queue implementions). For the space reason, we omitted those
@@ -510,7 +514,7 @@ informative compared to the result by LMcut.
 \begin{figure}[htb]
  \centering
  \relsize{-3}
- \input{tables/1_1_lmcut_noh-aaai16-prelim3-zerocost-2zerocost-concat.tex}
+ \input{tables/aaai16-5min/aaai16prelim3_zerocost_2zerocost_zrandom/1-1-depth-queues-noh.tex}
  \caption{Same experiments without first-level tiebreaking by $h$-value.}
  \label{depth-noh}
 \end{figure}
