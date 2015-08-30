@@ -265,7 +265,7 @@ perform better.
 % sense of ``greedy search'' --- since this greediness only holds within
 % the plateau, admissibility is still maintained.
  
-\section{MultiSearch Engine}
+\section{MultiSearch }
 
 As noted above, it is unknown prior to the search where the goal node
 exists in a plateau. In particular, assuming if we were to use almost
@@ -274,23 +274,32 @@ that there is a room of obtaining further information from the problem.
 However, the best tiebreaking strategy seems to be affected by the domain
 characteristics, as we show in the evaluation section.
 
-Based on this observation, we developped a \emph{single-heuristics} portfolio
-algorithm within \astar called \emph{MultiSearch}.  It simulates
+Since the performance of a tiebreakig strategy depends on the domain, and there is no clear dominance relationship among the tiebreaking strategies, one natural 
+idea is to use a portfolio approach which combine several tiebreaking strategies.
+
+The simplest possible portfolio approach would be a standard algorithm portfolio
+which executes two completely independent A* processes A1 and A2 in parallel, where A1 uses tiebreaking strategey S1 and A2 uses tiebreaking strategy S2, and CPU resources are allocated equally to A1 and A2.
+The portolio would terminate when either A1 or A2 finds a goal state.
+Let T1 be the time that A1 requires to solve instance I, and let T2 be the time A2 requires to solve instance I. Then, the total CPU required by the portfolio to solve instance I is 2min(A1,A2). This approach to combining multiple strategies is the standard algorithm portfolio proposed and analyzed in \cite{HubermanLH97,GomesS01}, and has also recently been called ``dovetailing'' and applied to combine multiple IDA* and A*  \cite{ValenzanoSSBK10}. %TODO: remove the dovetailing reference after the paper is accepted -- the dovetailing authors were unaware of the HubermanLH97 paper...
+
+On one hand, this simple portfoio approach has the advantage of mitigating worst-case risk -- as shown in XXX, sometimes, the ratio between T1 and T2 is very large (>10x) and choosing the wrong strategy has a very high penalty, so this portfolio strategy guarantees that the CPU usage is never more than twice that of using the faster strategy.
+On the other hand, this simple portfolio will always require twice the CPU time of the faster strategy. Furthermore, the portfolio requires twice the RAM resources, which is a major disadvantage in memory-bound algorithms such as A*.
+
+We propose a new, {\emph Low-Overhead Portfolio} (LOP) implementation which can be used to implement a portfolio of tie-breaking strategies with significantly less overhead.
+Conceptually, a LOP for A* is a portfolio composed of multiple independently executing threads of A*  where each thread  executes independently using a different tiebreaking strategy but which share a cache for heuristic function values.
+The actual implementation is as follows:
+The LOP simulates
 multiple search engines using the same heuristic function, but with the
 different tiebreaking strategies.  Each engine has completely separate
 open list and closed list.  However, there is a globally shared hash
 table which caches every results of the heuristic function.  Whenever a
 search engine evaluates a state, it checks if the result of a heuristic is
-already computed, and if yes, it reuses the result.  Each search engine
+already computed, and if so, it reuses the result.  Each search engine
 evaluates a state in turns, sequencially, so there is no parallelism
 involved. The algorithm finishes when some engine finds the solution.
 
-Let's assume now we use two \astar engines for MultiSearch, both using
-$f=g+h$ where $h=$\lmcut, both using $h$ as the first tiebreaking, both
-using LastDepth as the second tiebreaking, and each using FIFO and LIFO
-as the third tiebreaking.
 
-This portfolio strategy has several interesting characteristics.  First,
+The LOP has several interesting characteristics.  First,
 although the amount of memory used for the open/closed list is doubled,
 and the effort to push/pop the search nodes is also doubled, the
 computation of \lmcut is so heavy that those wasted efforts are
@@ -302,15 +311,15 @@ Therefore, in region $f<f*$, our caching mechanism fully works and completely el
 Note that, this is not affected by the reopening of the node caused by
 inconsitent heuristics, since the $h$-cache fully works.
 
-Third, since the search terminates when \emph{some} engine finds a
-solution, and since the evaluation happens in turns, the search effort
-within the final plateau is \emph{twice} the \emph{minimum} of the
-search efforts required by each of LD-LIFO or LD-FIFO engine alone. This
-is desirable because, as we saw in the Results section, in some domains the
-gap between the best and worst tiebreaking strategy can be more than 10
-times (Openstacks, for example).  When there are $n$ engines, then this
-increases to $n\times$ minimum amount of effort which would be spent by
-each single engine.
+%% Third, since the search terminates when \emph{some} engine finds a
+%% solution, and since the evaluation happens in turns, the search effort
+%% within the final plateau is \emph{twice} the \emph{minimum} of the
+%% search efforts required by each of LD-LIFO or LD-FIFO engine alone. This
+%% is desirable because, as we saw in the Results section, in some domains the
+%% gap between the best and worst tiebreaking strategy can be more than 10
+%% times (Openstacks, for example).  When there are $n$ engines, then this
+%% increases to $n\times$ minimum amount of effort which would be spent by
+%% each single engine.
 Also, thanks to the full caching, the worst case evaluation is
 upper bounded by the total number of nodes with $f\leq f^*$, which is same
 as the case of single engine alone.
@@ -669,6 +678,10 @@ Marvin \cite{Coles07} learns plateau-escaping macros from the Enhanced
 Hill Climbing phase of the FF planner \cite{Hoffmann01} and later uses
 these macros to escape the plateau.  However, to our knowledge, the
 similar research on optimal planning was hardly located.
+
+TODO: relationship to line of work by Hoffmann on search topology / plateau analysis? 
+\cite{Hoffmann05,Hoffmann14}
+
 
 \section{Conclusion}
 
