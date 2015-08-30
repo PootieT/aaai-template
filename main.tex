@@ -70,9 +70,9 @@ by improving the quality of $h$, the size of the effective search space of \asta
 
 In many problems, the size of the set of nodes with $f(n)=f^*$
 is quite large compared to the set of all nodes that can be considered by \astar, i.e., the set of nodes with $f(n) \leq f^*$.
-Figure \ref{fig:plateau-noh} plots the number of states with $f(n) = f^*$ (y-axis)
-versus the number of states with $f(n) \leq f^*$.
-for a set of COUNT standard IPC problem instances from IPC98-IPC11.
+\refig{fig:plateau-noh} plots the number of states with $f(n) = f^*$ (y-axis)
+versus the number of states with $f(n) \leq f^*$
+for a set of 1104 standard IPC problem instances from IPC98-IPC11.
 Note that there are many instances where a large fraction of the nodes with $f(n) \leq f^*$ have $f(n)=f^*$.
 For example, note that in the openstacks domain, all instances are on the y=x line, indicating that almost all states with $f(n) \leq f^*$ have cost $f^*$.
 In such domains, the behavior of A* on the last frontier where $f(n)=f^*$ is critical -- the policy for determining which nodes to expand in the last frontier can have a significant impact on the performance of A*.
