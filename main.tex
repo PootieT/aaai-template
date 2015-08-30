@@ -79,14 +79,12 @@ In such domains, the behavior of A* on the last frontier where $f(n)=f^*$ is cri
 
 \begin{figure}[htb]
  \centering \relsize{-3}
- \input{tables/1_5_4_front-aaai16-prelim3-concat.tex}
+ \includegraphics{tables/aaai16-frontier/aaai16-lmcut_frontier_noh-front-vs-expanded.pdf}
  \caption{
-   {\bf Only the plot with no h-tiebreaking here}:
-Comparison of the size of the search plateau compared to the
- total evaluation below $f\leq f^*$. Data were obtained by the result of standard FIFO
- tiebreaking on the standard benchmark instances. Both axes are
- logarithmic. Dotted lines represent $\times 10^n$ boundaries.
- Openstacks clearly has the large plateaus.}  \label{fig:plateau-noh}
+ Comparison of the number of the nodes $f=f^*$ compared to the
+ total evaluation below $f\leq f^*$. Data were obtained by the result of
+ Fast Downward with \lmcut on the standard benchmark instances. Both axes are
+ logarithmic. Dotted lines represent $\times 10^n$ boundaries.}  \label{fig:plateau-noh}
 \end{figure}
 
 To date, there has not been much previous \emph{in-depth} work on the policy for searching the last frontier.
