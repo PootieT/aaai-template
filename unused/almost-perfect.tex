@@ -14,3 +14,32 @@ exponentially large plateau. They conclude that the further performance
 improvement requires the techniques orthogonal to the heuristic
 function, such as symmetry breaking, domain reduction, factored planning
 etc.
+
+
+
+
+
+
+
+
+
+
+Trivially, the best possible admissible heuristic function is $h^*$ itself, which is
+called \emph{perfect heuristics}.
+It is known that with a perfect heuristics the planner do not have to
+conduct any search: There are no multiple possibilities that the
+planner should examine on each node.
+However, computing $h^*$ is PSPACE-Complete,
+which is as difficult as solving the problem itself and is not
+practical.
+
+\emph{Almost perfect} heuristics $h_c$ is a class of similar
+impractical, theoretical functions which is also PSPACE-Complete to
+compute \cite{helmert2008good}.  It has a constant error $c$ from the
+perfect heuristic $h^*$, i.e., $h_c=h^*-c$.  The important finding by
+\citeauthor{helmert2008good} is that, even if we assume this intractable and
+optimistic heuristic function was obtained, the number of the nodes in the final
+plateau of the search space becomes exponentially large as the problem size
+increases. Based on this fact, they claimed that relying on the
+improvement of the heuristic functions has a limitation,
+and the researchers should seek the other, orthorgonal improvements.

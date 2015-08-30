@@ -1,0 +1,20 @@
+% \subsubparagraph{\sota heuristics}
+
+% These intractable heuristics are of course very hard and expensive to
+% compute. However, even the practical and tractable \sota heuristic
+% functions for STRIPS Planning, such as \lmcut\cite{Helmert2009} and
+% IP-based heuristics[???], are so heavily CPU intensive that they
+% outweighs the space-greedy nature of \astar. Also, compared to the other
+% functions, these functions dominate the search time over the other
+% factors of planning algorithms, such as node insertion and deletion.
+
+% In contrast, another class of \sota heuristic functions called abstraction-based heuristics
+% such as PDB \cite{edelkamp2001planning} and M\&S \cite{helmert2007flexible}
+% are known to allow for faster node expansion while providing a good estimate.
+% In particular, depending on the domain and Merge \& Shrinke strategy,
+% M\&S sometimes yields a perfect heuristics.
+% However, they tend to consume large amount of preprocessing time and also
+% the large amount of memory to constract and maintain the abstraction
+% space,
+% and the performance tends to be memory-bounded rather than CPU-bounded,
+% which is also doubled by the fast expansion.

@@ -124,46 +124,8 @@ We finally conclude with a discussion on the future work.
 % necessary for this AAAI submission. 
 % (2) It's better if this paper is not so strongly associated with the ICAPS community only -- this work applies in general to search with A*, and is not strongly tied to almost-perfect heuristics, lmcut, m&s, etc.
 
-% Trivially, the best possible admissible heuristic function is $h^*$ itself, which is
-% called \emph{perfect heuristics}.
-% It is known that with a perfect heuristics the planner do not have to
-% conduct any search: There are no multiple possibilities that the
-% planner should examine on each node.
-% However, computing $h^*$ is PSPACE-Complete,
-% which is as difficult as solving the problem itself and is not
-% practical.
 
-% \emph{Almost perfect} heuristics $h_c$ is a class of similar
-% impractical, theoretical functions which is also PSPACE-Complete to
-% compute \cite{helmert2008good}.  It has a constant error $c$ from the
-% perfect heuristic $h^*$, i.e., $h_c=h^*-c$.  The important finding by
-% \citeauthor{helmert2008good} is that, even if we assume this intractable and
-% optimistic heuristic function was obtained, the number of the nodes in the final
-% plateau of the search space becomes exponentially large as the problem size
-% increases. Based on this fact, they claimed that relying on the
-% improvement of the heuristic functions has a limitation,
-% and the researchers should seek the other, orthorgonal improvements.
 
-% \subsubparagraph{\sota heuristics}
-
-% These intractable heuristics are of course very hard and expensive to
-% compute. However, even the practical and tractable \sota heuristic
-% functions for STRIPS Planning, such as \lmcut\cite{Helmert2009} and
-% IP-based heuristics[???], are so heavily CPU intensive that they
-% outweighs the space-greedy nature of \astar. Also, compared to the other
-% functions, these functions dominate the search time over the other
-% factors of planning algorithms, such as node insertion and deletion.
-
-% In contrast, another class of \sota heuristic functions called abstraction-based heuristics
-% such as PDB \cite{edelkamp2001planning} and M\&S \cite{helmert2007flexible}
-% are known to allow for faster node expansion while providing a good estimate.
-% In particular, depending on the domain and Merge \& Shrinke strategy,
-% M\&S sometimes yields a perfect heuristics.
-% However, they tend to consume large amount of preprocessing time and also
-% the large amount of memory to constract and maintain the abstraction
-% space,
-% and the performance tends to be memory-bounded rather than CPU-bounded,
-% which is also doubled by the fast expansion.
 
 \subsection{Tiebreaking Strategies in \astar}
 
