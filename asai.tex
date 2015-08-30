@@ -27,7 +27,7 @@
 % forbid the direct use of \\ref --- it results in inconsistency in styles, e.g., Figure,Fig., etc.
 % Macros are for styles!
 % !!!WARN!!! this should be removed in the camera-ready version.
-\let\ref\relax
+\def\ref{\todo{Do not use ``ref'' directly!}}
 \renewcommand{\subsubparagraph}[1]{%
 \hrule width \linewidth%
 \marginpar[\hfill\relsize{-1} \protect{\rotatebox[origin=c]{90}{#1}} $\triangleright$]{\relsize{-1} $\triangleleft$ \protect{\rotatebox[origin=c]{-90}{#1}}}}
