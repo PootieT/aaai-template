@@ -76,8 +76,8 @@ In this paper, we focus on the tiebreaking criteria of \astar.
 Specifically, we show several important findings regarding the
 existing tiebreaking strategy for \astar as follows.
 % 
-First, in implementing the open list of \astar, priority queue based on
-LIFO-buckets is more efficient than that of FIFO-buckets.
+First, in implementing the open list of \astar, priority queue which holds
+LIFO-buckets for each $f$ is more efficient than that holds FIFO-buckets.
 % 
 Second, with LIFO-based implementation, $h$-based tiebreaking which
 frequently appears in the heuristic search literatures have little
@@ -189,7 +189,7 @@ favor of low h-values'' in describing Bidirectional Pathmax for \astar.
 g'', which means low $h$. They also writes ``The reasoning is that the
 goal can be found more quickly in the final $f$ layer of search''. We
 assume this is a consensus among the researcher of forward heuristic
-search, but this is not extensively tested yet.
+search, although not extensively investigated yet.
 
 Analysis on LIFO-based tiebreaking is not as abundant as in $h$-based
 tiebreaking and is largely forgotten.
@@ -208,7 +208,7 @@ However, in fact, these tiebreaking methods are not necessary when we
 are only concerned with maintaining the optimality. In particular, the
 choise of FIFO or LIFO tiebreakings usually have little to no
 explatation, and are presumably a result of heuristic selection, for
-either the implementation simplicity or the minor performance difference
+either the simplicity of the implementation or the minor performance difference
 caused by memory access pattern, and have no theoretical background.
 % In particular, we first observed that this FIFO order has not legitimate reason to support.
 
@@ -257,7 +257,6 @@ goal node is in a particular depth, choosing the random depth seems the
 safest practice. This corresponds to the case where RandomDepth would
 perform better.
 
-
 % However, this information is unlikely to be obtained in
 % practice, especially when we assume we could have an almost-perfect heuristics
 % which should have already exploited enough information from the search space.
@@ -298,7 +297,7 @@ computation of \lmcut is so heavy that those wasted efforts are
 negligeble.  We verified this in the results section.
 
 Second, if we ignore the negligeble cost of insertion and deletion to the open/closed list, we do not have to pay the extra cost evaluating the heuristic function for states $f<f^*$ thanks to the caching.
-Recall that \astar must always evaluate the states whose $f$ values are below $f^*$, the true distance from the initial state to the goal. If the heuristic estimate $h$, and in turn $f=g+h$ is the same, any tiebreaking strategy evaluates the same set of nodes in $f<f*$.
+Recall that \astar must always evaluate the states whose $f$ values are below $f^*$. If the heuristic estimate $h$, and in turn $f=g+h$, is the same, any tiebreaking strategy evaluates the same set of nodes in $f<f*$.
 Therefore, in region $f<f*$, our caching mechanism fully works and completely eliminates the possibility of extra evaluation caused by adding another queues.
 Note that, this is not affected by the reopening of the node caused by
 inconsitent heuristics, since the $h$-cache fully works.
@@ -554,8 +553,11 @@ is huge. Therefore, the multisearch strategy should avoid the
 worst-case scenario caused by bad tiebreaking, and quickly find the solution.
 
 First, we show that the doubled cost of insertion and deletion by
-MultiSearch is negligeble.  
-We verified this by running a MultiSearch search engine with two same search engines, each using \lmcut and FIFO queue, and compared its runtime agains the single engine using \lmcut and FIFO. The result in \refig{ffff} shows that the extra cost of duplicated effort is negligeble.
+MultiSearch is negligeble.  We verified this by running a MultiSearch
+search engine with two same search engines, both using \lmcut and FIFO
+queue, and compared its runtime against the same single engine (\lmcut
+and FIFO). The result in \refig{ffff} shows that the extra cost of
+duplicated effort is negligeble.
 
 \begin{figure}[htbp]
  \centering
