@@ -72,25 +72,7 @@ While this is a useful rule of thumb in many domains,
 it turns out that the policy for breaking ties among nodes with the same $f$-cost requires more careful consideration.
 
 In this paper, we focus on the tiebreaking criteria of \astar.
-%Sophisticated tiebreaking is a heuristic-agnostic improvement and thus 
-%falls into above category of techniques.
-
-[need better place for this] It trivially maintains admissibility because it works only within the
-same f-value and does not alter the expansion order wrto f-value.
-
-% such technique.
-% tiebreaking strategy for \astar.
-% Our tiebreaking strategies fall into this category.
-
-% The attention to the search algorithm itself is relatively small since
-% most literature depends on bare \astar.  This was because variations of
-% best first search focus on different requirements, such as IDA* on
-% linear space, WA*/Lazy-A*/GBFS/EHC on trading speed for optimality, RWA*
-% on replanning, etc., and not on improving upon \astar itself.
-
-% maintaining all of its charactristics: memory-greedy yet efficient
-% optimal algorithm.
-
+% 
 Specifically, we show several important findings regarding the
 existing tiebreaking strategy for \astar as follows.
 % 
@@ -257,7 +239,9 @@ Each variation has 3 possibilities of implementing their buckets, namely
 FIFO, LIFO and Random Order(RO), resulting in 9 configurations ---
 FD-FIFO, FD-LIFO, FD-RO, LD-FIFO --- and so on.
 
-
+These tiebreaking methods trivially maintains the admissibility because
+it works only within the same $f$-value and does not alter the expansion
+order wrto $f$-value.
 
 %This is intentional because, 
 In the knowledge-free search within the
