@@ -61,7 +61,7 @@ In order to guarantee the optimality of the solution, \astar expands all nodes w
 All nodes with $f(n) = k$ are be expanded before any node with $f(n)=m > k$ are expanded.
 Thus, after all nodes with $f(n) < f^*$ have been expanded, \astar expands {\emph some} of the nodes with $f(n) = f^*$ until a goal node is found.
 \astar never expands a node with $f(n) > f^*$.
-Thus, the {\emph effective search space of \astar} is the set of nodes with 
+Thus, the \emph{effective search space of \astar} is the set of nodes with 
 $f(n) \leq f^*$.
 
 Much of the work in the search literature as well as the domain-independent planning literature has focused on developing accurate, admissible heuristic functions, and 
@@ -89,7 +89,7 @@ Comparison of the size of the search plateau compared to the
  Openstacks clearly has the large plateaus.}  \label{fig:plateau-noh}
 \end{figure}
 
-To date, there has not been much previous {\emph in-depth} work on the policy for searching the last frontier.
+To date, there has not been much previous \emph{in-depth} work on the policy for searching the last frontier.
 It is widely believed that among nodes with cost $f(n) = f^*$, ties should be broken according to $h(n)$, i.e., nodes with smaller $h$ values should be expanded first.
 While this is a useful rule of thumb in many domains,
 it turns out that the policy for breaking ties among nodes with the same $f$-cost requires more careful consideration.
