@@ -32,34 +32,13 @@ search performance within plateau.
 from an initial state to some goal state in a search space represented as a graph \cite{hart1968formal}.
 In each iteration, \astar selects and {\emph expands} a node $n$ from the OPEN priority queue.
 \astar selects and expands the node which has the lowest $f$-cost, where $f(n)$ is the sum of  $g(n)$, the cost of the current path from the start state to $n$, and $h(n)$, a heuristic estimate of the cost from $n$ to a goal state.
-
-
-%and has been used extensively in
-%STRIPS planning in the recent years.
-%\astar stores the search nodes into two priority queues called an
-%\emph{open list}
-%XXX The closed list is NOT a priority queue.
-% and a \emph{closed list}. 
-
-% On each iteration, \astar expands the open nodes with the
-% smallest $f$ value and mark them as closed. Its successor nodes are
-% accordingly inserted back to the open list or closed list, while
-% sometimes the parent node is updated so that it has the shortest path
-% from the initial state.
-
-% Due to the space limitation,
-% we assume the readers are already familiar with \astar
-% and skip the details of the algorithm.
-
 \astar returns an optimal solution when $h$ is admissible, i.e., when it
-never overestimate the true distance to the goal $h^*$.
+never overestimates the true distance to the goal $h^*$.
 
-
-
-
-In order to guarantee the optimality of the solution, \astar expands all nodes with $f(n) < f^*$.
-All nodes with $f(n) = k$ are be expanded before any node with $f(n)=m > k$ are expanded.
-Thus, after all nodes with $f(n) < f^*$ have been expanded, \astar expands {\emph some} of the nodes with $f(n) = f^*$ until a goal node is found.
+In order to guarantee the optimality of the solution, \astar expands all
+nodes with $f(n) < f^*$, where $f^*$ is the true cost of the optimal solution.
+All nodes with $f(n) = k$ are to be expanded before any node with $f(n) > k$ are expanded.
+Thus, after all nodes with $f(n) < f^*$ have been expanded, \astar expands \emph{some} of the nodes with $f(n) = f^*$ until a goal node is found.
 \astar never expands a node with $f(n) > f^*$.
 Thus, the \emph{effective search space of \astar} is the set of nodes with 
 $f(n) \leq f^*$.
