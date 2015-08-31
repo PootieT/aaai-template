@@ -646,6 +646,12 @@ duplicated effort is negligeble.
 
 Next, we evaluated our MultiSearch
 strategy with selective combinations of two or three tiebreakings.
+The configuration shown as ``lmcut m2'', ``lmcut m3'', ``mands m2'',
+``lmcut m3'' are respectively the portfolio of
+$[[\ld,\fifo], [\rd,\lifo]]$, $[[\ld,\fifo], [\ld,\ro], [\rd,\lifo]]$,
+$[[\ld,\fifo],[\rd,\ro]]$, $[[\ld,\fifo],[\rd,\ro],[\ld,\lifo]]$. These
+portfolios are hand-tuned.
+% LOP is able to avoid the accidental bias
 Results in \reftbl{portfolio-coverage}
 shows a significant improvements compared to the results by each search
 engine alone.
