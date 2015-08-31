@@ -1,5 +1,6 @@
 % Created 2013-10-07 月 18:04
 \documentclass[10pt,letterpaper]{article}
+\usepackage{xparse}
 \usepackage{aaai}
 \usepackage{times}
 \usepackage{helvet}
@@ -11,7 +12,6 @@
 \usepackage{aaai_my}
 \usepackage{graphicx}
 \usepackage{abbrev}
-\usepackage{multirow}
 \usepackage{multirow}
 
 \frenchspacing
@@ -33,16 +33,6 @@
 \marginpar[\hfill\relsize{-1} \protect{\rotatebox[origin=c]{90}{#1}} $\triangleright$]{\relsize{-1} $\triangleleft$ \protect{\rotatebox[origin=c]{-90}{#1}}}}
 \usepackage{soul}
 \makeatletter
-\renewcommand{\@todos}[2]{%
-  \ul{#1}%
-  \marginpar[%
-    \hfill\relsize{-1}%
-    \protect{%
-      \rotatebox[origin=c]{90}{done \it #2}}%
-    $\triangleright$]{%
-    \relsize{-1} $\triangleleft$%
-    \protect{%
-      \rotatebox[origin=c]{-90}{done \it #2}}}}
 \renewcommand{\@todons}[2]{%
   \ul{#1}%
   \marginpar[%
@@ -53,6 +43,16 @@
     \relsize{-1} $\triangleleft$%
     \protect{%
       \rotatebox[origin=c]{-90}{\bf todo: #2}}}}
+\renewcommand{\@todos}[2]{%
+  \ul{#1}%
+  \marginpar[%
+    \hfill\relsize{-1}%
+    \protect{%
+      \rotatebox[origin=c]{90}{done \it #2}}%
+    $\triangleright$]{%
+    \relsize{-1} $\triangleleft$%
+    \protect{%
+      \rotatebox[origin=c]{-90}{done \it #2}}}}
 \makeatother
 \setlength{\columnsep}{0.5em}
 %%%%%%%%%%%%%%%%%%%%%%%%%

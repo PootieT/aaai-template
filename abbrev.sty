@@ -172,11 +172,12 @@
 \setlength{\marginparwidth}{1.9cm}
 
 \makeatletter
-
-\newcommand{\todo}[2][]{\@ifstar{\@todos{#1}{#2}}{\@todons{#1}{#2}}}
+\NewDocumentCommand{\todo}{s O{} m}{%
+  \IfBooleanTF#1%
+    {\@todos{#2}{#3}}%
+    {\@todons{#2}{#3}}}
 \newcommand{\@todons}[2]{}
 \newcommand{\@todos}[2]{}
-
 \makeatother
 
 
