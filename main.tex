@@ -664,23 +664,19 @@ MultiSearch acutally follows the expected behavior and the theoretical
 bounds: the evaluation never exceeds twice/thirds of the single
 search engine.
 
-\begin{table}[htbp]
- \centering
- \relsize{-2}
- % \includegraphics{tables/opt11-evaluated-lmcut_ff-lmcut_fflf.pdf}
- % \includegraphics{tables/opt11-evaluated-lmcut_ff-lmcut_ffr.pdf}
- % \includegraphics{tables/opt11-evaluated-lmcut_ff-lmcut_fflfr.pdf}
- \caption{Coverage results showing the performance of MultiSearch
- (X,Y,Z) dominating the single strategies.}
+\begin{table}[htb]
+ \centering \relsize{-2}
+ \input{tables/aaai16-5min/aaai16prelim3_zerocost_2zerocost/1-1-multi-lmcut.tex}
+ \caption{Coverage results comparing some LOP combinations and the
+ single strategies under the portfolio. }
  \label{portfolio-coverage}
 \end{table}
 
-\begin{figure}[htbp]
+\begin{figure}[htb]
  \centering
  \relsize{-2}
- % \includegraphics{tables/opt11-evaluated-lmcut_ff-lmcut_fflf.pdf}
- % \includegraphics{tables/opt11-evaluated-lmcut_ff-lmcut_ffr.pdf}
- % \includegraphics{tables/opt11-evaluated-lmcut_ff-lmcut_fflfr.pdf}
+ \includegraphics{tables/aaai16-5min/aaai16prelim3/evaluated-lmcut_m2-lmcut_ld_fifo.pdf}
+ % \includegraphics{tables/aaai16-5min/aaai16prelim3/evaluated-nokey-lmcut_m2-lmcut_rd_lifo.pdf}
  \caption{Runtime comparson between MultiSearch (X,Y,Z) and single strategies.}
  \label{portfolio-runtime}
 \end{figure}
