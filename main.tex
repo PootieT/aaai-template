@@ -82,10 +82,10 @@ Second, with LIFO-based implementation, $h$-based tiebreaking which
 frequently appears in the heuristic search literatures have little
 impact on the performance.
 % 
-% \todo{this is not shown yet}
-% Third, the LIFO-based bucket implementation and $h$-based tiebreaking
-% both share the greedy search pattern within the plateau of the
-% search space.
+\todo[
+Third, the LIFO-based bucket implementation and $h$-based tiebreaking
+both share the greedy search pattern within the plateau of the
+search space.]{this is not shown yet}
 
 Next, based on these observations, we propose three tiebreaking methods
 based on the \emph{depth} within the plateau.  From this result, we show
@@ -122,16 +122,104 @@ We finally conclude with a discussion on the future work.
 \section{Preliminaries and Background}
 
 \subsection{Domains with Zero-cost Actions: Applications and Motivation}
-{\bf TODO: Add several paragraphs explaining why domains with zero-cost actions are an important, practical class of problem, e.g., energy consumptin minimization.  }
 
+\todo*{Add several paragraphs explaining why domains with zero-cost actions are an important, practical class of problem, e.g., energy consumptin minimization.}
 
 % XXX I'm commenting out the paragraphs below because:
 % (1) A review of heuristic functions for domain-independent learning is not really
 % necessary for this AAAI submission. 
 % (2) It's better if this paper is not so strongly associated with the ICAPS community only -- this work applies in general to search with A*, and is not strongly tied to almost-perfect heuristics, lmcut, m&s, etc.
 
+Historically, the study of the shortest path finding algorithms has
+started on the unit cost domains as the simplest case, where every
+search edge has a cost 1,
+% . Experimental study of \astar was somewhat biased to
+% the unit-cost domains
+such as 24-puzzle, Rubik's Cube etc.
+There are also several problems with non-unit costs, sometimes
+artificially but also sometimes naturally, such as in multiple
+sequence alignment (MSA).
 
+In the plannning community, the first introduction of non-unit domain in
+the cometition is IPC-02. Currently most competition domains have the
+non-unit costs. 
+Notably, most actions in these domains have nonzero positive costs.
+% 
+%  Although some of these domains have non-unit costs,
+% those domains are sometimes \emph{mostly} unit cost. For example, TPP
+% has many actions with a cost 1 and some actions have cost 10.
+% 
+% The idea here is to differentiate the important actions from the less
+% important actions.
+% 
+For example, Elevator and Miconic in the benchmark domains minimize the
+runtime of moving the passengers up and down.  Actions in which the
+elevator travels the long distance take longer runtime.  When concerned
+with the runtime, it is reasonable to assign nonzero positive cost to
+every actions, since every actions are supposed to at least consume a
+fraction of runtime.
 
+However, such formulation is not suitable for the general type of cost
+minimization in which the target is not the runtime.  For example, when
+you try to minimize the energy consumption by the elevators, many
+actions would have zero-cost --- it does not consume electricity for
+either moving the elevator down, boarding or leaving the passenger.
+ 
+The same thing applies to the transportation-type domains like
+logistics, and assembly-type domains like Woodworking. They are runtime
+minimization domains in which driving and manual labor, or cutting and
+painting, are equally measured based on the single runtime metric.
+% 
+However, a few modifications to the action costs will turn them into
+domains minimizing the fuel consumption in logistics or wood usage in
+Woodworking. From the practical point of view, cost minimization domains
+would have wider interests compared to the simple runtime minimization.
+
+Openstacks domain we noted in the previous section was first introduced
+in IPC-06. It is targeted at minimizing the number of stacks used and it
+has many zero-cost actions. These zero-cost actions prevent the
+heuristics from producing informative guidance. The \sota heuristic
+functions such as \lmcut \cite{Helmert2009} and M\&S
+\cite{helmert2007flexible} fail to find a meaningful estimate because
+\lmcut fails to find a good cost partitioning with non-zero values, and
+most edges in the abstraction space of M\&S have zero costs.
+
+% Currently, most benchmark domains except Openstacks and Cybersec do not
+% have the large plateau thanks to the powerful heuristic estimates (which
+% is verified in the later section). However, limiting our effective
+% experiments only to 2 domains would bias our observation. To avoid this
+% issue, we created several domains where the \sota heuristic functions
+% fail to provide a menaingful guidance.
+
+% One important characteristics shared by Openstacks and Cybersec is that they both
+% have large number of zero-cost actions.
+ % In such situations, both LMcut
+% and M\&S fail to find a meaningful heuristic estimate because LMcut fails to
+% find a good cost partitioning with non-zero values, and most edges in the abstraction space of
+% M\&S have zero costs.
+
+% We therefore modified various domains to have many zero-cost actions.
+% For example, miconic-up is a domain which minimizes the energy
+% consumption caused by ``up'' action, which moves the elevator up, and
+% all other actions have zero-cost. Another example is driverlog-fuel, where only
+% the ``drive'' action has cost 1 and all other actions are zero-cost.
+% This in fact reflects the practical application compared to the original
+% unit-cost domains where driving and manual labor is equally accounted.
+% Oddly, although some planners have options which treats actions as if
+% they are unit-costs, and describe such options as ``inadmissible'',
+% solving domains which are unit-cost by origin is not called
+% ``inadmissible''. Above modification addresses this problem.
+
+In this paper, we therefore modified various domains to have many
+zero-cost actions.  For example, miconic-up is a domain which minimizes
+the energy consumption caused by ``up'' action, which moves the elevator
+up, and all other actions have zero-cost.  Modification was done in a
+practically reasonable manner in a sense of cost minimization. Most
+transportation-type domains are modified so that they use less
+fuel. Assembly-type domains are modified so that it minimizes the
+resource usage such as ink or wood.  \todo[We also modify a same domain
+in the different minimization criteria, in order to avoid the bias on a
+particular domain formulation.]{It's not tested yet}
 
 \subsection{Tiebreaking Strategies in \astar}
 
@@ -211,23 +299,27 @@ These tiebreaking methods trivially maintains the admissibility because
 it works only within the same $f$-value and does not alter the expansion
 order wrto $f$-value.
 
+Note that these strategies are not universally dominating each other.
 %This is intentional because, 
-In the knowledge-free search within the
-plateau of admissible search, all nodes have the same $f$-value and it
-is impossible to guess whether the goal is near, far away or in a
-particular distance from the entrance. In the first case, the search
-should be focused around the entrance favoring the smaller depths, and
-the behavior should be much like breadth-first, and it corresponds to
-FirstDepth. In the second case, the planner should greedily explore the
-various area of the plateau by preferring larger depth, much like in
-depth-first, and corresponds to LastDepth. In the final case where the
-goal node is in a particular depth, choosing the random depth seems the
-safest practice. This corresponds to the case where RandomDepth would
-perform better.
+In the knowledge-free search within the plateau, all nodes have the same
+$f$-value and it is impossible to guess whether the goal is near, far
+away or in a particular distance from the entrance. In the first case,
+the search should be focused around the entrance favoring the smaller
+depths, and the behavior should be much like breadth-first, and it
+corresponds to FirstDepth. In the second case, the planner should
+greedily explore the various area of the plateau by preferring larger
+depth, much like in depth-first, and corresponds to LastDepth. In the
+final case where the goal node is in a particular depth, choosing the
+random depth seems the safest practice. This corresponds to the case
+where RandomDepth would perform better.
+% 
+This is verified in the later experiments.
 
-% However, this information is unlikely to be obtained in
-% practice, especially when we assume we could have an almost-perfect heuristics
-% which should have already exploited enough information from the search space.
+Also note that, the node evaluation orders of FD-FIFO and LD-LIFO are
+exactly the same as FIFO and LIFO, i.e., those without the depth-based
+tiebreaking.  This is because, LIFO expands the most recently evaluated
+states, which always has the largest depth, and FIFO expands the oldest
+evaluated states, which always has the smaller depth.
 
 % This ``greediness'' is different from the normal
 % sense of ``greedy search'' --- since this greediness only holds within
@@ -236,9 +328,7 @@ perform better.
 \section{MultiSearch }
 
 As noted above, it is unknown prior to the search where the goal node
-exists in a plateau. In particular, assuming if we were to use almost
-perfect heuristics and a plateau is encountered, it is very unlikely
-that there is a room of obtaining further information from the problem.
+exists in a plateau.
 However, the best tiebreaking strategy seems to be affected by the domain
 characteristics, as we show in the evaluation section.
 
@@ -271,26 +361,36 @@ The LOP has several interesting characteristics.  First,
 although the amount of memory used for the open/closed list is doubled,
 and the effort to push/pop the search nodes is also doubled, the
 computation of \lmcut is so heavy that those wasted efforts are
-negligeble.  We verified this in the results section.
+negligeble.  We verify this in the results section.
 
-Second, if we ignore the negligeble cost of insertion and deletion to the open/closed list, we do not have to pay the extra cost evaluating the heuristic function for states $f<f^*$ thanks to the caching.
-Recall that \astar must always evaluate the states whose $f$ values are below $f^*$. If the heuristic estimate $h$, and in turn $f=g+h$, is the same, any tiebreaking strategy evaluates the same set of nodes in $f<f*$.
-Therefore, in region $f<f*$, our caching mechanism fully works and completely eliminates the possibility of extra evaluation caused by adding another queues.
-Note that, this is not affected by the reopening of the node caused by
-inconsitent heuristics, since the $h$-cache fully works.
+Second, if we ignore the negligeble cost of insertion and deletion to
+the open/closed list, we do not have to pay the extra cost evaluating
+the heuristic function for states $f<f^*$ thanks to the caching.
+Recall that \astar must always evaluate the states whose $f$ values are
+below $f^*$. Since the heuristic estimate $h$, and in turn $f=g+h$, is
+the same among the tiebreaking strategies, they evaluate the same set of
+nodes in $f<f*$.  Therefore, in region $f<f*$, our caching mechanism
+fully works and completely eliminates the possibility of extra
+evaluation caused by adding another queues.  Note that, this is not
+affected by the reopening of the node caused by inconsitent heuristics
+since the $h$-value is cached.
 
 %% Third, since the search terminates when \emph{some} engine finds a
 %% solution, and since the evaluation happens in turns, the search effort
-%% within the final plateau is \emph{twice} the \emph{minimum} of the
-%% search efforts required by each of LD-LIFO or LD-FIFO engine alone. This
-%% is desirable because, as we saw in the Results section, in some domains the
+%% within the final plateau is upper bounded by \emph{twice} the
+%% \emph{minimum} of the search efforts required by each of LD-LIFO or
+%% LD-FIFO engine alone.  Evaluating the same nodes in different engines
+%% also reduces the effort to less than twice due to caching.  This is
+%% desirable because, as we saw in the Results section, in some domains the
 %% gap between the best and worst tiebreaking strategy can be more than 10
 %% times (Openstacks, for example).  When there are $n$ engines, then this
 %% increases to $n\times$ minimum amount of effort which would be spent by
-%% each single engine.
-Also, thanks to the full caching, the worst case evaluation is
-upper bounded by the total number of nodes with $f\leq f^*$, which is same
-as the case of single engine alone.
+%% each single engine alone.
+Finally, thanks to the full caching, the worst case evaluation is upper
+bounded by the total number of nodes with $f\leq f^*$, which is same as
+the case of single engine alone. This happens when all tiebreaking
+strategies perform quite poor and they all evaluates the goal node in the
+final iteration.
 
 \section{Experimental Results}
 
@@ -305,73 +405,43 @@ All planners are based on the latest Fast Downward code base, and all
 experiments are run using 30 minutes runtime cutoff with 2GB memory
 limit. Also, experiments are conducted on Xeon E5410@2.33GHz CPUs.
 
+Our experimental results include 28 standard benchmark domains with 1104
+problems, 16 \emph{zerocost} domains with 640 problems, 16
+\emph{shuffled-zerocost} domains which have the suffled action ordering
+in the domain definition.
 
-\subsubsection{Test Domains}
-Our experimental results include 28 standard benchmark domains with
-1104 problems, 16 \emph{zerocost} domains with 640 problems, 8 \emph{shuffled-zerocost} 
-domains whose action ordering in the domain definition is shuffled.
-
-Currently, most benchmark domains except Openstacks and Cybersec do not
-have the large plateau thanks to the powerful heuristic estimates (which
-is verified in the later section). However, limiting our effective
-experiments only to 2 domains would bias our observation. To avoid this
-issue, we created several domains where the \sota heuristic functions
-fail to provide a menaingful guidance.
-
-One important characteristics shared by Openstacks and Cybersec is that they both
-have large number of zero-cost actions. In such situations, both LMcut
-and M\&S fail to find a meaningful heuristic estimate because LMcut fails to
-find a good cost partitioning with non-zero values, and most edges in the abstraction space of
-M\&S have zero costs.
-
-We therefore modified various domains to have many zero-cost actions.
-For example, miconic-up is a domain which minimizes the energy
-consumption caused by ``up'' action, which moves the elevator up, and
-all other actions have zero-cost. Another example is driverlog-fuel, where only
-the ``drive'' action has cost 1 and all other actions are zero-cost.
-This in fact reflects the practical application compared to the original
-unit-cost domains where driving and manual labor is equally accounted.
-Oddly, although some planners have options which treats actions as if
-they are unit-costs, and describe such options as ``inadmissible'',
-solving domains which are unit-cost by origin is not called
-``inadmissible''. Above modification addresses this problem.
-
-Modification was done in a practically reasonable manner in a sense of
-cost minimization. Most transportation-type domains are modified so that
-they use less fuel. Assembly-type domains are modified so that it
-minimizes the resource usage such as ink or wood. However, we also
-modify a same domain in the different minimization criteria, in order to
-avoid the bias on a particular domain formulation.
-
+% 
+% moved domain descriptions
+% 
+% 
+% 
 
 \subsection{Comparison of Bucket Implementations}
 
-We first compared the default $[f,h,\fifo]$ in Fast Downward with
-$[f,h,\lifo]$ and $[f,h,\ro]$.  We observed that even such a slightest
-difference can change the performance significantly on some domains,
-shown in \reftbl{f-h-coverage}. Due to the space limitation, we show
-only the domains where the difference was observed. Full table is
-available in the supplemental material.
+We first compared the default $[f,h,\fifo]$ with $[f,h,\lifo]$ and
+$[f,h,\ro]$ in \reftbl{single-coverage} (Left).  We observed that even
+such a slightest difference can change the performance significantly on
+some domains. Due to the space limitation, we show only the domains
+where the difference was observed. Full table is available in the
+supplemental material.
 
 \begin{table}[htbp]
  \centering \relsize{-3}
  \input{tables/aaai16-5min/aaai16prelim3/1-1-basic-queues.tex}
  \input{tables/aaai16-5min/aaai16prelim3/1-1-basic-queues-noh.tex}
- \caption{Experiments
- comparing the performance of FIFO, LIFO and Random second-level
- tiebreaking using Fast Downward. For the space reason, we omitted those
- domains whose results are the same (Full results are available in the
- supplemental material.) Each cell denotes the problem solved with 30
- min, 2GB setting. \textbf{Boldface} denotes the case where it achieved
- the best result among configurations.}  \label{single-coverage}
+ \caption{Experiments comparing the performance of FIFO, LIFO and Random
+ second-level tiebreaking, with (left) and without (right) the
+ conventional first-level $h$-tiebreaking.  For the space reason, we
+ omitted those domains whose results are the same (Full results are
+ available in the supplemental material.) Each cell denotes the problem
+ solved with 30 min, 2GB setting. \textbf{Boldface} denotes the case
+ where it achieved the best result among configurations.}
+ \label{single-coverage}
 \end{table}
 
-According to the result, LIFO dominates the others in Openstacks, but
-Random dominates the others in Cybersec and Miconic, and FIFO dominates
-the others in Airport, indicating that there are no dominance
-relationship between these three and these differences are purely due to
-the domain characteristics.  From this table, current benchmark set
-tends to be in favor of LIFO queue.
+\refig{f-h-eval} gives us a more fine-grained analysis by comparing the
+number of node evaluation (computations of \lmcut) on
+different tiebreakings.
 
 \begin{figure}[htbp]
  \centering \relsize{-3}
@@ -379,50 +449,62 @@ tends to be in favor of LIFO queue.
  \includegraphics{tables/aaai16-5min/aaai16prelim3/evaluated-nokey-lmcut_ff-lmcut_r.pdf}
  \includegraphics{tables/aaai16-5min/aaai16prelim3/evaluated-nokey-lmcut_r-lmcut_lf.pdf}
  \caption{Comparisons of \# of Evaluations between simple \lifo, \fifo,
- \ro second-level tiebreaking. Each line shows $\times 2,4,6\ldots$ boundary.}
- \label{f-h-eval}
+ \ro second-level tiebreaking, with first-level $h$-tiebreaking. Each
+ line shows $\times 2,4,6\ldots$ boundary.}  \label{f-h-eval}
 \end{figure}
 
-\refig{f-h-eval} gives us a more fine-grained analysis by comparing the
-number of node evaluation (computations of \lmcut) on
-different tiebreakings. We confirm that the difference between several
-tiebreakings are sometime larger than $\times 10$.
+According to \reftbl{single-coverage} (left) with $h$-tiebreaking, LIFO
+dominates the others in Openstacks, but Random dominates the others in
+Cybersec, and FIFO dominates the others in Airport, indicating that
+there are no dominance relationship between these three and these
+differences are purely due to the domain characteristics. From the
+coverage summary, current benchmark set tends to be in favor of LIFO queue.
 
-In \reftbl{f-h-coverage}, we also added $[f,\fifo]$, $[f,\lifo]$ and
-$[f,\ro]$ which does not use $h$-based first-level tiebreaking.
-Interestingly, the coverage by LIFO-tiebreaking is almost comparable to
-those with $h$-based tiebreaking, indicating that $h$-based tiebreaking
-is not always necessary.  This is a surprising result considering
-that almost all of the past literature assume the importance of the
-$h$-based tiebreaking and modern forward search planners employ one.
+In \refig{f-h-eval}, we also observe Random dominates the others
+in miconic.
+We also confirm that the difference between several
+tiebreakings are sometime larger than $\times 10$, especially in
+Openstacks and Cybersec.
 
-Note that, although LIFO dominated the others, we consider this is just
-by a coincidence due to our selection of problems, time limit and
-domains. \emph{We are not trying to claim that any of LIFO or FIFO or
-Random order dominates the other}. However, there are noticeable
-performance difference caused by these different tiebreaking strategies.
+In \reftbl{single-coverage} (right) where the first-level
+$h$-tiebreaking is disabled, the dominance of LIFO tiebreaking is
+obvious in all domains.  Interestingly, the coverage by LIFO-tiebreaking
+is almost comparable to LIFO with $h$-based tiebreaking and even about
+to catch up with FIFO with $h$, indicating that $h$-based tiebreaking
+may not be a necessity. This is a surprising result considering that
+almost all of the past literature assume the importance of the $h$-based
+tiebreaking and modern forward search planners employ one.
+
+We reemphasize that, although LIFO dominated the others, we consider
+this is just by a coincidence due to the selection of time limit, memory
+limit and problems in the current standard IPC competition
+settings. \emph{We are not trying to claim that any of LIFO or FIFO or
+Random order always dominates the others}.
+
+% However, there are noticeable
+% performance difference caused by these different tiebreaking strategies.
 
 \subsection{Size of the Plateau Matters}
 
-We also observed that, such differences occur especially in the problems which
-have the huge search plateau, i.e., the problems where the heuristic
-function is not informative and the planner relies heavily on the
-tiebreaking criteria.
+We also observed that, such differences occur especially in the problems
+which have the huge search plateau, i.e., the problems where the
+heuristic function is not informative and the planner relies heavily on
+the tiebreaking criteria.
 % 
 \refig{plateau} plots the size of the final search plateau with
-$h$-based tiebreaking (\refig{fig:plateau-noh} is the same figure
-without this tiebreaking). Again, in this plot, $y$-axis shows the
-number of nodes $f=f*, h=0$ and $x$-axis shows the total number of nodes
-$f\leq f^*$. The size of the bucket does not change between
-$[f,h,\fifo]$, $[f,h,\lifo]$ and $[f,h,\ro]$.
+$h$-based tiebreaking (\refig{fig:plateau-noh} in the introduction is
+the same figure without $h$-tiebreaking). Again, in this plot, $y$-axis
+shows the number of nodes $f=f*, h=0$ and $x$-axis shows the total
+number of nodes $f\leq f^*$. The size of the bucket does not change
+between $[f,h,\fifo]$, $[f,h,\lifo]$ and $[f,h,\ro]$.
 
-Clearly, in some domains, the planner cound spend most of the
-runtime on searching through the final plateau in the worst case: The
-goal node is evaluated in the very last iteration. It also means that
+Clearly, in some domains, the planner cound spend most of the runtime on
+searching through the final plateau in the worst case: The goal node is
+evaluated in the very last iteration in the plateau. It also means that
 these domains have very large variance in the runtime caused by the
-difference in second-level tiebreakings.  As expected, when the
-$h$-based tiebreaking is disabled, much larger effort could be spent on
-the final plateau.
+difference in second-level tiebreakings. As expected, when the $h$-based
+tiebreaking is disabled in \refig{fig:plateau-noh}, much larger effort
+could be spent on the final plateau.
 
 \begin{figure}[htb]
  \centering \relsize{-3}
@@ -434,7 +516,20 @@ the final plateau.
   Openstacks clearly has the large plateaus.}  \label{plateau}
 \end{figure}
 
-[Size of plateau on zerocost]
+\todo[When we plot the same statistics on the zerocost domains, this
+becomes a universal trend among instances.]{Current figure is not
+plotting the zerocost domains} In cost-minimization problems, the search
+strategy within plateau becomes much more important than in the
+runtime-minimization instances, where most actions have nonzero cost.
+
+\begin{figure}[htb]
+ \centering \relsize{-3}
+  \includegraphics{tables/aaai16-frontier/aaai16prelim3/lmcut_frontier-front.pdf}
+  \caption{Same plot as \refig{plateau}, but from the zerocost
+  domains. Even with $h$-tiebreaking, zerocost domains force the planner
+  to search much larger plateau.}
+ \label{plateau-zerocost}
+\end{figure}
 
 \subsection{Evaluating Depth-based Tiebreaking}
 
@@ -453,11 +548,11 @@ strategy tends to be dominant in most domains. However, RandomDepth and
 FirstDepth still exhibits a significantly better performance in Cybersec
 and Mistery-Feast, respectively, indicating there is no true dominance relationship.
 
-This result explains why the simple $[f,h,\lifo]$ strategy has
-become successful. The fact that the performance of $[f,h,\ld,\cdot]$
-was consistently good regardless of the third-level tiebreaking means
-that the performance of $[f,h,\lifo]$ was actually caused by its
-inherent LastDepth search pattern, and not by the implementation of LIFO
+This result explains why the simple $[f,h,\lifo]$ strategy has become
+successful.  The fact that the performance of $[f,h,\ld,\cdot]$ was
+consistently good regardless of the third-level tiebreaking means that
+the performance of $[f,h,\lifo]$ was actually caused by its inherent
+LastDepth search pattern, and not by the implementation of LIFO
 by themselves.
 
 Supporting the above claim that the key is LastDepth and not LIFO, the
@@ -469,7 +564,7 @@ $[f,h,X,\fifo]>[f,h,X,\ro]>[f,h,X,\lifo]$ when $X=\ld,\rd$.
 Note that FIFO is bad in terms of low-level memory access
 pattern since the insertion and deletion happens in the opposite side of
 the bucket. It suggests that FIFO ordering is an order of magnitude
-important in many domains compared to the low-level performance.
+more important in many domains than the low-level performance.
 % 
 Still, there does exist several domains where FIFO is not dominating
 the others.
@@ -487,19 +582,19 @@ RandomOrder, regardless of the second-level depth tiebreaking.
 One issue in the above analysis is that this difference might
 be caused by the accidental bias in the action order in the
 domain definitions.
-To address this issue, we also tested the zerocost domains
+Thus we also tested \emph{shuffled-zerocost} domains
 in which we mechanically shuffled the action orderings in the
 domain file. The results showed the same trends as in the original
 zerocost domains. (Due to space constraint, we put this figure in the
 supplementaly material.)
 
-Another issue in this result is the lack of analysis on
-abstraction-based heuristics. We also added the results in the figures
-in the supplemental materials. Above trends are mostly consistent when
-M\&S and blind heuristics are used, regardless of first-level
-tiebreaking by $h$-value. However, we note that many instances quickly
-exhausted the 2GB memory limit with those heuristics, and is less
-informative compared to the result by LMcut.
+% Another issue in this result is the lack of analysis on
+% abstraction-based heuristics. We also added the results in the figures
+% in the supplemental materials. Above trends are mostly consistent when
+% M\&S and blind heuristics are used, regardless of first-level
+% tiebreaking by $h$-value. However, we note that many instances quickly
+% exhausted the 2GB memory limit with those heuristics, and is less
+% informative compared to the result by LMcut.
 
 \begin{figure}[htb]
  \centering
@@ -529,7 +624,14 @@ informative compared to the result by LMcut.
 
 As we see in the previous section, the planner performance is greatly
 affected by the tiebreaking criteria, especially when the search plateau
-is huge. Therefore, the multisearch strategy should avoid the
+is huge.
+% 
+Also, the more practical, cost-minimization domains tend to have large plateaus.
+% 
+Furthermore, the different depth-based tiebreakings are not dominating
+each other, and is greatly affected by the domain characteristics.
+% 
+Therefore, the multisearch strategy should avoid the
 worst-case scenario caused by bad tiebreaking, and quickly find the solution.
 
 First, we show that the doubled cost of insertion and deletion by
@@ -547,21 +649,27 @@ duplicated effort is negligeble.
  \label{ffff}
 \end{figure}
 
-Next, we conducted experiments for evaluating our MultiSearch
-strategy in order to show that it acutally follows the expected search
-behavior and the theoretical bounds.
-% , and also to show that it performs
-% significantly better than its worst case $n \times \min$ performance.
-\refig{portfolio} shows the runtime between
-different combinations of 2 or 3 tiebreaking strategies (FIFO+LIFO,
-FIFO+Random, LIFO+Random, FIFO+LIFO+Random) and the single tiebreaking
-strategies. The results support our claim that the evaluation never
-exceeds twice/thirds of the single search engine and, in practice, the
-evaluations are mostly the same with the single search engine, and in
-some domains with large plateaus, the search effort used by MultiSearch
-is more than ten times less than by the worst single strategy.
+Next, we evaluated our MultiSearch
+strategy with selective combinations of two or three tiebreakings.
+Results in \reftbl{portfolio-coverage}
+shows a significant improvements compared to the results by each search
+engine alone.
+\refig{portfolio-coverage} shows the number of evaluations of these
+tiebreakings compared to each search engine alone.  It shows that
+MultiSearch acutally follows the expected behavior and the theoretical
+bounds: the evaluation never exceeds twice/thirds of the single
+search engine.
 
-
+\begin{table}[htbp]
+ \centering
+ \relsize{-2}
+ % \includegraphics{tables/opt11-evaluated-lmcut_ff-lmcut_fflf.pdf}
+ % \includegraphics{tables/opt11-evaluated-lmcut_ff-lmcut_ffr.pdf}
+ % \includegraphics{tables/opt11-evaluated-lmcut_ff-lmcut_fflfr.pdf}
+ \caption{Coverage results showing the performance of MultiSearch
+ (X,Y,Z) dominating the single strategies.}
+ \label{portfolio-coverage}
+\end{table}
 
 \begin{figure}[htbp]
  \centering
@@ -569,8 +677,8 @@ is more than ten times less than by the worst single strategy.
  % \includegraphics{tables/opt11-evaluated-lmcut_ff-lmcut_fflf.pdf}
  % \includegraphics{tables/opt11-evaluated-lmcut_ff-lmcut_ffr.pdf}
  % \includegraphics{tables/opt11-evaluated-lmcut_ff-lmcut_fflfr.pdf}
- \caption{}
- \label{portfolio}
+ \caption{Runtime comparson between MultiSearch (X,Y,Z) and single strategies.}
+ \label{portfolio-runtime}
 \end{figure}
 
 
