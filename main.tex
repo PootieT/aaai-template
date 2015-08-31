@@ -28,49 +28,49 @@ search performance within plateau.
 
 %\subsubparagraph{\astar and perfect heuristics}
 
+This paper investigates tie-breaking strategies for \astar.
 \astar is a standard search algorithm for finding an optimal-cost path 
-from an initial state to some goal state in a search space represented as a graph \cite{hart1968formal}.
+from an initial state $s$ to some goal state $g \in G$ in a search space represented as a graph \cite{hart1968formal}.
 In each iteration, \astar selects and \emph{expands} a node $n$ from the OPEN priority queue.
-\astar selects and expands the node which has the lowest $f$-cost, where $f(n)$ is the sum of  $g(n)$, the cost of the current path from the start state to $n$, and $h(n)$, a heuristic estimate of the cost from $n$ to a goal state.
+\astar selects and expands the node which has the lowest $f$-cost, where for node $n$, $f(n)$ is the sum of  $g(n)$, the cost of the current path from the start state to $n$, and $h(n)$, a heuristic estimate of the cost from $n$ to a goal state.
 \astar returns an optimal solution when $h$ is admissible, i.e., when it
 never overestimates the true distance to the goal $h^*$.
 
-In order to guarantee the optimality of the solution, \astar expands all
+In order to guarantee solution optimality, \astar expands all
 nodes with $f(n) < f^*$, where $f^*$ is the true cost of the optimal solution.
-All nodes with $f(n) = k$ are to be expanded before any node with $f(n) > k$ are expanded.
-Thus, after all nodes with $f(n) < f^*$ have been expanded, \astar expands \emph{some} of the nodes with $f(n) = f^*$ until a goal node is found.
-\astar never expands a node with $f(n) > f^*$.
-Thus, the \emph{effective search space of \astar} is the set of nodes with 
-$f(n) \leq f^*$.
+%All nodes with $f(n) = k$ are expanded before any node with $f(n) > k$ are expanded.
+%Thus, after all nodes with $f(n) < f^*$ have been expanded, 
+\astar expands \emph{some} of the nodes with $f(n) = f^*$, and never expands a node with $f(n) > f^*$.
+Thus, the \emph{effective search space of \astar}, $N$, is the set of nodes with 
+$f(n) \leq f^*$, and
+much of the work in the AI search and planning literature  has focused on reducing the size of $N$ by
+developing more accurate, admissible heuristic functions.
 
-Much of the work in the search literature as well as the domain-independent planning literature has focused on developing accurate, admissible heuristic functions, and 
-by improving the quality of $h$, the size of the effective search space of \astar is reduced.
-
-
-In many problems, the size of the set of nodes with $f(n)=f^*$
-is quite large compared to the set of all nodes that can be considered by \astar, i.e., the set of nodes with $f(n) \leq f^*$.
+In many problems, the size of the \emph{last frontier}, the set of nodes with $f(n)=f^*$, accounts for a significant portion of $A$.
 \refig{fig:plateau-noh} plots the number of states with $f(n) = f^*$ (y-axis)
 versus the number of states with $f(n) \leq f^*$
-for a set of 1104 problem instances from IPC98-IPC11.
-Note that there are many instances where a large fraction of the nodes with $f(n) \leq f^*$ have $f(n)=f^*$.
-For example, in Openstacks domain, all instances are on the y=x line, indicating that almost all states with $f(n) \leq f^*$ have cost $f^*$.
-In such domains, the behavior of \astar on the last frontier where $f(n)=f^*$ is critical -- the policy for determining which nodes to expand in the last frontier can have a significant impact on the performance of \astar.
+for a set of 1104 benchmark problem instances from the ICAPS International Planning Competition (IPC1998-2011).
+For many instances in \refig{fig:plateau-noh},  a large fraction of the nodes with $f(n) \leq f^*$ have $f(n)=f^*$.
+For example, in the Openstacks domain, almost all states with $f(n) \leq f^*$ have cost $f^*$.
+In such domains, the behavior of \astar on the last frontier is critical -- the policy for deciding which nodes to expand in the last frontier can have a significant impact on the performance of \astar.
 
 \begin{figure}[htb]
  \centering \relsize{-3} 
  \includegraphics{tables/aaai16-frontier/aaai16prelim3/lmcut_frontier_noh-front.pdf}
  \caption{
- Comparison of the number of the nodes $f=f^*$ compared to the
- total evaluation below $f\leq f^*$. Data were obtained by the result of
- Fast Downward with \lmcut on the standard benchmark instances. Both axes are
- logarithmic. Dotted lines represent $\times 10^n$ boundaries.}  \label{fig:plateau-noh}
+ The number of the nodes with cost $f=f^*$ (y-axis) compared to the
+ total number of nodes in the search space with cost $f\leq f^*$ on 1104 IPC benchmark problems
+(search space analyzed using Fast Downward with \lmcut heuristic, slightly modified to generate all nodes with cost $f^*$).}
+\label{fig:plateau-noh}
 \end{figure}
 
-In this paper, we focus on the tiebreaking criteria of \astar.
-To date, there has not been much previous \emph{in-depth} work on the policy for searching the last frontier.
-It is widely believed that among nodes with cost $f(n) = f^*$, ties should be broken according to $h(n)$, i.e., nodes with smaller $h$ values should be expanded first.
+In this paper, we focus on the \emph{tie-breaking} policy used by \astar, which selects a node to expand among nodes with the same $f$-cost.
+Since \astar expandes all nodes with $f$-cost less than $f^*$ before expanding any nodes with with cost $f^*$, 
+the tie-breaking poicy only affects performance when considering the last frontier (nodes with cost $f^*$).
+Although there has not been much previous \emph{in-depth} work on tie-breaking policies,
+it is widely believed that among nodes with cost $f(n) = f^*$, ties should be broken according to $h(n)$, i.e., nodes with smaller $h$ values should be expanded first.
 While this is a useful rule of thumb in many domains,
-it turns out that the policy for breaking ties among nodes with the same $f$-cost requires more careful consideration.
+it turns out that tie-breaking requires more careful consideration, particularly for problems with large \emph{plateaus} -- regions of the search space with the same cost.
 
 In this paper, we first show several important findings regarding the
 existing tiebreaking strategy for \astar as follows.
