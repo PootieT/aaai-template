@@ -31,9 +31,28 @@
 \renewcommand{\subsubparagraph}[1]{%
 \hrule width \linewidth%
 \marginpar[\hfill\relsize{-1} \protect{\rotatebox[origin=c]{90}{#1}} $\triangleright$]{\relsize{-1} $\triangleleft$ \protect{\rotatebox[origin=c]{-90}{#1}}}}
+\usepackage{soul}
 \makeatletter
-\renewcommand{\@todos}[1]{\marginpar{\tiny DONE \it #1}}
-\renewcommand{\@todons}[1]{\marginpar{\tiny\bf #1}}
+\renewcommand{\@todos}[2]{%
+  \ul{#1}%
+  \marginpar[%
+    \hfill\relsize{-1}%
+    \protect{%
+      \rotatebox[origin=c]{90}{done \it #2}}%
+    $\triangleright$]{%
+    \relsize{-1} $\triangleleft$%
+    \protect{%
+      \rotatebox[origin=c]{-90}{done \it #2}}}}
+\renewcommand{\@todons}[2]{%
+  \ul{#1}%
+  \marginpar[%
+    \hfill\relsize{-1}%
+    \protect{%
+      \rotatebox[origin=c]{90}{\bf todo: #2}}%
+    $\triangleright$]{%
+    \relsize{-1} $\triangleleft$%
+    \protect{%
+      \rotatebox[origin=c]{-90}{\bf todo: #2}}}}
 \makeatother
 \setlength{\columnsep}{0.5em}
 %%%%%%%%%%%%%%%%%%%%%%%%%

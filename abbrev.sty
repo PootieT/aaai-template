@@ -173,9 +173,9 @@
 
 \makeatletter
 
-\def\todo{\@ifstar{\@todos}{\@todons}}
-\newcommand{\@todons}[1]{}
-\newcommand{\@todos}[1]{}
+\newcommand{\todo}[2][]{\@ifstar{\@todos{#1}{#2}}{\@todons{#1}{#2}}}
+\newcommand{\@todons}[2]{}
+\newcommand{\@todos}[2]{}
 
 \makeatother
 
