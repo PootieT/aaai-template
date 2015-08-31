@@ -241,8 +241,8 @@ nearer to the goal, which means larger $g$ and smaller $h$.
 in favor of nodes with least h-cost'' \cite{hansen2007anytime}, and
 \citeauthor{holte2010common} also writes ``\astar breaks ties in favour
 of larger g values, as is most often done'' \cite{holte2010common}.
-\citeauthor{felner2011inconsistent} also assume ``ties are broken in
-favor of low h-values'' in describing Bidirectional Pathmax for \astar.
+% \citeauthor{felner2011inconsistent} also assume ``ties are broken in
+% favor of low h-values'' in describing Bidirectional Pathmax for \astar.
 \citeauthor{burns2012implementing} also break ties ``preferring high
 g'', which means low $h$. They also writes ``The reasoning is that the
 goal can be found more quickly in the final $f$ layer of search''. We
@@ -689,8 +689,18 @@ search engine.
 \section{Related Work}
 \label{sec-4}
 
+In the realm of inadmissible search, the work on escaping the plateau is
+abundant. DBFS \cite{imai2011novel} is a technique which stochastically
+backtracks Greedy Best First Search to avoid being misdirected by the
+heuristic function. Type based bucket \cite{xie14type} is an attempt to
+classify the plateau of GBFS according to the $[g,h]$ pair.
+Marvin \cite{Coles07} learns plateau-escaping macros from the Enhanced
+Hill Climbing phase of the FF planner \cite{Hoffmann01} and later uses
+these macros to escape the plateau.  However, to our knowledge, the
+similar research on optimal planning was hardly located.
+
 % Moved -- PLUSONE is for satisficing planning, and not directly related to tiebreaking
-Another related techinques are found in the context of satisficing planning.
+% Another related techinques are found in the context of satisficing planning.
 An inadmissible search technique in LAMA planner \cite{richter2010lama}
 increases every action costs by 1, called \emph{PLUSONE} cost-type.
 It is explicitly targeted at zero-cost actions observed in Openstacks,
@@ -699,48 +709,45 @@ In PLUSONE, three successive
 applications of zero-cost operators result in cost 3, and two
 applications result in a cost 2, and smaller cost is preferred, just as
 \astar always expands the node with smaller $f$-value.
-% Moved
+
 The major difference of our depth-based tiebreaking from PLUSONE
-strategy in LAMA is twofold.  First, the depth used for tiebreaking does
+strategy is twofold.  First, the depth used for tiebreaking does
 not affect the cost, thus our algorithm does not lose the
 admissibility. Next, \emph{we do not always favor smaller depth over
-larger depth}. LAMA's PLUSONE treats the increased cost as the part of
-sorting criteria. It happens only in FirstDepth configuration.
+larger depth}. LAMA treats the increased cost as the part of
+sorting criteria. In contrast, it happens only in FirstDepth configuration in our case.
 
-The major difference of our depth-based tiebreaking from PLUSONE
-strategy in LAMA is twofold.  First, the depth used for tiebreaking does
-not affect the cost, thus does not lose the admissibility. Next, we
-\emph{do not favor smaller depth over higher depth}. LAMA's PLUSONE
-treats the increased cost as the part of sorting criteria. 
+%% this will invoke a request from the reviewers to compare ours against it
+% Another technique in LAMA is \emph{preferred operator queue},
+% which is a technique that favors those actions which decreased the
+% smallest $h$ value during the search.
 
-Another technique in LAMA is \emph{preferred operator queue},
-which is a technique that favors those actions which decreased the
-smallest $h$ value during the search.
-
-
+In admissible planning,
 \emph{Symmetry Breaking}
 \cite{Fox1998,pochter2011exploiting,domshlak2013symmetry} is the search
 technique that tries to prune the states with symmetric
-paths. \emph{Partial Order Reduction}, \emph{Strong Stubbern Sets} and
-\emph{Expansion Core} are also the techniques which prune the
+paths. \emph{Partial Order Reduction}
+% , \emph{Strong Stubbern Sets} and \emph{Expansion Core} are
+is also a technique which prunes the
 intermediate states that reach to the same goal using the different
 orders of same actions. \emph{Dominance Pruning} \cite{hall2013faster} is a
 technique which prunes a state if it can be proven to be worse than the other nodes.
 % 
-\emph{Path-dependent globally admissible
-heurisitics} \cite{karpas2012optimal} is a class of heuristics which is
-admissible only on a particular optimal path, and generalizes the above
-techniques because pruning a node is equivalent to assigining an
-infinite cost to some nodes on the other optimal paths (thus, not
-per-state admissible).
-From a slightly different category, Pathmax \cite{mero1984heuristic} and
-Bidirectional Pathmax \cite{felner2011inconsistent} are the techniques
-which converts an inconsistent heuristics into non-decreasing,
-consistent heuristics.
-All of these methods are the
-attempt to improve the heuristic estimates. Although in some particular
-case they may be able to return a perfect heuristics, they are still not
-always a perfect heuristics, implying that the plateau is unavoidable.
+These are usually not considered an attempt to improve the heuristic
+estimates, however, in terms of \emph{Path-dependent globally admissible
+heurisitics} \cite{karpas2012optimal}, a class of heuristics which is
+admissible only on a particular optimal path, generalizes the above
+techniques as assigining an infinite cost to some nodes on the other optimal paths.
+% 
+% From a slightly different category, Pathmax \cite{mero1984heuristic} and
+% Bidirectional Pathmax \cite{felner2011inconsistent} are the techniques
+% which converts an inconsistent heuristics into non-decreasing,
+% consistent heuristics.
+Thus, in a broad term, all of these methods are the
+attempts to improve the heuristic estimates.
+% Although in some particular
+% case they may be able to return a perfect heuristics, they are still not
+% always a perfect heuristics, implying that the plateau is unavoidable.
 In contrast, our tiebreaking techniques aims specifically at the case
 where the plateau is encountered and the planners are forced to run a
 knowledge-free search.
@@ -752,15 +759,6 @@ $k=0$, called $LA^*_0$ in their paper, the greedy expansion reaches only within
 the same $f$-value. It is the same as LastDepth strategy in our
 case, but there is no mention comparing $LA^*_0$ to tiebreaking strategy.
 
-In the realm of inadmissible search, the work on escaping the plateau is
-abundant. DBFS \cite{imai2011novel} is a technique which stochastically
-backtracks Greedy Best First Search to avoid being misdirected by the
-heuristic function. Type based bucket \cite{xie14type} is an attempt to
-classify the plateau of GBFS according to the $[g,h]$ pair.
-Marvin \cite{Coles07} learns plateau-escaping macros from the Enhanced
-Hill Climbing phase of the FF planner \cite{Hoffmann01} and later uses
-these macros to escape the plateau.  However, to our knowledge, the
-similar research on optimal planning was hardly located.
 
 TODO: relationship to line of work by Hoffmann on search topology / plateau analysis? 
 \cite{Hoffmann05,Hoffmann14}
