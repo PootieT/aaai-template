@@ -406,11 +406,8 @@ third-level tiebreaking.
 All planners are based on the latest Fast Downward code base, and all
 experiments are run using 30 minutes runtime cutoff with 2GB memory
 limit. Also, experiments are conducted on Xeon E5410@2.33GHz CPUs.
-
 Our experimental results include 28 standard benchmark domains with 1104
-problems, 16 \emph{zerocost} domains with 640 problems, 16
-\emph{shuffled-zerocost} domains which have the suffled action ordering
-in the domain definition.
+problems, 16 \emph{zerocost} domains with 640 problems.
 
 % 
 % moved domain descriptions
@@ -552,44 +549,39 @@ FirstDepth still exhibits a significantly better performance in Cybersec
 and Mistery-Feast, respectively, indicating there is no true dominance relationship.
 
 This result explains why the simple $[f,h,\lifo]$ strategy has become
-successful.  The fact that the performance of $[f,h,\ld,\cdot]$ was
-consistently good regardless of the third-level tiebreaking means that
-the performance of $[f,h,\lifo]$ was actually caused by its inherent
-LastDepth search pattern, and not by the implementation of LIFO
-by themselves.
+successful. $[f,h,\lifo]$ is same as $[f,h,\ld,\lifo]$, and the fact
+that the performance of $[f,h,\ld,\cdot]$ was consistently good
+regardless of the third-level tiebreaking means that the performance of
+$[f,h,\ld,\lifo]$ was caused by LastDepth and not by third-level LIFO tiebreaking.
 
-Supporting the above claim that the key is LastDepth and not LIFO, the
-overall dominant third-level tiebreaking (in terms of coverage) is FIFO
-when the second-level tiebreaking is the same.  For example, when we fix
-the second-level tiebreaking, the coverages are
-$[f,h,X,\fifo]>[f,h,X,\ro]>[f,h,X,\lifo]$ when $X=\ld,\rd$.
-% 
-Note that FIFO is bad in terms of low-level memory access
-pattern since the insertion and deletion happens in the opposite side of
-the bucket. It suggests that FIFO ordering is an order of magnitude
-more important in many domains than the low-level performance.
-% 
-Still, there does exist several domains where FIFO is not dominating
-the others.
-For example, in Pipesworld-Pushend, the dominant third-level strategy is
-RandomOrder, regardless of the second-level depth tiebreaking.
-(3,3,3 in FirstDepth, 3,4,3 in RandomDepth, and 5,6,4 in LastDepth.)
+Supporting the above claim, the overall dominant third-level tiebreaking
+in these experiments is FIFO.  For example, when we fix the second-level
+tiebreaking, the coverages are $[f,h,X,\fifo]>[f,h,X,\ro]>[f,h,X,\lifo]$
+when $X=\ld,\rd$.  Note that FIFO is bad in terms of low-level memory
+access pattern since the insertion and deletion happens in the opposite
+side of the bucket.  This difference in the third-level tiebreaking is
+more likely due to the specific action ordering in the domain
+definition.  For example, in Pipesworld-Pushend, the dominant
+third-level strategy is RandomOrder, regardless of the second-level
+depth tiebreaking.  (FIFO,RO,LIFO is 3,3,3 in FirstDepth, 3,4,3 in
+RandomDepth, and 5,6,4 in LastDepth.) Also, in $[f,h,\rd,\cdot]$, the
+RandomOrder third-level tiebreaking is better than \lifo or \fifo, in
+Airport-Fuel and Mprime-Succumb.
 
+%% following discource may not be a good way to defend our paper.
+% Keen readers might be concerned with the effect of action ordering in
+% the domain definition. Although we showed that tie-breaking makes a
+% difference, all the minor differences could be accidental and due to the
+% input ordering, i.e., tiebreaking could change their behavior in some
+% cases by changing the sort order of the actions.
 % 
-% However, interestingly, in RandomDepth second-level tiebreaking, the
-% RandomOrder third-level tiebreaking is good in Airport-Fuel and
-% Mprime-Succumb.
+% This consideration does not diminish our depth-based second tiebreaking.
+% First, the only part affected by the action ordering is the
+% third tiebreaking, for which we tested \lifo, \fifo and \ro.
+% We are not trying to claim some dominance relationships within these
+% third tiebreakings. The purpose of the comparison 
 
-% Although above result suggests that the depth-based tiebreaking and
-% third-level tiebreaking affects the performance,
-One issue in the above analysis is that this difference might
-be caused by the accidental bias in the action order in the
-domain definitions.
-Thus we also tested \emph{shuffled-zerocost} domains
-in which we mechanically shuffled the action orderings in the
-domain file. The results showed the same trends as in the original
-zerocost domains. (Due to space constraint, we put this figure in the
-supplementaly material.)
+% also, even with 2-level tiebreaking,  2nd level random tiebreaking, lmcut(f,r), did not perform that well, so that supports the claim that re-ordering alone cannot explain all the results, and lmcut(f,h,r) is significantly worse than lmcut(f,h,lifo).
 
 % Another issue in this result is the lack of analysis on
 % abstraction-based heuristics. We also added the results in the figures
@@ -602,7 +594,7 @@ supplementaly material.)
 \begin{figure}[htb]
  \centering
  \relsize{-3}
- \input{tables/aaai16-5min/aaai16prelim3_zerocost_2zerocost_zrandom/1-1-depth-queues.tex}
+ \input{tables/aaai16-5min/aaai16prelim3_zerocost_2zerocost/1-1-depth-queues.tex}
  \caption{Experiments
  comparing the coverages of 9 configurations (3 depth-based strategy
  $\times$ 3 queue implementions). For the space reason, we omitted those
