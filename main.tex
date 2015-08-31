@@ -495,18 +495,19 @@ the tiebreaking criteria.
 % 
 \refig{plateau} plots the size of the final search plateau with
 $h$-based tiebreaking (\refig{fig:plateau-noh} in the introduction is
-the same figure without $h$-tiebreaking). Again, in this plot, $y$-axis
-shows the number of nodes $f=f*, h=0$ and $x$-axis shows the total
-number of nodes $f\leq f^*$. The size of the bucket does not change
-between $[f,h,\fifo]$, $[f,h,\lifo]$ and $[f,h,\ro]$.
+the same figure without $h$-tiebreaking). In this plot, $y$-axis
+shows the number of nodes $[f,h]=[f^*,0]$ and $x$-axis shows the total
+number of nodes $f\leq f^*$.
+%  The size of the bucket does not change
+% between $[f,h,\fifo]$, $[f,h,\lifo]$ and $[f,h,\ro]$.
 
 Clearly, in some domains, the planner cound spend most of the runtime on
-searching through the final plateau in the worst case: The goal node is
-evaluated in the very last iteration in the plateau. It also means that
-these domains have very large variance in the runtime caused by the
-difference in second-level tiebreakings. As expected, when the $h$-based
-tiebreaking is disabled in \refig{fig:plateau-noh}, much larger effort
-could be spent on the final plateau.
+searching through the final plateau in the worst case: The goal node
+could be found in the very last iteration in the plateau. It also
+means that these domains have very large variance in the runtime caused
+by the difference in second-level tiebreakings. Besides, as expected, when the
+$h$-based tiebreaking is disabled in \refig{fig:plateau-noh}, much
+larger effort could be spent on the final plateau.
 
 \begin{figure}[htb]
  \centering \relsize{-3}
@@ -656,7 +657,8 @@ strategy with selective combinations of two or three tiebreakings.
 Results in \reftbl{portfolio-coverage}
 shows a significant improvements compared to the results by each search
 engine alone.
-\refig{portfolio-coverage} shows the number of evaluations of these
+% 
+Also, \refig{portfolio-runtime} shows the number of evaluations of these
 tiebreakings compared to each search engine alone.  It shows that
 MultiSearch acutally follows the expected behavior and the theoretical
 bounds: the evaluation never exceeds twice/thirds of the single
