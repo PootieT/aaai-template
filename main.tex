@@ -157,7 +157,7 @@ runtime of moving the passengers up and down.  Actions in which the
 elevator travels the long distance take longer runtime.  When concerned
 with the runtime, it is reasonable to assign nonzero positive cost to
 every actions, since every actions are supposed to at least consume a
-fraction of runtime.
+fraction of time.
 
 However, such formulation is not suitable for the general type of cost
 minimization in which the target is not the runtime.  For example, when
@@ -165,15 +165,16 @@ you try to minimize the energy consumption by the elevators, many
 actions would have zero-cost --- it does not consume electricity for
 either moving the elevator down, boarding or leaving the passenger.
  
-The same thing applies to the transportation-type domains like
-logistics, and assembly-type domains like Woodworking. They are runtime
+The same thing applies to the transportation-type and assembly-type
+domains like logistics and Woodworking, respectively. They are runtime
 minimization domains in which driving and manual labor, or cutting and
-painting, are equally measured based on the single runtime metric.
+painting, are equally measured by the single runtime metric.
 % 
 However, a few modifications to the action costs will turn them into
-domains minimizing the fuel consumption in logistics or wood usage in
-Woodworking. From the practical point of view, cost minimization domains
-would have wider interests compared to the simple runtime minimization.
+cost-minimization domains, in which the target is the fuel consumption
+(logistics) or wood usage (Woodworking). From the practical point of
+view, cost minimization domains would have wider interests compared to
+the simple runtime minimization.
 
 Openstacks domain we noted in the previous section was first introduced
 in IPC-06. It is targeted at minimizing the number of stacks used and it
