@@ -223,54 +223,47 @@ resource usage such as ink or wood.  \todo[We also modify a same domain
 in the different minimization criteria, in order to avoid the bias on a
 particular domain formulation.]{It's not tested yet}
 
-\subsection{Tiebreaking Strategies in \astar}
+\subsection{Tie-breaking Strategies in \astar}
 
-Aside from the heuristic function, most best-first family of search
-algorithms, including \astar, IDA* and so on, have a tiebreaking criteria which is used
-when two nodes have the same $f$ value.
-There are two mainstreams of tiebreaking criteria in these algorithms:
-$h$-based tiebreaking and LIFO-tiebreaking.
+%Aside from the heuristic function, most best-first family of search
+%algorithms, including \astar, IDA* and so on, have a tiebreaking criteria which is used
+%when two nodes have the same $f$ value.
 
-The original \astar paper \cite{hart1968formal} explains the default
-tiebreaking in \astar as ``always in favor of any node $n \in T$ [goal
-node]'', implying that it break ties by choosing the nodes which are
-nearer to the goal, which means larger $g$ and smaller $h$.
-\citeauthor{Korf1985depth} uses $h$-based tiebreaking in the context of WA*
-\cite{korf1993linear}.  \citeauthor{hansen2007anytime} claim it is
-``well-known that \astar achieves best performance when it breaks ties
-in favor of nodes with least h-cost'' \cite{hansen2007anytime}, and
-\citeauthor{holte2010common} also writes ``\astar breaks ties in favour
-of larger g values, as is most often done'' \cite{holte2010common}.
+If multiple nodes with the same $f$-cost are possible, \astar
+must implement some tie-breaking policy (either
+explicitly or implicitly) in order to select from among these nodes.
+In practice, tie-breaking based on the $h$-value (breaking ties in favor of nodes with higher $h$) is almost universally used.
+As far as we are aware, $h$-based tie-breaking is ``folklore'' in the heuristic search literature.
+The original paper proposing \astar paper, as well as Nilsson's subsequent textbook states: ``Select the open node $n$ whose value $f$ is smallest. Resolve ties arbitrarily, but always in favor of any [goal node]'' (\cite{hart1968formal},p.102 Step 2, \cite{Nilsson71}, p.69). % [goal node] : actual text is $n \in T$.
+Although it is possible to interpret this to imply $h$-based tie-breaking, since goal nodes are a special case where $h=0$, 
+they make no further metion of tie-breaking.
+Pearl's seminal textbook on search specifies that best-first search should ``break ties arbitrarily'' (\citeyear{pearl1984heuristics}, p.48, Step 3), but does not specifically mention tie-breaking for \astar.
+Thus, the early literature on heuristic search seems to have been mostly agnostic on the issue of tie-breaking.
+Interestingly, in his analysis of IDA*, Korf mentions that ``If \astar employs the tie-breaking rule of 'most-recently generated', it must also expand the same nodes [as IDA*]'' (\citeyear{korf1985depth}) -- this last-in-first-out ordering is the first explicit mention we found of a tie-breaking policy not based on $h$.
+
+In recent years, tie-breaking accoording to $h$-values has become ``folklore'' in the search community.
+\citeauthor{hansen2007anytime} state that ``It is well-known 
+that \astar achieves best performance when it breaks ties
+in favor of nodes with least h-cost'' \cite{hansen2007anytime}.
+\citeauthor{holte2010common} writes ``\astar breaks ties in favour
+of larger g values, as is most often done'' (note that since $f=g+h$, preferring large $g$ is equivalent to preferring large $h$).
 % \citeauthor{felner2011inconsistent} also assume ``ties are broken in
 % favor of low h-values'' in describing Bidirectional Pathmax for \astar.
-\citeauthor{burns2012implementing} also break ties ``preferring high
-g'', which means low $h$. They also writes ``The reasoning is that the
-goal can be found more quickly in the final $f$ layer of search''. We
-assume this is a consensus among the researcher of forward heuristic
-search, although not extensively investigated yet.
-
-Analysis on LIFO-based tiebreaking is not as abundant as in $h$-based
-tiebreaking and is largely forgotten.
-\citeauthor{Korf1985depth} assumes LIFO ordering in describing \astar,
-as ``\astar employes the tie-breaking rule of 'most
-recently generated''' \cite{Korf1985depth}.
-\citeauthor{burns2012implementing} did not mention anything about how
-the bucket of nodes with the same $h$-value is implemented, but from their
-open-sourced implementation, they use LIFO for second-level tiebreaking. 
-In contrast, current implementation of \sota \astar based planner Fast
-Downward \cite{Helmert2006} uses FIFO-queue for implementing the bucket
-of $h$-based tiebreaking, again giving no explanation to this decision.
+In their detailed survey/tutorial of efficient \astar implementations, \citeauthor{burns2012implementing} also break ties ``preferring high
+$g$.'' They further write: ``The reasoning is that the goal can be found more quickly in the final $f$ layer of search''. 
+Thus, tie-breaking according to $h$-values appears to be ubiquitous in practice.
 
 
-However, in fact, these tiebreaking methods are not necessary when we
-are only concerned with maintaining the optimality. In particular, the
-choise of FIFO or LIFO tiebreakings usually have little to no
-explatation, and are presumably a result of heuristic selection, for
-either the simplicity of the implementation or the minor performance difference
-caused by memory access pattern, and have no theoretical background.
-% In particular, we first observed that this FIFO order has not legitimate reason to support.
+Although the standard practice of tie-breaking according to $h$ might be sufficient in some domains, further levels of tie-breaking (explicit or implicit) are required if multiple nodes can have the same $f$ and $h$ values.
+We are not aware of any work that explicitly mentions 2nd-level tie-breaking.
+While the survey of efficient \astar implementatins in \citeauthor{burns2012implementing} did not explicitly mention 2nd-level tie-breaking, their code first breaks ties according to $h$, and then breaks remaining ties according to a Last-In-First-Out (LIFO) policy (most recently generated nodes first).\footnote{https://github.com/eaburns/search}
+Their choice of a LIFO 2nd-level tie-breaking policy appears to be a natural consequence of the fact that the LIFO policy can be trivially, efficiently implemented in their two-level bucket (vector) implementation of their OPEN list.
+In contrast, the current implementation of \sota \astar based planner Fast
+Downward \cite{Helmert2006}\footnote{http://www.fast-downward.org} uses a First-In-First-Out (FIFO) second-level tie-breaking policy. We could not find any documentation for this choice. 
 
-
+%\citeauthor{Korf1985depth} uses $h$-based tiebreaking in the context of WA*
+%\cite{korf1993linear}.  
+% ** not sure how/where to put this..
 
 
 
