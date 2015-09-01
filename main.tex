@@ -37,7 +37,7 @@ In each iteration, \astar selects and \emph{expands} a node $n$ from the OPEN pr
 never overestimates the true distance to the goal $h^*$.
 
 In order to guarantee solution optimality, \astar expands all
-nodes with $f(n) < f^*$, where $f^*$ is the true cost of the optimal solution.
+nodes with $f(n) < f^*$, where $f^*$ is the cost of the optimal solution.
 %All nodes with $f(n) = k$ are expanded before any node with $f(n) > k$ are expanded.
 %Thus, after all nodes with $f(n) < f^*$ have been expanded, 
 \astar expands \emph{some} of the nodes with $f(n) = f^*$, and never expands a node with $f(n) > f^*$.
@@ -72,7 +72,7 @@ it is widely believed that among nodes with cost $f(n) = f^*$, ties should be br
 While this is a useful rule of thumb in many domains,
 it turns out that tie-breaking requires more careful consideration, particularly for problems with large \emph{plateaus} -- regions of the search space with the same cost.
 
-In this paper, we first show several important findings regarding the
+We first show several important findings regarding the
 existing tiebreaking strategy for \astar as follows.
 % 
 First, in implementing the open list of \astar, priority queue which holds
@@ -345,35 +345,37 @@ Let T1 be the time that A1 requires to solve instance I, and let T2 be the time 
 On one hand, this simple portfoio approach has the advantage of mitigating worst-case risk -- as shown in XXX, sometimes, the ratio between T1 and T2 is very large (>10x) and choosing the wrong strategy has a very high penalty, so this portfolio strategy guarantees that the CPU usage is never more than twice that of using the faster strategy.
 On the other hand, this simple portfolio will always require twice the CPU time of the faster strategy. Furthermore, the portfolio requires twice the RAM resources, which is a major disadvantage in memory-bound algorithms such as A*.
 
-We propose a new, {\emph Low-Overhead Portfolio} (LOP) implementation which can be used to implement a portfolio of tie-breaking strategies with significantly less overhead.
+We propose a new, \emph{Low-Overhead Portfolio} (LOP) implementation which can be used to implement a portfolio of tie-breaking strategies with significantly less overhead.
 Conceptually, a LOP for A* is a portfolio composed of multiple independently executing threads of A*  where each thread  executes independently using a different tiebreaking strategy but which share a cache for heuristic function values.
 The actual implementation is as follows:
 The LOP simulates
-multiple search engines using the same heuristic function, but with the
+multiple search engines using the same heuristic function, but with
 different tiebreaking strategies.  Each engine has completely separate
-open list and closed list.  However, there is a globally shared hash
-table which caches every results of the heuristic function.  Whenever a
-search engine evaluates a state, it checks if the result of a heuristic is
-already computed, and if so, it reuses the result.  Each search engine
-evaluates a state in turns, sequencially, so there is no parallelism
-involved. The algorithm finishes when some engine finds the solution.
+open list and closed list.  There is a globally shared hash
+table which caches all heuristic function computations.  Whenever a
+search engine evaluates a state, it first checks the caches and 
+reuses the result if possible.  The current implementation is sequential -- each search engine takes  turns 
+evaluating states. The algorithm finishes when some engine finds the solution.
 
 
-The LOP has several interesting characteristics.  First,
-although the amount of memory used for the open/closed list is doubled,
-and the effort to push/pop the search nodes is also doubled, the
-computation of \lmcut is so heavy that those wasted efforts are
-negligeble.  We verify this in the results section.
+Low-Overhead Portfolios offer some attractive tradeoffs,
+particularly when runtimes are dominated by state evaluation, as is the case when searching with 
+expensive heuristics such as LM-cut or recently proposed LP-based heuristics \cite{Pommereningetal14}.
 
-Second, if we ignore the negligeble cost of insertion and deletion to
-the open/closed list, we do not have to pay the extra cost evaluating
-the heuristic function for states $f<f^*$ thanks to the caching.
-Recall that \astar must always evaluate the states whose $f$ values are
-below $f^*$. Since the heuristic estimate $h$, and in turn $f=g+h$, is
+First, although the effort to insert/extract nodes from multiple open/closed lists is also doubled, these overheads
+are neglibigle when the heuristic is expensive (see \refig{XXX}).
+
+Second, although maintaining multiple open/closed lists requires additional memory,
+when the heuristic is expensive enough, runtime becomes a bigger issue than memory exhaustion  -- we show that with a 30 minute time limit, LOP configurations do not exhaust memory compared to the other configurations \refig{XXX}.\todo{??}
+
+Third, node evaluation overheads for $f < f^*$ are eliminated due to the $h$-cache.
+Recall that \astar always evaluates all states whose $f$ costs 
+below $f^*$. Since the heuristic function $h$, and in turn $f=g+h$, is
 the same among the tiebreaking strategies, they evaluate the same set of
-nodes in $f<f*$.  Therefore, in region $f<f*$, our caching mechanism
-fully works and completely eliminates the possibility of extra
-evaluation caused by adding another queues.  Note that, this is not
+nodes with $f<f^*$, so unlike a standard portfolio implementation where 
+nodes with $f<f^*$ would be evaluated multiple times, there is no evaluation overhead in a LOP
+for nodes with $f<f^*$.
+Note that this is not
 affected by the reopening of the node caused by inconsitent heuristics
 since the $h$-value is cached.
 
@@ -388,10 +390,10 @@ since the $h$-value is cached.
 %% times (Openstacks, for example).  When there are $n$ engines, then this
 %% increases to $n\times$ minimum amount of effort which would be spent by
 %% each single engine alone.
-Finally, thanks to the full caching, the worst case evaluation is upper
-bounded by the total number of nodes with $f\leq f^*$, which is same as
-the case of single engine alone. This happens when all tiebreaking
-strategies perform quite poor and they all evaluates the goal node in the
+
+Finally, in the worst case, the total number of nodes evaluated by a LOP is bounded by the number of nodes with $f \leq f^*$, which is the same as the worst-case behavior of \astar using the worst possible tie-breaking strategy.
+This can occur  when all tiebreaking
+strategies perform porrly  and they all evaluates the goal node in the
 final iteration.
 
 \section{Experimental Results}
@@ -716,35 +718,39 @@ sorting criteria. In contrast, it happens only in FirstDepth configuration in ou
 % which is a technique that favors those actions which decreased the
 % smallest $h$ value during the search.
 
-In admissible planning,
-\emph{Symmetry Breaking}
-\cite{Fox1998,pochter2011exploiting,domshlak2013symmetry} is the search
-technique that tries to prune the states with symmetric
-paths. \emph{Partial Order Reduction}
-% , \emph{Strong Stubbern Sets} and \emph{Expansion Core} are
-is also a technique which prunes the
-intermediate states that reach to the same goal using the different
-orders of same actions. \emph{Dominance Pruning} \cite{hall2013faster} is a
-technique which prunes a state if it can be proven to be worse than the other nodes.
-% 
-These are usually not considered an attempt to improve the heuristic
-estimates, however, in terms of \emph{Path-dependent globally admissible
-heurisitics} \cite{karpas2012optimal}, a class of heuristics which is
-admissible only on a particular optimal path, generalizes the above
-techniques as assigining an infinite cost to some nodes on the other optimal paths.
-% 
-% From a slightly different category, Pathmax \cite{mero1984heuristic} and
-% Bidirectional Pathmax \cite{felner2011inconsistent} are the techniques
-% which converts an inconsistent heuristics into non-decreasing,
-% consistent heuristics.
-Thus, in a broad term, all of these methods are the
-attempts to improve the heuristic estimates.
-% Although in some particular
-% case they may be able to return a perfect heuristics, they are still not
-% always a perfect heuristics, implying that the plateau is unavoidable.
-In contrast, our tiebreaking techniques aims specifically at the case
-where the plateau is encountered and the planners are forced to run a
-knowledge-free search.
+
+% It's not clear what these techniques have in common, except that they are all orthogonal to heuristics,
+% If that's the case, then there's no need to cite them in this paper -- there's no reason why these particular techniques
+% are more relevant to this paper than hundreds of other techniques that are orthogonal to heuristics.
+%% In admissible planning,
+%% \emph{Symmetry Breaking}
+%% \cite{Fox1998,pochter2011exploiting,domshlak2013symmetry} is the search
+%% technique that tries to prune the states with symmetric
+%% paths. \emph{Partial Order Reduction}
+%% % , \emph{Strong Stubbern Sets} and \emph{Expansion Core} are
+%% is also a technique which prunes the
+%% intermediate states that reach to the same goal using the different
+%% orders of same actions. \emph{Dominance Pruning} \cite{hall2013faster} is a
+%% technique which prunes a state if it can be proven to be worse than the other nodes.
+%% % 
+%% These are usually not considered an attempt to improve the heuristic
+%% estimates, however, in terms of \emph{Path-dependent globally admissible
+%% heurisitics} \cite{karpas2012optimal}, a class of heuristics which is
+%% admissible only on a particular optimal path, generalizes the above
+%% techniques as assigining an infinite cost to some nodes on the other optimal paths.
+%% % 
+%% % From a slightly different category, Pathmax \cite{mero1984heuristic} and
+%% % Bidirectional Pathmax \cite{felner2011inconsistent} are the techniques
+%% % which converts an inconsistent heuristics into non-decreasing,
+%% % consistent heuristics.
+%% Thus, in a broad term, all of these methods are the
+%% attempts to improve the heuristic estimates.
+%% % Although in some particular
+%% % case they may be able to return a perfect heuristics, they are still not
+%% % always a perfect heuristics, implying that the plateau is unavoidable.
+%% In contrast, our tiebreaking techniques aims specifically at the case
+%% where the plateau is encountered and the planners are forced to run a
+%% knowledge-free search.
 
 $LA^*$ \cite{stern2010look} is an extension of \astar which employs a
 \emph{lookahead} to each expansion of a node. Lookahead is a depth first
