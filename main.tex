@@ -434,7 +434,7 @@ situation is the \emph{depth} of a node, which represents the number
 of steps a node is away from the entrance of the plateau.
 $depth(n)$ is defined as $depth(parent(n)) + 1$.
 If the $parent(n)$ is from the other plateau, i.e., $parent(n)$ has a different $f$-value, or different $h$-value used for the first
-tiebreaking, the $depth(n) = 0$. 
+tiebreaking, then $depth(n) = 0$. We call such $n$ the \emph{entrance} of the plateau.
 Based on this simple notion of depth,
 we propose  \emph{depth-based tie-breaking}, where all nodes are associated with its depth, 
 and depth is used as a tie-breaking criterion.
@@ -452,7 +452,7 @@ The effectiveness of each strategy depends on the structure of the problem insta
 In the knowledge-free search within the plateau, all nodes have the same
 $f$ and $h$ values % yes, for simplicity, I'm assuming 3-level tiebreaks, ignoring no-h for the time being..
  and it is impossible to guess whether the goal is near, far
-away or in a particular distance from the entrance. \todo{``entrance'' must be defined.}
+away or in a particular distance from the entrance.
 In the first case,
 the search should be focused around the entrance favoring the smaller
 depths, and the behavior should be much like breadth-first, and it
