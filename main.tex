@@ -174,6 +174,7 @@ All planners are based on the latest Fast Downward code base, and all
 experiments are run using 30 minutes runtime cutoff with 2GB memory
 limit. Experiments were conducted on Xeon E5410@2.33GHz CPUs.
 Our experimental results include 28 standard benchmark domains with 1104
+<<<<<<< variant A
 problems
 
 We first compared three strategies 
@@ -188,6 +189,14 @@ supplemental material. \todo{probably better to show full results for this parti
 Although the search behavior of $[f,h,\fifo]$ corresponds to the default behavior of Fast Downward (FD), this implementation differs 
 from the original, unmodified FD code because we enabled caching of $h$-values, so that regenerated nodes refer to cached $h$-values.\footnote{The current Fast Downward code disables $h$-caching because its current implementation is not compatible with multiple admissible heuristics}.
 Thus, we also show results for unmodified FD -- as expected, $[f,h,\fifo]$ dominates unmodified FD.
+>>>>>>> variant B
+problems.
+We run experiments for both \lmcut and M\&S heuristics as $h$, but due to space limitation
+we only show \lmcut results. The supplemental material contains M\&S.
+####### Ancestor
+problems
+
+======= end
 
 
 \begin{table}[htb]
