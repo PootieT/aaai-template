@@ -471,7 +471,7 @@ We evaluated the nine configurations of the three-level tie-breaking strategies 
 
 In addition to the 28 standard IPC benchmark domains used in the previous set of experiments, we also added 16 \emph{zerocost} domains with 640 problems. 
 
-Note that, the node evaluation order of $[\cdot,\fd,\fifo]$ and $[\cdot,\ld,\lifo]$
+Note that the node evaluation order of $[\cdot,\fd,\fifo]$ and $[\cdot,\ld,\lifo]$
 are exactly the same as those without the second-level
 depth-based tiebreaking, i.e.\ $[\cdot,\fifo]$ and $[\cdot,\lifo]$.
 Yet these results are useful in assessing the extra cost of managing the
@@ -583,7 +583,7 @@ evaluating states. The algorithm finishes when some engine finds the solution.
 
 Low-Overhead Portfolios offer some attractive tradeoffs,
 particularly when runtimes are dominated by state evaluation, as is the case when searching with 
-expensive heuristics such as LM-cut or recently proposed LP-based heuristics \cite{Pommereningetal14}.
+expensive heuristics such as LM-cut or recently proposed LP-based heuristics \cite{PommereningRHB14,ImaiF14}.
 
 First, although the effort to insert/extract nodes from multiple open/closed lists is also doubled, these overheads
 are neglibigle when the heuristic is expensive (see \refig{XXX}).
@@ -718,11 +718,14 @@ sorting criteria. In contrast, it happens only in FirstDepth configuration in ou
 %% Probably better to preemptively settle these questions rather than risking difficult questions during rebuttal.
 TODO: other FD/LAMA comparisons: alternating queues vs LOP,   preferred queues vs depth-based tie-breaking.
 
-% Another technique in LAMA is \emph{preferred operator queue},
-% which is a technique that favors those actions which decreased the
-% smallest $h$ value during the search.
+Another technique in LAMA is \emph{preferred operator queue},
+which is a technique that favors actions that decrease the
+smallest $h$ value during the search. Although this was designed for non-admissible search in LAMA, preferred operators could, in principle, be applied to admissible search. However, in contrast to the tie-breaking strategies investigated in this paper, the selection of preferred operators  are specific to the heuri
 
-TODO:  lazy A* vs LOP -- LazyA* combines multiple heuristics h1,h2 with low-overhead. However, if there is no dominance between h1,h2, behavior is different than h2; in contrast, LOP guarantees conservative behavior.
+
+%Lazy A* \cite{TolpinBSFK13} 
+%TODO:  lazy A* vs LOP -- LazyA* combines multiple heuristics h1,h2 with low-overhead. However, if there is no dominance between h1,h2, behavior is different than h2; in contrast, LOP guarantees conservative behavior. % no, never mind, too different..
+
 
 % It's not clear what these techniques have in common, except that they are all orthogonal to heuristics,
 % If that's the case, then there's no need to cite them in this paper -- there's no reason why these particular techniques
@@ -757,12 +760,11 @@ TODO:  lazy A* vs LOP -- LazyA* combines multiple heuristics h1,h2 with low-over
 %% where the plateau is encountered and the planners are forced to run a
 %% knowledge-free search.
 
-$LA^*$ \cite{stern2010look} is an extension of \astar which employs a
-\emph{lookahead} to each expansion of a node. Lookahead is a depth first
-search from the frontier node limited to a particular depth $k$. When
-$k=0$, called $LA^*_0$ in their paper, the greedy expansion reaches only within
-the same $f$-value. It is the same as LastDepth strategy in our
-case, but there is no mention comparing $LA^*_0$ to tiebreaking strategy.
+$LA^*$ \cite{stern2010look} extends \astar by performing a
+cost-bounded depth-first \emph{lookahead} from each node as it is generated.
+Although this work was not done in the context of tie-breaking strategies, it is interesting to note that 
+when the lookahead cost bound $k=0$ ($LA^*_0$ in their notation), only nodes with the same $f$-value as the current \astar frontier are expanded, which corresponds to a LastDepth strategy.
+
 
 \citeauthor{Hoffmann05} gives a detailed analysis of the
 structure of the search space in the benchmark domains in \citeyear{Hoffmann05}
