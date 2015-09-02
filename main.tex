@@ -175,30 +175,20 @@ All planners are based on the latest Fast Downward code base, and all
 experiments are run using 30 minutes runtime cutoff with 2GB memory
 limit. Experiments were conducted on Xeon E5410@2.33GHz CPUs.
 Our experimental results include 28 standard benchmark domains with 1104
-<<<<<<< variant A
-problems
+problems.
 
 We first compared three strategies 
-$[f,h,\fifo]$, $[f,h,\lifo]$ and $[f,h,\ro]$, 
+$[f,h,\fifo]$, $[f,h,\lifo]$ and $[f,h,\ro\mbox{(Random Order)}]$, 
 which first breaks ties according to $h$, and then applies \fifo, \lifo, or \ro second-level tie-breaking, respectively.
-The results (for \astar using the LM-cut heuristic \cite{Helmert2009}) are shown 
- in \reftbl{single-coverage} (Left).  Differences in coverage can be overved in several domains.
+The results for \astar using the LM-cut heuristic \cite{Helmert2009} are shown 
+ in \reftbl{single-coverage} (Left).  Differences in coverage can be observed in several domains.
 Due to the space limitation, we show only the domains
-where the difference was observed. Full data is available in the
+where there was any difference. Full data is available in the
 supplemental material. \todo{probably better to show full results for this particular experiment}.
 
 Although the search behavior of $[f,h,\fifo]$ corresponds to the default behavior of Fast Downward (FD), this implementation differs 
-from the original, unmodified FD code because we enabled caching of $h$-values, so that regenerated nodes refer to cached $h$-values.\footnote{The current Fast Downward code disables $h$-caching because its current implementation is not compatible with multiple admissible heuristics}.
+from the original, unmodified FD code because we enabled caching of $h$-values, so that regenerated nodes refer to cached $h$-values.\footnote{The current Fast Downward code disables $h$-caching because its current implementation is not compatible with multiple admissible heuristics.}
 Thus, we also show results for unmodified FD -- as expected, $[f,h,\fifo]$ dominates unmodified FD.
->>>>>>> variant B
-problems.
-We run experiments for both \lmcut and M\&S heuristics as $h$, but due to space limitation
-we only show \lmcut results. The supplemental material contains M\&S.
-####### Ancestor
-problems
-
-======= end
-
 
 \begin{table}[htb]
  \centering \relsize{-3}
