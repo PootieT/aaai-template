@@ -264,8 +264,12 @@ there are many nodes that have the same $f$ and $h$ values, creating
 large \emph{plateau} regions where the heuristic does not provide
 useful guidance -- in effect, these plateau regions in the last
 frontier ($f=f^*$) by definition requires blind search, i.e., 
-relying solely on the tie-breaking criterion, in order to escape the
-plateau and find a goal node.
+relying solely on the tie-breaking criterion, in order to
+%% in the final plateau, there is no need to escape the
+%% plateau. ``escape'' is a word for inadmissible search. A* is never
+%% allowed to escape the plateau until all nodes are expanded.
+% escape the plateau and
+find a goal node.
 %, i.e., the problems where the
 %heuristic function is not informative and the planner relies heavily on
 %the tiebreaking criteria.
