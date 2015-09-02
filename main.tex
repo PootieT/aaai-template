@@ -184,10 +184,10 @@ from the original, unmodified FD code because we enabled caching of $h$-values, 
 Thus, we also show results for unmodified FD -- as expected, $[f,h,\fifo]$ dominates unmodified FD.
 
 
-\begin{table}[htbp]
+\begin{table}[htb]
  \centering \relsize{-3}
- \input{tables/aaai16-5min/aaai16prelim3/1-1-basic-queues.tex}
- \input{tables/aaai16-5min/aaai16prelim3/1-1-basic-queues-noh.tex}
+ \input{tables/aaai16-30min/aaai16prelim3/1-1-basic-queues.tex}
+ % \input{tables/aaai16-5min/aaai16prelim3/1-1-basic-queues-noh.tex}
  \caption{Experiments comparing the performance of FIFO, LIFO and Random
  second-level tiebreaking, with (left) and without (right) the
  conventional first-level $h$-tiebreaking.  For the space reason, we
@@ -202,11 +202,11 @@ Thus, we also show results for unmodified FD -- as expected, $[f,h,\fifo]$ domin
 number of node evaluation (computations of \lmcut) on
 different tiebreakings.
 
-\begin{figure}[htbp]
+\begin{figure}[htb]
  \centering \relsize{-3}
- \includegraphics{tables/aaai16-5min/aaai16prelim3/evaluated-lmcut_ff-lmcut_lf.pdf}
- \includegraphics{tables/aaai16-5min/aaai16prelim3/evaluated-nokey-lmcut_ff-lmcut_r.pdf}
- \includegraphics{tables/aaai16-5min/aaai16prelim3/evaluated-nokey-lmcut_r-lmcut_lf.pdf}
+ \includegraphics{tables/aaai16-30min/aaai16prelim3/evaluated-lmcut_ff-lmcut_lf.pdf}
+ \includegraphics{tables/aaai16-30min/aaai16prelim3/evaluated-nokey-lmcut_ff-lmcut_r.pdf}
+ \includegraphics{tables/aaai16-30min/aaai16prelim3/evaluated-nokey-lmcut_r-lmcut_lf.pdf}
  \caption{Comparisons of \# of Evaluations between simple \lifo, \fifo,
  \ro second-level tiebreaking, with first-level $h$-tiebreaking. Each
  line shows $\times 2,4,6\ldots$ boundary.}  \label{f-h-eval}
@@ -529,7 +529,7 @@ Airport-Fuel and Mprime-Succumb.
 \begin{figure}[htb]
  \centering
  \relsize{-3}
- \input{tables/aaai16-5min/aaai16prelim3_zerocost_2zerocost/1-1-depth-queues.tex}
+ \input{tables/aaai16-30min/aaai16prelim3_zerocost_2zerocost/1-1-depth-queues.tex}
  \caption{Experiments
  comparing the coverages of 9 configurations (3 depth-based strategy
  $\times$ 3 queue implementions). For the space reason, we omitted those
@@ -545,7 +545,7 @@ Airport-Fuel and Mprime-Succumb.
 % \begin{figure}[htb]
 %  \centering
 %  \relsize{-3}
-%  \input{tables/aaai16-5min/aaai16prelim3_zerocost_2zerocost/1-1-depth-queues-noh.tex}
+%  \input{tables/aaai16-30min/aaai16prelim3_zerocost_2zerocost/1-1-depth-queues-noh.tex}
 %  \caption{Same experiments without first-level tiebreaking by $h$-value.}
 %  \label{depth-noh}
 % \end{figure}
@@ -640,7 +640,7 @@ queue, and compared its runtime against the same single engine (\lmcut
 and FIFO). The result in \refig{ffff} shows that the extra cost of
 duplicated effort is negligeble.
 
-\begin{figure}[htbp]
+\begin{figure}[htb]
  \centering
  \relsize{-2}
  % \includegraphics{tables/opt11-time-lmcut_ff-lmcut_ffff.pdf}
