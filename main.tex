@@ -162,7 +162,7 @@ Downward \cite{Helmert2006}\footnote{http://www.fast-downward.org} uses a First-
 %\cite{korf1993linear}.  
 % ** not sure how/where to put this..
 
-\section{Evaluation of Simple Tie-Breaking Strategies}
+\subsection{Evaluation of Two-Level Tie-Breaking Strategies}
 
 
 We tested various tiebreaking strategies. In the following sections, we
@@ -229,13 +229,15 @@ Although LIFO second-level tie-breaking appears to perform best overall on these
 there are no dominance relationship between these three strategies, and the overall performance of each strategy will depend on the composition of problem instances in the benchmark set.
 %These differences are purely due to the domain characteristics. 
 
+\subsection{Is $h$-based tie-breaking necessary?}
+
 Next, we investigated whether $h$-based, first-level tie-breaking is necessary.
 In \reftbl{single-coverage} (right), which shows the results when  first-level
 tiebreaking based on $h$ is disabled, [f, \lifo], which simply breaks ties among nodes with the same $f$-cost by expanding most recently generated nodes first (first suggested in \cite{korf85depth}),
-clearly dominates [f, \fifo] and [f, \random].
+clearly dominates [f, \fifo] and [f, \ro].
 
 Interestingly, the performance of the [f, \lifo] strategy
-is comparable to [f,h,\lifo],[f,h,\fifo], and [f,h,\random], the two-level strategies that first break ties according to $h$.
+is comparable to [f,h,\lifo],[f,h,\fifo], and [f,h,\ro], the two-level strategies that first break ties according to $h$.
 This is somewhat surprising, considering the ubiquity of $h$-based tie-breaking in the search and planning communities.
 
 We reemphasize that, although LIFO dominated the others, we consider
@@ -247,8 +249,9 @@ Random order always dominates the others}.
 % However, there are noticeable
 % performance difference caused by these different tiebreaking strategies.
 
-\subsection{Size of the Plateau Matters}
+\subsection{Plateaus and Tie-Breaking}
 
+In our comparison of the simple two-level tie-breaking strategies above, 
 We also observed that, such differences occur especially in the problems
 which have the huge search plateau, i.e., the problems where the
 heuristic function is not informative and the planner relies heavily on
