@@ -64,15 +64,21 @@ In such domains, the behavior of \astar on the last frontier is critical -- the 
 \label{fig:plateau-noh}
 \end{figure}
 
-In this paper, we focus on the \emph{tie-breaking} policy used by \astar, which selects a node to expand among nodes with the same $f$-cost.
-Since \astar expandes all nodes with $f$-cost less than $f^*$ before expanding any nodes with with cost $f^*$, 
-the tie-breaking poicy only affects performance when considering the last frontier (nodes with cost $f^*$).
-Although there has not been much previous \emph{in-depth} work on tie-breaking policies,
-it is widely believed that among nodes with cost $f(n) = f^*$, ties should be broken according to $h(n)$, i.e., nodes with smaller $h$ values should be expanded first.
-While this is a useful rule of thumb in many domains,
-it turns out that tie-breaking requires more careful consideration, particularly for problems with large \emph{plateaus} -- regions of the search space with the same cost.
-\emph{Note that all tiebreaking strategies investigated in this paper maintain the admissibility of the search
-because only the node expansion order among nodes that share the same $f$-cost are affected.}
+In this paper, we focus on the \emph{tie-breaking} policy used by
+\astar, which selects a node to expand among nodes with the same
+$f$-cost.  Since \astar expandes all nodes with $f$-cost less than $f^*$
+before expanding any nodes with cost $f^*$, the tie-breaking poicy only
+affects performance when considering the last frontier (nodes with cost
+$f^*$).  Although there has not been much previous \emph{in-depth} work
+on tie-breaking policies, it is widely believed that among nodes with
+cost $f(n) = f^*$, ties should be broken according to $h(n)$, i.e.,
+nodes with smaller $h$ values should be expanded first.  While this is a
+useful rule of thumb in many domains, it turns out that tie-breaking
+requires more careful consideration, particularly for problems with
+large \emph{plateaus} -- regions of the search space with the same cost.
+\emph{Note that all tiebreaking strategies investigated in this paper
+maintain the admissibility of the search because only the node expansion
+order among nodes that share the same $f$-cost are affected.}
 
 \todo[We first show several important findings regarding the
 existing tiebreaking strategy for \astar as follows.]{is this the best
