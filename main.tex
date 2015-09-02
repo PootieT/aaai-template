@@ -506,19 +506,27 @@ in these experiments is FIFO.  For example, when we fix the second-level
 tiebreaking, the coverages are $[f,h,X,\fifo]>[f,h,X,\ro]>[f,h,X,\lifo]$
 when $X=\ld,\rd$.  Note that FIFO is bad in terms of low-level memory
 access pattern since the insertion and deletion happens in the opposite
-side of the bucket.  This difference in the third-level tiebreaking is
-more likely due to the specific action ordering in the domain
-definition.  For example, in Pipesworld-Pushend, the dominant
-third-level strategy is RandomOrder, regardless of the second-level
-depth tiebreaking.  (FIFO,RO,LIFO is 3,3,3 in FirstDepth, 3,4,3 in
-RandomDepth, and 5,6,4 in LastDepth.) Also, in $[f,h,\rd,\cdot]$, the
-RandomOrder third-level tiebreaking is better than \lifo or \fifo, in
-Airport-Fuel and Mprime-Succumb.
+side of the bucket. 
 
-\todo[We also tested the same domains with a reversed action ordering.
-The results (in supplimental material) show that the action ordering
-affects the performance of third-level tiebreaking, but it did not
-changed the trends in the second-level tiebreaking.]{Running Experiments}
+Note that we do not claim the performance of FIFO in third-level
+tiebreaking is universal.  Rather, it is more likely due to the specific
+action ordering in the domain definition. \todo[First]{thise text should
+be adjusted after 30min results}, in Pipesworld-Pushend,
+for example, the dominant third-level strategy is RandomOrder,
+regardless of the second-level depth tiebreaking.  (FIFO,RO,LIFO is
+3,3,3 in FirstDepth, 3,4,3 in RandomDepth, and 5,6,4 in LastDepth.)
+Also, in Airport-Fuel and Mprime-Succumb with RandomDepth ($[f,h,\rd,\cdot]$), 
+the RandomOrder third-level tiebreaking is better than \lifo or \fifo.
+Furthermore, \todo[we also tested the same domains with a reversed
+action ordering.]{Running Experiments}.  The results (in supplimental
+material) show that the action ordering affects the performance of
+third-level tiebreaking, but it did not changed the trends in the
+second-level tiebreaking.
+
+This third-level tiebreaking behavior is related to recent work
+\cite{vallati2015effective} done by changing the action and variable
+ordering with SMAC parameter tuning framework. However, finding the best
+third-level tiebreaking is not the scope of this paper.
 
 %% following discource may not be a good way to defend our paper.
 % Keen readers might be concerned with the effect of action ordering in
