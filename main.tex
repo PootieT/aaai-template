@@ -652,11 +652,11 @@ Also, the more practical, cost-minimization domains tend to have large plateaus.
 Furthermore, the different depth-based tiebreakings are not dominating
 each other, and is greatly affected by the domain characteristics.
 % 
-Therefore, the multisearch strategy should avoid the
+Therefore, the LOP strategy should avoid the
 worst-case scenario caused by bad tiebreaking, and quickly find the solution.
 
 First, we show that the doubled cost of insertion and deletion by
-MultiSearch is negligeble.  We verified this by running a MultiSearch
+LOP is negligeble.  We verified this by running a LOP
 search engine with two same search engines, both using \lmcut and FIFO
 queue, and compared its runtime against the same single engine (\lmcut
 and FIFO). The result in \refig{ffff} shows that the extra cost of
@@ -666,11 +666,13 @@ duplicated effort is negligeble.
  \centering
  \relsize{-2}
  % \includegraphics{tables/opt11-time-lmcut_ff-lmcut_ffff.pdf}
- \caption{Comparison of runtime on problems solved by both single FIFO search engine (ff) and a MultiSearch engine with 2 different instances of the same FIFO engine (ffff). The runtime difference was on average below a factor of x1.1, if we ignore the subsecond differences.}
- \label{ffff}
+ \caption{Comparison of runtime on problems solved by both single FIFO
+ search engine (ff) and a LOP engine with 2 different instances of the
+ same FIFO engine (ffff). The runtime difference was on average below a
+ factor of x1.1, if we ignore the subsecond differences.}  \label{ffff}
 \end{figure}
 
-Next, we evaluated our MultiSearch
+Next, we evaluated our LOP
 strategy with selective combinations of two or three tiebreakings.
 The configuration shown as ``lmcut m2'', ``lmcut m3'', ``mands m2'',
 ``lmcut m3'' are respectively the portfolio of
@@ -684,7 +686,7 @@ engine alone.
 % 
 Also, \refig{portfolio-runtime} shows the number of evaluations of these
 tiebreakings compared to each search engine alone.  It shows that
-MultiSearch acutally follows the expected behavior and the theoretical
+LOP acutally follows the expected behavior and the theoretical
 bounds: the evaluation never exceeds twice/thirds of the single
 search engine.
 
@@ -701,7 +703,7 @@ search engine.
  \relsize{-2}
  \includegraphics{tables/aaai16-5min/aaai16prelim3/evaluated-lmcut_m2-lmcut_ld_fifo.pdf}
  % \includegraphics{tables/aaai16-5min/aaai16prelim3/evaluated-nokey-lmcut_m2-lmcut_rd_lifo.pdf}
- \caption{Runtime comparson between MultiSearch (X,Y,Z) and single strategies.}
+ \caption{Runtime comparson between LOP (X,Y,Z) and single strategies.}
  \label{portfolio-runtime}
 \end{figure}
 
