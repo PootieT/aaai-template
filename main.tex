@@ -277,7 +277,7 @@ find a goal node.
 \refig{plateau} plots the size of the final search plateau on 1104 IPC benchmark instances.
 The $y$-axis
 represents the number of nodes with $[f,h]=[f^*,0]$, and the $x$-axis represents the total
-number of nodes with $f\leq f^*$ 
+number of nodes with $f\leq f^*$.
 Clearly, in some domains such as Openstacks and Cybersec, the planner can spend most of the runtime
 searching the final plateau.
 It also
@@ -350,7 +350,7 @@ actions would have zero-cost --- it does not consume electricity for
 either moving the elevator down, boarding or leaving the passenger.
  
 The same thing applies to the transportation-type and assembly-type
-domains like logistics and Woodworking, respectively. They are runtime
+domains like Logistics and Woodworking, respectively. They are runtime
 minimization domains in which driving and manual labor, or cutting and
 painting, are equally measured by the single runtime metric.
 % 
@@ -360,9 +360,9 @@ cost-minimization domains, in which the target is the fuel consumption
 view, cost minimization domains would have wider interests compared to
 the simple runtime minimization.
 
-The Openstacks domain is a cost
+Openstacks domain is a cost
 minimization domain first introduced in IPC-2006, where the objective is to 
-minimizing the number of stacks used.
+minimize the number of stacks used.
 There are many zero-cost actions (i.e., actions that don't increase the number of stacks), and
 these zero-cost actions prevent the commonly used heuristics from producing
 informative guidance, confounding commonly used heuristics.
@@ -403,10 +403,9 @@ up, and all other actions have zero-cost.  Modification was done in a
 practically reasonable manner in a sense of cost minimization. Most
 transportation-type domains are modified so that they use less
 fuel. Assembly-type domains are modified so that it minimizes the
-resource usage such as ink or wood.  \todo[We also modify a same domain
+resource usage such as ink or wood. \todo[We also modify a same domain
 in the different minimization criteria, in order to avoid the bias on a
 particular domain formulation.]{It's not tested yet}
-
 
 \todo[When we
 plot the size of plateau of the zerocost domains just like in
@@ -432,15 +431,15 @@ In order to solve problems with large final plateaus, the
 planner needs to run an efficient knowledge-free search within the
 plateau.  One useful metric which can be used to control the search in this
 situation is the \emph{depth} of a node, which represents the number 
-of steps a node is from the entrance of the plateau.
-$Depth(n)$ is defined as $depth(parent(n)) + 1$
+of steps a node is away from the entrance of the plateau.
+$depth(n)$ is defined as $depth(parent(n)) + 1$.
 If the $parent(n)$ is from the other plateau, i.e., $parent(n)$ has a different $f$-value, or different $h$-value used for the first
 tiebreaking, the $depth(n) = 0$. 
 Based on this simple notion of depth,
 we propose  \emph{depth-based tie-breaking}, where all nodes are associated with its depth, 
 and depth is used as a tie-breaking criterion.
 FirstDepth(FD), RandomDepth(RD) and LastDepth(LD) breaks ties by choosing a node from 
-nodes with the smallest depth ,a random depth, or the largest depth, respectively.
+nodes with the smallest depth, a random depth, or the largest depth, respectively.
 
 In the rest of thie paper, depth-based tie-breaking is used as a second-level tie-breaking criterion,
 where the first tie-breaking criterion is $h$.
@@ -609,7 +608,10 @@ First, although the effort to insert/extract nodes from multiple open/closed lis
 are neglibigle when the heuristic is expensive (see \refig{XXX}).
 
 Second, although maintaining multiple open/closed lists requires additional memory,
-when the heuristic is expensive enough, runtime becomes a bigger issue than memory exhaustion  -- we show that with a 30 minute time limit, LOP configurations do not exhaust memory compared to the other configurations \refig{XXX}.\todo{??}
+when the heuristic is expensive enough, runtime becomes a bigger issue
+than memory exhaustion  -- we show that with a 30 minute time limit, LOP
+configurations do not exhaust memory more often than the other
+configurations does \refig{XXX}.\todo{??}
 
 Third, node evaluation overheads for $f < f^*$ are eliminated due to the $h$-cache.
 Recall that \astar always evaluates all states whose $f$ costs 
@@ -636,7 +638,7 @@ since the $h$-value is cached.
 
 Finally, in the worst case, the total number of nodes evaluated by a LOP is bounded by the number of nodes with $f \leq f^*$, which is the same as the worst-case behavior of \astar using the worst possible tie-breaking strategy.
 This can occur  when all tiebreaking
-strategies perform porrly  and they all evaluates the goal node in the
+strategies perform poorly  and they all evaluates the goal node in the
 final iteration.
 
 \subsection{Evaluating LOPs}
