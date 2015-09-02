@@ -160,9 +160,10 @@ Downward \cite{Helmert2006}\footnote{http://www.fast-downward.org} uses a First-
 
 We tested various tiebreaking strategies. In the following sections, we
 use a convenient array-based notation of a combination of tiebreaking
-strategy.  For example, $[f,h,\fd,\fifo]$ denotes standard \astar with
-$h$-based first-level tiebreaking, FirstDepth second-level tiebreaking and FIFO
-third-level tiebreaking.
+strategy.  For example, $[f,h,\fifo]$ denotes standard \astar with
+$h$-based first-level tiebreaking and FIFO
+second-level tiebreaking.
+%% I removed \fd because it is not yet proposed at this point
 
 All planners are based on the latest Fast Downward code base, and all
 experiments are run using 30 minutes runtime cutoff with 2GB memory
