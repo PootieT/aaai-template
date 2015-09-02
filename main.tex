@@ -122,14 +122,16 @@ and we get a speedup for free (aside from the negligeble differences).
 If multiple nodes with the same $f$-cost are possible, \astar
 must implement some tie-breaking policy (either
 explicitly or implicitly) in order to select from among these nodes.
-In practice, tie-breaking based on the $h$-value (breaking ties in favor of nodes with higher $h$) is almost universally used.
-As far as we are aware, $h$-based tie-breaking is ``folklore'' in the heuristic search literature.
-The original paper proposing \astar paper, as well as Nilsson's subsequent textbook states: ``Select the open node $n$ whose value $f$ is smallest. Resolve ties arbitrarily, but always in favor of any [goal node]'' (\cite{hart1968formal},p.102 Step 2, \cite{Nilsson71}, p.69). % [goal node] : actual text is $n \in T$.
-Although it is possible to interpret this to imply $h$-based tie-breaking, since goal nodes are a special case where $h=0$, 
-they make no further metion of tie-breaking.
+The early literature on heuristic search seems to have been mostly agnostic on the issue of tie-breaking.
+The original paper proposing \astar paper, as well as Nilsson's
+subsequent textbook states: ``Select the open node $n$ whose value $f$
+is smallest. Resolve ties arbitrarily, but always in favor of any [goal
+node]'' \cite[p.102 Step 2]{hart1968formal} \cite[p.69]{Nilsson71}.
+% Although it is possible to interpret this to imply $h$-based tie-breaking
+% since goal nodes are the special case where $h=0$,
+% they make no further metion of tie-breaking.
 Pearl's seminal textbook on search specifies that best-first search should ``break ties arbitrarily'' (\citeyear{pearl1984heuristics}, p.48, Step 3), but does not specifically mention tie-breaking for \astar.
-Thus, the early literature on heuristic search seems to have been mostly agnostic on the issue of tie-breaking.
-Interestingly, in his analysis of IDA*, Korf mentions that ``If \astar employs the tie-breaking rule of 'most-recently generated', it must also expand the same nodes [as IDA*]'' (\citeyear{korf1985depth}) -- this Last-In-First-Out ordering is the first explicit mention we found of a tie-breaking policy not based on $h$.
+Interestingly, in his analysis of IDA*, Korf mentions that ``If \astar employs the tie-breaking rule of 'most-recently generated', it must also expand the same nodes [as IDA*]'' (\citeyear{korf1985depth}) -- this last-in-first-out ordering is the first explicit mention we found of a tie-breaking policy not based on $h$.
 
 In recent years, tie-breaking accoording to $h$-values has become ``folklore'' in the search community.
 \citeauthor{hansen2007anytime} state that ``It is well-known 
