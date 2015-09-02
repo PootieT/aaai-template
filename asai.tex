@@ -13,6 +13,7 @@
 \usepackage{graphicx}
 \usepackage{abbrev}
 \usepackage{multirow}
+\usepackage[normalem]{ulem}
 
 \frenchspacing
 \setlength{\pdfpagewidth}{8.5in}
@@ -31,10 +32,10 @@
 \renewcommand{\subsubparagraph}[1]{%
 \hrule width \linewidth%
 \marginpar[\hfill\relsize{-1} \protect{\rotatebox[origin=c]{90}{#1}} $\triangleright$]{\relsize{-1} $\triangleleft$ \protect{\rotatebox[origin=c]{-90}{#1}}}}
-\usepackage{soul}
+% \usepackage{soul}
 \makeatletter
 \renewcommand{\@todons}[2]{%
-  \ul{#1}%
+  \uline{#1}%
   \marginpar[%
     \hfill\relsize{-1}%
     \protect{%
@@ -44,7 +45,7 @@
     \protect{%
       \rotatebox[origin=c]{-90}{\bf todo: #2}}}}
 \renewcommand{\@todos}[2]{%
-  \ul{#1}%
+  \uline{#1}%
   \marginpar[%
     \hfill\relsize{-1}%
     \protect{%

@@ -32,7 +32,7 @@ This paper investigates tie-breaking strategies for \astar.
 \astar is a standard search algorithm for finding an optimal-cost path 
 from an initial state $s$ to some goal state $g \in G$ in a search space represented as a graph \cite{hart1968formal}.
 In each iteration, \astar selects and \emph{expands} a node $n$ from the OPEN priority queue.
-\astar selects and expands the node which has the lowest $f$-cost, where for node $n$, $f(n)$ is the sum of  $g(n)$, the cost of the current path from the start state to $n$, and $h(n)$, a heuristic estimate of the cost from $n$ to a goal state.
+$n$ is the node which has the lowest $f$-cost in OPEN, where for node $n$, $f(n)$ is the sum of  $g(n)$, the cost of the current path from the start state to $n$, and $h(n)$, a heuristic estimate of the cost from $n$ to a goal state.
 \astar returns an optimal solution when $h$ is admissible, i.e., when it
 never overestimates the true distance to the goal $h^*$.
 
@@ -64,18 +64,25 @@ In such domains, the behavior of \astar on the last frontier is critical -- the 
 \label{fig:plateau-noh}
 \end{figure}
 
-In this paper, we focus on the \emph{tie-breaking} policy used by \astar, which selects a node to expand among nodes with the same $f$-cost.
-Since \astar expandes all nodes with $f$-cost less than $f^*$ before expanding any nodes with with cost $f^*$, 
-the tie-breaking poicy only affects performance when considering the last frontier (nodes with cost $f^*$).
-Although there has not been much previous \emph{in-depth} work on tie-breaking policies,
-it is widely believed that among nodes with cost $f(n) = f^*$, ties should be broken according to $h(n)$, i.e., nodes with smaller $h$ values should be expanded first.
-While this is a useful rule of thumb in many domains,
-it turns out that tie-breaking requires more careful consideration, particularly for problems with large \emph{plateaus} -- regions of the search space with the same cost.
-\emph{Note that all tiebreaking strategies investigated in this paper maintain the admissibility of the search
-because only the node expansion order among nodes that share the same $f$-cost are affected.}
+In this paper, we focus on the \emph{tie-breaking} policy used by
+\astar, which selects a node to expand among nodes with the same
+$f$-cost.  Since \astar expandes all nodes with $f$-cost less than $f^*$
+before expanding any nodes with cost $f^*$, the tie-breaking poicy only
+affects performance when considering the last frontier (nodes with cost
+$f^*$).  Although there has not been much previous \emph{in-depth} work
+on tie-breaking policies, it is widely believed that among nodes with
+cost $f(n) = f^*$, ties should be broken according to $h(n)$, i.e.,
+nodes with smaller $h$ values should be expanded first.  While this is a
+useful rule of thumb in many domains, it turns out that tie-breaking
+requires more careful consideration, particularly for problems with
+large \emph{plateaus} -- regions of the search space with the same cost.
+\emph{Note that all tiebreaking strategies investigated in this paper
+maintain the admissibility of the search because only the node expansion
+order among nodes that share the same $f$-cost are affected.}
 
-We first show several important findings regarding the
-existing tiebreaking strategy for \astar as follows.
+\todo[We first show several important findings regarding the
+existing tiebreaking strategy for \astar as follows.]{is this the best
+way to put it?}
 % 
 First, in implementing the open list of \astar, priority queue which holds
 LIFO-buckets for each $f$ is more efficient than that holds FIFO-buckets.
@@ -84,16 +91,19 @@ Second, with LIFO-based implementation, $h$-based tiebreaking which
 frequently appears in the heuristic search literatures have little
 impact on the performance.
 % 
-\todo[
-Third, the LIFO-based bucket implementation and $h$-based tiebreaking
-both share the greedy search pattern within the plateau of the
-search space.]{this is not shown yet}
-
+%% Remove?
+% \todo[
+% Third, the LIFO-based bucket implementation and $h$-based tiebreaking
+% both share the greedy search pattern within the plateau of the
+% search space.]{this is not shown yet. how to show it? xy-plot of the node
+% evaluation order?}
+% 
 Next, based on these observations, we propose three tiebreaking methods
 based on the \emph{depth} within the plateau.  From this result, we show
 that the performance of above LIFO tiebreaking can be explained by its
 depth-first strategy and not by the machine-level efficiency of LIFO
-implementation itself.  Also, the performance comparison of different
+implementation itself, nor by action ordering in the domain definition.
+Also, the performance comparison of different
 depth-based strategies showed that they are not dominating each other.
 
 Finally, based on the absence of dominance relationship, we propose a
@@ -122,21 +132,23 @@ and we get a speedup for free (aside from the negligeble differences).
 If multiple nodes with the same $f$-cost are possible, \astar
 must implement some tie-breaking policy (either
 explicitly or implicitly) in order to select from among these nodes.
-In practice, tie-breaking based on the $h$-value (breaking ties in favor of nodes with higher $h$) is almost universally used.
-As far as we are aware, $h$-based tie-breaking is ``folklore'' in the heuristic search literature.
-The original paper proposing \astar paper, as well as Nilsson's subsequent textbook states: ``Select the open node $n$ whose value $f$ is smallest. Resolve ties arbitrarily, but always in favor of any [goal node]'' (\cite{hart1968formal},p.102 Step 2, \cite{Nilsson71}, p.69). % [goal node] : actual text is $n \in T$.
-Although it is possible to interpret this to imply $h$-based tie-breaking, since goal nodes are a special case where $h=0$, 
-they make no further metion of tie-breaking.
+The early literature on heuristic search seems to have been mostly agnostic on the issue of tie-breaking.
+The original paper proposing \astar paper, as well as Nilsson's
+subsequent textbook states: ``Select the open node $n$ whose value $f$
+is smallest. Resolve ties arbitrarily, but always in favor of any [goal
+node]'' \cite[p.102 Step 2]{hart1968formal} \cite[p.69]{Nilsson71}.
+% Although it is possible to interpret this to imply $h$-based tie-breaking
+% since goal nodes are the special case where $h=0$,
+% they make no further metion of tie-breaking.
 Pearl's seminal textbook on search specifies that best-first search should ``break ties arbitrarily'' (\citeyear{pearl1984heuristics}, p.48, Step 3), but does not specifically mention tie-breaking for \astar.
-Thus, the early literature on heuristic search seems to have been mostly agnostic on the issue of tie-breaking.
-Interestingly, in his analysis of IDA*, Korf mentions that ``If \astar employs the tie-breaking rule of 'most-recently generated', it must also expand the same nodes [as IDA*]'' (\citeyear{korf1985depth}) -- this Last-In-First-Out ordering is the first explicit mention we found of a tie-breaking policy not based on $h$.
+Interestingly, in his analysis of IDA*, Korf mentions that ``If \astar employs the tie-breaking rule of 'most-recently generated', it must also expand the same nodes [as IDA*]'' (\citeyear{korf1985depth}) -- this last-in-first-out ordering is the first explicit mention we found of a tie-breaking policy not based on $h$.
 
 In recent years, tie-breaking accoording to $h$-values has become ``folklore'' in the search community.
 \citeauthor{hansen2007anytime} state that ``It is well-known 
 that \astar achieves best performance when it breaks ties
 in favor of nodes with least h-cost'' \cite{hansen2007anytime}.
 \citeauthor{holte2010common} writes ``\astar breaks ties in favour
-of larger g values, as is most often done'' (note that since $f=g+h$, preferring large $g$ is equivalent to preferring large $h$).
+of larger g values, as is most often done'' (note that since $f=g+h$, preferring large $g$ is equivalent to preferring smaller $h$).
 % \citeauthor{felner2011inconsistent} also assume ``ties are broken in
 % favor of low h-values'' in describing Bidirectional Pathmax for \astar.
 In their detailed survey/tutorial of efficient \astar implementations, \citeauthor{burns2012implementing} also break ties ``preferring high
@@ -147,9 +159,11 @@ Thus, tie-breaking according to $h$-values appears to be ubiquitous in practice.
 Although the standard practice of tie-breaking according to $h$ might be sufficient in some domains, further levels of tie-breaking (explicit or implicit) are required if multiple nodes can have the same $f$ and $h$ values.
 We are not aware of any work that explicitly mentions 2nd-level tie-breaking.
 While the survey of efficient \astar implementatins in \citeauthor{burns2012implementing} did not explicitly mention 2nd-level tie-breaking, their code first breaks ties according to $h$, and then breaks remaining ties according to a Last-In-First-Out (LIFO) policy (most recently generated nodes first).\footnote{https://github.com/eaburns/search}
-Their choice of a LIFO 2nd-level tie-breaking policy appears to be a natural consequence of the fact that the LIFO policy can be trivially, efficiently implemented in their two-level bucket (vector) implementation of their OPEN list.
+Although not documented, their choice of a LIFO 2nd-level tie-breaking policy appears to be a natural consequence of the fact that the LIFO policy can be trivially, efficiently implemented in their two-level bucket (vector) implementation of their OPEN list.
 In contrast, the current implementation of \sota \astar based planner Fast
-Downward \cite{Helmert2006}\footnote{http://www.fast-downward.org} uses a First-In-First-Out (FIFO) second-level tie-breaking policy. We could not find any documentation for this choice. 
+Downward \cite{Helmert2006}\footnote{http://www.fast-downward.org} uses a First-In-First-Out (FIFO) second-level tie-breaking policy. 
+Although the use of FIFO tie-breaking in Fast Downward is repeatedly mentioned in \cite{RogerH10}, the reason for the particular choice of FIFO is not given.
+
 
 %\citeauthor{Korf1985depth} uses $h$-based tiebreaking in the context of WA*
 %\cite{korf1993linear}.  
@@ -160,34 +174,34 @@ Downward \cite{Helmert2006}\footnote{http://www.fast-downward.org} uses a First-
 
 We tested various tiebreaking strategies. In the following sections, we
 use a convenient array-based notation of a combination of tiebreaking
-strategy.  For example, $[f,h,\fd,\fifo]$ denotes standard \astar with
-$h$-based first-level tiebreaking, FirstDepth second-level tiebreaking and FIFO
-third-level tiebreaking.
+strategy.  For example, $[f,h,\fifo]$ denotes standard \astar with
+$h$-based first-level tiebreaking and FIFO
+second-level tiebreaking.
+%% I removed \fd because it is not yet proposed at this point
 
 All planners are based on the latest Fast Downward code base, and all
 experiments are run using 30 minutes runtime cutoff with 2GB memory
 limit. Experiments were conducted on Xeon E5410@2.33GHz CPUs.
 Our experimental results include 28 standard benchmark domains with 1104
-problems
+problems.
 
 We first compared three strategies 
-$[f,h,\fifo]$, $[f,h,\lifo]$ and $[f,h,\ro]$, 
+$[f,h,\fifo]$, $[f,h,\lifo]$ and $[f,h,\ro\mbox{(Random Order)}]$, 
 which first breaks ties according to $h$, and then applies \fifo, \lifo, or \ro second-level tie-breaking, respectively.
-The results (for \astar using the LM-cut heuristic \cite{Helmert2009}) are shown 
- in \reftbl{single-coverage} (Left).  Differences in coverage can be overved in several domains.
+The results for \astar using the LM-cut heuristic \cite{Helmert2009} are shown 
+ in \reftbl{single-coverage} (Left).  Differences in coverage can be observed in several domains.
 Due to the space limitation, we show only the domains
-where the difference was observed. Full data is available in the
+where there was any difference. Full data is available in the
 supplemental material. \todo{probably better to show full results for this particular experiment}.
 
 Although the search behavior of $[f,h,\fifo]$ corresponds to the default behavior of Fast Downward (FD), this implementation differs 
-from the original, unmodified FD code because we enabled caching of $h$-values, so that regenerated nodes refer to cached $h$-values.\footnote{The current Fast Downward code disables $h$-caching because its current implementation is not compatible with multiple admissible heuristics}.
+from the original, unmodified FD code because we enabled caching of $h$-values, so that regenerated nodes refer to cached $h$-values.\footnote{The current Fast Downward code disables $h$-caching because its current implementation is not compatible with multiple admissible heuristics.}
 Thus, we also show results for unmodified FD -- as expected, $[f,h,\fifo]$ dominates unmodified FD.
 
-
-\begin{table}[htbp]
+\begin{table}[htb]
  \centering \relsize{-3}
- \input{tables/aaai16-5min/aaai16prelim3/1-1-basic-queues.tex}
- \input{tables/aaai16-5min/aaai16prelim3/1-1-basic-queues-noh.tex}
+ \input{tables/aaai16-30min/aaai16prelim3/1-1-basic-queues.tex}
+ \input{tables/aaai16-30min/aaai16prelim3/1-1-basic-queues-noh.tex}
  \caption{Experiments comparing the performance of FIFO, LIFO and Random
  second-level tiebreaking, with (left) and without (right) the
  conventional first-level $h$-tiebreaking.  For the space reason, we
@@ -202,18 +216,18 @@ Thus, we also show results for unmodified FD -- as expected, $[f,h,\fifo]$ domin
 number of node evaluation (computations of \lmcut) on
 different tiebreakings.
 
-\begin{figure}[htbp]
+\begin{figure}[htb]
  \centering \relsize{-3}
- \includegraphics{tables/aaai16-5min/aaai16prelim3/evaluated-lmcut_ff-lmcut_lf.pdf}
- \includegraphics{tables/aaai16-5min/aaai16prelim3/evaluated-nokey-lmcut_ff-lmcut_r.pdf}
- \includegraphics{tables/aaai16-5min/aaai16prelim3/evaluated-nokey-lmcut_r-lmcut_lf.pdf}
+ \includegraphics{tables/aaai16-30min/aaai16prelim3/evaluated-lmcut_ff-lmcut_lf.pdf}
+ \includegraphics{tables/aaai16-30min/aaai16prelim3/evaluated-nokey-lmcut_ff-lmcut_r.pdf}
+ \includegraphics{tables/aaai16-30min/aaai16prelim3/evaluated-nokey-lmcut_r-lmcut_lf.pdf}
  \caption{Comparisons of \# of Evaluations between simple \lifo, \fifo,
  \ro second-level tiebreaking, with first-level $h$-tiebreaking. Each
  line shows $\times 2,4,6\ldots$ boundary.}  \label{f-h-eval}
 \end{figure}
 
 According to \reftbl{single-coverage} (left) with $h$-tiebreaking, LIFO
-outperforms the other strategies, while  in Openstacks, but Random outperforms the others in
+outperforms the other strategies, but Random outperforms the others in
 Cybersec, and FIFO performed best in Airport, and
 \refig{f-h-eval} shows that Random performs best in Miconic.
 \refig{f-h-eval} also shows that the difference in number of nodes evaluated can sometimes be larger than a factor of 10,
@@ -226,13 +240,13 @@ there are no dominance relationship between these three strategies, and the over
 
 Next, we investigated whether $h$-based, first-level tie-breaking is necessary.
 In \reftbl{single-coverage} (right), which shows the results when  first-level
-tiebreaking based on $h$ is disabled, [f, \lifo], which simply breaks ties among nodes with the same $f$-cost by expanding most recently generated nodes first (first suggested in \cite{korf85depth}),
-clearly dominates [f, \fifo] and [f, \ro].
+tiebreaking based on $h$ is disabled, $[f, \lifo]$, which simply breaks ties among nodes with the same $f$-cost by expanding most recently generated nodes first (first suggested in \cite{korf1985depth}),
+clearly dominates $[f, \fifo]$ and $[f, \ro]$.
 
-Interestingly, the performance of the [f, \lifo] strategy
-is comparable to [f,h,\lifo],[f,h,\fifo], and [f,h,\ro], the two-level strategies that first break ties according to $h$.
+Interestingly, the performance of the $[f, \lifo]$ strategy
+is comparable to $[f,h,\lifo]$, $[f,h,\fifo]$ and $[f,h,\ro]$, the two-level strategies that first break ties according to $h$.
 This is somewhat surprising, considering the ubiquity of $h$-based tie-breaking in the search and planning communities.
-\todo{Explanation of why [f,\lifo] performs so well. }
+\todo{Explanation of why $[f,\lifo]$ performs so well. }
 
 We reemphasize that, although LIFO dominated the others, we consider
 this is just by a coincidence due to the selection of time limit, memory
@@ -252,8 +266,12 @@ there are many nodes that have the same $f$ and $h$ values, creating
 large \emph{plateau} regions where the heuristic does not provide
 useful guidance -- in effect, these plateau regions in the last
 frontier ($f=f^*$) by definition requires blind search, i.e., 
-relying solely on the tie-breaking criterion, in order to escape the
-plateau and find a goal node.
+relying solely on the tie-breaking criterion, in order to
+%% in the final plateau, there is no need to escape the
+%% plateau. ``escape'' is a word for inadmissible search. A* is never
+%% allowed to escape the plateau until all nodes are expanded.
+% escape the plateau and
+find a goal node.
 %, i.e., the problems where the
 %heuristic function is not informative and the planner relies heavily on
 %the tiebreaking criteria.
@@ -261,7 +279,7 @@ plateau and find a goal node.
 \refig{plateau} plots the size of the final search plateau on 1104 IPC benchmark instances.
 The $y$-axis
 represents the number of nodes with $[f,h]=[f^*,0]$, and the $x$-axis represents the total
-number of nodes with $f\leq f^*$ 
+number of nodes with $f\leq f^*$.
 Clearly, in some domains such as Openstacks and Cybersec, the planner can spend most of the runtime
 searching the final plateau.
 It also
@@ -291,23 +309,7 @@ larger effort could be spent on the final plateau.
   Openstacks clearly has the large plateaus.}  \label{plateau}
 \end{figure}
 
-\todo[Move this after zerocost domains are defined?]{}
-\todo[When we plot the same statistics on the zerocost domains, this
-becomes a universal trend among instances.]{Current figure is not
-plotting the zerocost domains} In cost-minimization problems, the search
-strategy within plateau becomes much more important than in the
-runtime-minimization instances, where most actions have nonzero cost.
-
-\begin{figure}[htb]
- \centering \relsize{-3}
-  \includegraphics{tables/aaai16-frontier/aaai16prelim3/lmcut_frontier-front.pdf}
-  \caption{Same plot as \refig{plateau}, but from the zerocost
-  domains. Even with $h$-tiebreaking, zerocost domains force the planner
-  to search much larger plateau.}
- \label{plateau-zerocost}
-\end{figure}
-
-\section{Domains with Zero-cost Actions: Applications and Motivation}
+\section{Domains with Zero-cost Actions}
 \todo{struggling to find the right place for this..}
 
 % XXX I'm commenting out the paragraphs below because:
@@ -350,7 +352,7 @@ actions would have zero-cost --- it does not consume electricity for
 either moving the elevator down, boarding or leaving the passenger.
  
 The same thing applies to the transportation-type and assembly-type
-domains like logistics and Woodworking, respectively. They are runtime
+domains like Logistics and Woodworking, respectively. They are runtime
 minimization domains in which driving and manual labor, or cutting and
 painting, are equally measured by the single runtime metric.
 % 
@@ -360,15 +362,20 @@ cost-minimization domains, in which the target is the fuel consumption
 view, cost minimization domains would have wider interests compared to
 the simple runtime minimization.
 
-The Openstacks domain is a cost
+Openstacks domain is a cost
 minimization domain first introduced in IPC-2006, where the objective is to 
-minimizing the number of stacks used.
+minimize the number of stacks used.
 There are many zero-cost actions (i.e., actions that don't increase the number of stacks), and
 these zero-cost actions prevent the commonly used heuristics from producing
 informative guidance, confounding commonly used heuristics.
 For example, \lmcut \cite{Helmert2009} fails to find a good cost
-partitioning with non-zero values, and most edges in the abstraction
+partitioning with non-zero values, 
+% A detailed discussion of Openstacks domain and poor performance of landmarks is in \cite{richter10lama}, p.167-169.
+and most edges in the abstraction
 space of M\&S have zero costs \cite{helmert2007flexible}.
+
+
+
 
 % Currently, most benchmark domains except Openstacks and Cybersec do not
 % have the large plateau thanks to the powerful heuristic estimates (which
@@ -403,11 +410,25 @@ up, and all other actions have zero-cost.  Modification was done in a
 practically reasonable manner in a sense of cost minimization. Most
 transportation-type domains are modified so that they use less
 fuel. Assembly-type domains are modified so that it minimizes the
-resource usage such as ink or wood.  \todo[We also modify a same domain
+resource usage such as ink or wood. \todo[We also modify a same domain
 in the different minimization criteria, in order to avoid the bias on a
 particular domain formulation.]{It's not tested yet}
 
+\todo[When we
+plot the size of plateau of the zerocost domains just like in
+\refig{plateau}, the trend of large plateau becomes universal among
+instances.]{Current figure is not plotting the zerocost domains} In
+cost-minimization problems, the search strategy within plateau becomes
+much more important than in the runtime-minimization instances.
 
+\begin{figure}[htb]
+ \centering \relsize{-3}
+  \includegraphics{tables/aaai16-frontier/aaai16prelim3/lmcut_frontier-front.pdf}
+  \caption{Same plot as \refig{plateau}, but from the zerocost
+  domains. Even with $h$-tiebreaking, zerocost domains force the planner
+  to search much larger plateau.}
+ \label{plateau-zerocost}
+\end{figure}
 
 
 
@@ -417,29 +438,28 @@ In order to solve problems with large final plateaus, the
 planner needs to run an efficient knowledge-free search within the
 plateau.  One useful metric which can be used to control the search in this
 situation is the \emph{depth} of a node, which represents the number 
-of steps a node is from the entrance of the plateau.
-$Depth(n)$ is defined as $depth(parent(n)) + 1$
+of steps a node is away from the entrance of the plateau.
+$depth(n)$ is defined as $depth(parent(n)) + 1$.
 If the $parent(n)$ is from the other plateau, i.e., $parent(n)$ has a different $f$-value, or different $h$-value used for the first
-tiebreaking, the $depth(n) = 0$. 
+tiebreaking, then $depth(n) = 0$. We call such $n$ the \emph{entrance} of the plateau.
 Based on this simple notion of depth,
 we propose  \emph{depth-based tie-breaking}, where all nodes are associated with its depth, 
 and depth is used as a tie-breaking criterion.
 FirstDepth(FD), RandomDepth(RD) and LastDepth(LD) breaks ties by choosing a node from 
-nodes with the smallest depth ,a random depth, or the largest depth, respectively.
+nodes with the smallest depth, a random depth, or the largest depth, respectively.
 
 In the rest of thie paper, depth-based tie-breaking is used as a second-level tie-breaking criterion,
 where the first tie-breaking criterion is $h$.
 Since there can be multiple nodes with the same $f$, $h$ and depth,
-a 3rd-level tie-breaking criterion that selects a node using FIFO, LIFO, and Random Order (R) is used.
+a 3rd-level tie-breaking criterion that selects a node using FIFO, LIFO, and Random Order (RO) is used.
 This results in 9 configurations:
-[f,h,FD,FIFO], [f,h,FD,LIFO], [f,h,FD,RO], [f,h,LD,FIFO], [f,h,LI,LIFO], [f,h,D,RO], [f,h,RD,FIFO], [f,h,RD,LIFO], [f,h,RD,RO].
-
+$[f,h,\fd,\fifo]$, $[f,h,\fd,\lifo]$, $[f,h,\fd,\ro]$, $[f,h,\ld,\fifo]$, $[f,h,\ld,\lifo]$, $[f,h,\d,\ro]$, $[f,h,\rd,\fifo]$, $[f,h,\rd,\lifo]$, $[f,h,\rd,\ro]$.
 
 The effectiveness of each strategy depends on the structure of the problem instance.
 In the knowledge-free search within the plateau, all nodes have the same
 $f$ and $h$ values % yes, for simplicity, I'm assuming 3-level tiebreaks, ignoring no-h for the time being..
  and it is impossible to guess whether the goal is near, far
-away or in a particular distance from the entrance. \todo{``entrance'' must be defined.}
+away or in a particular distance from the entrance.
 In the first case,
 the search should be focused around the entrance favoring the smaller
 depths, and the behavior should be much like breadth-first, and it
@@ -451,13 +471,12 @@ random depth seems the safest practice. This corresponds to the case
 where RandomDepth would perform better.
 
 
-Also note that, the node expansion orders of [f,h,FD,FIFO] and [f,h,LD,LIFO] are
-exactly the same as [f,h,FIFO] and [f,h,LIFO], respectively,
-i.e., those without the depth-based
-tiebreaking.  
-This is because, LIFO expands the most recently evaluated\todo{evaluated or generated?}
-states, which always has the largest depth, and FIFO expands the least recently
-evaluated\todo{evaluated or generated?} states, which always has the smaller depth.
+Also note that, the node evaluation orders of $[f,h,\fd,\fifo]$ and $[f,h,\ld,\lifo]$ are
+exactly the same as $[f,h,\fifo]$ and $[f,h,\lifo]$, respectively,
+i.e., those without the depth-based tiebreaking.  
+This is because, $[f,h,\lifo]$ expands the most recently evaluated/inserted
+states, which always have the largest depth, and $[f,h,\fifo]$ expands the least recently
+evaluated states, which always have the smallest depth.
 
 % This ``greediness'' is different from the normal
 % sense of ``greedy search'' --- since this greediness only holds within
@@ -467,7 +486,7 @@ evaluated\todo{evaluated or generated?} states, which always has the smaller dep
 
 \subsection{Evaluating Depth-based Tiebreaking}
 
-We evaluated the nine configurations of the three-level tie-breaking strategies described above, i.e., [f,h,depthStrategy,LFR], where the first-level tie-breaking is according to $h$ (break ties in favor of small $h$), the second-level strategy is based on depth and $depthStrategy \in \{\fd, \ld, \rd\}$, and the third level tie-breaking strategy $LFR \in \{\lifo, \fifo, \ro\}$.
+We evaluated the nine configurations of the three-level tie-breaking strategies described above, i.e., $[f,h,depthStrategy,LFR]$, where the first-level tie-breaking is according to $h$ (break ties in favor of small $h$), the second-level strategy is based on depth and $depthStrategy \in \{\fd, \ld, \rd\}$, and the third level tie-breaking strategy $LFR \in \{\lifo, \fifo, \ro\}$.
 
 In addition to the 28 standard IPC benchmark domains used in the previous set of experiments, we also added 16 \emph{zerocost} domains with 640 problems. 
 
@@ -494,14 +513,27 @@ in these experiments is FIFO.  For example, when we fix the second-level
 tiebreaking, the coverages are $[f,h,X,\fifo]>[f,h,X,\ro]>[f,h,X,\lifo]$
 when $X=\ld,\rd$.  Note that FIFO is bad in terms of low-level memory
 access pattern since the insertion and deletion happens in the opposite
-side of the bucket.  This difference in the third-level tiebreaking is
-more likely due to the specific action ordering in the domain
-definition.  For example, in Pipesworld-Pushend, the dominant
-third-level strategy is RandomOrder, regardless of the second-level
-depth tiebreaking.  (FIFO,RO,LIFO is 3,3,3 in FirstDepth, 3,4,3 in
-RandomDepth, and 5,6,4 in LastDepth.) Also, in $[f,h,\rd,\cdot]$, the
-RandomOrder third-level tiebreaking is better than \lifo or \fifo, in
-Airport-Fuel and Mprime-Succumb.
+side of the bucket. 
+
+Note that we do not claim the performance of FIFO in third-level
+tiebreaking is universal.  Rather, it is more likely due to the specific
+action ordering in the domain definition. \todo[First]{thise text should
+be adjusted after 30min results}, in Pipesworld-Pushend,
+for example, the dominant third-level strategy is RandomOrder,
+regardless of the second-level depth tiebreaking.  (FIFO,RO,LIFO is
+3,3,3 in FirstDepth, 3,4,3 in RandomDepth, and 5,6,4 in LastDepth.)
+Also, in Airport-Fuel and Mprime-Succumb with RandomDepth ($[f,h,\rd,\cdot]$), 
+the RandomOrder third-level tiebreaking is better than \lifo or \fifo.
+Furthermore, \todo[we also tested the same domains with a reversed
+action ordering.]{Running Experiments}.  The results (in supplimental
+material) show that the action ordering affects the performance of
+third-level tiebreaking, but it did not changed the trends in the
+second-level tiebreaking.
+
+This third-level tiebreaking behavior is related to recent work
+\cite{vallati2015effective} done by changing the action and variable
+ordering with SMAC parameter tuning framework. However, finding the best
+third-level tiebreaking is not the scope of this paper.
 
 %% following discource may not be a good way to defend our paper.
 % Keen readers might be concerned with the effect of action ordering in
@@ -529,7 +561,7 @@ Airport-Fuel and Mprime-Succumb.
 \begin{figure}[htb]
  \centering
  \relsize{-3}
- \input{tables/aaai16-5min/aaai16prelim3_zerocost_2zerocost/1-1-depth-queues.tex}
+ \input{tables/aaai16-30min/aaai16prelim3_zerocost_2zerocost/1-1-depth-queues.tex}
  \caption{Experiments
  comparing the coverages of 9 configurations (3 depth-based strategy
  $\times$ 3 queue implementions). For the space reason, we omitted those
@@ -545,7 +577,7 @@ Airport-Fuel and Mprime-Succumb.
 % \begin{figure}[htb]
 %  \centering
 %  \relsize{-3}
-%  \input{tables/aaai16-5min/aaai16prelim3_zerocost_2zerocost/1-1-depth-queues-noh.tex}
+%  \input{tables/aaai16-30min/aaai16prelim3_zerocost_2zerocost/1-1-depth-queues-noh.tex}
 %  \caption{Same experiments without first-level tiebreaking by $h$-value.}
 %  \label{depth-noh}
 % \end{figure}
@@ -561,25 +593,25 @@ Since the performance of a tiebreakig strategy depends on the domain, and there 
 idea is to use a portfolio approach which combine several tiebreaking strategies.
 
 The simplest possible portfolio approach would be a standard algorithm portfolio
-which executes two completely independent A* processes A1 and A2 in parallel, where A1 uses tiebreaking strategey S1 and A2 uses tiebreaking strategy S2, and CPU resources are allocated equally to A1 and A2.
-The portolio would terminate when either A1 or A2 finds a goal state.
-Let T1 be the time that A1 requires to solve instance I, and let T2 be the time A2 requires to solve instance I. Then, the total CPU required by the portfolio to solve instance I is 2min(A1,A2). This approach to combining multiple strategies is the standard algorithm portfolio proposed and analyzed in \cite{HubermanLH97,GomesS01}, and has also recently been called ``dovetailing'' and applied to combine multiple IDA* and A*  \cite{ValenzanoSSBK10}. %TODO: remove the dovetailing reference after the paper is accepted -- the dovetailing authors were unaware of the HubermanLH97 paper...
+which executes two completely independent \astar processes $A_1$ and $A_2$ in parallel, where $A_1$ uses tiebreaking strategey $S_1$ and $A_2$ uses tiebreaking strategy $S_2$, and CPU resources are allocated equally to $A_1$ and $A_2$.
+The portolio would terminate when either $A_1$ or $A_2$ finds a goal state.
+Let $T_1$ be the time that $A_1$ requires to solve instance $I$, and $T_2$ be the
+time $A_2$ requires to solve instance $I$. Then, the total CPU time
+required by the portfolio to solve instance $I$ is $2\times\min(A_1,A_2)$. This approach to combining multiple strategies is the standard algorithm portfolio proposed and analyzed in \cite{HubermanLH97,GomesS01}, and has also recently been called ``dovetailing'' and applied to combine multiple IDA* and \astar  \cite{ValenzanoSSBK10}. %TODO: remove the dovetailing reference after the paper is accepted -- the dovetailing authors were unaware of the HubermanLH97 paper...
 
-On one hand, this simple portfoio approach has the advantage of mitigating worst-case risk -- as shown in XXX, sometimes, the ratio between T1 and T2 is very large (>10x) and choosing the wrong strategy has a very high penalty, so this portfolio strategy guarantees that the CPU usage is never more than twice that of using the faster strategy.
-On the other hand, this simple portfolio will always require twice the CPU time of the faster strategy. Furthermore, the portfolio requires twice the RAM resources, which is a major disadvantage in memory-bound algorithms such as A*.
+On one hand, this simple portfoio approach has the advantage of mitigating worst-case risk -- as shown in \refig{plateau}, sometimes, the ratio between $T_1$ and $T_2$ is very large (e.g., $T_2 > 10\times T_1$) and choosing the wrong strategy has a very high penalty, so this portfolio strategy guarantees that the CPU usage is never more than twice that of using the faster strategy.
+On the other hand, this simple portfolio will always require twice the CPU time of the faster strategy. Furthermore, the portfolio requires twice the RAM resources, which is a major disadvantage in memory-bound algorithms such as \astar.
 
 We propose a new, \emph{Low-Overhead Portfolio} (LOP) implementation which can be used to implement a portfolio of tie-breaking strategies with significantly less overhead.
-Conceptually, a LOP for A* is a portfolio composed of multiple independently executing threads of A*  where each thread  executes independently using a different tiebreaking strategy but which share a cache for heuristic function values.
-The actual implementation is as follows:
-The LOP simulates
-multiple search engines using the same heuristic function, but with
-different tiebreaking strategies.  Each engine has completely separate
-open list and closed list.  There is a globally shared hash
-table which caches all heuristic function computations.  Whenever a
-search engine evaluates a state, it first checks the caches and 
-reuses the result if possible.  The current implementation is sequential -- each search engine takes  turns 
-evaluating states. The algorithm finishes when some engine finds the solution.
-
+% 
+Conceptually, a LOP for \astar is a portfolio composed of multiple
+independently executing \astar where each \astar has completely separate
+open/closed list, using a different tiebreaking strategy but sharing a
+global cache for heuristic function values. Whenever a search
+engine evaluates a state, it first checks the cache and reuses the
+result if possible.  The current implementation is sequential -- each
+search engine takes turns evaluating states. The algorithm finishes when
+some engine finds the solution.
 
 Low-Overhead Portfolios offer some attractive tradeoffs,
 particularly when runtimes are dominated by state evaluation, as is the case when searching with 
@@ -589,7 +621,10 @@ First, although the effort to insert/extract nodes from multiple open/closed lis
 are neglibigle when the heuristic is expensive (see \refig{XXX}).
 
 Second, although maintaining multiple open/closed lists requires additional memory,
-when the heuristic is expensive enough, runtime becomes a bigger issue than memory exhaustion  -- we show that with a 30 minute time limit, LOP configurations do not exhaust memory compared to the other configurations \refig{XXX}.\todo{??}
+when the heuristic is expensive enough, runtime becomes a bigger issue
+than memory exhaustion  -- we show that with a 30 minute time limit, LOP
+configurations do not exhaust memory more often than the other
+configurations does \refig{XXX}.\todo{??}
 
 Third, node evaluation overheads for $f < f^*$ are eliminated due to the $h$-cache.
 Recall that \astar always evaluates all states whose $f$ costs 
@@ -616,7 +651,7 @@ since the $h$-value is cached.
 
 Finally, in the worst case, the total number of nodes evaluated by a LOP is bounded by the number of nodes with $f \leq f^*$, which is the same as the worst-case behavior of \astar using the worst possible tie-breaking strategy.
 This can occur  when all tiebreaking
-strategies perform porrly  and they all evaluates the goal node in the
+strategies perform poorly  and they all evaluates the goal node in the
 final iteration.
 
 \subsection{Evaluating LOPs}
@@ -630,25 +665,27 @@ Also, the more practical, cost-minimization domains tend to have large plateaus.
 Furthermore, the different depth-based tiebreakings are not dominating
 each other, and is greatly affected by the domain characteristics.
 % 
-Therefore, the multisearch strategy should avoid the
+Therefore, the LOP strategy should avoid the
 worst-case scenario caused by bad tiebreaking, and quickly find the solution.
 
 First, we show that the doubled cost of insertion and deletion by
-MultiSearch is negligeble.  We verified this by running a MultiSearch
+LOP is negligeble.  We verified this by running a LOP
 search engine with two same search engines, both using \lmcut and FIFO
 queue, and compared its runtime against the same single engine (\lmcut
 and FIFO). The result in \refig{ffff} shows that the extra cost of
 duplicated effort is negligeble.
 
-\begin{figure}[htbp]
+\begin{figure}[htb]
  \centering
  \relsize{-2}
  % \includegraphics{tables/opt11-time-lmcut_ff-lmcut_ffff.pdf}
- \caption{Comparison of runtime on problems solved by both single FIFO search engine (ff) and a MultiSearch engine with 2 different instances of the same FIFO engine (ffff). The runtime difference was on average below a factor of x1.1, if we ignore the subsecond differences.}
- \label{ffff}
+ \caption{Comparison of runtime on problems solved by both single FIFO
+ search engine (ff) and a LOP engine with 2 different instances of the
+ same FIFO engine (ffff). The runtime difference was on average below a
+ factor of x1.1, if we ignore the subsecond differences.}  \label{ffff}
 \end{figure}
 
-Next, we evaluated our MultiSearch
+Next, we evaluated our LOP
 strategy with selective combinations of two or three tiebreakings.
 The configuration shown as ``lmcut m2'', ``lmcut m3'', ``mands m2'',
 ``lmcut m3'' are respectively the portfolio of
@@ -662,7 +699,7 @@ engine alone.
 % 
 Also, \refig{portfolio-runtime} shows the number of evaluations of these
 tiebreakings compared to each search engine alone.  It shows that
-MultiSearch acutally follows the expected behavior and the theoretical
+LOP acutally follows the expected behavior and the theoretical
 bounds: the evaluation never exceeds twice/thirds of the single
 search engine.
 
@@ -679,7 +716,7 @@ search engine.
  \relsize{-2}
  \includegraphics{tables/aaai16-5min/aaai16prelim3/evaluated-lmcut_m2-lmcut_ld_fifo.pdf}
  % \includegraphics{tables/aaai16-5min/aaai16prelim3/evaluated-nokey-lmcut_m2-lmcut_rd_lifo.pdf}
- \caption{Runtime comparson between MultiSearch (X,Y,Z) and single strategies.}
+ \caption{Runtime comparson between LOP (X,Y,Z) and single strategies.}
  \label{portfolio-runtime}
 \end{figure}
 
@@ -687,24 +724,39 @@ search engine.
 \section{Related Work}
 \label{sec-4}
 
-Previous work on escaping search space plateaus has focused on non-admissible search.
-DBFS \cite{imai2011novel} is a technique which adds stochastic
-backtracking to Greedy Best First Search to avoid being misdirected by the
-heuristic function. Type based bucket \cite{xie14type} 
-classifies the plateau of GBFS according to the $[g,h]$ pair.
-Marvin \cite{Coles07} learns plateau-escaping macros from the Enhanced
-Hill Climbing phase of the FF planner \cite{Hoffmann01} and later uses
-these macros to escape the plateau.  However, to our knowledge, the
-similar research on optimal planning was hardly located.
+Previous work on escaping search space plateaus has focused on
+non-admissible search.  DBFS \cite{imai2011novel} is a technique which
+adds stochastic backtracking to Greedy Best First Search to avoid
+being misdirected by the heuristic function. Type based bucket
+\cite{xie14type} classifies the plateau of GBFS according to the
+$[g,h]$ pair.  Marvin \cite{Coles07} learns plateau-escaping macros
+from the Enhanced Hill Climbing phase of the FF planner
+\cite{Hoffmann01} and later uses these macros to escape the plateau.
+However, to our knowledge, searching in plateaus has not been
+previously investigated for cost-optimal planning with admissible
+search.
+
+In their work on combining multiple heuristics in a planner, R\"{o}ger
+and Helmert considered a tie-breaking approach which works as follows:
+\citeshort{RogerH10}. When combining two heuristics, one of the
+heuristics is used as the primary criterion for guiding the search,
+and the second heuristic is used to break ties when the primary
+heuristic values are the same for two states.
+While this did not perform well in their work on satisficing planning, 
+using a secondary heuristic as a tie-breaking criterion in our multi-level tie-breaking framework 
+for cost-optimal search is an interesting direction for future work.
 
 The PLUSONE cost-type is  non-admissible search technique in the LAMA planner \cite{richter2010lama}
-which increases every action costs by 1.
-Using PLUSONE, three successive
-applications of zero-cost operators have cost 3, and two
-applications have cost 2, and smaller cost is preferred, just as
-\astar always expands the node with smaller $f$-value.
+which increases every action costs by 1.\todo{Is PLUSONE mentioned in any paper??}
+By eliminating zero-cost actions, this has the effect of filling plateaus
+%Using PLUSONE, three successive
+%applications of zero-cost operators have cost 3, and two
+%applications have cost 2, and smaller cost is preferred, just as
+%\astar always expands the node with smaller $f$-value.
 This explicitly targeted zero-cost actions observed in Openstacks,
-and resulted in a significantly better performance in IPC-6.
+and resulted in a significantly better performance in IPC-6.\todo{citation? -- add specific page+quotation in comment}
+% There's a long discussion of Openstacks in \cite{richter2010lama}, p.167-169, but I can't find PLUSONE anywhere. Maybe it's called something else in the paper?  Maybe \richter2010lama is the wrong citation??
+
 
 The major difference of our depth-based tiebreaking from PLUSONE
 strategy is twofold.  First, depth-based tiebreaking is admissible, because 
@@ -716,16 +768,24 @@ sorting criteria. In contrast, it happens only in FirstDepth configuration in ou
 %% this will invoke a request from the reviewers to compare ours against it
 %% * True, but people who know LAMA/FD are likely to demand some kind of comparison with alternating queues and preferred queues whether we mention  it or not.
 %% Probably better to preemptively settle these questions rather than risking difficult questions during rebuttal.
-TODO: other FD/LAMA comparisons: alternating queues vs LOP,   preferred queues vs depth-based tie-breaking.
 
-Another technique in LAMA is \emph{preferred operator queue},
-which is a technique that favors actions that decrease the
-smallest $h$ value during the search. Although this was designed for non-admissible search in LAMA, preferred operators could, in principle, be applied to admissible search. However, in contrast to the tie-breaking strategies investigated in this paper, the selection of preferred operators  are specific to the heuri
+Fast Downward and Lama implement an (OPEN) queue \emph{alternation} method \cite{Helmert2006}.
+It was originally used as a method for using multiple heuristics in a planner.
+There are multiple open lists (queues), where there is a queue for each heuristic, and states are inserted into all queues according to the heuristic value for each heuristic.
+For example, if there are two heuristics $h1$ and $h2$, 
+Our LOP portfolio approach is similar to queue alternation in that we maintain multiple queues, one for each tie-breaking method.
+However, unlike queue alternation, TODO:INPROGRESS- kind of tricky to describe the difference succinctly..
 
+
+Preferred operator queues are an extension of queue alternation, where in addition to the basic queue for each heuristic, there is a queue for states that are \emph{preferred} according to each heuristic \cite{richter2010lama}.
+Although this was designed for non-admissible search in LAMA, preferred operators could, in principle, be applied to admissible search. 
+Preferred operators are implemented by adding operator (state) preference computation to heuristic evaluator, and are therefore dependent on the heuristic function.
+% Evidence: \cite{richter2010lama}, p.132 ``Operators that are deemed particularly useful in a given state are marked as preferred.   They are computed by the heuristic estimators along with the heuristic value of a state (see Sections 6 and 5).  
+% More Evidence: \cite{richter2010lama}, p.150, last paragraph: ``We also generate preferred operators along with the landmark heuristic. An operator is preferred in a state if applying it achieves an acceptable landmark in the next step, i. e., a landmark whose pre-decessors have already been accepted.  If no acceptable landmark can be achieved within one step, the preferred operators are those which occur in a relaxed plan to a nearest acceptable landmark. A nearest landmark in the cost-unaware setting is one that is relaxed reachable with a
+In contrast, the tie-breaking strategies investigated in this paper are implemented comletely independently of the heuristic -- all of the tie-breaking stratgies in this paper can be applied to search using a blind heuristic.
 
 %Lazy A* \cite{TolpinBSFK13} 
 %TODO:  lazy A* vs LOP -- LazyA* combines multiple heuristics h1,h2 with low-overhead. However, if there is no dominance between h1,h2, behavior is different than h2; in contrast, LOP guarantees conservative behavior. % no, never mind, too different..
-
 
 % It's not clear what these techniques have in common, except that they are all orthogonal to heuristics,
 % If that's the case, then there's no need to cite them in this paper -- there's no reason why these particular techniques
