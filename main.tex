@@ -74,8 +74,9 @@ it turns out that tie-breaking requires more careful consideration, particularly
 \emph{Note that all tiebreaking strategies investigated in this paper maintain the admissibility of the search
 because only the node expansion order among nodes that share the same $f$-cost are affected.}
 
-We first show several important findings regarding the
-existing tiebreaking strategy for \astar as follows.
+\todo[We first show several important findings regarding the
+existing tiebreaking strategy for \astar as follows.]{is this the best
+way to put it?}
 % 
 First, in implementing the open list of \astar, priority queue which holds
 LIFO-buckets for each $f$ is more efficient than that holds FIFO-buckets.
@@ -84,11 +85,13 @@ Second, with LIFO-based implementation, $h$-based tiebreaking which
 frequently appears in the heuristic search literatures have little
 impact on the performance.
 % 
-\todo[
-Third, the LIFO-based bucket implementation and $h$-based tiebreaking
-both share the greedy search pattern within the plateau of the
-search space.]{this is not shown yet}
-
+%% Remove?
+% \todo[
+% Third, the LIFO-based bucket implementation and $h$-based tiebreaking
+% both share the greedy search pattern within the plateau of the
+% search space.]{this is not shown yet. how to show it? xy-plot of the node
+% evaluation order?}
+% 
 Next, based on these observations, we propose three tiebreaking methods
 based on the \emph{depth} within the plateau.  From this result, we show
 that the performance of above LIFO tiebreaking can be explained by its
