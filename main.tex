@@ -85,23 +85,23 @@ existing tiebreaking strategy for \astar as follows.]{is this the best
 way to put it?}
 % 
 First, in implementing the open list of \astar, priority queue which holds
-LIFO-buckets for each $f$ is more efficient than that holds FIFO-buckets.
+\lifo-buckets for each $f$ is more efficient than that holds \fifo-buckets.
 % 
-Second, with LIFO-based implementation, $h$-based tiebreaking which
+Second, with \lifo-based implementation, $h$-based tiebreaking which
 frequently appears in the heuristic search literatures have little
 impact on the performance.
 % 
 %% Remove?
 % \todo[
-% Third, the LIFO-based bucket implementation and $h$-based tiebreaking
+% Third, the \lifo-based bucket implementation and $h$-based tiebreaking
 % both share the greedy search pattern within the plateau of the
 % search space.]{this is not shown yet. how to show it? xy-plot of the node
 % evaluation order?}
 % 
 Next, based on these observations, we propose three tiebreaking methods
 based on the \emph{depth} within the plateau.  From this result, we show
-that the performance of above LIFO tiebreaking can be explained by its
-depth-first strategy and not by the machine-level efficiency of LIFO
+that the performance of above \lifo tiebreaking can be explained by its
+depth-first strategy and not by the machine-level efficiency of \lifo
 implementation itself, nor by action ordering in the domain definition.
 Also, the performance comparison of different
 depth-based strategies showed that they are not dominating each other.
@@ -158,12 +158,10 @@ Thus, tie-breaking according to $h$-values appears to be ubiquitous in practice.
 
 Although the standard practice of tie-breaking according to $h$ might be sufficient in some domains, further levels of tie-breaking (explicit or implicit) are required if multiple nodes can have the same $f$ and $h$ values.
 We are not aware of any work that explicitly mentions 2nd-level tie-breaking.
-While the survey of efficient \astar implementatins in \citeauthor{burns2012implementing} did not explicitly mention 2nd-level tie-breaking, their code first breaks ties according to $h$, and then breaks remaining ties according to a Last-In-First-Out (LIFO) policy (most recently generated nodes first).\footnote{https://github.com/eaburns/search}
-Although not documented, their choice of a LIFO 2nd-level tie-breaking policy appears to be a natural consequence of the fact that the LIFO policy can be trivially, efficiently implemented in their two-level bucket (vector) implementation of their OPEN list.
+While the survey of efficient \astar implementatins in \citeauthor{burns2012implementing} did not explicitly mention 2nd-level tie-breaking, their code first breaks ties according to $h$, and then breaks remaining ties according to a Last-In-First-Out (\lifo) policy (most recently generated nodes first).\footnote{https://github.com/eaburns/search}
+Although not documented, their choice of a \lifo 2nd-level tie-breaking policy appears to be a natural consequence of the fact that the \lifo policy can be trivially, efficiently implemented in their two-level bucket (vector) implementation of their OPEN list.
 In contrast, the current implementation of \sota \astar based planner Fast
-Downward \cite{Helmert2006}\footnote{http://www.fast-downward.org} uses a First-In-First-Out (FIFO) second-level tie-breaking policy. 
-Although the use of FIFO tie-breaking in Fast Downward is repeatedly mentioned in \cite{RogerH10}, the reason for the particular choice of FIFO is not given.
-
+Downward \cite{Helmert2006}\footnote{http://www.fast-downward.org} uses a First-In-First-Out (\fifo) second-level tie-breaking policy. We could not find any documentation for this choice. 
 
 %\citeauthor{Korf1985depth} uses $h$-based tiebreaking in the context of WA*
 %\cite{korf1993linear}.  
@@ -175,7 +173,7 @@ Although the use of FIFO tie-breaking in Fast Downward is repeatedly mentioned i
 We tested various tiebreaking strategies. In the following sections, we
 use a convenient array-based notation of a combination of tiebreaking
 strategy.  For example, $[f,h,\fifo]$ denotes standard \astar with
-$h$-based first-level tiebreaking and FIFO
+$h$-based first-level tiebreaking and \fifo
 second-level tiebreaking.
 %% I removed \fd because it is not yet proposed at this point
 
@@ -202,7 +200,7 @@ Thus, we also show results for unmodified FD -- as expected, $[f,h,\fifo]$ domin
  \centering \relsize{-3}
  \input{tables/aaai16-30min/aaai16prelim3/1-1-basic-queues.tex}
  \input{tables/aaai16-30min/aaai16prelim3/1-1-basic-queues-noh.tex}
- \caption{Experiments comparing the performance of FIFO, LIFO and Random
+ \caption{Experiments comparing the performance of \fifo, \lifo and Random
  second-level tiebreaking, with (left) and without (right) the
  conventional first-level $h$-tiebreaking.  For the space reason, we
  omitted those domains whose results are the same (Full results are
@@ -226,13 +224,13 @@ different tiebreakings.
  line shows $\times 2,4,6\ldots$ boundary.}  \label{f-h-eval}
 \end{figure}
 
-According to \reftbl{single-coverage} (left) with $h$-tiebreaking, LIFO
+According to \reftbl{single-coverage} (left) with $h$-tiebreaking, \lifo
 outperforms the other strategies, but Random outperforms the others in
-Cybersec, and FIFO performed best in Airport, and
+Cybersec, and \fifo performed best in Airport, and
 \refig{f-h-eval} shows that Random performs best in Miconic.
 \refig{f-h-eval} also shows that the difference in number of nodes evaluated can sometimes be larger than a factor of 10,
 especially in Openstacks and Cybersec.
-Although LIFO second-level tie-breaking appears to perform best overall on these benchmarks, 
+Although \lifo second-level tie-breaking appears to perform best overall on these benchmarks, 
 there are no dominance relationship between these three strategies, and the overall performance of each strategy will depend on the composition of problem instances in the benchmark set.
 %These differences are purely due to the domain characteristics. 
 
@@ -248,10 +246,10 @@ is comparable to $[f,h,\lifo]$, $[f,h,\fifo]$ and $[f,h,\ro]$, the two-level str
 This is somewhat surprising, considering the ubiquity of $h$-based tie-breaking in the search and planning communities.
 \todo{Explanation of why $[f,\lifo]$ performs so well. }
 
-We reemphasize that, although LIFO dominated the others, we consider
+We reemphasize that, although \lifo dominated the others, we consider
 this is just by a coincidence due to the selection of time limit, memory
 limit and problems in the current standard IPC competition
-settings. \emph{We are not trying to claim that any of LIFO or FIFO or
+settings. \emph{We are not trying to claim that any of \lifo or \fifo or
 Random order always dominates the others}.
 
 % However, there are noticeable
@@ -445,15 +443,15 @@ tiebreaking, then $depth(n) = 0$. We call such $n$ the \emph{entrance} of the pl
 Based on this simple notion of depth,
 we propose  \emph{depth-based tie-breaking}, where all nodes are associated with its depth, 
 and depth is used as a tie-breaking criterion.
-FirstDepth(FD), RandomDepth(RD) and LastDepth(LD) breaks ties by choosing a node from 
+FirstDepth(\fd), RandomDepth(\rd) and LastDepth(\ld) breaks ties by choosing a node from 
 nodes with the smallest depth, a random depth, or the largest depth, respectively.
 
 In the rest of thie paper, depth-based tie-breaking is used as a second-level tie-breaking criterion,
 where the first tie-breaking criterion is $h$.
 Since there can be multiple nodes with the same $f$, $h$ and depth,
-a 3rd-level tie-breaking criterion that selects a node using FIFO, LIFO, and Random Order (RO) is used.
+a 3rd-level tie-breaking criterion that selects a node using \fifo, \lifo, and Random Order (\ro) is used.
 This results in 9 configurations:
-$[f,h,\fd,\fifo]$, $[f,h,\fd,\lifo]$, $[f,h,\fd,\ro]$, $[f,h,\ld,\fifo]$, $[f,h,\ld,\lifo]$, $[f,h,\d,\ro]$, $[f,h,\rd,\fifo]$, $[f,h,\rd,\lifo]$, $[f,h,\rd,\ro]$.
+$[f,h,\fd,\fifo]$, $[f,h,\fd,\lifo]$, $[f,h,\fd,\ro]$, $[f,h,\ld,\fifo]$, $[f,h,\ld,\lifo]$, $[f,h,\ld,\ro]$, $[f,h,\rd,\fifo]$, $[f,h,\rd,\lifo]$, $[f,h,\rd,\ro]$.
 
 The effectiveness of each strategy depends on the structure of the problem instance.
 In the knowledge-free search within the plateau, all nodes have the same
@@ -506,21 +504,21 @@ This result explains why the simple $[f,h,\lifo]$ strategy has become
 successful. $[f,h,\lifo]$ is same as $[f,h,\ld,\lifo]$, and the fact
 that the performance of $[f,h,\ld,\cdot]$ was consistently good
 regardless of the third-level tiebreaking means that the performance of
-$[f,h,\ld,\lifo]$ was caused by LastDepth and not by third-level LIFO tiebreaking.
+$[f,h,\ld,\lifo]$ was caused by LastDepth and not by third-level \lifo tiebreaking.
 
 Supporting the above claim, the overall dominant third-level tiebreaking
-in these experiments is FIFO.  For example, when we fix the second-level
+in these experiments is \fifo.  For example, when we fix the second-level
 tiebreaking, the coverages are $[f,h,X,\fifo]>[f,h,X,\ro]>[f,h,X,\lifo]$
-when $X=\ld,\rd$.  Note that FIFO is bad in terms of low-level memory
+when $X=\ld,\rd$.  Note that \fifo is bad in terms of low-level memory
 access pattern since the insertion and deletion happens in the opposite
 side of the bucket. 
 
-Note that we do not claim the performance of FIFO in third-level
+Note that we do not claim the performance of \fifo in third-level
 tiebreaking is universal.  Rather, it is more likely due to the specific
 action ordering in the domain definition. \todo[First]{thise text should
 be adjusted after 30min results}, in Pipesworld-Pushend,
 for example, the dominant third-level strategy is RandomOrder,
-regardless of the second-level depth tiebreaking.  (FIFO,RO,LIFO is
+regardless of the second-level depth tiebreaking.  (\fifo,\ro,\lifo is
 3,3,3 in FirstDepth, 3,4,3 in RandomDepth, and 5,6,4 in LastDepth.)
 Also, in Airport-Fuel and Mprime-Succumb with RandomDepth ($[f,h,\rd,\cdot]$), 
 the RandomOrder third-level tiebreaking is better than \lifo or \fifo.
@@ -640,8 +638,8 @@ since the $h$-value is cached.
 %% Third, since the search terminates when \emph{some} engine finds a
 %% solution, and since the evaluation happens in turns, the search effort
 %% within the final plateau is upper bounded by \emph{twice} the
-%% \emph{minimum} of the search efforts required by each of LD-LIFO or
-%% LD-FIFO engine alone.  Evaluating the same nodes in different engines
+%% \emph{minimum} of the search efforts required by each of \ld-\lifo or
+%% \ld-\fifo engine alone.  Evaluating the same nodes in different engines
 %% also reduces the effort to less than twice due to caching.  This is
 %% desirable because, as we saw in the Results section, in some domains the
 %% gap between the best and worst tiebreaking strategy can be more than 10
@@ -658,30 +656,28 @@ final iteration.
 
 As we see in the previous section, the planner performance is greatly
 affected by the tiebreaking criteria, especially when the search plateau
-is huge.
+is huge, which is more often the case with the more practical,
+cost-minimization domains.
 % 
-Also, the more practical, cost-minimization domains tend to have large plateaus.
-% 
-Furthermore, the different depth-based tiebreakings are not dominating
-each other, and is greatly affected by the domain characteristics.
+Also, the different depth-based tiebreakings are not dominating
+each other and is unpredictably affected by the domain characteristics.
 % 
 Therefore, the LOP strategy should avoid the
 worst-case scenario caused by bad tiebreaking, and quickly find the solution.
 
-First, we show that the doubled cost of insertion and deletion by
-LOP is negligeble.  We verified this by running a LOP
-search engine with two same search engines, both using \lmcut and FIFO
-queue, and compared its runtime against the same single engine (\lmcut
-and FIFO). The result in \refig{ffff} shows that the extra cost of
-duplicated effort is negligeble.
+First, we show that the doubled cost of insertion and deletion by LOP is
+negligeble.  We verified this by comparing the runtime of single \astar
+with a LOP consisting of two same \astar, where all three \astar{}s
+using the idential configuration ($[f,h,\fifo]$ with $h=$\lmcut). The
+result in \refig{ffff} shows that the extra cost of duplicated effort
+is negligeble.
 
 \begin{figure}[htb]
- \centering
- \relsize{-2}
+ \centering \relsize{-2}
  % \includegraphics{tables/opt11-time-lmcut_ff-lmcut_ffff.pdf}
- \caption{Comparison of runtime on problems solved by both single FIFO
- search engine (ff) and a LOP engine with 2 different instances of the
- same FIFO engine (ffff). The runtime difference was on average below a
+ \caption{Comparison of the runtimes on problems solved by both single
+ $[f,h,\fifo]$ (ff) and a LOP engine with 2 different instances of
+ $[f,h,\fifo]$ (ffff). The runtime difference was on average below a
  factor of x1.1, if we ignore the subsecond differences.}  \label{ffff}
 \end{figure}
 
@@ -689,9 +685,9 @@ Next, we evaluated our LOP
 strategy with selective combinations of two or three tiebreakings.
 The configuration shown as ``lmcut m2'', ``lmcut m3'', ``mands m2'',
 ``lmcut m3'' are respectively the portfolio of
-$[[\ld,\fifo], [\rd,\lifo]]$, $[[\ld,\fifo], [\ld,\ro], [\rd,\lifo]]$,
-$[[\ld,\fifo],[\rd,\ro]]$, $[[\ld,\fifo],[\rd,\ro],[\ld,\lifo]]$. These
-portfolios are hand-tuned.
+$[\ld,\fifo]$ + $[\rd,\lifo]$, $[\ld,\fifo]$ + $[\ld,\ro]$ + $[\rd,\lifo]$,
+$[\ld,\fifo]$ + $[\rd,\ro]$, $[\ld,\fifo]$ + $[\rd,\ro]$ + $[\ld,\lifo]$. These
+portfolios are selected by hand based on the previous results.
 % LOP is able to avoid the accidental bias
 Results in \reftbl{portfolio-coverage}
 shows a significant improvements compared to the results by each search
@@ -702,6 +698,7 @@ tiebreakings compared to each search engine alone.  It shows that
 LOP acutally follows the expected behavior and the theoretical
 bounds: the evaluation never exceeds twice/thirds of the single
 search engine.
+\todo{the table is 5min result!}
 
 \begin{table}[htb]
  \centering \relsize{-2}
@@ -711,12 +708,27 @@ search engine.
  \label{portfolio-coverage}
 \end{table}
 
+% \begin{figure}[htb]
+%  \centering
+%  \relsize{-2}
+%  \includegraphics{tables/aaai16-5min/aaai16prelim3/evaluated-lmcut_m2-lmcut_ld_fifo.pdf}
+%  % \includegraphics{tables/aaai16-5min/aaai16prelim3/evaluated-nokey-lmcut_m2-lmcut_rd_lifo.pdf}
+%  \caption{Comparson of evaluations between LOP $[[\ld,\fifo],
+%  [\rd,\lifo]]$ and the best single strategy $[\ld,\fifo]$. The results
+%  unaffected by LOP are shown around the $y=2x$ line. }
+%  \label{portfolio-runtime}
+% \end{figure}
+
 \begin{figure}[htb]
  \centering
  \relsize{-2}
- \includegraphics{tables/aaai16-5min/aaai16prelim3/evaluated-lmcut_m2-lmcut_ld_fifo.pdf}
+ \includegraphics{tables/aaai16-5min/aaai16prelim3/time-lmcut_m2-lmcut_ld_fifo.pdf}
  % \includegraphics{tables/aaai16-5min/aaai16prelim3/evaluated-nokey-lmcut_m2-lmcut_rd_lifo.pdf}
- \caption{Runtime comparson between LOP (X,Y,Z) and single strategies.}
+ \caption{Comparson of runtimes between LOP $[[\ld,\fifo],
+ [\rd,\lifo]]$ and the best single strategy $[\ld,\fifo]$. The results
+ most badly affected by LOP are shown around the $y=2x$ line. Most
+ instances appear above the line, and many instances show that they
+ avoided the worst case performance.}
  \label{portfolio-runtime}
 \end{figure}
 
