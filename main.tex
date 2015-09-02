@@ -596,17 +596,15 @@ On one hand, this simple portfoio approach has the advantage of mitigating worst
 On the other hand, this simple portfolio will always require twice the CPU time of the faster strategy. Furthermore, the portfolio requires twice the RAM resources, which is a major disadvantage in memory-bound algorithms such as \astar.
 
 We propose a new, \emph{Low-Overhead Portfolio} (LOP) implementation which can be used to implement a portfolio of tie-breaking strategies with significantly less overhead.
-Conceptually, a LOP for A* is a portfolio composed of multiple independently executing threads of A*  where each thread  executes independently using a different tiebreaking strategy but which share a cache for heuristic function values.
-The actual implementation is as follows:
-The LOP simulates
-multiple search engines using the same heuristic function, but with
-different tiebreaking strategies.  Each engine has completely separate
-open list and closed list.  There is a globally shared hash
-table which caches all heuristic function computations.  Whenever a
-search engine evaluates a state, it first checks the caches and 
-reuses the result if possible.  The current implementation is sequential -- each search engine takes  turns 
-evaluating states. The algorithm finishes when some engine finds the solution.
-
+% 
+Conceptually, a LOP for \astar is a portfolio composed of multiple
+independently executing \astar where each \astar has completely separate
+open/closed list, using a different tiebreaking strategy but sharing a
+global cache for heuristic function values. Whenever a search
+engine evaluates a state, it first checks the cache and reuses the
+result if possible.  The current implementation is sequential -- each
+search engine takes turns evaluating states. The algorithm finishes when
+some engine finds the solution.
 
 Low-Overhead Portfolios offer some attractive tradeoffs,
 particularly when runtimes are dominated by state evaluation, as is the case when searching with 
@@ -754,7 +752,10 @@ TODO: other FD/LAMA comparisons: alternating queues vs LOP,   preferred queues v
 % which is a technique that favors those actions which decreased the
 % smallest $h$ value during the search.
 
-TODO:  lazy A* vs LOP -- LazyA* combines multiple heuristics h1,h2 with low-overhead. However, if there is no dominance between h1,h2, behavior is different than h2; in contrast, LOP guarantees conservative behavior.
+TODO: lazy \astar vs LOP -- Lazy\astar combines multiple heuristics
+h1,h2 with low-overhead. However, if there is no dominance between
+h1,h2, behavior is different than h2; in contrast, LOP guarantees
+conservative behavior.
 
 % It's not clear what these techniques have in common, except that they are all orthogonal to heuristics,
 % If that's the case, then there's no need to cite them in this paper -- there's no reason why these particular techniques
