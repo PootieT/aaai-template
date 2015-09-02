@@ -651,12 +651,11 @@ final iteration.
 
 As we see in the previous section, the planner performance is greatly
 affected by the tiebreaking criteria, especially when the search plateau
-is huge.
+is huge, which is more often the case with the more practical,
+cost-minimization domains.
 % 
-Also, the more practical, cost-minimization domains tend to have large plateaus.
-% 
-Furthermore, the different depth-based tiebreakings are not dominating
-each other, and is greatly affected by the domain characteristics.
+Also, the different depth-based tiebreakings are not dominating
+each other and is unpredictably affected by the domain characteristics.
 % 
 Therefore, the LOP strategy should avoid the
 worst-case scenario caused by bad tiebreaking, and quickly find the solution.
