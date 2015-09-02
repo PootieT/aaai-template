@@ -232,13 +232,13 @@ there are no dominance relationship between these three strategies, and the over
 
 Next, we investigated whether $h$-based, first-level tie-breaking is necessary.
 In \reftbl{single-coverage} (right), which shows the results when  first-level
-tiebreaking based on $h$ is disabled, [f, \lifo], which simply breaks ties among nodes with the same $f$-cost by expanding most recently generated nodes first (first suggested in \cite{korf85depth}),
-clearly dominates [f, \fifo] and [f, \ro].
+tiebreaking based on $h$ is disabled, $[f, \lifo]$, which simply breaks ties among nodes with the same $f$-cost by expanding most recently generated nodes first (first suggested in \cite{korf1985depth}),
+clearly dominates $[f, \fifo]$ and $[f, \ro]$.
 
-Interestingly, the performance of the [f, \lifo] strategy
-is comparable to [f,h,\lifo],[f,h,\fifo], and [f,h,\ro], the two-level strategies that first break ties according to $h$.
+Interestingly, the performance of the $[f, \lifo]$ strategy
+is comparable to $[f,h,\lifo]$, $[f,h,\fifo]$ and $[f,h,\ro]$, the two-level strategies that first break ties according to $h$.
 This is somewhat surprising, considering the ubiquity of $h$-based tie-breaking in the search and planning communities.
-\todo{Explanation of why [f,\lifo] performs so well. }
+\todo{Explanation of why $[f,\lifo]$ performs so well. }
 
 We reemphasize that, although LIFO dominated the others, we consider
 this is just by a coincidence due to the selection of time limit, memory
@@ -436,10 +436,9 @@ nodes with the smallest depth ,a random depth, or the largest depth, respectivel
 In the rest of thie paper, depth-based tie-breaking is used as a second-level tie-breaking criterion,
 where the first tie-breaking criterion is $h$.
 Since there can be multiple nodes with the same $f$, $h$ and depth,
-a 3rd-level tie-breaking criterion that selects a node using FIFO, LIFO, and Random Order (R) is used.
+a 3rd-level tie-breaking criterion that selects a node using FIFO, LIFO, and Random Order (RO) is used.
 This results in 9 configurations:
-[f,h,FD,FIFO], [f,h,FD,LIFO], [f,h,FD,RO], [f,h,LD,FIFO], [f,h,LI,LIFO], [f,h,D,RO], [f,h,RD,FIFO], [f,h,RD,LIFO], [f,h,RD,RO].
-
+$[f,h,\fd,\fifo]$, $[f,h,\fd,\lifo]$, $[f,h,\fd,\ro]$, $[f,h,\ld,\fifo]$, $[f,h,\ld,\lifo]$, $[f,h,\d,\ro]$, $[f,h,\rd,\fifo]$, $[f,h,\rd,\lifo]$, $[f,h,\rd,\ro]$.
 
 The effectiveness of each strategy depends on the structure of the problem instance.
 In the knowledge-free search within the plateau, all nodes have the same
@@ -457,13 +456,12 @@ random depth seems the safest practice. This corresponds to the case
 where RandomDepth would perform better.
 
 
-Also note that, the node expansion orders of [f,h,FD,FIFO] and [f,h,LD,LIFO] are
-exactly the same as [f,h,FIFO] and [f,h,LIFO], respectively,
-i.e., those without the depth-based
-tiebreaking.  
-This is because, LIFO expands the most recently evaluated\todo{evaluated or generated?}
-states, which always has the largest depth, and FIFO expands the least recently
-evaluated\todo{evaluated or generated?} states, which always has the smaller depth.
+Also note that, the node evaluation orders of $[f,h,\fd,\fifo]$ and $[f,h,\ld,\lifo]$ are
+exactly the same as $[f,h,\fifo]$ and $[f,h,\lifo]$, respectively,
+i.e., those without the depth-based tiebreaking.  
+This is because, $[f,h,\lifo]$ expands the most recently evaluated/inserted
+states, which always have the largest depth, and $[f,h,\fifo]$ expands the least recently
+evaluated states, which always have the smallest depth.
 
 % This ``greediness'' is different from the normal
 % sense of ``greedy search'' --- since this greediness only holds within
@@ -473,7 +471,7 @@ evaluated\todo{evaluated or generated?} states, which always has the smaller dep
 
 \subsection{Evaluating Depth-based Tiebreaking}
 
-We evaluated the nine configurations of the three-level tie-breaking strategies described above, i.e., [f,h,depthStrategy,LFR], where the first-level tie-breaking is according to $h$ (break ties in favor of small $h$), the second-level strategy is based on depth and $depthStrategy \in \{\fd, \ld, \rd\}$, and the third level tie-breaking strategy $LFR \in \{\lifo, \fifo, \ro\}$.
+We evaluated the nine configurations of the three-level tie-breaking strategies described above, i.e., $[f,h,depthStrategy,LFR]$, where the first-level tie-breaking is according to $h$ (break ties in favor of small $h$), the second-level strategy is based on depth and $depthStrategy \in \{\fd, \ld, \rd\}$, and the third level tie-breaking strategy $LFR \in \{\lifo, \fifo, \ro\}$.
 
 In addition to the 28 standard IPC benchmark domains used in the previous set of experiments, we also added 16 \emph{zerocost} domains with 640 problems. 
 
@@ -572,12 +570,14 @@ Since the performance of a tiebreakig strategy depends on the domain, and there 
 idea is to use a portfolio approach which combine several tiebreaking strategies.
 
 The simplest possible portfolio approach would be a standard algorithm portfolio
-which executes two completely independent A* processes A1 and A2 in parallel, where A1 uses tiebreaking strategey S1 and A2 uses tiebreaking strategy S2, and CPU resources are allocated equally to A1 and A2.
-The portolio would terminate when either A1 or A2 finds a goal state.
-Let T1 be the time that A1 requires to solve instance I, and let T2 be the time A2 requires to solve instance I. Then, the total CPU required by the portfolio to solve instance I is 2min(A1,A2). This approach to combining multiple strategies is the standard algorithm portfolio proposed and analyzed in \cite{HubermanLH97,GomesS01}, and has also recently been called ``dovetailing'' and applied to combine multiple IDA* and A*  \cite{ValenzanoSSBK10}. %TODO: remove the dovetailing reference after the paper is accepted -- the dovetailing authors were unaware of the HubermanLH97 paper...
+which executes two completely independent \astar processes $A_1$ and $A_2$ in parallel, where $A_1$ uses tiebreaking strategey $S_1$ and $A_2$ uses tiebreaking strategy $S_2$, and CPU resources are allocated equally to $A_1$ and $A_2$.
+The portolio would terminate when either $A_1$ or $A_2$ finds a goal state.
+Let $T_1$ be the time that $A_1$ requires to solve instance $I$, and $T_2$ be the
+time $A_2$ requires to solve instance $I$. Then, the total CPU time
+required by the portfolio to solve instance $I$ is $2\times\min(A_1,A_2)$. This approach to combining multiple strategies is the standard algorithm portfolio proposed and analyzed in \cite{HubermanLH97,GomesS01}, and has also recently been called ``dovetailing'' and applied to combine multiple IDA* and \astar  \cite{ValenzanoSSBK10}. %TODO: remove the dovetailing reference after the paper is accepted -- the dovetailing authors were unaware of the HubermanLH97 paper...
 
-On one hand, this simple portfoio approach has the advantage of mitigating worst-case risk -- as shown in XXX, sometimes, the ratio between T1 and T2 is very large (>10x) and choosing the wrong strategy has a very high penalty, so this portfolio strategy guarantees that the CPU usage is never more than twice that of using the faster strategy.
-On the other hand, this simple portfolio will always require twice the CPU time of the faster strategy. Furthermore, the portfolio requires twice the RAM resources, which is a major disadvantage in memory-bound algorithms such as A*.
+On one hand, this simple portfoio approach has the advantage of mitigating worst-case risk -- as shown in \refig{plateau}, sometimes, the ratio between $T_1$ and $T_2$ is very large (e.g., $T_2 > 10\times T_1$) and choosing the wrong strategy has a very high penalty, so this portfolio strategy guarantees that the CPU usage is never more than twice that of using the faster strategy.
+On the other hand, this simple portfolio will always require twice the CPU time of the faster strategy. Furthermore, the portfolio requires twice the RAM resources, which is a major disadvantage in memory-bound algorithms such as \astar.
 
 We propose a new, \emph{Low-Overhead Portfolio} (LOP) implementation which can be used to implement a portfolio of tie-breaking strategies with significantly less overhead.
 Conceptually, a LOP for A* is a portfolio composed of multiple independently executing threads of A*  where each thread  executes independently using a different tiebreaking strategy but which share a cache for heuristic function values.
