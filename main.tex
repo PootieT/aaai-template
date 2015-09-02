@@ -693,6 +693,7 @@ tiebreakings compared to each search engine alone.  It shows that
 LOP acutally follows the expected behavior and the theoretical
 bounds: the evaluation never exceeds twice/thirds of the single
 search engine.
+\todo{the table is 5min result!}
 
 \begin{table}[htb]
  \centering \relsize{-2}
@@ -702,12 +703,27 @@ search engine.
  \label{portfolio-coverage}
 \end{table}
 
+% \begin{figure}[htb]
+%  \centering
+%  \relsize{-2}
+%  \includegraphics{tables/aaai16-5min/aaai16prelim3/evaluated-lmcut_m2-lmcut_ld_fifo.pdf}
+%  % \includegraphics{tables/aaai16-5min/aaai16prelim3/evaluated-nokey-lmcut_m2-lmcut_rd_lifo.pdf}
+%  \caption{Comparson of evaluations between LOP $[[\ld,\fifo],
+%  [\rd,\lifo]]$ and the best single strategy $[\ld,\fifo]$. The results
+%  unaffected by LOP are shown around the $y=2x$ line. }
+%  \label{portfolio-runtime}
+% \end{figure}
+
 \begin{figure}[htb]
  \centering
  \relsize{-2}
- \includegraphics{tables/aaai16-5min/aaai16prelim3/evaluated-lmcut_m2-lmcut_ld_fifo.pdf}
+ \includegraphics{tables/aaai16-5min/aaai16prelim3/time-lmcut_m2-lmcut_ld_fifo.pdf}
  % \includegraphics{tables/aaai16-5min/aaai16prelim3/evaluated-nokey-lmcut_m2-lmcut_rd_lifo.pdf}
- \caption{Runtime comparson between LOP (X,Y,Z) and single strategies.}
+ \caption{Comparson of runtimes between LOP $[[\ld,\fifo],
+ [\rd,\lifo]]$ and the best single strategy $[\ld,\fifo]$. The results
+ most badly affected by LOP are shown around the $y=2x$ line. Most
+ instances appear above the line, and many instances show that they
+ avoided the worst case performance.}
  \label{portfolio-runtime}
 \end{figure}
 
