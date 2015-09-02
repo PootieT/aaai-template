@@ -71,6 +71,8 @@ Although there has not been much previous \emph{in-depth} work on tie-breaking p
 it is widely believed that among nodes with cost $f(n) = f^*$, ties should be broken according to $h(n)$, i.e., nodes with smaller $h$ values should be expanded first.
 While this is a useful rule of thumb in many domains,
 it turns out that tie-breaking requires more careful consideration, particularly for problems with large \emph{plateaus} -- regions of the search space with the same cost.
+\emph{Note that all tiebreaking strategies investigated in this paper maintain the admissibility of the search
+because only the node expansion order among nodes that share the same $f$-cost are affected.}
 
 We first show several important findings regarding the
 existing tiebreaking strategy for \astar as follows.
@@ -108,16 +110,7 @@ To put it simply, this portfolio does not need additional computation
 and we get a speedup for free (aside from the negligeble differences).
 % Also, it is characteristic in that it works with a single heuristic function.
 
-The rest of paper is organized as follows: The next section describes the
-preliminary backgrounds of \astar.
-Next we compares several trivially-simple and well-known tiebreaking
-methods on top of Fast Downward to show that even such a small
-difference significantly affects the performance on domains with
-large plateaus.
-Next we propose a novel depth-aware tiebreaking methods and empirically
-show that it outperforms previous strategies.
-Then we proceed to evaluate the tiebreaking portfolio.
-We finally conclude with a discussion on the future work.
+
 
 
 \section{Tie-breaking Strategies in \astar}
@@ -229,7 +222,7 @@ Although LIFO second-level tie-breaking appears to perform best overall on these
 there are no dominance relationship between these three strategies, and the overall performance of each strategy will depend on the composition of problem instances in the benchmark set.
 %These differences are purely due to the domain characteristics. 
 
-\subsection{Is $h$-based tie-breaking necessary?}
+\subsection{Is $h$-Based Tie-Breaking necessary?}
 
 Next, we investigated whether $h$-based, first-level tie-breaking is necessary.
 In \reftbl{single-coverage} (right), which shows the results when  first-level
@@ -239,6 +232,7 @@ clearly dominates [f, \fifo] and [f, \ro].
 Interestingly, the performance of the [f, \lifo] strategy
 is comparable to [f,h,\lifo],[f,h,\fifo], and [f,h,\ro], the two-level strategies that first break ties according to $h$.
 This is somewhat surprising, considering the ubiquity of $h$-based tie-breaking in the search and planning communities.
+\todo{Explanation of why [f,\lifo] performs so well. }
 
 We reemphasize that, although LIFO dominated the others, we consider
 this is just by a coincidence due to the selection of time limit, memory
@@ -251,27 +245,41 @@ Random order always dominates the others}.
 
 \subsection{Plateaus and Tie-Breaking}
 
-In our comparison of the simple two-level tie-breaking strategies above, 
-We also observed that, such differences occur especially in the problems
-which have the huge search plateau, i.e., the problems where the
-heuristic function is not informative and the planner relies heavily on
-the tiebreaking criteria.
-% 
-\refig{plateau} plots the size of the final search plateau with
-$h$-based tiebreaking (\refig{fig:plateau-noh} in the introduction is
-the same figure without $h$-tiebreaking). In this plot, $y$-axis
-shows the number of nodes $[f,h]=[f^*,0]$ and $x$-axis shows the total
-number of nodes $f\leq f^*$.
+In our comparison of the simple two-level tie-breaking strategies
+above, we observed that large differences in performance between
+two-level tie-breaking strategies tend to occur in problems where
+there are many nodes that have the same $f$ and $h$ values, creating
+large \emph{plateau} regions where the heuristic does not provide
+useful guidance -- in effect, these plateau regions in the last
+frontier ($f=f^*$) by definition requires blind search, i.e., 
+relying solely on the tie-breaking criterion, in order to escape the
+plateau and find a goal node.
+%, i.e., the problems where the
+%heuristic function is not informative and the planner relies heavily on
+%the tiebreaking criteria.
+
+\refig{plateau} plots the size of the final search plateau on 1104 IPC benchmark instances.
+The $y$-axis
+represents the number of nodes with $[f,h]=[f^*,0]$, and the $x$-axis represents the total
+number of nodes with $f\leq f^*$ 
+Clearly, in some domains such as Openstacks and Cybersec, the planner can spend most of the runtime
+searching the final plateau.
+It also
+means that these domains have very large variance in the runtime caused
+by the difference in second-level tiebreakings. 
+
+\refig{fig:plateau-noh} in the introduction is the same figure without $h$-tiebreaking.
+Besides, as expected, when the
+$h$-based tiebreaking is disabled in \refig{fig:plateau-noh}, much
+larger effort could be spent on the final plateau.
+
+
+
+
+
 %  The size of the bucket does not change
 % between $[f,h,\fifo]$, $[f,h,\lifo]$ and $[f,h,\ro]$.
 
-Clearly, in some domains, the planner cound spend most of the runtime on
-searching through the final plateau in the worst case: The goal node
-could be found in the very last iteration in the plateau. It also
-means that these domains have very large variance in the runtime caused
-by the difference in second-level tiebreakings. Besides, as expected, when the
-$h$-based tiebreaking is disabled in \refig{fig:plateau-noh}, much
-larger effort could be spent on the final plateau.
 
 \begin{figure}[htb]
  \centering \relsize{-3}
@@ -283,6 +291,7 @@ larger effort could be spent on the final plateau.
   Openstacks clearly has the large plateaus.}  \label{plateau}
 \end{figure}
 
+\todo[Move this after zerocost domains are defined?]{}
 \todo[When we plot the same statistics on the zerocost domains, this
 becomes a universal trend among instances.]{Current figure is not
 plotting the zerocost domains} In cost-minimization problems, the search
@@ -298,65 +307,8 @@ runtime-minimization instances, where most actions have nonzero cost.
  \label{plateau-zerocost}
 \end{figure}
 
-
-
-
-
-\section{Depth-based Tiebreaking}
-
-In order to solve this kind of problem with a large final plateau, the
-planner needs to run an efficient knowledge-free search within the
-plateau.  One useful measure for controlling the search in this
-situation is the number of steps from the entrance of the plateau.
-
-The \emph{depth} of a node is an integer equal to the depth of its
-parent node plus one. If the parent node is from the other plateau,
-e.g., different $f$-value, or different $h$-value used for the first
-tiebreaking, the depth is 0.  With this simple notion of depth, we
-developed three variations of the second level tiebreaking method,
-called FirstDepth(FD), RandomDepth(RD) and LastDepth(LD). In all three
-methods, the nodes are stored in the bucket associated with particular
-depth.  However, upon expansion, they choose the bucket with the smallest,
-a random, or the largest depth to pick a node from, respectively.
-Each variation has 3 possibilities of implementing their buckets, namely
-FIFO, LIFO and Random Order(RO), resulting in 9 configurations ---
-FD-FIFO, FD-LIFO, FD-RO, LD-FIFO --- and so on.
-
-These tiebreaking methods trivially maintains the admissibility because
-it works only within the same $f$-value and does not alter the expansion
-order wrto $f$-value.
-
-Note that these strategies are not universally dominating each other.
-%This is intentional because, 
-In the knowledge-free search within the plateau, all nodes have the same
-$f$-value and it is impossible to guess whether the goal is near, far
-away or in a particular distance from the entrance. In the first case,
-the search should be focused around the entrance favoring the smaller
-depths, and the behavior should be much like breadth-first, and it
-corresponds to FirstDepth. In the second case, the planner should
-greedily explore the various area of the plateau by preferring larger
-depth, much like in depth-first, and corresponds to LastDepth. In the
-final case where the goal node is in a particular depth, choosing the
-random depth seems the safest practice. This corresponds to the case
-where RandomDepth would perform better.
-% 
-This is verified in the later experiments.
-
-Also note that, the node evaluation orders of FD-FIFO and LD-LIFO are
-exactly the same as FIFO and LIFO, i.e., those without the depth-based
-tiebreaking.  This is because, LIFO expands the most recently evaluated
-states, which always has the largest depth, and FIFO expands the oldest
-evaluated states, which always has the smaller depth.
-
-% This ``greediness'' is different from the normal
-% sense of ``greedy search'' --- since this greediness only holds within
-% the plateau, admissibility is still maintained.
- 
-
-
 \section{Domains with Zero-cost Actions: Applications and Motivation}
-
-\todo*{Add several paragraphs explaining why domains with zero-cost actions are an important, practical class of problem, e.g., energy consumptin minimization.}
+\todo{struggling to find the right place for this..}
 
 % XXX I'm commenting out the paragraphs below because:
 % (1) A review of heuristic functions for domain-independent learning is not really
@@ -373,9 +325,8 @@ There are also several problems with non-unit costs, sometimes
 artificially but also sometimes naturally, such as in multiple
 sequence alignment (MSA).
 
-In the plannning community, the first introduction of non-unit domain in
-the cometition is IPC-02. Currently most competition domains have the
-non-unit costs. 
+In the plannning community, actions with non-unit costs were first introduced in 
+IPC-2002. Currently most competition domains have non-unit action costs.
 Notably, most actions in these domains have nonzero positive costs.
 % 
 %  Although some of these domains have non-unit costs,
@@ -409,15 +360,15 @@ cost-minimization domains, in which the target is the fuel consumption
 view, cost minimization domains would have wider interests compared to
 the simple runtime minimization.
 
-Openstacks domain we noted in the previous section is a cost
-minimization domain first introduced in IPC-06. It is targeted at
-minimizing the number of stacks used and it has many zero-cost
-actions. These zero-cost actions prevent the heuristics from producing
-informative guidance. The \sota heuristic functions such as \lmcut
-\cite{Helmert2009} and M\&S \cite{helmert2007flexible} fail to find a
-meaningful estimate because \lmcut fails to find a good cost
+The Openstacks domain is a cost
+minimization domain first introduced in IPC-2006, where the objective is to 
+minimizing the number of stacks used.
+There are many zero-cost actions (i.e., actions that don't increase the number of stacks), and
+these zero-cost actions prevent the commonly used heuristics from producing
+informative guidance, confounding commonly used heuristics.
+For example, \lmcut \cite{Helmert2009} fails to find a good cost
 partitioning with non-zero values, and most edges in the abstraction
-space of M\&S have zero costs.
+space of M\&S have zero costs \cite{helmert2007flexible}.
 
 % Currently, most benchmark domains except Openstacks and Cybersec do not
 % have the large plateau thanks to the powerful heuristic estimates (which
@@ -458,12 +409,67 @@ particular domain formulation.]{It's not tested yet}
 
 
 
+
+
+\section{Depth-based Tiebreaking}
+
+In order to solve problems with large final plateaus, the
+planner needs to run an efficient knowledge-free search within the
+plateau.  One useful metric which can be used to control the search in this
+situation is the \emph{depth} of a node, which represents the number 
+of steps a node is from the entrance of the plateau.
+$Depth(n)$ is defined as $depth(parent(n)) + 1$
+If the $parent(n)$ is from the other plateau, i.e., $parent(n)$ has a different $f$-value, or different $h$-value used for the first
+tiebreaking, the $depth(n) = 0$. 
+Based on this simple notion of depth,
+we propose  \emph{depth-based tie-breaking}, where all nodes are associated with its depth, 
+and depth is used as a tie-breaking criterion.
+FirstDepth(FD), RandomDepth(RD) and LastDepth(LD) breaks ties by choosing a node from 
+nodes with the smallest depth ,a random depth, or the largest depth, respectively.
+
+In the rest of thie paper, depth-based tie-breaking is used as a second-level tie-breaking criterion,
+where the first tie-breaking criterion is $h$.
+Since there can be multiple nodes with the same $f$, $h$ and depth,
+a 3rd-level tie-breaking criterion that selects a node using FIFO, LIFO, and Random Order (R) is used.
+This results in 9 configurations:
+[f,h,FD,FIFO], [f,h,FD,LIFO], [f,h,FD,RO], [f,h,LD,FIFO], [f,h,LI,LIFO], [f,h,D,RO], [f,h,RD,FIFO], [f,h,RD,LIFO], [f,h,RD,RO].
+
+
+The effectiveness of each strategy depends on the structure of the problem instance.
+In the knowledge-free search within the plateau, all nodes have the same
+$f$ and $h$ values % yes, for simplicity, I'm assuming 3-level tiebreaks, ignoring no-h for the time being..
+ and it is impossible to guess whether the goal is near, far
+away or in a particular distance from the entrance. \todo{``entrance'' must be defined.}
+In the first case,
+the search should be focused around the entrance favoring the smaller
+depths, and the behavior should be much like breadth-first, and it
+corresponds to FirstDepth. In the second case, the planner should
+greedily explore the various area of the plateau by preferring larger
+depth, much like in depth-first, and corresponds to LastDepth. In the
+final case where the goal node is in a particular depth, choosing the
+random depth seems the safest practice. This corresponds to the case
+where RandomDepth would perform better.
+
+
+Also note that, the node expansion orders of [f,h,FD,FIFO] and [f,h,LD,LIFO] are
+exactly the same as [f,h,FIFO] and [f,h,LIFO], respectively,
+i.e., those without the depth-based
+tiebreaking.  
+This is because, LIFO expands the most recently evaluated\todo{evaluated or generated?}
+states, which always has the largest depth, and FIFO expands the least recently
+evaluated\todo{evaluated or generated?} states, which always has the smaller depth.
+
+% This ``greediness'' is different from the normal
+% sense of ``greedy search'' --- since this greediness only holds within
+% the plateau, admissibility is still maintained.
+ 
+
+
 \subsection{Evaluating Depth-based Tiebreaking}
 
-Next, we evaluated the 3 depth-based tiebreaking methods combined with 3
-bucket implementations, resulting in 9 configurations.
+We evaluated the nine configurations of the three-level tie-breaking strategies described above, i.e., [f,h,depthStrategy,LFR], where the first-level tie-breaking is according to $h$ (break ties in favor of small $h$), the second-level strategy is based on depth and $depthStrategy \in \{\fd, \ld, \rd\}$, and the third level tie-breaking strategy $LFR \in \{\lifo, \fifo, \ro\}$.
 
-In addition to the 28 standard IPC benchmark domains used in the previous section, we also added 16 \emph{zerocost} domains with 640 problems. % moved from previous "Experiments" section
+In addition to the 28 standard IPC benchmark domains used in the previous set of experiments, we also added 16 \emph{zerocost} domains with 640 problems. 
 
 Note that, the node evaluation order of $[\cdot,\fd,\fifo]$ and $[\cdot,\ld,\lifo]$
 are exactly the same as those without the second-level
