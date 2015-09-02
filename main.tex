@@ -660,20 +660,19 @@ each other and is unpredictably affected by the domain characteristics.
 Therefore, the LOP strategy should avoid the
 worst-case scenario caused by bad tiebreaking, and quickly find the solution.
 
-First, we show that the doubled cost of insertion and deletion by
-LOP is negligeble.  We verified this by running a LOP
-search engine with two same search engines, both using \lmcut and FIFO
-queue, and compared its runtime against the same single engine (\lmcut
-and FIFO). The result in \refig{ffff} shows that the extra cost of
-duplicated effort is negligeble.
+First, we show that the doubled cost of insertion and deletion by LOP is
+negligeble.  We verified this by comparing the runtime of single \astar
+with a LOP consisting of two same \astar, where all three \astar{}s
+using the idential configuration ($[f,h,\fifo]$ with $h=$\lmcut). The
+result in \refig{ffff} shows that the extra cost of duplicated effort
+is negligeble.
 
 \begin{figure}[htb]
- \centering
- \relsize{-2}
+ \centering \relsize{-2}
  % \includegraphics{tables/opt11-time-lmcut_ff-lmcut_ffff.pdf}
- \caption{Comparison of runtime on problems solved by both single FIFO
- search engine (ff) and a LOP engine with 2 different instances of the
- same FIFO engine (ffff). The runtime difference was on average below a
+ \caption{Comparison of the runtimes on problems solved by both single
+ $[f,h,\fifo]$ (ff) and a LOP engine with 2 different instances of
+ $[f,h,\fifo]$ (ffff). The runtime difference was on average below a
  factor of x1.1, if we ignore the subsecond differences.}  \label{ffff}
 \end{figure}
 
