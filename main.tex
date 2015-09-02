@@ -32,7 +32,7 @@ This paper investigates tie-breaking strategies for \astar.
 \astar is a standard search algorithm for finding an optimal-cost path 
 from an initial state $s$ to some goal state $g \in G$ in a search space represented as a graph \cite{hart1968formal}.
 In each iteration, \astar selects and \emph{expands} a node $n$ from the OPEN priority queue.
-\astar selects and expands the node which has the lowest $f$-cost, where for node $n$, $f(n)$ is the sum of  $g(n)$, the cost of the current path from the start state to $n$, and $h(n)$, a heuristic estimate of the cost from $n$ to a goal state.
+$n$ is the node which has the lowest $f$-cost in OPEN, where for node $n$, $f(n)$ is the sum of  $g(n)$, the cost of the current path from the start state to $n$, and $h(n)$, a heuristic estimate of the cost from $n$ to a goal state.
 \astar returns an optimal solution when $h$ is admissible, i.e., when it
 never overestimates the true distance to the goal $h^*$.
 
@@ -147,7 +147,7 @@ Thus, tie-breaking according to $h$-values appears to be ubiquitous in practice.
 Although the standard practice of tie-breaking according to $h$ might be sufficient in some domains, further levels of tie-breaking (explicit or implicit) are required if multiple nodes can have the same $f$ and $h$ values.
 We are not aware of any work that explicitly mentions 2nd-level tie-breaking.
 While the survey of efficient \astar implementatins in \citeauthor{burns2012implementing} did not explicitly mention 2nd-level tie-breaking, their code first breaks ties according to $h$, and then breaks remaining ties according to a Last-In-First-Out (LIFO) policy (most recently generated nodes first).\footnote{https://github.com/eaburns/search}
-Their choice of a LIFO 2nd-level tie-breaking policy appears to be a natural consequence of the fact that the LIFO policy can be trivially, efficiently implemented in their two-level bucket (vector) implementation of their OPEN list.
+Although not documented, their choice of a LIFO 2nd-level tie-breaking policy appears to be a natural consequence of the fact that the LIFO policy can be trivially, efficiently implemented in their two-level bucket (vector) implementation of their OPEN list.
 In contrast, the current implementation of \sota \astar based planner Fast
 Downward \cite{Helmert2006}\footnote{http://www.fast-downward.org} uses a First-In-First-Out (FIFO) second-level tie-breaking policy. We could not find any documentation for this choice. 
 
