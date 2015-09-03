@@ -606,11 +606,17 @@ We propose a new, \emph{Low-Overhead Portfolio} (LOP) implementation which can b
 Conceptually, a LOP for \astar is a portfolio composed of multiple
 independently executing \astar where each \astar has completely separate
 open/closed list, using a different tiebreaking strategy but sharing a
-global cache for heuristic function values. Whenever a search
-engine evaluates a state, it first checks the cache and reuses the
-result if possible.  The current implementation is sequential -- each
-search engine takes turns evaluating states. The algorithm finishes when
-some engine finds the solution.
+global cache for heuristic function values. Whenever a search engine
+evaluates a state, it first checks the cache and reuses the result if
+possible.  The current implementation is sequential -- each search
+engine takes turns evaluating states. The algorithm finishes when some
+engine finds the solution. Note that it does not \emph{expand} states in
+turns --- in that case, the number of evaluation would be affected by
+the difference in the number of successor states of each node and the
+evaluation effort would not be evenly distributed. There is a small pool
+storing the nodes which are expanded but not yet evaluated. Evaluation
+happens in turns, and if the pool is exhausted, the expansion occurs as
+necessary in order to evaluate more nodes.
 
 Low-Overhead Portfolios offer some attractive tradeoffs,
 particularly when runtimes are dominated by state evaluation, as is the case when searching with 
@@ -781,13 +787,16 @@ sorting criteria. In contrast, it happens only in FirstDepth configuration in ou
 %% * True, but people who know LAMA/FD are likely to demand some kind of comparison with alternating queues and preferred queues whether we mention  it or not.
 %% Probably better to preemptively settle these questions rather than risking difficult questions during rebuttal.
 
-Fast Downward and Lama implement an (OPEN) queue \emph{alternation} method \cite{Helmert2006}.
-It was originally used as a method for using multiple heuristics in a planner.
-There are multiple open lists (queues), where there is a queue for each heuristic, and states are inserted into all queues according to the heuristic value for each heuristic.
-For example, if there are two heuristics $h1$ and $h2$, 
-Our LOP portfolio approach is similar to queue alternation in that we maintain multiple queues, one for each tie-breaking method.
-However, unlike queue alternation, TODO:INPROGRESS- kind of tricky to describe the difference succinctly..
-
+Fast Downward and Lama implement an (OPEN) queue \emph{alternation}
+method \cite{Helmert2006}.  It was originally used as a method for using
+multiple heuristics in a planner.  There are multiple open lists
+(queues), where there is a queue for each heuristic, and states are
+inserted into all queues according to the heuristic value for each
+heuristic.  The major difference of alternation queue to LOP is twofold:
+First, LOP uses a single, expensive heuristic as the primary sorting
+criteria ($f$-value), and it does not alternates between multiple
+heuristics. Second, unlike alternation queue alternates the
+\emph{expansion}, LOP alternates the \emph{evaluation}.
 
 Preferred operator queues are an extension of queue alternation, where in addition to the basic queue for each heuristic, there is a queue for states that are \emph{preferred} according to each heuristic \cite{richter2010lama}.
 Although this was designed for non-admissible search in LAMA, preferred operators could, in principle, be applied to admissible search. 
