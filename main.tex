@@ -434,7 +434,7 @@ much more important than in the runtime-minimization instances.
 
 In order to solve problems with large final plateaus, the
 planner needs to run an efficient knowledge-free search within the
-plateau.  One useful metric which can be used to control the search in this
+plateau.  One useful notion which can be used to both understand and control the search in this
 situation is the \emph{depth} of a node, which represents the number 
 of steps a node is away from the entrance of the plateau.
 $depth(n)$ is defined as $depth(parent(n)) + 1$.
@@ -446,12 +446,19 @@ and depth is used as a tie-breaking criterion.
 FirstDepth(\fd), RandomDepth(\rd) and LastDepth(\ld) breaks ties by choosing a node from 
 nodes with the smallest depth, a random depth, or the largest depth, respectively.
 
-In the rest of thie paper, depth-based tie-breaking is used as a second-level tie-breaking criterion,
-where the first tie-breaking criterion is $h$.
 Since there can be multiple nodes with the same $f$, $h$ and depth,
-a 3rd-level tie-breaking criterion that selects a node using \fifo, \lifo, and Random Order (\ro) is used.
-This results in 9 configurations:
-$[f,h,\fd,\fifo]$, $[f,h,\fd,\lifo]$, $[f,h,\fd,\ro]$, $[f,h,\ld,\fifo]$, $[f,h,\ld,\lifo]$, $[f,h,\ld,\ro]$, $[f,h,\rd,\fifo]$, $[f,h,\rd,\lifo]$, $[f,h,\rd,\ro]$.
+a further tie-breaking criterion is necessary to select among nodes in the same depth bucket.
+A natural 3rd-level tie-breaking policy is Random Order (\ro), which randomly selects an element from the depth bucket selected by the 2nd-level depth-based tie-breaking.
+We consider the following 3 tie-breaking configurations, each using $h$ as the first-level tie-breaking criterion, one \fd, \rd, \ld as the depth-based 2nd-level tie-breaking criterion, and \ro as the 3rd-level criterion:  $[f,h,\fd,\ro]$, $[f,h,\ld,\ro]$, $[f,h,\rd,\ro]$.
+In addition, we will also consider two additional configurations, $[f,h,\fd,\fifo]$, which is equivalent to $[f,h,\fifo]$, and $[f,h,\ld,\lifo]$, which is equivalent to $[f,h,\lifo]$.\footnote{
+%Also note that, the node evaluation orders of $[f,h,\fd,\fifo]$ and $[f,h,\ld,\lifo]$ are
+%exactly the same as $[f,h,\fifo]$ and $[f,h,\lifo]$, respectively,
+%i.e., those without the depth-based tiebreaking.  
+This is because, $[f,h,\lifo]$ expands the most recently evaluated/inserted
+states, which always have the largest depth, and $[f,h,\fifo]$ expands the least recently
+evaluated states, which always have the smallest depth.}
+Thus, we consider five, 3-level configurations in all.
+
 
 The effectiveness of each strategy depends on the structure of the problem instance.
 In the knowledge-free search within the plateau, all nodes have the same
@@ -469,12 +476,6 @@ random depth seems the safest practice. This corresponds to the case
 where RandomDepth would perform better.
 
 
-Also note that, the node evaluation orders of $[f,h,\fd,\fifo]$ and $[f,h,\ld,\lifo]$ are
-exactly the same as $[f,h,\fifo]$ and $[f,h,\lifo]$, respectively,
-i.e., those without the depth-based tiebreaking.  
-This is because, $[f,h,\lifo]$ expands the most recently evaluated/inserted
-states, which always have the largest depth, and $[f,h,\fifo]$ expands the least recently
-evaluated states, which always have the smallest depth.
 
 % This ``greediness'' is different from the normal
 % sense of ``greedy search'' --- since this greediness only holds within
@@ -484,11 +485,12 @@ evaluated states, which always have the smallest depth.
 
 \subsection{Evaluating Depth-based Tiebreaking}
 
-We evaluated the nine configurations of the three-level tie-breaking strategies described above, i.e., $[f,h,depthStrategy,LFR]$, where the first-level tie-breaking is according to $h$ (break ties in favor of small $h$), the second-level strategy is based on depth and $depthStrategy \in \{\fd, \ld, \rd\}$, and the third level tie-breaking strategy $LFR \in \{\lifo, \fifo, \ro\}$.
+We evaluated the five, 3-level tie-breaking strategies described above.
+%REDUNDANT? , i.e., $[f,h,depthStrategy,LFR]$, where the first-level tie-breaking is according to $h$ (break ties in favor of small $h$), the second-level strategy is based on depth and $depthStrategy \in \{\fd, \ld, \rd\}$, and the third level tie-breaking strategy $LFR \in \{\lifo, \fifo, \ro\}$.
 
 In addition to the 28 standard IPC benchmark domains used in the previous set of experiments, we also added 16 \emph{zerocost} domains with 640 problems. 
 
-Note that the node evaluation order of $[\cdot,\fd,\fifo]$ and $[\cdot,\ld,\lifo]$
+Although the node evaluation order of $[\cdot,\fd,\fifo]$ and $[\cdot,\ld,\lifo]$
 are exactly the same as those without the second-level
 depth-based tiebreaking, i.e.\ $[\cdot,\fifo]$ and $[\cdot,\lifo]$.
 Yet these results are useful in assessing the extra cost of managing the
