@@ -794,7 +794,7 @@ Although this was designed for non-admissible search in LAMA, preferred operator
 Preferred operators are implemented by adding operator (state) preference computation to heuristic evaluator, and are therefore dependent on the heuristic function.
 % Evidence: \cite{richter2010lama}, p.132 ``Operators that are deemed particularly useful in a given state are marked as preferred.   They are computed by the heuristic estimators along with the heuristic value of a state (see Sections 6 and 5).  
 % More Evidence: \cite{richter2010lama}, p.150, last paragraph: ``We also generate preferred operators along with the landmark heuristic. An operator is preferred in a state if applying it achieves an acceptable landmark in the next step, i. e., a landmark whose pre-decessors have already been accepted.  If no acceptable landmark can be achieved within one step, the preferred operators are those which occur in a relaxed plan to a nearest acceptable landmark. A nearest landmark in the cost-unaware setting is one that is relaxed reachable with a
-In contrast, the tie-breaking strategies investigated in this paper are implemented comletely independently of the heuristic -- all of the tie-breaking stratgies in this paper can be applied to search using a blind heuristic.
+In contrast, the tie-breaking strategies investigated in this paper are implemented completely independently of the heuristic -- all of the tie-breaking stratgies in this paper can be applied to search using a blind heuristic.
 
 %Lazy A* \cite{TolpinBSFK13} 
 %TODO:  lazy A* vs LOP -- LazyA* combines multiple heuristics h1,h2 with low-overhead. However, if there is no dominance between h1,h2, behavior is different than h2; in contrast, LOP guarantees conservative behavior. % no, never mind, too different..
@@ -842,6 +842,12 @@ when the lookahead cost bound $k=0$ ($LA^*_0$ in their notation), only nodes wit
 structure of the search space in the benchmark domains in \citeyear{Hoffmann05}
 \cite{Hoffmann05,Hoffmann14}. 
 TODO: relationship to line of work by Hoffmann on search topology / plateau analysis? 
+
+
+Vallati et al \citeshort{vallati2015effective} investigated the effect of the ordering of objects (including operators, predicates, etc. ) in PDDL domain models, and showed that orderings can have a significant impact on planner performance.
+They conjectured that the reason for for the performance variations caused by object reordering is due to the impact reordering has on tie-breaking among nodes with the same best $f$-value.
+% in \cite{vallati2015effective} p.7, col2, par#1
+XXXTODOXXX:very important comparison...
 
 
 
