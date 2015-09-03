@@ -623,13 +623,13 @@ particularly when runtimes are dominated by state evaluation, as is the case whe
 expensive heuristics such as LM-cut or recently proposed LP-based heuristics \cite{PommereningRHB14,ImaiF14}.
 
 First, although the effort to insert/extract nodes from multiple open/closed lists is also doubled, these overheads
-are neglibigle when the heuristic is expensive (see \refig{XXX}).
+are neglibigle when the heuristic is expensive (see \refig{ffff},left).
 
 Second, although maintaining multiple open/closed lists requires additional memory,
 when the heuristic is expensive enough, runtime becomes a bigger issue
 than memory exhaustion  -- we show that with a 30 minute time limit, LOP
 configurations do not exhaust memory more often than the other
-configurations does \refig{XXX}.\todo{??}
+configurations does \refig{ffff}(right).
 
 Third, node evaluation overheads for $f < f^*$ are eliminated due to the $h$-cache.
 Recall that \astar always evaluates all states whose $f$ costs 
@@ -681,11 +681,14 @@ is negligeble.
 
 \begin{figure}[htb]
  \centering \relsize{-2}
- \includegraphics{tables/aaai16-30min/aaai16prelim3/time-lmcut_ff-lmcut_ffff.pdf}
- \caption{Comparison of the runtimes on problems solved by both single
- $[f,h,\fifo]$ (ff) and a LOP engine with 2 different instances of
- $[f,h,\fifo]$ (ffff). The runtime difference was on average below a
- factor of x1.1, if we ignore the subsecond differences.}  \label{ffff}
+ \includegraphics{tables/aaai16-30min/aaai16prelim3/time-nokey-lmcut_ff-lmcut_ffff.pdf}
+ \includegraphics{tables/aaai16-30min/aaai16prelim3/mem-nokey-lmcut_ff-lmcut_ffff.pdf}
+ \caption{Comparison of the runtimes (left) and memory usage (right) by
+ single $[f,h,\fifo]$ and a LOP engine with 2 different instances of
+ $[f,h,\fifo]$. Each line shows $\times 2,4,6\ldots$ boundary.
+ The runtime and memory usage difference were on average below a factor
+ of x1.3 and x1.6 (shown in green line). We ignore the
+ subsecond differences.}  \label{ffff}
 \end{figure}
 
 Next, we evaluated our LOP
