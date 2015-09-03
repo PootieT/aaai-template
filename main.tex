@@ -69,8 +69,8 @@ In this paper, we focus on the \emph{tie-breaking} policy used by
 $f$-cost.  Since \astar expandes all nodes with $f$-cost less than $f^*$
 before expanding any nodes with cost $f^*$, the tie-breaking poicy only
 affects performance when considering the last frontier (nodes with cost
-$f^*$).  Although there has not been much previous \emph{in-depth} work
-on tie-breaking policies, it is widely believed that among nodes with
+$f^*$).  \todo[Although there has not been much previous \emph{in-depth} work
+on tie-breaking policies]{mention vallati and ``Merrier''}, it is widely believed that among nodes with
 cost $f(n) = f^*$, ties should be broken according to $h(n)$, i.e.,
 nodes with smaller $h$ values should be expanded first.  While this is a
 useful rule of thumb in many domains, it turns out that tie-breaking
@@ -285,7 +285,7 @@ means that these domains have very large variance in the runtime caused
 by the difference in second-level tiebreakings. 
 
 \refig{fig:plateau-noh} in the introduction is the same figure without $h$-tiebreaking.
-Besides, as expected, when the
+As expected, when the
 $h$-based tiebreaking is disabled in \refig{fig:plateau-noh}, much
 larger effort could be spent on the final plateau.
 
@@ -524,8 +524,8 @@ regardless of the second-level depth tiebreaking.  (\fifo,\ro,\lifo is
 3,3,3 in FirstDepth, 3,4,3 in RandomDepth, and 5,6,4 in LastDepth.)
 Also, in Airport-Fuel and Mprime-Succumb with RandomDepth ($[f,h,\rd,\cdot]$), 
 the RandomOrder third-level tiebreaking is better than \lifo or \fifo.
-Furthermore, \todo[we also tested the same domains with a reversed
-action ordering.]{Running Experiments}.  The results (in supplimental
+Furthermore, we also tested the same domains with a reversed
+action ordering. The results (in supplimental
 material) show that the action ordering affects the performance of
 third-level tiebreaking, but it did not changed the trends in the
 second-level tiebreaking.
