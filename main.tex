@@ -75,7 +75,7 @@ cost $f(n) = f^*$, ties should be broken according to $h(n)$, i.e.,
 nodes with smaller $h$ values should be expanded first.  While this is a
 useful rule of thumb in many domains, it turns out that tie-breaking
 requires more careful consideration, particularly for problems with
-large \emph{plateaus} -- regions of the search space with the same cost.
+large \emph{plateaus} -- regions of the search space with the same $f$-cost.
 \emph{Note that all tiebreaking strategies investigated in this paper
 maintain the admissibility of the search because it only affects the node expansion
 order among the nodes with the same $f$-cost.}
@@ -199,18 +199,22 @@ problems.
 
 We first compared three strategies 
 $[f,h,\fifo]$, $[f,h,\lifo]$ and $[f,h,\ro\mbox{(Random Order)}]$, 
-which first breaks ties according to $h$, and then applies \fifo, \lifo, or \ro second-level tie-breaking, respectively.
-The results for \astar using the LM-cut heuristic \cite{Helmert2009} are shown 
- in \reftbl{single-coverage} (Left).  Differences in coverage can be observed in several domains.
+which first breaks ties according to $h$, and then applies \fifo, \lifo,
+or \ro second-level tie-breaking, respectively. The seed of randomness
+is fixed to 1.
+% 
+The results for \astar using the LM-cut heuristic \cite{Helmert2009} are
+shown in \reftbl{single-coverage} (Left).
+Differences in coverage are observed in several domains.
 Due to the space limitation, we show only the domains
 where there was any difference. Full data is available in the
 supplemental material. \todo{probably better to show full results for this particular experiment}.
 
 Although the search behavior of $[f,h,\fifo]$ corresponds to the default behavior of Fast Downward (FD), this implementation differs 
-from the original, unmodified FD code because we enabled caching of $h$-values, so that regenerated nodes refer to cached $h$-values.\footnote{The current Fast Downward code disables $h$-caching because its current implementation is not compatible with multiple admissible heuristics.}
+from the original, unmodified FD code because we enabled caching of $h$-values, so that reopened nodes refer to cached $h$-values.\footnote{The current Fast Downward code disables $h$-caching because its current implementation is not compatible with multiple admissible heuristics.}
 Thus, we also show results for unmodified FD -- as expected, $[f,h,\fifo]$ dominates unmodified FD.
 
-\begin{table}[htb]
+\begin{table}[tb]
  \centering \relsize{-3}
  \input{tables/aaai16-30min/aaai16prelim3/1-1-basic-queues.tex}
  \input{tables/aaai16-30min/aaai16prelim3/1-1-basic-queues-noh.tex}
@@ -224,11 +228,11 @@ Thus, we also show results for unmodified FD -- as expected, $[f,h,\fifo]$ domin
  \label{single-coverage}
 \end{table}
 
-\refig{f-h-eval} gives us a more fine-grained analysis by comparing the
-number of node evaluation (computations of \lmcut) on
-different tiebreakings.
+\refig{f-h-eval} also gives us a
+more fine-grained analysis by comparing the number of node evaluation
+(computations of \lmcut) on different tiebreakings.
 
-\begin{figure}[htb]
+\begin{figure}[tb]
  \centering \relsize{-3}
  \includegraphics{tables/aaai16-30min/aaai16prelim3/evaluated-lmcut_ff-lmcut_lf.pdf}
  \includegraphics{tables/aaai16-30min/aaai16prelim3/evaluated-nokey-lmcut_ff-lmcut_r.pdf}
@@ -239,7 +243,7 @@ different tiebreakings.
 \end{figure}
 
 According to \reftbl{single-coverage} (left) with $h$-tiebreaking, \lifo
-outperforms the other strategies, but Random outperforms the others in
+outperforms the other strategies, but Random Order outperforms the others in
 Cybersec, and \fifo performed best in Airport, and
 \refig{f-h-eval} shows that Random performs best in Miconic.
 \refig{f-h-eval} also shows that the difference in number of nodes evaluated can sometimes be larger than a factor of 10,
@@ -248,7 +252,7 @@ Although \lifo second-level tie-breaking appears to perform best overall on thes
 there are no dominance relationship between these three strategies, and the overall performance of each strategy will depend on the composition of problem instances in the benchmark set.
 %These differences are purely due to the domain characteristics. 
 
-\subsection{Is $h$-Based Tie-Breaking necessary?}
+\subsubsection{Is $h$-Based Tie-Breaking necessary?}
 
 Next, we investigated whether $h$-based, first-level tie-breaking is necessary.
 In \reftbl{single-coverage} (right), which shows the results when  first-level
@@ -259,23 +263,27 @@ Interestingly, the performance of the $[f, \lifo]$ strategy
 is comparable to $[f,h,\lifo]$, $[f,h,\fifo]$ and $[f,h,\ro]$, the two-level strategies that first break ties according to $h$.
 This is somewhat surprising, considering the ubiquity of $h$-based tie-breaking in the search and planning communities.
 \todo{Explanation of why $[f,\lifo]$ performs so well. }
+% 
+This can be understood as \lifo greedily explores the plateau space
+and quickly aggregates the $g$ value. Since $f$ is fixed within the
+plateau, it also means $h$ decrease quickly, resulting in the similar behavior.
 
-We reemphasize that, although \lifo dominated the others, we consider
-this is just by a coincidence due to the selection of time limit, memory
-limit and problems in the current standard IPC competition
-settings. \emph{We are not trying to claim that any of \lifo or \fifo or
-Random order always dominates the others}.
+% We reemphasize that, although \lifo dominated the others, we consider
+% this is just by a coincidence due to the selection of time limit, memory
+% limit and problems in the current standard IPC competition
+% settings. \emph{We are not trying to claim that any of \lifo or \fifo or
+% Random order always dominates the others}.
 
 % However, there are noticeable
 % performance difference caused by these different tiebreaking strategies.
 
-\subsection{Plateaus and Tie-Breaking}
+\subsubsection{Plateaus and Tie-Breaking}
 
 In our comparison of the simple two-level tie-breaking strategies
 above, we observed that large differences in performance between
 two-level tie-breaking strategies tend to occur in problems where
 there are many nodes that have the same $f$ and $h$ values, creating
-large \emph{plateau} regions where the heuristic does not provide
+large plateau regions where the heuristic does not provide
 useful guidance -- in effect, these plateau regions in the last
 frontier ($f=f^*$) by definition requires blind search, i.e., 
 relying solely on the tie-breaking criterion, in order to
@@ -288,7 +296,8 @@ find a goal node.
 %heuristic function is not informative and the planner relies heavily on
 %the tiebreaking criteria.
 
-\refig{plateau} plots the size of the final search plateau on 1104 IPC benchmark instances.
+\refig{plateau} plots the size of the final search plateau on 1104 IPC
+benchmark instances \emph{with $h$-tiebreaking}.
 The $y$-axis
 represents the number of nodes with $[f,h]=[f^*,0]$, and the $x$-axis represents the total
 number of nodes with $f\leq f^*$.
@@ -298,20 +307,17 @@ It also
 means that these domains have very large variance in the runtime caused
 by the difference in second-level tiebreakings. 
 
-\refig{fig:plateau-noh} in the introduction is the same figure without $h$-tiebreaking.
-As expected, when the
-$h$-based tiebreaking is disabled in \refig{fig:plateau-noh}, much
-larger effort could be spent on the final plateau.
-
-
-
-
+%% Removed
+% \refig{fig:plateau-noh} in the introduction is the same figure without $h$-tiebreaking.
+% As expected, when the
+% $h$-based tiebreaking is disabled in \refig{fig:plateau-noh}, much
+% larger effort could be spent on the final plateau.
 
 %  The size of the bucket does not change
 % between $[f,h,\fifo]$, $[f,h,\lifo]$ and $[f,h,\ro]$.
 
 
-\begin{figure}[htb]
+\begin{figure}[tb]
  \centering \relsize{-3}
   \includegraphics{tables/aaai16-frontier/aaai16prelim3/lmcut_frontier-front.pdf}
   \caption{Comparing the size of the $[f,h]$ search plateau to the total
@@ -322,57 +328,6 @@ larger effort could be spent on the final plateau.
 \end{figure}
 
 \section{Domains with Zero-cost Actions}
-\todo{struggling to find the right place for this..}
-
-% XXX I'm commenting out the paragraphs below because:
-% (1) A review of heuristic functions for domain-independent learning is not really
-% necessary for this AAAI submission. 
-% (2) It's better if this paper is not so strongly associated with the ICAPS community only -- this work applies in general to search with A*, and is not strongly tied to almost-perfect heuristics, lmcut, m&s, etc.
-
-Historically, the study of the shortest path finding algorithms has
-started on the unit cost domains as the simplest case, where every
-search edge has a cost 1,
-% . Experimental study of \astar was somewhat biased to
-% the unit-cost domains
-such as 24-puzzle, Rubik's Cube etc.
-There are also several problems with non-unit costs, sometimes
-artificially but also sometimes naturally, such as in multiple
-sequence alignment (MSA).
-
-In the plannning community, actions with non-unit costs were first introduced in 
-IPC-2002. Currently most competition domains have non-unit action costs.
-Notably, most actions in these domains have nonzero positive costs.
-% 
-%  Although some of these domains have non-unit costs,
-% those domains are sometimes \emph{mostly} unit cost. For example, TPP
-% has many actions with a cost 1 and some actions have cost 10.
-% 
-% The idea here is to differentiate the important actions from the less
-% important actions.
-% 
-For example, Elevator and Miconic in the benchmark domains minimize the
-runtime of moving the passengers up and down.  Actions in which the
-elevator travels the long distance take longer runtime.  When concerned
-with the runtime, it is reasonable to assign nonzero positive cost to
-every actions, since every actions are supposed to at least consume a
-fraction of time.
-
-However, such formulation is not suitable for the general type of cost
-minimization in which the target is not the runtime.  For example, when
-you try to minimize the energy consumption by the elevators, many
-actions would have zero-cost --- it does not consume electricity for
-either moving the elevator down, boarding or leaving the passenger.
- 
-The same thing applies to the transportation-type and assembly-type
-domains like Logistics and Woodworking, respectively. They are runtime
-minimization domains in which driving and manual labor, or cutting and
-painting, are equally measured by the single runtime metric.
-% 
-However, a few modifications to the action costs will turn them into
-cost-minimization domains, in which the target is the fuel consumption
-(logistics) or wood usage (Woodworking). From the practical point of
-view, cost minimization domains would have wider interests compared to
-the simple runtime minimization.
 
 Openstacks domain is a cost
 minimization domain first introduced in IPC-2006, where the objective is to 
@@ -386,7 +341,76 @@ partitioning with non-zero values,
 and most edges in the abstraction
 space of M\&S have zero costs \cite{helmert2007flexible}.
 
+% XXX I'm commenting out the paragraphs below because:
+% (1) A review of heuristic functions for domain-independent learning is not really
+% necessary for this AAAI submission. 
+% (2) It's better if this paper is not so strongly associated with the ICAPS community only -- this work applies in general to search with A*, and is not strongly tied to almost-perfect heuristics, lmcut, m&s, etc.
 
+This kind of cost-minimization domains with many zero-cost actions are
+not common in the current set of benchmark domains.
+% 
+Historically, the study of the shortest path finding algorithms has
+started on the unit cost domains as the simplest case, where every
+search edge has a cost 1,
+% . Experimental study of \astar was somewhat biased to
+% the unit-cost domains
+such as 24-puzzle, Rubik's Cube etc.
+There are also several problems with non-unit costs, sometimes
+artificially but also sometimes naturally, such as in multiple
+sequence alignment (MSA).
+% 
+In the plannning community, actions with non-unit costs were first introduced in 
+IPC-2002. The actions in these domains tend to have the nonzero positive costs
+because they mostly targets the runtime minimization.
+% For example, Elevator and Miconic in the benchmark domains minimize the
+% runtime of moving the passengers up and down.
+% Actions in which the
+% elevator travels the long distance take longer runtime.  
+When concerned
+only with the runtime, it is reasonable to assign nonzero positive cost to
+every actions, since every actions are supposed to at least consume a
+fraction of time.
+However, such formulation is not suitable for the general minimization
+problems.
+For example, when you try to minimize the energy consumption
+by the elevators in Elevators domain, many actions would have zero-cost
+--- it does not consume electricity for either boarding or leaving the
+passenger, or moving the elevator down.
+
+As shown in the previous section, such domains pose a
+difficulty to the current heuristic planners since they have large plateau.
+Also, from the practical point of
+view, cost minimization domains would have wider interest compared to
+the simple runtime minimization.
+% 
+Therefore, in this paper, we modified various domains to have many
+zero-cost actions.  For example, elevators-up is a variation of
+Elevators domain which minimizes
+the energy consumption caused by ``up'' action, which moves the elevator
+up, and all other actions have zero-cost.  Modification was done in a
+practically reasonable manner in a sense of cost minimization. Most
+transportation-type domains are modified so that they use less
+fuel (Logistics-fuel etc.). Assembly-type domains are modified so that it minimizes the
+resource usage (floortile-ink minimizes ink usage, or Woodworking-cut
+minimizes wood usage).
+We call this set of domains as zerocost domains hereafter.
+
+% \todo[We also modify a same domain
+% in the different minimization criteria, in order to avoid the bias on a
+% particular domain formulation.]{It's not tested yet}
+
+% This lack of general support for cost-minimization problems
+% in the current competition domains can be fixed by
+% % The same thing applies to the transportation-type and assembly-type
+% % domains like Logistics and Woodworking, respectively. They are runtime
+% % minimization domains in which driving and manual labor, or cutting and
+% % painting, are equally measured by the single runtime metric.
+% modifying some actions to have zero-cost.
+% For example, Logistics and Woodworking, in which driving and manual labor, or cutting and
+% painting, are equally measured by the single runtime metric,
+% can be converted into
+% cost-minimization domains in which the target is the fuel consumption
+% (Logistics) or wood usage (Woodworking). 
 
 
 % Currently, most benchmark domains except Openstacks and Cybersec do not
@@ -415,24 +439,13 @@ space of M\&S have zero costs \cite{helmert2007flexible}.
 % solving domains which are unit-cost by origin is not called
 % ``inadmissible''. Above modification addresses this problem.
 
-In this paper, we therefore modified various domains to have many
-zero-cost actions.  For example, miconic-up is a domain which minimizes
-the energy consumption caused by ``up'' action, which moves the elevator
-up, and all other actions have zero-cost.  Modification was done in a
-practically reasonable manner in a sense of cost minimization. Most
-transportation-type domains are modified so that they use less
-fuel. Assembly-type domains are modified so that it minimizes the
-resource usage such as ink or wood. \todo[We also modify a same domain
-in the different minimization criteria, in order to avoid the bias on a
-particular domain formulation.]{It's not tested yet}
-
-When we plot the size of plateau of the zerocost domains just like in
-\refig{plateau}, the trend of large plateau becomes universal among
-instances. In cost-minimization problems, the search strategy within
+We plotted the size of plateau of the zerocost domains just like in
+\refig{plateau}. The trend of large plateau becomes universal among
+instances. In these cost-minimization problems, the search strategy within
 plateau becomes much more important than in the
-runtime-minimization instances.
+runtime-minimization problems.
 
-\begin{figure}[htb]
+\begin{figure}[tb]
  \centering \relsize{-3}
   \includegraphics{tables/aaai16-frontier/zerocost/lmcut_frontier-front.pdf}
   \caption{Same plot as \refig{plateau}, but from the zerocost
@@ -449,10 +462,14 @@ In order to solve problems with large final plateaus, the
 planner needs to run an efficient knowledge-free search within the
 plateau.  One useful notion which can be used to both understand and control the search in this
 situation is the \emph{depth} of a node, which represents the number 
-of steps a node is away from the entrance of the plateau.
+of steps from the entrance of the plateau.
+If the $parent(n)$ is from the other plateau, i.e., $parent(n)$ has a
+different $f$-value, or different $h$-value used for the first
+tiebreaking, then $depth(n) = 0$. Nodes with $depth(n) = 0$ are called
+the \emph{entrance} of the plateau.
+If the $parent(n)$ is from the same plateau i.e.\ $parent(n)$ and $n$
+shares the same $f$ and $h$,
 $depth(n)$ is defined as $depth(parent(n)) + 1$.
-If the $parent(n)$ is from the other plateau, i.e., $parent(n)$ has a different $f$-value, or different $h$-value used for the first
-tiebreaking, then $depth(n) = 0$. We call such $n$ the \emph{entrance} of the plateau.
 Based on this simple notion of depth,
 we propose  \emph{depth-based tie-breaking}, where all nodes are associated with its depth, 
 and depth is used as a tie-breaking criterion.
@@ -462,13 +479,16 @@ nodes with the smallest depth, a random depth, or the largest depth, respectivel
 Since there can be multiple nodes with the same $f$, $h$ and depth,
 a further tie-breaking criterion is necessary to select among nodes in the same depth bucket.
 A natural 3rd-level tie-breaking policy is Random Order (\ro), which randomly selects an element from the depth bucket selected by the 2nd-level depth-based tie-breaking.
-We consider the following 3 tie-breaking configurations, each using $h$ as the first-level tie-breaking criterion, one \fd, \rd, \ld as the depth-based 2nd-level tie-breaking criterion, and \ro as the 3rd-level criterion:  $[f,h,\fd,\ro]$, $[f,h,\ld,\ro]$, $[f,h,\rd,\ro]$.
+We consider the following 3 tie-breaking configurations, each using $h$
+as the first-level tie-breaking criterion, one of \fd, \rd, \ld as the
+depth-based 2nd-level tie-breaking criterion, and \ro as the 3rd-level
+criterion:  $[f,h,\fd,\ro]$, $[f,h,\ld,\ro]$, $[f,h,\rd,\ro]$. 
 In addition, we will also consider two additional configurations, $[f,h,\fd,\fifo]$, which is equivalent to $[f,h,\fifo]$, and $[f,h,\ld,\lifo]$, which is equivalent to $[f,h,\lifo]$.\footnote{
 %Also note that, the node evaluation orders of $[f,h,\fd,\fifo]$ and $[f,h,\ld,\lifo]$ are
 %exactly the same as $[f,h,\fifo]$ and $[f,h,\lifo]$, respectively,
 %i.e., those without the depth-based tiebreaking.  
 This is because, $[f,h,\lifo]$ expands the most recently evaluated/inserted
-states, which always have the largest depth, and $[f,h,\fifo]$ expands the least recently
+states, which always have the largest depth, and $[f,h,\fifo]$ expands the oldest
 evaluated states, which always have the smallest depth.}
 Thus, we consider five, 3-level configurations in all.
 
@@ -480,15 +500,12 @@ $f$ and $h$ values % yes, for simplicity, I'm assuming 3-level tiebreaks, ignori
 away or in a particular distance from the entrance.
 In the first case,
 the search should be focused around the entrance favoring the smaller
-depths, and the behavior should be much like breadth-first, and it
-corresponds to FirstDepth. In the second case, the planner should
+depths (FirstDepth), and the behavior should be much like breadth-first. In the second case, the planner should
 greedily explore the various area of the plateau by preferring larger
-depth, much like in depth-first, and corresponds to LastDepth. In the
+depth (LastDepth), much like in depth-first. In the
 final case where the goal node is in a particular depth, choosing the
 random depth seems the safest practice. This corresponds to the case
 where RandomDepth would perform better.
-
-
 
 % This ``greediness'' is different from the normal
 % sense of ``greedy search'' --- since this greediness only holds within
@@ -500,10 +517,10 @@ where RandomDepth would perform better.
 
 We evaluated the five, 3-level tie-breaking strategies described above.
 %REDUNDANT? , i.e., $[f,h,depthStrategy,LFR]$, where the first-level tie-breaking is according to $h$ (break ties in favor of small $h$), the second-level strategy is based on depth and $depthStrategy \in \{\fd, \ld, \rd\}$, and the third level tie-breaking strategy $LFR \in \{\lifo, \fifo, \ro\}$.
-
+% 
 In addition to the 28 standard IPC benchmark domains used in the previous set of experiments, we also added 16 \emph{zerocost} domains with 640 problems. 
 
-Although the node evaluation order of $[\cdot,\fd,\fifo]$ and $[\cdot,\ld,\lifo]$
+The node evaluation order of $[\cdot,\fd,\fifo]$ and $[\cdot,\ld,\lifo]$
 are exactly the same as those without the second-level
 depth-based tiebreaking, i.e.\ $[\cdot,\fifo]$ and $[\cdot,\lifo]$.
 Yet these results are useful in assessing the extra cost of managing the
