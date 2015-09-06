@@ -54,7 +54,7 @@ For many instances in \refig{fig:plateau-noh},  a large fraction of the nodes wi
 For example, in the Openstacks domain, almost all states with $f(n) \leq f^*$ have cost $f^*$.
 In such domains, the behavior of \astar on the last frontier is critical -- the policy for deciding which nodes to expand in the last frontier can have a significant impact on the performance of \astar.
 
-\begin{figure}[htb]
+\begin{figure}[tb]
  \centering \relsize{-3} 
  \includegraphics{tables/aaai16-frontier/aaai16prelim3/lmcut_frontier_noh-front.pdf}
  \caption{
@@ -209,7 +209,7 @@ Differences in coverage are observed in several domains.
 Due to the space limitation, we show only the domains
 where there was any difference. Full data is available in the
 supplemental material. \todo{probably better to show full results for this particular experiment}.
-
+ 
 Although the search behavior of $[f,h,\fifo]$ corresponds to the default behavior of Fast Downward (FD), this implementation differs 
 from the original, unmodified FD code because we enabled caching of $h$-values, so that reopened nodes refer to cached $h$-values.\footnote{The current Fast Downward code disables $h$-caching because its current implementation is not compatible with multiple admissible heuristics.}
 Thus, we also show results for unmodified FD -- as expected, $[f,h,\fifo]$ dominates unmodified FD.
@@ -588,7 +588,7 @@ third-level tiebreaking is not the scope of this paper.
 % exhausted the 2GB memory limit with those heuristics, and is less
 % informative compared to the result by LMcut.
 
-\begin{figure}[htb]
+\begin{figure}[tb]
  \centering
  \relsize{-3}
  \input{tables/aaai16-30min/aaai16prelim3_zerocost_2zerocost/1-1-depth-queues.tex}
@@ -604,7 +604,7 @@ third-level tiebreaking is not the scope of this paper.
 \end{figure}
 
 %% obviously does not fit in the paper
-% \begin{figure}[htb]
+% \begin{figure}[tb]
 %  \centering
 %  \relsize{-3}
 %  \input{tables/aaai16-30min/aaai16prelim3_zerocost_2zerocost/1-1-depth-queues-noh.tex}
@@ -710,7 +710,7 @@ using the idential configuration ($[f,h,\fifo]$ with $h=$\lmcut). The
 result in \refig{ffff} shows that the extra cost of duplicated effort
 is negligeble.
 
-\begin{figure}[htb]
+\begin{figure}[tb]
  \centering \relsize{-2}
  \includegraphics{tables/aaai16-30min/aaai16prelim3/time-nokey-lmcut_ff-lmcut_ffff.pdf}
  \includegraphics{tables/aaai16-30min/aaai16prelim3/mem-nokey-lmcut_ff-lmcut_ffff.pdf}
@@ -740,7 +740,7 @@ LOP acutally follows the expected behavior and the theoretical
 bounds: the evaluation never exceeds twice/thirds of the single
 search engine.
 
-\begin{table}[htb]
+\begin{table}[tb]
  \centering \relsize{-2}
  \input{tables/aaai16-30min/aaai16prelim3_zerocost_2zerocost/1-1-multi-lmcut.tex}
  \caption{Coverage results comparing some LOP combinations and the
@@ -750,7 +750,7 @@ search engine.
 
 \todo{the evaluations are double-counted for LOP}
 
-\begin{figure}[htb]
+\begin{figure}[tb]
  \centering
  \relsize{-2}
  \includegraphics{tables/aaai16-30min/zerocost/evaluated-nokey-lmcut_ldrd_random-lmcut_ld_random.pdf}
