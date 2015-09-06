@@ -77,15 +77,14 @@ useful rule of thumb in many domains, it turns out that tie-breaking
 requires more careful consideration, particularly for problems with
 large \emph{plateaus} -- regions of the search space with the same cost.
 \emph{Note that all tiebreaking strategies investigated in this paper
-maintain the admissibility of the search because only the node expansion
-order among nodes that share the same $f$-cost are affected.}
+maintain the admissibility of the search because it only affects the node expansion
+order among the nodes with the same $f$-cost.}
 
-\todo[We first show several important findings regarding the
-existing tiebreaking strategy for \astar as follows.]{is this the best
-way to put it?}
+We first empirically clarify two facts regarding the
+existing tiebreaking strategy for \astar as follows.
 % 
 First, in implementing the open list of \astar, priority queue which holds
-\lifo-buckets for each $f$ is more efficient than that holds \fifo-buckets.
+\lifo-buckets for each $f$ tends to be more efficient than that holds \fifo-buckets.
 % 
 Second, with \lifo-based implementation, $h$-based tiebreaking which
 frequently appears in the heuristic search literatures have little
@@ -97,31 +96,46 @@ impact on the performance.
 % both share the greedy search pattern within the plateau of the
 % search space.]{this is not shown yet. how to show it? xy-plot of the node
 % evaluation order?}
+ 
+Next, we propose three tiebreaking methods
+based on the \emph{depth} within the plateau, and
+we show that the depth-based tibreaking in the plateau is
+the principal factor of the performance which is
+not affected by the particular action ordering in the domain definition.
 % 
-Next, based on these observations, we propose three tiebreaking methods
-based on the \emph{depth} within the plateau.  From this result, we show
-that the performance of above \lifo tiebreaking can be explained by its
-depth-first strategy and not by the machine-level efficiency of \lifo
-implementation itself, nor by action ordering in the domain definition.
-Also, the performance comparison of different
-depth-based strategies showed that they are not dominating each other.
+With this result, we also show that 
+the performance of above \lifo tiebreaking can be explained by its
+depth-first strategy, and its machine-level efficiency of \lifo
+has little effect on the performance.
+% 
+We also show that,
+although the performances of the depth-based tiebreaking
+methods are not affected by the
+different action orderings of the same domain definition,
+three tiebreaking methods perform differently on different domains,
+with no clear dominance relationship among domains.
 
 Finally, based on the absence of dominance relationship, we propose a
-new class of portfolio strategy which alternates between several
-tiebreaking methods.
+new class of portfolio strategy called \emph{Low Overhead Portfolio} (LOP),
+which alternates between several depth-based tiebreaking methods.
+Unlike the simple alternating open list proposed in LAMA planner \cite{richter2010lama},
+it prevents the interaction between the queues and maintains the original
+expansion order of each queue, allowing a clear theoretical analysis.
+Also, it targets a single-heuristics, multi-tiebreaking scenario, unlike
+the multi-heuristic scenario assumed in LAMA's alternating open list.
 % 
-With this portfolio strategy,
-the number of evaluations of nodes with $f<f*$ is exactly the same as
-in any single tiebreaking strategies.
+LOP has several interesting characteristics:
+First, the number of evaluations of nodes with $f<f*$ with LOP is exactly the same as
+those with any single tiebreaking strategy.
 Also, it has a theoretical guarantee that
 the number of evaluations of nodes with $f=f*$ is at most $N$ times the \emph{minimum} 
 of the evaluations required by $N$ strategies in the portfolio.
-To put it simply, this portfolio does not need additional computation
-and we get a speedup for free (aside from the negligeble differences).
+% 
+%%% removed, we curretntly do not have much clue
+% To put it simply, this portfolio does not need additional computation
+% and we get a speedup for free (aside from the negligeble differences).
 % Also, it is characteristic in that it works with a single heuristic function.
-
-
-
+% We also empirically evaluates LOP.
 
 \section{Tie-breaking Strategies in \astar}
 
@@ -708,7 +722,6 @@ tiebreakings compared to each search engine alone.  It shows that
 LOP acutally follows the expected behavior and the theoretical
 bounds: the evaluation never exceeds twice/thirds of the single
 search engine.
-\todo{the table is 5min result!}
 
 \begin{table}[htb]
  \centering \relsize{-2}
@@ -840,9 +853,11 @@ when the lookahead cost bound $k=0$ ($LA^*_0$ in their notation), only nodes wit
 
 
 \citeauthor{Hoffmann05} gives a detailed analysis of the
-structure of the search space in the benchmark domains in \citeyear{Hoffmann05}
+structure of the search space in the benchmark domains which were
+available in time of \citeyear{Hoffmann05}
 \cite{Hoffmann05,Hoffmann14}. 
-TODO: relationship to line of work by Hoffmann on search topology / plateau analysis? 
+The analysis was focused on the plateaus and dead ends which occur duing the inadmissible search,
+and also 
 
 
 Vallati et al \shortcite{vallati2015effective} investigated the effect of the ordering of objects (including operators, predicates, etc. ) in PDDL domain models, and showed that orderings can have a significant impact on planner performance.
