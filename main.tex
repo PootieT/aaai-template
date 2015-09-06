@@ -769,7 +769,7 @@ non-admissible search.  DBFS \cite{imai2011novel} is a technique which
 adds stochastic backtracking to Greedy Best First Search to avoid
 being misdirected by the heuristic function. Type based bucket
 \cite{xie14type} classifies the plateau of GBFS according to the
-$[g,h]$ pair.  Marvin \cite{Coles07} learns plateau-escaping macros
+$[g,h]$ pair and distributes the effort.  Marvin \cite{Coles07} learns plateau-escaping macros
 from the Enhanced Hill Climbing phase of the FF planner
 \cite{Hoffmann01} and later uses these macros to escape the plateau.
 However, to our knowledge, searching in plateaus has not been
@@ -777,8 +777,8 @@ previously investigated for cost-optimal planning with admissible
 search.
 
 In their work on combining multiple heuristics in a planner, R\"{o}ger
-and Helmert considered a tie-breaking approach which works as follows:
-\shortcite{RogerH10}. When combining two heuristics, one of the
+and Helmert \shortcite{RogerH10} considered a tie-breaking approach which works as follows:
+When combining two heuristics, one of the
 heuristics is used as the primary criterion for guiding the search,
 and the second heuristic is used to break ties when the primary
 heuristic values are the same for two states.
@@ -786,9 +786,11 @@ While this did not perform well in their work on satisficing planning,
 using a secondary heuristic as a tie-breaking criterion in our multi-level tie-breaking framework 
 for cost-optimal search is an interesting direction for future work.
 
-The PLUSONE cost-type is  non-admissible search technique in the LAMA planner \cite{richter2010lama}
-which increases every action costs by 1.\todo{Is PLUSONE mentioned in any paper??}
-By eliminating zero-cost actions, this has the effect of filling plateaus
+The PLUSONE\footnote{This term is used on the Fast Downward website.}
+cost-type is a non-admissible search technique in the LAMA planner
+\cite{richter2010lama} which increases every action costs by 1.
+By eliminating zero-cost actions, this has the effect similar to our
+FirstDepth tiebreaking.
 %Using PLUSONE, three successive
 %applications of zero-cost operators have cost 3, and two
 %applications have cost 2, and smaller cost is preferred, just as
@@ -797,28 +799,29 @@ This explicitly targeted zero-cost actions observed in Openstacks,
 and resulted in a significantly better performance in IPC-6.\todo{citation? -- add specific page+quotation in comment}
 % There's a long discussion of Openstacks in \cite{richter2010lama}, p.167-169, but I can't find PLUSONE anywhere. Maybe it's called something else in the paper?  Maybe \richter2010lama is the wrong citation??
 
-
 The major difference of our depth-based tiebreaking from PLUSONE
-strategy is twofold.  First, depth-based tiebreaking is admissible, because 
-unlike PLUSONE, action costs are not modified.
-Also, \emph{we do not always favor smaller depth over
-larger depth}. LAMA treats the increased cost as the part of
-sorting criteria. In contrast, it happens only in FirstDepth configuration in our case.
+strategy is twofold.  First, depth-based tiebreaking is admissible,
+because unlike PLUSONE, action costs are not modified.  Also, \emph{we
+do not always favor smaller depth over larger depth}. LAMA treats the
+increased cost as the part of sorting criteria and always prefers
+smaller cost. In contrast, among LastDepth,
+FirstDepth and RandomDepth, it is only FirstDepth that prefers the smaller depth.
 
 %% this will invoke a request from the reviewers to compare ours against it
 %% * True, but people who know LAMA/FD are likely to demand some kind of comparison with alternating queues and preferred queues whether we mention  it or not.
 %% Probably better to preemptively settle these questions rather than risking difficult questions during rebuttal.
 
-Fast Downward and Lama implement an (OPEN) queue \emph{alternation}
-method \cite{Helmert2006}.  It was originally used as a method for using
-multiple heuristics in a planner.  There are multiple open lists
-(queues), where there is a queue for each heuristic, and states are
-inserted into all queues according to the heuristic value for each
-heuristic.  The major difference of alternation queue to LOP is twofold:
+Fast Downward/LAMA implement an \emph{alternation}
+method \cite{Helmert2006} for OPEN list. It was originally used as a method for using
+multiple heuristics in a planner.  There are multiple open lists, where there is a list for each heuristic, and states are
+inserted into all lists according to the heuristic value for each
+heuristic.  The major difference of alternation list to LOP is threefold:
 First, LOP uses a single, expensive heuristic as the primary sorting
 criteria ($f$-value), and it does not alternates between multiple
-heuristics. Second, unlike alternation queue alternates the
+heuristics. Second, unlike alternation list alternates the
 \emph{expansion}, LOP alternates the \emph{evaluation}.
+Third, since the results of expansion in one list are inserted to all lists,
+it changes the original insertion order in each queue.
 
 Preferred operator queues are an extension of queue alternation, where in addition to the basic queue for each heuristic, there is a queue for states that are \emph{preferred} according to each heuristic \cite{richter2010lama}.
 Although this was designed for non-admissible search in LAMA, preferred operators could, in principle, be applied to admissible search. 
@@ -873,14 +876,21 @@ when the lookahead cost bound $k=0$ ($LA^*_0$ in their notation), only nodes wit
 structure of the search space in the benchmark domains which were
 available in time of \citeyear{Hoffmann05}
 \cite{Hoffmann05,Hoffmann14}. 
-The analysis was focused on the plateaus and dead ends which occur duing the inadmissible search,
-and also 
+The analysis was focused on the plateaus and dead ends which occur duing the inadmissible search.
+The meaning of plateau in inadmissible and admissible search is
+different in how to treat the non-final plateau: Inadmissible search can
+skip or escape the plateau whenever it finds a better state, while
+admissible search has to expand all states in the non-final plateau.
 
-
-Vallati et al \shortcite{vallati2015effective} investigated the effect of the ordering of objects (including operators, predicates, etc. ) in PDDL domain models, and showed that orderings can have a significant impact on planner performance.
-They conjectured that the reason for for the performance variations caused by object reordering is due to the impact reordering has on tie-breaking among nodes with the same best $f$-value.
+Vallati et al \shortcite{vallati2015effective} investigated the effect
+of the ordering of objects (including operators, predicates, etc. ) in
+PDDL domain models, and showed that orderings can have a significant
+impact on planner performance in satisficing planning.
+They conjectured that the reason for the performance variations caused
+by object reordering is due to the impact of the tie-breaking,
 % in \cite{vallati2015effective} p.7, col2, par#1
-XXXTODOXXX:very important comparison...
+however it is not clear that the analysis can be
+directly applicable to the admissible planning.
 
 
 
