@@ -615,12 +615,11 @@ third-level tiebreaking is not the scope of this paper.
 \section{Low-Overhead Portfolios for Combining Tie-Breaking Strategies}
 
 As noted above, it is unknown prior to the search where the goal node
-exists in a plateau.
-However, the best tiebreaking strategy seems to be affected by the domain
-characteristics, as we show in the evaluation section.
-
-Since the performance of a tiebreakig strategy depends on the domain, and there is no clear dominance relationship among the tiebreaking strategies, one natural 
-idea is to use a portfolio approach which combine several tiebreaking strategies.
+exists in a plateau. However, the previous experiment showed that the
+best depth-based second-level tiebreaking among \ld, \fd, \rd depends on
+the domain characteristics and none of \ld, \fd, \rd dominated each
+other.  Here, one natural idea is to use a portfolio approach which
+combine these three.
 
 The simplest possible portfolio approach would be a standard algorithm portfolio
 which executes two completely independent \astar processes $A_1$ and $A_2$ in parallel, where $A_1$ uses tiebreaking strategey $S_1$ and $A_2$ uses tiebreaking strategy $S_2$, and CPU resources are allocated equally to $A_1$ and $A_2$.
@@ -630,7 +629,10 @@ time $A_2$ requires to solve instance $I$. Then, the total CPU time
 required by the portfolio to solve instance $I$ is $2\times\min(A_1,A_2)$. This approach to combining multiple strategies is the standard algorithm portfolio proposed and analyzed in \cite{HubermanLH97,GomesS01}, and has also recently been called ``dovetailing'' and applied to combine multiple IDA* and \astar  \cite{ValenzanoSSBK10}. %TODO: remove the dovetailing reference after the paper is accepted -- the dovetailing authors were unaware of the HubermanLH97 paper...
 
 On one hand, this simple portfoio approach has the advantage of mitigating worst-case risk -- as shown in \refig{plateau}, sometimes, the ratio between $T_1$ and $T_2$ is very large (e.g., $T_2 > 10\times T_1$) and choosing the wrong strategy has a very high penalty, so this portfolio strategy guarantees that the CPU usage is never more than twice that of using the faster strategy.
-On the other hand, this simple portfolio will always require twice the CPU time of the faster strategy. Furthermore, the portfolio requires twice the RAM resources, which is a major disadvantage in memory-bound algorithms such as \astar.
+On the other hand, this simple portfolio will always require twice the
+CPU time of the faster strategy.
+%% removed, since LOP does not solve this problem
+% Furthermore, the portfolio requires twice the RAM resources, which is a major disadvantage in memory-bound algorithms such as \astar.
 
 We propose a new, \emph{Low-Overhead Portfolio} (LOP) implementation which can be used to implement a portfolio of tie-breaking strategies with significantly less overhead.
 % 
@@ -641,37 +643,41 @@ global cache for heuristic function values. Whenever a search engine
 evaluates a state, it first checks the cache and reuses the result if
 possible.  The current implementation is sequential -- each search
 engine takes turns evaluating states. The algorithm finishes when some
-engine finds the solution. Note that it does not \emph{expand} states in
-turns --- in that case, the number of evaluation would be affected by
-the difference in the number of successor states of each node and the
-evaluation effort would not be evenly distributed. There is a small pool
-storing the nodes which are expanded but not yet evaluated. Evaluation
-happens in turns, and if the pool is exhausted, the expansion occurs as
-necessary in order to evaluate more nodes.
+engine finds the solution. Note that it \emph{evaluates}, not
+\emph{expands}, states in turns --- If we alternate the expansion, 
+the node evaluation effort, crucial for
+a heavy heuristics such as \lmcut, would not be evenly
+distributed, due to the difference in the number of
+successor states of each node. There is a small pool for each queue
+storing the nodes which are expanded
+but not yet evaluated. Evaluation happens in turns, and if the pool is
+exhausted, the expansion occurs as necessary in order to evaluate
+more nodes.
 
 Low-Overhead Portfolios offer some attractive tradeoffs,
 particularly when runtimes are dominated by state evaluation, as is the case when searching with 
 expensive heuristics such as LM-cut or recently proposed LP-based heuristics \cite{PommereningRHB14,ImaiF14}.
 
-First, although the effort to insert/extract nodes from multiple open/closed lists is also doubled, these overheads
-are neglibigle when the heuristic is expensive (see \refig{ffff},left).
+First, although the effort to insert/extract nodes from multiple
+open/closed lists is doubled, these overheads are neglibigle when the
+heuristic is expensive (see \refig{ffff}, left).
 
 Second, although maintaining multiple open/closed lists requires additional memory,
 when the heuristic is expensive enough, runtime becomes a bigger issue
 than memory exhaustion  -- we show that with a 30 minute time limit, LOP
 configurations do not exhaust memory more often than the other
-configurations does \refig{ffff}(right).
+configurations does (\refig{ffff}, right).
 
 Third, node evaluation overheads for $f < f^*$ are eliminated due to the $h$-cache.
 Recall that \astar always evaluates all states whose $f$ costs 
-below $f^*$. Since the heuristic function $h$, and in turn $f=g+h$, is
-the same among the tiebreaking strategies, they evaluate the same set of
-nodes with $f<f^*$, so unlike a standard portfolio implementation where 
+below $f^*$. Since the heuristic function $h$ and in turn $f=g+h$ are
+the same among tiebreaking strategies, they evaluate the same set of
+nodes with $f<f^*$. Unlike a standard portfolio implementation where 
 nodes with $f<f^*$ would be evaluated multiple times, there is no evaluation overhead in a LOP
 for nodes with $f<f^*$.
-Note that this is not
-affected by the reopening of the node caused by inconsitent heuristics
-since the $h$-value is cached.
+This is not
+affected by the reopening caused by inconsitent heuristics either,
+because the $h$-value is cached.
 
 %% Third, since the search terminates when \emph{some} engine finds a
 %% solution, and since the evaluation happens in turns, the search effort
@@ -707,7 +713,7 @@ First, we show that the doubled cost of insertion and deletion by LOP is
 negligeble.  We verified this by comparing the runtime of single \astar
 with a LOP consisting of two same \astar, where all three \astar{}s
 using the idential configuration ($[f,h,\fifo]$ with $h=$\lmcut). The
-result in \refig{ffff} shows that the extra cost of duplicated effort
+results in \refig{ffff} show that the extra cost of duplicated effort
 is negligeble.
 
 \begin{figure}[tb]
@@ -718,7 +724,7 @@ is negligeble.
  single $[f,h,\fifo]$ and a LOP engine with 2 different instances of
  $[f,h,\fifo]$. Each line shows $\times 2,4,6\ldots$ boundary.
  The runtime and memory usage difference were at most a factor of x1.3
- and x1.6 (shown in green line) and in most cases lower than that. We
+ and x1.6 (shown in green lines) and much lower on average. We
  ignore the subsecond differences.}  \label{ffff}
 \end{figure}
 
