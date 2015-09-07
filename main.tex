@@ -197,11 +197,9 @@ limit. Experiments were conducted on Xeon E5410@2.33GHz CPUs.
 Our experimental results include 28 standard benchmark domains with 1104
 problems.
 
-We first compared three strategies 
-$[f,h,\fifo]$, $[f,h,\lifo]$ and $[f,h,\ro\mbox{(Random Order)}]$, 
-which first breaks ties according to $h$, and then applies \fifo, \lifo,
-or \ro second-level tie-breaking, respectively. The seed of randomness
-is fixed to 1.
+We first compared two strategies $[f,h,\fifo]$, $[f,h,\lifo]$, which
+first breaks ties according to $h$, and then applies \fifo or \lifo
+second-level tie-breaking, respectively.
 % 
 The results for \astar using the LM-cut heuristic \cite{Helmert2009} are
 shown in \reftbl{single-coverage} (Left).
@@ -218,7 +216,7 @@ Thus, we also show results for unmodified FD -- as expected, $[f,h,\fifo]$ domin
  \centering \relsize{-3}
  \input{tables/aaai16-30min/aaai16prelim3/1-1-basic-queues.tex}
  \input{tables/aaai16-30min/aaai16prelim3/1-1-basic-queues-noh.tex}
- \caption{Experiments comparing the performance of \fifo, \lifo and Random
+ \caption{Experiments comparing the performance of \fifo and \lifo
  second-level tiebreaking, with (left) and without (right) the
  conventional first-level $h$-tiebreaking.  For the space reason, we
  omitted those domains whose results are the same (Full results are
@@ -235,32 +233,26 @@ more fine-grained analysis by comparing the number of node evaluation
 \begin{figure}[tb]
  \centering \relsize{-3}
  \includegraphics{tables/aaai16-30min/aaai16prelim3/evaluated-lmcut_ff-lmcut_lf.pdf}
- \includegraphics{tables/aaai16-30min/aaai16prelim3/evaluated-nokey-lmcut_ff-lmcut_r.pdf}
- \includegraphics{tables/aaai16-30min/aaai16prelim3/evaluated-nokey-lmcut_r-lmcut_lf.pdf}
- \caption{Comparisons of \# of Evaluations between simple \lifo, \fifo,
- \ro second-level tiebreaking, with first-level $h$-tiebreaking. Each
+ \caption{Comparisons of \# of Evaluations between simple \lifo and
+ \fifo second-level tiebreaking, with first-level $h$-tiebreaking. Each
  line shows $\times 2,4,6\ldots$ boundary.}  \label{f-h-eval}
 \end{figure}
 
 According to \reftbl{single-coverage} (left) with $h$-tiebreaking, \lifo
-outperforms the other strategies, but Random Order outperforms the others in
-Cybersec, and \fifo performed best in Airport, and
-\refig{f-h-eval} shows that Random performs best in Miconic.
-\refig{f-h-eval} also shows that the difference in number of nodes evaluated can sometimes be larger than a factor of 10,
-especially in Openstacks and Cybersec.
-Although \lifo second-level tie-breaking appears to perform best overall on these benchmarks, 
-there are no dominance relationship between these three strategies, and the overall performance of each strategy will depend on the composition of problem instances in the benchmark set.
-%These differences are purely due to the domain characteristics. 
+mostly outperforms \fifo, but \fifo performed best in Airport.
+\refig{f-h-eval} also shows that the difference in the number of nodes
+evaluated can sometimes be larger than a factor of 10, especially in
+Openstacks and Cybersec.
 
 \subsubsection{Is $h$-Based Tie-Breaking necessary?}
 
 Next, we investigated whether $h$-based, first-level tie-breaking is necessary.
 In \reftbl{single-coverage} (right), which shows the results when  first-level
 tiebreaking based on $h$ is disabled, $[f, \lifo]$, which simply breaks ties among nodes with the same $f$-cost by expanding most recently generated nodes first (first suggested in \cite{korf1985depth}),
-clearly dominates $[f, \fifo]$ and $[f, \ro]$.
+clearly dominates $[f, \fifo]$.
 
 Interestingly, the performance of the $[f, \lifo]$ strategy
-is comparable to $[f,h,\lifo]$, $[f,h,\fifo]$ and $[f,h,\ro]$, the two-level strategies that first break ties according to $h$.
+is comparable to $[f,h,\lifo]$ and $[f,h,\fifo]$, the two-level strategies that first break ties according to $h$.
 This is somewhat surprising, considering the ubiquity of $h$-based tie-breaking in the search and planning communities.
 \todo*{Explanation of why $[f,\lifo]$ performs so well. }
 % 
