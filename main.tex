@@ -184,10 +184,10 @@ Downward \cite{Helmert2006}\footnote{http://www.fast-downward.org} uses a First-
 \subsection{Evaluation of Two-Level Tie-Breaking Strategies}
 
 
-We tested various tiebreaking strategies. In the following sections, we
-use a convenient array-based notation of a combination of tiebreaking
-strategy.  For example, $[f,h,\fifo]$ denotes standard \astar with
-$h$-based first-level tiebreaking and \fifo
+We tested various tiebreaking strategies throughout this paper.  In the
+following sections, we use a convenient array-based notation of a
+combination of tiebreaking strategy.  For example, $[f,h,\fifo]$ denotes
+standard \astar with $h$-based first-level tiebreaking and \fifo
 second-level tiebreaking.
 %% I removed \fd because it is not yet proposed at this point
 
@@ -208,7 +208,7 @@ shown in \reftbl{single-coverage} (Left).
 Differences in coverage are observed in several domains.
 Due to the space limitation, we show only the domains
 where there was any difference. Full data is available in the
-supplemental material. \todo{probably better to show full results for this particular experiment}.
+supplemental material. \todo{probably better to show full results for this particular experiment}
  
 Although the search behavior of $[f,h,\fifo]$ corresponds to the default behavior of Fast Downward (FD), this implementation differs 
 from the original, unmodified FD code because we enabled caching of $h$-values, so that reopened nodes refer to cached $h$-values.\footnote{The current Fast Downward code disables $h$-caching because its current implementation is not compatible with multiple admissible heuristics.}
@@ -262,7 +262,7 @@ clearly dominates $[f, \fifo]$ and $[f, \ro]$.
 Interestingly, the performance of the $[f, \lifo]$ strategy
 is comparable to $[f,h,\lifo]$, $[f,h,\fifo]$ and $[f,h,\ro]$, the two-level strategies that first break ties according to $h$.
 This is somewhat surprising, considering the ubiquity of $h$-based tie-breaking in the search and planning communities.
-\todo{Explanation of why $[f,\lifo]$ performs so well. }
+\todo*{Explanation of why $[f,\lifo]$ performs so well. }
 % 
 This can be understood as \lifo greedily explores the plateau space
 and quickly aggregates the $g$ value. Since $f$ is fixed within the
@@ -329,17 +329,19 @@ by the difference in second-level tiebreakings.
 
 \section{Domains with Zero-cost Actions}
 
+%% best to put openstacks here, considering the connection to the
+%% previous section
 Openstacks domain is a cost
 minimization domain first introduced in IPC-2006, where the objective is to 
 minimize the number of stacks used.
 There are many zero-cost actions (i.e., actions that don't increase the number of stacks), and
-these zero-cost actions prevent the commonly used heuristics from producing
-informative guidance, confounding commonly used heuristics.
+these zero-cost actions confound and prevent the commonly used heuristics from producing
+informative guidance.
 For example, \lmcut \cite{Helmert2009} fails to find a good cost
 partitioning with non-zero values, 
 % A detailed discussion of Openstacks domain and poor performance of landmarks is in \cite{richter10lama}, p.167-169.
 and most edges in the abstraction
-space of M\&S have zero costs \cite{helmert2007flexible}.
+space of M\&S \cite{helmert2007flexible} have zero costs.
 
 % XXX I'm commenting out the paragraphs below because:
 % (1) A review of heuristic functions for domain-independent learning is not really
