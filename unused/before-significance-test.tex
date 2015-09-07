@@ -1,0 +1,29 @@
+% Note that we do not claim the performance of \fifo in third-level
+% tiebreaking is universal.  Rather, it is more likely due to the specific
+% action ordering in the domain definition. \todo[First]{thise text should
+% be adjusted after 30min results}, in Pipesworld-Pushend,
+% for example, the dominant third-level strategy is RandomOrder,
+% regardless of the second-level depth tiebreaking.  (\fifo,\ro,\lifo is
+% 3,3,3 in FirstDepth, 3,4,3 in RandomDepth, and 5,6,4 in LastDepth.)
+% Also, in Airport-Fuel and Mprime-Succumb with RandomDepth ($[f,h,\rd,\cdot]$), 
+% the RandomOrder third-level tiebreaking is better than \lifo or \fifo.
+% Furthermore, we also tested the same domains with a reversed
+% action ordering. The results (in supplimental
+% material) show that the action ordering affects the performance of
+% third-level tiebreaking, but it did not changed the trends in the
+% second-level tiebreaking.
+
+%% following discource may not be a good way to defend our paper.
+% Keen readers might be concerned with the effect of action ordering in
+% the domain definition. Although we showed that tie-breaking makes a
+% difference, all the minor differences could be accidental and due to the
+% input ordering, i.e., tiebreaking could change their behavior in some
+% cases by changing the sort order of the actions.
+% 
+% This consideration does not diminish our depth-based second tiebreaking.
+% First, the only part affected by the action ordering is the
+% third tiebreaking, for which we tested \lifo, \fifo and \ro.
+% We are not trying to claim some dominance relationships within these
+% third tiebreakings. The purpose of the comparison 
+
+% also, even with 2-level tiebreaking,  2nd level random tiebreaking, lmcut(f,r), did not perform that well, so that supports the claim that re-ordering alone cannot explain all the results, and lmcut(f,h,r) is significantly worse than lmcut(f,h,lifo).
