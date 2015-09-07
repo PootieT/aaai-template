@@ -181,7 +181,7 @@ Downward \cite{Helmert2006}\footnote{http://www.fast-downward.org} uses a First-
 %\cite{korf1993linear}.  
 % ** not sure how/where to put this..
 
-\subsection{Evaluation of Two-Level Tie-Breaking Strategies}
+\subsection{Reevaluating the Strategies}
 
 
 We tested various tiebreaking strategies throughout this paper.  In the
@@ -207,7 +207,7 @@ Differences in coverage are observed in several domains.
 Due to the space limitation, we show only the domains
 where there was any difference. Full data is available in the
 supplemental material. \todo{probably better to show full results for this particular experiment}
- 
+
 Although the search behavior of $[f,h,\fifo]$ corresponds to the default behavior of Fast Downward (FD), this implementation differs 
 from the original, unmodified FD code because we enabled caching of $h$-values, so that reopened nodes refer to cached $h$-values.\footnote{The current Fast Downward code disables $h$-caching because its current implementation is not compatible with multiple admissible heuristics.}
 Thus, we also show results for unmodified FD -- as expected, $[f,h,\fifo]$ dominates unmodified FD.
@@ -319,7 +319,7 @@ by the difference in second-level tiebreakings.
   Openstacks clearly has the large plateaus.}  \label{plateau}
 \end{figure}
 
-\section{Domains with Zero-cost Actions}
+\subsection{Domains with Zero-cost Actions}
 
 %% best to put openstacks here, considering the connection to the
 %% previous section
@@ -450,7 +450,7 @@ runtime-minimization problems.
 
 
 
-\section{Depth-based Tiebreaking}
+\subsection{Depth-based Tiebreaking}
 
 In order to solve problems with large final plateaus, the
 planner needs to run an efficient knowledge-free search within the
@@ -589,7 +589,7 @@ inherent LastDepth/FirstDepth behavior and not by \lifo or \fifo.
 %  \label{depth-noh}
 % \end{figure}
 
-\section{Low-Overhead Portfolios for Combining Tie-Breaking Strategies}
+\subsection{Low-Overhead Portfolios for Combining Tie-Breaking Strategies}
 
 As noted above, it is unknown prior to the search where the goal node
 exists in a plateau. However, the previous experiment showed that the
@@ -672,7 +672,7 @@ This can occur  when all tiebreaking
 strategies perform poorly  and they all evaluates the goal node in the
 final iteration.
 
-\subsection{Evaluating LOPs}
+\subsubsection{Evaluating LOPs}
 
 As we see in the previous section, the planner performance is greatly
 affected by the tiebreaking criteria, especially when the search plateau
