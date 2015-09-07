@@ -503,7 +503,7 @@ the search should be focused around the entrance favoring the smaller
 depths (FirstDepth), and the behavior should be much like breadth-first. In the second case, the planner should
 greedily explore the various area of the plateau by preferring larger
 depth (LastDepth), much like in depth-first. In the
-final case where the goal node is in a particular depth, choosing the
+final case where the goal nodes are concentrated in a particular depth, choosing the
 random depth seems the safest practice. This corresponds to the case
 where RandomDepth would perform better.
 
@@ -520,10 +520,9 @@ We evaluated the five, 3-level tie-breaking strategies described above.
 % 
 In addition to the 28 standard IPC benchmark domains used in the previous set of experiments, we also added 16 \emph{zerocost} domains with 640 problems. 
 
-The node evaluation order of $[\cdot,\fd,\fifo]$ and $[\cdot,\ld,\lifo]$
-are exactly the same as those without the second-level
-depth-based tiebreaking, i.e.\ $[\cdot,\fifo]$ and $[\cdot,\lifo]$.
-Yet these results are useful in assessing the extra cost of managing the
+The node evaluation order of $[f,h,\fd,\fifo]$ and $[f,h,\ld,\lifo]$
+are exactly the same as $[f,h,\fifo]$ and $[f,h,\lifo]$,
+yet these results are useful in assessing the extra cost of managing the
 depth-based buckets.
 
 \refig{depth} shows various experiments on benchmark domains and
@@ -643,11 +642,10 @@ global cache for heuristic function values. Whenever a search engine
 evaluates a state, it first checks the cache and reuses the result if
 possible.  The current implementation is sequential -- each search
 engine takes turns evaluating states. The algorithm finishes when some
-engine finds the solution. Note that it \emph{evaluates}, not
-\emph{expands}, states in turns --- If we alternate the expansion, 
-the node evaluation effort, crucial for
-a heavy heuristics such as \lmcut, would not be evenly
-distributed, due to the difference in the number of
+engine finds the solution. Note that it takes turns \emph{evaluating}, not
+\emph{expanding}, the states --- If we alternate the expansion, 
+the node evaluation effort would not be evenly
+distributed among \astar{}s, due to the difference in the number of
 successor states of each node. There is a small pool for each queue
 storing the nodes which are expanded
 but not yet evaluated. Evaluation happens in turns, and if the pool is
