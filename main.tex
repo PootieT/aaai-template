@@ -470,9 +470,41 @@ and depth is used as a tie-breaking criterion.
 FirstDepth(\fd), RandomDepth(\rd) and LastDepth(\ld) breaks ties by choosing a node from 
 nodes with the smallest depth, a random depth, or the largest depth, respectively.
 
+The effectiveness of second-level depth-based strategy depends on the
+structure of the problem instance.  In the knowledge-free search within
+the plateau, all nodes have the same $f$ and $h$ values
+% yes, for simplicity, I'm assuming 3-level tiebreaks, ignoring no-h for the time being..
+and it is impossible to guess whether the goal is concentrated near, far
+away or in a particular step from the entrance.  In the first case, the
+search should be focused around the entrance favoring the smaller depths
+(FirstDepth), and the behavior should be much like breadth-first. In the
+second case, the planner should greedily explore the various area of the
+plateau by preferring larger depth (LastDepth), much like in
+depth-first. In the final case where the goal nodes are concentrated in
+a particular depth, choosing the random depth seems the safest practice,
+as the FirstDepth would take time to reach that depth, and LastDepth
+would greedily go past and ignore the particular depth. This is a case
+where RandomDepth would perform better.
+
+\subsubsection{Third-Level Tiebreaking}
+
 Since there can be multiple nodes with the same $f$, $h$ and depth,
 a further tie-breaking criterion is necessary to select among nodes in the same depth bucket.
-A natural 3rd-level tie-breaking policy is Random Order (\ro), which randomly selects an element from the depth bucket selected by the 2nd-level depth-based tie-breaking.
+There are 3 possibilities in implementing this third-level tiebreaking:
+\fifo, \lifo and Random Order (\ro), which
+randomly selects an element from the depth bucket selected by the depth-based tie-breaking.
+
+Among \fifo, \lifo and \ro, the natural policy is Random Order.
+This is because the effectiveness of the third-level tiebreaking behavior
+is likely to be affected by the action ordering in the PDDL domain
+definition.  Recent work \cite{vallati2015effective} showed that the
+planner performance is greatly affected by changing the action and
+variable ordering. However, finding the best third-level tiebreaking is
+not the scope of this paper.
+Thus, focusing on \ro and assess its expected/average
+performance is the most reasonable practice in assessing the behavior of second-level,
+depth-based tiebreaking.
+
 We consider the following 3 tie-breaking configurations, each using $h$
 as the first-level tie-breaking criterion, one of \fd, \rd, \ld as the
 depth-based 2nd-level tie-breaking criterion, and \ro as the 3rd-level
@@ -486,92 +518,45 @@ states, which always have the largest depth, and $[f,h,\fifo]$ expands the oldes
 evaluated states, which always have the smallest depth.}
 Thus, we consider five, 3-level configurations in all.
 
-
-The effectiveness of each strategy depends on the structure of the problem instance.
-In the knowledge-free search within the plateau, all nodes have the same
-$f$ and $h$ values % yes, for simplicity, I'm assuming 3-level tiebreaks, ignoring no-h for the time being..
- and it is impossible to guess whether the goal is near, far
-away or in a particular distance from the entrance.
-In the first case,
-the search should be focused around the entrance favoring the smaller
-depths (FirstDepth), and the behavior should be much like breadth-first. In the second case, the planner should
-greedily explore the various area of the plateau by preferring larger
-depth (LastDepth), much like in depth-first. In the
-final case where the goal nodes are concentrated in a particular depth, choosing the
-random depth seems the safest practice. This corresponds to the case
-where RandomDepth would perform better.
-
-% This ``greediness'' is different from the normal
-% sense of ``greedy search'' --- since this greediness only holds within
-% the plateau, admissibility is still maintained.
- 
-
-
-\subsection{Evaluating Depth-based Tiebreaking}
+\subsubsection{Evaluating Depth-based Tiebreaking}
 
 We evaluated the five, 3-level tie-breaking strategies described above.
 %REDUNDANT? , i.e., $[f,h,depthStrategy,LFR]$, where the first-level tie-breaking is according to $h$ (break ties in favor of small $h$), the second-level strategy is based on depth and $depthStrategy \in \{\fd, \ld, \rd\}$, and the third level tie-breaking strategy $LFR \in \{\lifo, \fifo, \ro\}$.
 % 
 In addition to the 28 standard IPC benchmark domains used in the previous set of experiments, we also added 16 \emph{zerocost} domains with 640 problems. 
+\refig{depth} shows the coverage results on benchmark domains and
+zerocost domains.
 
+First, we compared $[f,h,\ld,\lifo]$ and
+$[f,h,\lifo]$ with $[f,h,\fd,\fifo]$ and $[f,h,\fifo]$, respectively.
 The node evaluation order of $[f,h,\fd,\fifo]$ and $[f,h,\ld,\lifo]$
 are exactly the same as $[f,h,\fifo]$ and $[f,h,\lifo]$,
 yet these results are useful in assessing the extra cost of managing the
 depth-based buckets.
+As expected, the performances of $[f,h,\ld,\lifo]$ and
+$[f,h,\fd,\fifo]$ are slightly worse than $[f,h,\lifo]$ and
+$[f,h,\fifo]$ due to the cost of managing the depth-based buckets, but
+the drawback is acceptable.
 
-\refig{depth} shows various experiments on benchmark domains and
-zerocost domains. Regardless of the third-level tiebreaking, LastDepth
-strategy tends to be dominant in most domains. However, RandomDepth and
+Next, we compared the performance of several depth-based strategies.
+As stated in the previous section, we used \ro third-level strategy to
+avoid the bias caused by the action orderings.
+From the results, LastDepth strategy tends to be dominant in most domains. However RandomDepth and
 FirstDepth still exhibits a significantly better performance in Cybersec
 and Mistery-Feast, respectively, indicating there is no true dominance relationship.
 
-This result explains why the simple $[f,h,\lifo]$ strategy has become
-successful. $[f,h,\lifo]$ is same as $[f,h,\ld,\lifo]$, and the fact
-that the performance of $[f,h,\ld,\cdot]$ was consistently good
-regardless of the third-level tiebreaking means that the performance of
-$[f,h,\ld,\lifo]$ was caused by LastDepth and not by third-level \lifo tiebreaking.
-
-Supporting the above claim, the overall dominant third-level tiebreaking
-in these experiments is \fifo.  For example, when we fix the second-level
-tiebreaking, the coverages are $[f,h,X,\fifo]>[f,h,X,\ro]>[f,h,X,\lifo]$
-when $X=\ld,\rd$.  Note that \fifo is bad in terms of low-level memory
-access pattern since the insertion and deletion happens in the opposite
-side of the bucket. 
-
-Note that we do not claim the performance of \fifo in third-level
-tiebreaking is universal.  Rather, it is more likely due to the specific
-action ordering in the domain definition. \todo[First]{thise text should
-be adjusted after 30min results}, in Pipesworld-Pushend,
-for example, the dominant third-level strategy is RandomOrder,
-regardless of the second-level depth tiebreaking.  (\fifo,\ro,\lifo is
-3,3,3 in FirstDepth, 3,4,3 in RandomDepth, and 5,6,4 in LastDepth.)
-Also, in Airport-Fuel and Mprime-Succumb with RandomDepth ($[f,h,\rd,\cdot]$), 
-the RandomOrder third-level tiebreaking is better than \lifo or \fifo.
-Furthermore, we also tested the same domains with a reversed
-action ordering. The results (in supplimental
-material) show that the action ordering affects the performance of
-third-level tiebreaking, but it did not changed the trends in the
-second-level tiebreaking.
-
-This third-level tiebreaking behavior is related to recent work
-\cite{vallati2015effective} done by changing the action and variable
-ordering with SMAC parameter tuning framework. However, finding the best
-third-level tiebreaking is not the scope of this paper.
-
-%% following discource may not be a good way to defend our paper.
-% Keen readers might be concerned with the effect of action ordering in
-% the domain definition. Although we showed that tie-breaking makes a
-% difference, all the minor differences could be accidental and due to the
-% input ordering, i.e., tiebreaking could change their behavior in some
-% cases by changing the sort order of the actions.
-% 
-% This consideration does not diminish our depth-based second tiebreaking.
-% First, the only part affected by the action ordering is the
-% third tiebreaking, for which we tested \lifo, \fifo and \ro.
-% We are not trying to claim some dominance relationships within these
-% third tiebreakings. The purpose of the comparison 
-
-% also, even with 2-level tiebreaking,  2nd level random tiebreaking, lmcut(f,r), did not perform that well, so that supports the claim that re-ordering alone cannot explain all the results, and lmcut(f,h,r) is significantly worse than lmcut(f,h,lifo).
+Finally, we answers two particular concerns regarding \lifo and \fifo
+final tiebreaking.  First, the performance of \lifo and \fifo may be
+affected by the action orderings. Also, using \lifo may affect the
+performance because of its efficient low-level memory access pattern.
+\todo[Using a XXXXX statistical significance testing]{}, there are no
+significant differences between $[f,h,\ld,\lifo]$ and $[f,h,\ld,\ro]$,
+nor between $[f,h,\fd,\fifo]$ and $[f,h,\fd,\ro]$.  It means that the
+performance of $[f,h,\ld,\lifo]$ and $[f,h,\fd,\fifo]$ was caused by
+second-level LastDepth and FirstDepth, respectively, and not by the
+third-level \lifo or \fifo ordering.  This in turn means that the
+performance of $[f,h,\lifo]$ and $[f,h,\fifo]$ was caused by its
+inherent LastDepth/FirstDepth behavior and not by \lifo or \fifo.
 
 % Another issue in this result is the lack of analysis on
 % abstraction-based heuristics. We also added the results in the figures
@@ -586,8 +571,7 @@ third-level tiebreaking is not the scope of this paper.
  \relsize{-3}
  \input{tables/aaai16-30min/aaai16prelim3_zerocost_2zerocost/1-1-depth-queues.tex}
  \caption{Experiments
- comparing the coverages of 9 configurations (3 depth-based strategy
- $\times$ 3 queue implementions). For the space reason, we omitted those
+ comparing the coverages of 7 configurations. For the space reason, we omitted those
  domains whose results are the same. (Full results are available in the
  supplemental material.) Each cell denotes the problem solved with 30
  min, 2GB setting. \textbf{Boldface} denotes the case where it achieved
@@ -743,7 +727,7 @@ search engine.
  \centering \relsize{-2}
  \input{tables/aaai16-30min/aaai16prelim3_zerocost_2zerocost/1-1-multi-lmcut.tex}
  \caption{Coverage results comparing some LOP combinations and the
- single strategies under the portfolio. }
+ single strategies under the portfolio. The seeds are fixed to 1 in these instances.}
  \label{portfolio-coverage}
 \end{table}
 
