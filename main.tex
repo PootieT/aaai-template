@@ -463,13 +463,13 @@ planner needs to run an efficient knowledge-free search within the
 plateau.  One useful notion which can be used to both understand and control the search in this
 situation is the \emph{depth} of a node, which represents the number 
 of steps from the entrance of the plateau.
-If the $parent(n)$ is from the other plateau, i.e., $parent(n)$ has a
+If the $\parent{n}$ is from the other plateau, i.e., $\parent{n}$ has a
 different $f$-value, or different $h$-value used for the first
-tiebreaking, then $depth(n) = 0$. Nodes with $depth(n) = 0$ are called
+tiebreaking, then $\depth{n} = 0$. Nodes with $\depth{n} = 0$ are called
 the \emph{entrance} of the plateau.
-If the $parent(n)$ is from the same plateau i.e.\ $parent(n)$ and $n$
+If the $\parent{n}$ is from the same plateau i.e.\ $\parent{n}$ and $n$
 shares the same $f$ and $h$,
-$depth(n)$ is defined as $depth(parent(n)) + 1$.
+$\depth{n}$ is defined as $\depth{\parent{n}} + 1$.
 Based on this simple notion of depth,
 we propose  \emph{depth-based tie-breaking}, where all nodes are associated with its depth, 
 and depth is used as a tie-breaking criterion.
