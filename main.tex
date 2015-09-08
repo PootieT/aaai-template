@@ -569,15 +569,16 @@ inherent LastDepth/FirstDepth behavior and not by \lifo or \fifo.
 \begin{figure}[tb]
  \centering
  \relsize{-3}
- \input{tables/aaai16-30min/aaai16prelim3_zerocost_2zerocost/1-1-depth-queues.tex}
- \caption{Experiments
- comparing the coverages of 7 configurations. For the space reason, we omitted those
- domains whose results are the same. (Full results are available in the
- supplemental material.) Each cell denotes the problem solved with 30
- min, 2GB setting. \textbf{Boldface} denotes the case where it achieved
- the best result among configurations. Zerocost domains are named
- according to [original]-[name of nonzero action].}
- \label{depth}
+ \input{tables/aaai16-robustnesscheck/aaai16prelim3_zerocost_2zerocost/1-4-all-and-sig-wilcox-remove-same.tex}
+ %\input{tables/aaai16-30min/aaai16prelim3_zerocost_2zerocost/1-1-depth-queues.tex}
+ \caption{Experiments comparing the coverages of 7 configurations. For
+ the space reason, we omitted those domains whose results are the
+ same. (Randomized configs are omitted when all seed variants yield the
+ same results. Full results are available in the supplemental material.)
+ Each cell denotes the problem solved with 30 min, 2GB
+ setting. \textbf{Boldface} denotes the case where it achieved the best
+ result among configurations. Zerocost domains are named according to
+ [original]-[name of nonzero action].}  \label{depth}
 \end{figure}
 
 %% obviously does not fit in the paper
