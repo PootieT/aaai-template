@@ -509,61 +509,71 @@ planner performance is greatly affected by changing the action and
 variable ordering. However, finding the best third-level tiebreaking is
 not the scope of this paper.
 Thus, focusing on \ro and assess its expected/average
-performance is the most reasonable practice in assessing the behavior of second-level,
+performance is the most reasonable practice to understand the behavior of second-level,
 depth-based tiebreaking.
 
-We consider the following 3 tie-breaking configurations, each using $h$
-as the first-level tie-breaking criterion, one of \fd, \rd, \ld as the
-depth-based 2nd-level tie-breaking criterion, and \ro as the 3rd-level
-criterion:  $[f,h,\fd,\ro]$, $[f,h,\ld,\ro]$, $[f,h,\rd,\ro]$. 
-In addition, we will also consider two additional configurations, $[f,h,\fd,\fifo]$, which is equivalent to $[f,h,\fifo]$, and $[f,h,\ld,\lifo]$, which is equivalent to $[f,h,\lifo]$.\footnote{
-%Also note that, the node evaluation orders of $[f,h,\fd,\fifo]$ and $[f,h,\ld,\lifo]$ are
-%exactly the same as $[f,h,\fifo]$ and $[f,h,\lifo]$, respectively,
-%i.e., those without the depth-based tiebreaking.  
-This is because, $[f,h,\lifo]$ expands the most recently evaluated/inserted
-states, which always have the largest depth, and $[f,h,\fifo]$ expands the oldest
-evaluated states, which always have the smallest depth.}
-Thus, we consider five, 3-level configurations in all.
 
 \subsubsection{Evaluating Depth-based Tiebreaking}
 
-We evaluated the five, 3-level tie-breaking strategies described above.
+We evaluated the five, 3-level tie-breaking strategies.
 %REDUNDANT? , i.e., $[f,h,depthStrategy,LFR]$, where the first-level tie-breaking is according to $h$ (break ties in favor of small $h$), the second-level strategy is based on depth and $depthStrategy \in \{\fd, \ld, \rd\}$, and the third level tie-breaking strategy $LFR \in \{\lifo, \fifo, \ro\}$.
 % 
-In addition to the 28 standard IPC benchmark domains used in the previous set of experiments, we also added 16 \emph{zerocost} domains with 640 problems. 
+In addition to the 28 IPC benchmark domains with 1104 problems used in the previous set of experiments, we also added 16 \emph{zerocost} domains with 640 problems. 
 \refig{depth} shows the coverage results on benchmark domains and
 zerocost domains.
 
-First, we compared $[f,h,\ld,\lifo]$ and
-$[f,h,\lifo]$ with $[f,h,\fd,\fifo]$ and $[f,h,\fifo]$, respectively.
+First, we compared $[f,h,\ld,\lifo]$ and $[f,h,\fd,\fifo]$
+with $[f,h,\lifo]$ and $[f,h,\fifo]$, respectively, in order to see
+the extra cost of managing the depth-based buckets.
 The node evaluation order of $[f,h,\fd,\fifo]$ and $[f,h,\ld,\lifo]$
-are exactly the same as $[f,h,\fifo]$ and $[f,h,\lifo]$,
-yet these results are useful in assessing the extra cost of managing the
-depth-based buckets.
+are exactly the same as $[f,h,\fifo]$ and $[f,h,\lifo]$.
+This can be described as follows:
+(1) $[f,h,\lifo]$ expands the most recently evaluated/inserted
+states, and (2) the depth increases monotonically,
+thus (3) $[f,h,\lifo]$ always expands the largest depth. (Similar logic
+applies to $[f,h,\fifo]$.)
+% 
+% yet these results are useful in assessing the extra cost of managing the
+% depth-based buckets.
 As expected, the performances of $[f,h,\ld,\lifo]$ and
 $[f,h,\fd,\fifo]$ are slightly worse than $[f,h,\lifo]$ and
-$[f,h,\fifo]$ due to the cost of managing the depth-based buckets, but
-the drawback is acceptable.
+$[f,h,\fifo]$ due to the cost of managing the depth-based buckets.
 
-Next, we compared the performance of several depth-based strategies.
-As stated in the previous section, we used \ro third-level strategy to
-avoid the bias caused by the action orderings.
-From the results, LastDepth strategy tends to be dominant in most domains. However RandomDepth and
-FirstDepth still exhibits a significantly better performance in Cybersec
-and Mistery-Feast, respectively, indicating there is no true dominance relationship.
+Next, we compared the performance of 3 configurations.
+They are $[f,h,\fd,\ro]$, $[f,h,\ld,\ro]$, $[f,h,\rd,\ro]$: Each using
+$h$ as the first-level tie-breaking criterion, one of \fd, \ld, \rd as
+the depth-based 2nd-level tie-breaking criterion, and finally,
+\ro as the 3rd-level criterion, in order to
+avoid the bias caused by the action orderings (as stated in the previous
+section).
 
-Finally, we answers two particular concerns regarding \lifo and \fifo
-final tiebreaking.  First, the performance of \lifo and \fifo may be
-affected by the action orderings. Also, using \lifo may affect the
+Since these configurations contain a randomized element, we run 10
+experiments with different random seeds for each configuration and
+tested the significance of the coverage difference with Wilcoxon test,
+which does not assume a normal distribution.  The rightmost columns in
+\reftbl{depth} show the $p$ values of the test. The results depend on
+the domains, but in many situations we observed a significant difference
+among 3 second-level tiebreaking. From the results, RandomDepth
+dominated the others. Although in most domains LastDepth and RandomDepth
+behave similar, the performance of RandomDepth in some domains are
+noticeable (e.g., cybersec, woodworking-cut). Also, the standard
+deviation of the coverage results of RandomDepth is smaller than that
+of LastDepth, indicating the robustness of RandomDepth.
+FirstDepth is dominated by the others, except in
+scanalyzer-analyse.
+
+Finally, we answer two particular concerns regarding \lifo and \fifo
+final tiebreaking.  First, the performance of \lifo and \fifo could be
+affected by the action orderings. Also, using \lifo could affect the
 performance because of its efficient low-level memory access pattern.
-\todo[Using a XXXXX statistical significance testing]{}, there are no
-significant differences between $[f,h,\ld,\lifo]$ and $[f,h,\ld,\ro]$,
-nor between $[f,h,\fd,\fifo]$ and $[f,h,\fd,\ro]$.  It means that the
-performance of $[f,h,\ld,\lifo]$ and $[f,h,\fd,\fifo]$ was caused by
-second-level LastDepth and FirstDepth, respectively, and not by the
-third-level \lifo or \fifo ordering.  This in turn means that the
-performance of $[f,h,\lifo]$ and $[f,h,\fifo]$ was caused by its
-inherent LastDepth/FirstDepth behavior and not by \lifo or \fifo.
+They are both rejected because the coverage of $[f,h,\ld,\lifo]$ ($=
+[f,h,\lifo]$) is not significantly different from $[f,h,\ld,\ro]$ ($294
+\in [303.5-8.9,303.5+8.9]$) despite the difference in the third-level
+tiebreaking. It means that the performance of $[f,h,\ld,\lifo]$ was not
+caused by the third-level \lifo, but instead by the second-level
+tiebreaking LastDepth.  Similarly, the bad performance of
+$[f,h,\fd,\fifo]$ and $[f,h,\fifo]$ can be attributed to its the
+inherent second-level FirstDepth, and not to the third-level \fifo.
 
 % Another issue in this result is the lack of analysis on
 % abstraction-based heuristics. We also added the results in the figures
