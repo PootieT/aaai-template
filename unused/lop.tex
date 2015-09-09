@@ -1,3 +1,29 @@
+
+%% introduction
+
+Finally, based on the absence of dominance relationship, we propose a
+new class of portfolio strategy called \emph{Low Overhead Portfolio} (LOP),
+which alternates between several depth-based tiebreaking methods.
+Unlike the simple alternating open list proposed in LAMA planner \cite{richter2010lama},
+it prevents the interaction between the queues and maintains the original
+expansion order of each queue, allowing a clear theoretical analysis.
+Also, it targets a single-heuristics, multi-tiebreaking scenario, unlike
+the multi-heuristic scenario assumed in LAMA's alternating open list.
+% 
+LOP has several interesting characteristics:
+First, the number of evaluations of nodes with $f<f*$ with LOP is exactly the same as
+those with any single tiebreaking strategy.
+Also, it has a theoretical guarantee that
+the number of evaluations of nodes with $f=f*$ is at most $N$ times the \emph{minimum} 
+of the evaluations required by $N$ strategies in the portfolio.
+% 
+%%% removed, we curretntly do not have much clue
+% To put it simply, this portfolio does not need additional computation
+% and we get a speedup for free (aside from the negligeble differences).
+% Also, it is characteristic in that it works with a single heuristic function.
+% We also empirically evaluates LOP.
+
+
 \subsection{Low-Overhead Portfolios for Combining Tie-Breaking Strategies}
 
 As noted above, it is unknown prior to the search where the goal node
@@ -153,3 +179,30 @@ search engine.
 \end{figure}
 
 
+%% related work
+
+%% this will invoke a request from the reviewers to compare ours against it
+%% * True, but people who know LAMA/FD are likely to demand some kind of comparison with alternating queues and preferred queues whether we mention  it or not.
+%% Probably better to preemptively settle these questions rather than risking difficult questions during rebuttal.
+
+Fast Downward/LAMA implement an \emph{alternation}
+method \cite{Helmert2006} for OPEN list. It was originally used as a method for using
+multiple heuristics in a planner.  There are multiple open lists, where there is a list for each heuristic, and states are
+inserted into all lists according to the heuristic value for each
+heuristic.  The major difference of alternation list to LOP is threefold:
+First, LOP uses a single, expensive heuristic as the primary sorting
+criteria ($f$-value), and it does not alternates between multiple
+heuristics. Second, unlike alternation list alternates the
+\emph{expansion}, LOP alternates the \emph{evaluation}.
+Third, since the results of expansion in one list are inserted to all lists,
+it changes the original insertion order in each queue.
+
+Preferred operator queues are an extension of queue alternation, where in addition to the basic queue for each heuristic, there is a queue for states that are \emph{preferred} according to each heuristic \cite{richter2010lama}.
+Although this was designed for non-admissible search in LAMA, preferred operators could, in principle, be applied to admissible search. 
+Preferred operators are implemented by adding operator (state) preference computation to heuristic evaluator, and are therefore dependent on the heuristic function.
+% Evidence: \cite{richter2010lama}, p.132 ``Operators that are deemed particularly useful in a given state are marked as preferred.   They are computed by the heuristic estimators along with the heuristic value of a state (see Sections 6 and 5).  
+% More Evidence: \cite{richter2010lama}, p.150, last paragraph: ``We also generate preferred operators along with the landmark heuristic. An operator is preferred in a state if applying it achieves an acceptable landmark in the next step, i. e., a landmark whose pre-decessors have already been accepted.  If no acceptable landmark can be achieved within one step, the preferred operators are those which occur in a relaxed plan to a nearest acceptable landmark. A nearest landmark in the cost-unaware setting is one that is relaxed reachable with a
+In contrast, the tie-breaking strategies investigated in this paper are implemented completely independently of the heuristic -- all of the tie-breaking stratgies in this paper can be applied to search using a blind heuristic.
+
+%Lazy A* \cite{TolpinBSFK13} 
+%TODO:  lazy A* vs LOP -- LazyA* combines multiple heuristics h1,h2 with low-overhead. However, if there is no dominance between h1,h2, behavior is different than h2; in contrast, LOP guarantees conservative behavior. % no, never mind, too different..
