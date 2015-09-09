@@ -33,7 +33,7 @@ en_pdf: $(name).pdf
 		   -latexoption="-halt-on-error" \
 		   -bibtex \
 		   $<
-	cp $@ ~/Dropbox/FukunagaLabShare/repos/asai-aaai16-draft-latest-$$(hostname).pdf
+	cp $@ ~/Dropbox/FukunagaLabShare/repos/asai-aaai16-draft-latest-$(shell hostname).pdf
 
 %.ja.pdf: %.tex imgs $(sources) $(styles) $(reference)
 	$(latexmk) -r latexmk/rc_ja.pl \
