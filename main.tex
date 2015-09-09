@@ -340,8 +340,8 @@ space of M\&S \cite{helmert2007flexible} have zero costs.
 % necessary for this AAAI submission. 
 % (2) It's better if this paper is not so strongly associated with the ICAPS community only -- this work applies in general to search with A*, and is not strongly tied to almost-perfect heuristics, lmcut, m&s, etc.
 
-This kind of cost-minimization domains with many zero-cost actions are
-not common in the current set of benchmark domains.
+Such domains are
+not common in the current set of benchmarks.
 % 
 Historically, the study of the shortest path finding algorithms has
 started on the unit cost domains as the simplest case, where every
@@ -349,45 +349,50 @@ search edge has a cost 1,
 % . Experimental study of \astar was somewhat biased to
 % the unit-cost domains
 such as 24-puzzle, Rubik's Cube etc.
-There are also several problems with non-unit costs, sometimes
-artificially but also sometimes naturally, such as in multiple
-sequence alignment (MSA).
-% 
-In the plannning community, actions with non-unit costs were first introduced in 
-IPC-2002. The actions in these domains tend to have the nonzero positive costs
-because they mostly targets the runtime minimization.
+% There are also several problems with non-unit costs, sometimes
+% artificially but also sometimes naturally, such as in multiple
+% sequence alignment (MSA).
+
+In the plannning community,
+%  actions with non-unit costs were first introduced in 
+% IPC-2002. The actions in these domains
+actions tend to have the nonzero positive costs
+because most domains target the runtime minimization.
 % For example, Elevator and Miconic in the benchmark domains minimize the
 % runtime of moving the passengers up and down.
 % Actions in which the
 % elevator travels the long distance take longer runtime.  
-When concerned
-only with the runtime, it is reasonable to assign nonzero positive cost to
-every actions, since every actions are supposed to at least consume a
-fraction of time.
-However, such formulation is not suitable for the general minimization
-problems.
-For example, when you try to minimize the energy consumption
+% When concerned
+ % only with the runtime, it is reasonable to assign nonzero positive costs to
+ % every actions
+For runtime minimization,
+nonzero positive costs are reasonable because
+every actions are supposed to consume a fraction of time.
+However, such formulation is not suitable for general optimization
+problems.  For example, when you try to minimize the energy consumption
 by the elevators in Elevators domain, many actions would have zero-cost
 --- it does not consume electricity for either boarding or leaving the
 passenger, or moving the elevator down.
 
-As shown in the previous section, such domains pose a
-difficulty to the current heuristic planners since they have large plateau.
-Also, from the practical point of
+From the practical point of
 view, cost minimization domains would have wider interest compared to
 the simple runtime minimization.
+Also, as shown previously, such domains pose a
+difficulty to the current heuristic planners since they have large plateau.
 % 
 Therefore, in this paper, we modified various domains to have many
-zero-cost actions.  For example, elevators-up is a variation of
-Elevators domain which minimizes
+zero-cost actions in order to turn them into a cost minimization domains.
+For example, elevators-up is a variation of
+Elevators domain where the target is to minimize
 the energy consumption caused by ``up'' action, which moves the elevator
 up, and all other actions have zero-cost.  Modification was done in a
 practically reasonable manner in a sense of cost minimization. Most
 transportation-type domains are modified so that they use less
 fuel (Logistics-fuel etc.). Assembly-type domains are modified so that it minimizes the
-resource usage (floortile-ink minimizes ink usage, or Woodworking-cut
-minimizes wood usage).
-We call this set of domains as zerocost domains hereafter.
+resource usage (Floortile-ink minimizes ink usage, or Woodworking-cut
+minimizes wood usage). For nontrivial domains, we selected one action
+arbitrarily, and made other actions to have zero cost.
+We call this set of domains as \emph{zerocost domains} hereafter.
 
 % \todo[We also modify a same domain
 % in the different minimization criteria, in order to avoid the bias on a
@@ -435,7 +440,7 @@ We call this set of domains as zerocost domains hereafter.
 
 We plotted the size of plateau of the zerocost domains just like in
 \refig{plateau}. The trend of large plateau becomes universal among
-instances. In these cost-minimization problems, the search strategy within
+instances. Thus, in these cost-minimization problems, the search strategy within
 plateau becomes much more important than in the
 runtime-minimization problems.
 
