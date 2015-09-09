@@ -192,7 +192,7 @@ second-level tiebreaking.
 %% I removed \fd because it is not yet proposed at this point
 
 All planners are based on the latest Fast Downward code base, and all
-experiments are run using 30 minutes runtime cutoff with 2GB memory
+experiments are run using 5 minutes runtime cutoff with 2GB memory
 limit. Experiments were conducted on Xeon E5410@2.33GHz CPUs.
 Our experimental results include 28 standard benchmark domains with 1104
 problems.
@@ -214,14 +214,14 @@ Thus, we also show results for unmodified FD -- as expected, $[f,h,\fifo]$ domin
 
 \begin{table}[tb]
  \centering \relsize{-3}
- \input{tables/aaai16-30min/aaai16prelim3/1-1-basic-queues.tex}
- \input{tables/aaai16-30min/aaai16prelim3/1-1-basic-queues-noh.tex}
+ \input{tables/aaai16-30min-5min-cut/aaai16prelim3/1-1-basic-queues.tex}
+ \input{tables/aaai16-30min-5min-cut/aaai16prelim3/1-1-basic-queues-noh.tex}
  \caption{Experiments comparing the performance of \fifo and \lifo
  second-level tiebreaking, with (left) and without (right) the
  conventional first-level $h$-tiebreaking.  For the space reason, we
  omitted those domains whose results are the same (Full results are
  available in the supplemental material.) Each cell denotes the problem
- solved with 30 min, 2GB setting. \textbf{Boldface} denotes the case
+ solved with 5 min, 2GB setting. \textbf{Boldface} denotes the case
  where it achieved the best result among configurations.}
  \label{single-coverage}
 \end{table}
@@ -570,25 +570,15 @@ inherent LastDepth/FirstDepth behavior and not by \lifo or \fifo.
  \centering
  \relsize{-3}
  \input{tables/aaai16-robustnesscheck/aaai16prelim3_zerocost_2zerocost/1-4-all-and-sig-wilcox-remove-same.tex}
- %\input{tables/aaai16-30min/aaai16prelim3_zerocost_2zerocost/1-1-depth-queues.tex}
  \caption{Experiments comparing the coverages of 7 configurations. For
  the space reason, we omitted those domains whose results are the
  same. (Randomized configs are omitted when all seed variants yield the
  same results. Full results are available in the supplemental material.)
- Each cell denotes the problem solved with 30 min, 2GB
+ Each cell denotes the problem solved with 5 min, 2GB
  setting. \textbf{Boldface} denotes the case where it achieved the best
  result among configurations. Zerocost domains are named according to
  [original]-[name of nonzero action].}  \label{depth}
 \end{figure}
-
-%% obviously does not fit in the paper
-% \begin{figure}[tb]
-%  \centering
-%  \relsize{-3}
-%  \input{tables/aaai16-30min/aaai16prelim3_zerocost_2zerocost/1-1-depth-queues-noh.tex}
-%  \caption{Same experiments without first-level tiebreaking by $h$-value.}
-%  \label{depth-noh}
-% \end{figure}
 
 \subsection{Low-Overhead Portfolios for Combining Tie-Breaking Strategies}
 
