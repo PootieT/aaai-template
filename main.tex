@@ -2,22 +2,25 @@
 % Take extra care in avoiding ``expansion'' -- stick to ``evaluation''
 
 \begin{abstract}
+% this current version is intentionally ambiguous as possible
 Despite the recent improvements in admissible heuristic search techniques
-in classical planning, it is known that the the exponential growth of
-search plateau in A* is unavoidable even under the optimistic assumption.
- % 
-We investigate various existing myth on tiebreaking
-strategies and propose simple yet effective methods for improving the
-search performance within plateau.
- % 
- % 
- They do not depend on any particular heuristic, nor
- on multi-heuristic portfolio.
- They work even if the heuristic
- function no longer provides useful information.
- % Moreover, they do not even try to obtain any further information from
- % the domain.
- We empirically evaluate our strategies against state-of-the-art admissible planner.
+in classical planning, the exponential growth of
+the size of search plateaus in A* is unavoidable.
+We investigate tie-breaking strategies for A*, and propose simple yet effective methods for improving performance on domains with large serach plateaus.
+
+%%  % 
+%% We investigate various existing myth on tiebreaking
+%% strategies and propose simple yet effective methods for improving the
+%% search performance within plateau.
+%%  % 
+%%  % 
+%%  They do not depend on any particular heuristic, nor
+%%  on multi-heuristic portfolio.
+%%  They work even if the heuristic
+%%  function no longer provides useful information.
+%%  % Moreover, they do not even try to obtain any further information from
+%%  % the domain.
+%%  We empirically evaluate our strategies against state-of-the-art admissible planner.
 \end{abstract}
 
 \section{Introduction}
