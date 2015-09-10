@@ -142,16 +142,23 @@ In recent years, tie-breaking accoording to $h$-values has become ``folklore'' i
 that \astar achieves best performance when it breaks ties
 in favor of nodes with least h-cost'' \cite{hansen2007anytime}.
 \citeauthor{holte2010common} writes ``\astar breaks ties in favour
-of larger g values, as is most often done'' (note that since $f=g+h$, preferring large $g$ is equivalent to preferring smaller $h$).
+of larger g values, as is most often done'' \cite[note that since $f=g+h$,
+preferring large $g$ is equivalent to preferring smaller $h$]{holte2010common}.
 % \citeauthor{felner2011inconsistent} also assume ``ties are broken in
 % favor of low h-values'' in describing Bidirectional Pathmax for \astar.
-In their detailed survey/tutorial of efficient \astar implementations, \citeauthor{burns2012implementing} also break ties ``preferring high
-$g$.'' They further write: ``The reasoning is that the goal can be found more quickly in the final $f$ layer of search''. 
-Thus, tie-breaking according to $h$-values appears to be ubiquitous in practice.
+In their detailed survey/tutorial of efficient \astar implementations,
+\citeauthor{burns2012implementing} (\citeyear{burns2012implementing})
+also break ties ``preferring high $g$.''  They further write: ``The
+reasoning is that the goal can be found more quickly in the final $f$
+layer of search''.  Thus, tie-breaking according to $h$-values appears
+to be ubiquitous in practice.
 
-
-Although the standard practice of tie-breaking according to $h$ might be sufficient in some domains, further levels of tie-breaking (explicit or implicit) are required if multiple nodes can have the same $f$ and $h$ values.
-We are not aware of any work that explicitly mentions 2nd-level tie-breaking.
+Although the standard practice of tie-breaking according to $h$ might be
+sufficient in some domains, further levels of tie-breaking (explicit or
+implicit) are required if multiple nodes can have the same $f$ and
+$h$ values.
+%% we do, in Roger, Helmert
+% We are not aware of any work that explicitly mentions 2nd-level tie-breaking.
 While the survey of efficient \astar implementatins in \citeauthor{burns2012implementing} did not explicitly mention 2nd-level tie-breaking, their code first breaks ties according to $h$, and then breaks remaining ties according to a Last-In-First-Out (\lifo) policy (most recently generated nodes first).\footnote{https://github.com/eaburns/search}
 Although not documented, their choice of a \lifo 2nd-level tie-breaking policy appears to be a natural consequence of the fact that the \lifo policy can be trivially, efficiently implemented in their two-level bucket (vector) implementation of their OPEN list.
 In contrast, the current implementation of \sota \astar based planner Fast
