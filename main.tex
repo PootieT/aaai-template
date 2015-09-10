@@ -507,12 +507,15 @@ depth-based tiebreaking.
 
 \subsubsection{Evaluating Depth-based Tiebreaking}
 
-We evaluated the five, 3-level tie-breaking strategies.
+We evaluated five 3-level tie-breaking strategies and three 2-level
+tie-breaking strategies in all.
 %REDUNDANT? , i.e., $[f,h,depthStrategy,LFR]$, where the first-level tie-breaking is according to $h$ (break ties in favor of small $h$), the second-level strategy is based on depth and $depthStrategy \in \{\fd, \ld, \rd\}$, and the third level tie-breaking strategy $LFR \in \{\lifo, \fifo, \ro\}$.
 % 
-In addition to the 28 IPC benchmark domains with 1104 problems used in the previous set of experiments, we also added 16 \emph{zerocost} domains with 640 problems. 
-\refig{depth} shows the coverage results on benchmark domains and
-zerocost domains.
+In addition to the 35 IPC benchmark domains with 1104 problems used in
+the previous set of experiments, we added 29 zerocost domains with 640
+problems in this evaluation.  \refig{depth} shows the coverage results
+on benchmark domains and zerocost domains. For randomized strategies, we
+showed the mean and standard deviation of 10 individual runs.
 
 First, we compared $[f,h,\ld,\lifo]$ and $[f,h,\fd,\fifo]$
 with $[f,h,\lifo]$ and $[f,h,\fifo]$, respectively, in order to see
@@ -558,9 +561,9 @@ Finally, we answer two particular concerns regarding \lifo and \fifo
 final tiebreaking.  First, the performance of \lifo and \fifo could be
 affected by the action orderings. Also, using \lifo could affect the
 performance because of its efficient low-level memory access pattern.
-They are both rejected because the coverage of $[f,h,\ld,\lifo]$ ($=
-[f,h,\lifo]$) is not significantly different from $[f,h,\ld,\ro]$ ($294
-\in [303.5-8.9,303.5+8.9]$) despite the difference in the third-level
+They are both rejected because the coverage of $[f,h,\ld,\lifo]$
+($=[f,h,\lifo]$) is not significantly different from $[f,h,\ld,\ro]$
+($859 \in [863.5-8.9,863.5+8.9]$) despite the difference in the third-level
 tiebreaking. It means that the performance of $[f,h,\ld,\lifo]$ was not
 caused by the third-level \lifo, but instead by the second-level
 tiebreaking LastDepth.  Similarly, the bad performance of
