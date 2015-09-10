@@ -190,17 +190,17 @@ problems.
 We first compared two strategies $[f,h,\fifo]$, $[f,h,\lifo]$, which
 first breaks ties according to $h$, and then applies \fifo or \lifo
 second-level tie-breaking, respectively.
-% 
+\todo{can't this be removed?}
+Although the search behavior of $[f,h,\fifo]$ corresponds to the default behavior of Fast Downward, this implementation differs 
+from the original, unmodified code because we enabled caching of $h$-values, so that reopened nodes refer to cached $h$-values.\footnote{The current Fast Downward code disables $h$-caching because its current implementation is not compatible with multiple admissible heuristics.}
+Thus, we also show results for unmodified Fast Downward -- as expected, $[f,h,\fifo]$ dominates unmodified FD.
+
 The results for \astar using the LM-cut heuristic \cite{Helmert2009} are
 shown in \reftbl{single-coverage} (Left).
 Differences in coverage are observed in several domains.
 Due to the space limitation, we show only the domains
 where there was any difference. Full data is available in the
 supplemental material. \todo{probably better to show full results for this particular experiment}
-
-Although the search behavior of $[f,h,\fifo]$ corresponds to the default behavior of Fast Downward (FD), this implementation differs 
-from the original, unmodified FD code because we enabled caching of $h$-values, so that reopened nodes refer to cached $h$-values.\footnote{The current Fast Downward code disables $h$-caching because its current implementation is not compatible with multiple admissible heuristics.}
-Thus, we also show results for unmodified FD -- as expected, $[f,h,\fifo]$ dominates unmodified FD.
 
 \begin{table}[tb]
  \centering \relsize{-3}
@@ -363,7 +363,7 @@ problems.  For example, when you try to minimize the energy consumption
 by the elevators in Elevators domain, many actions would have zero-cost
 --- it does not consume electricity for either boarding or leaving the
 passenger, or moving the elevator down.
-
+% 
 From the practical point of
 view, cost minimization domains would have wider interest compared to
 the simple runtime minimization.
