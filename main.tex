@@ -564,19 +564,33 @@ inherent second-level FirstDepth, and not to the third-level \fifo.
 % exhausted the 2GB memory limit with those heuristics, and is less
 % informative compared to the result by LMcut.
 
-\begin{figure}[tb]
+\begin{table}[tb]
  \centering
  \relsize{-3}
  \input{tables/aaai16-robustnesscheck/aaai16prelim3_zerocost_2zerocost/1-4-all-and-sig-wilcox-remove-same.tex}
- \caption{Experiments comparing the coverages of 7 configurations. For
- the space reason, we omitted those domains whose results are the
- same. (Randomized configs are omitted when all seed variants yield the
- same results. Full results are available in the supplemental material.)
- Each cell denotes the problem solved with 5 min, 2GB
- setting. \textbf{Boldface} denotes the case where it achieved the best
- result among configurations. Zerocost domains are named according to
- [original]-[name of nonzero action].}  \label{depth}
-\end{figure}
+ \caption{Experiments comparing the coverages of 7 configurations.
+ Each cell shows the coverage of the domain solved with 5 min, 2GB
+ setting. Zerocost domains are named according to
+ [original]-[name of nonzero action].
+ For the space reason, we omitted those domains in which all coverages are
+ the same (deterministic configuration),
+ or did not pass the significance test under $p=0.05$ (randomized configuration).
+ Full results are available in the supplemental material.
+}  \label{depth}
+\end{table}
+
+\begin{table}[tb]
+ \centering \relsize{-3}
+ \input{tables/aaai16-robustnesscheck/aaai16prelim3_zerocost_2zerocost/1-7-rx-and-sig-wilcox-remove-same.tex}
+ \caption{Comparison of the coverages of basic randomized queue with or
+ without depth tiebreaking, $[f,h,\ro]$ and $[f,h,\rd,\ro]$. Each cell
+ shows the average coverage of the domain obtained by 10 runs with 5
+ min, 2GB setting.  For the space reason, we omitted those domains in
+ which the results are not significantly different under Wilcoxon test
+ with $p=0.05$. Full results are available in the supplemental material.
+ }  \label{r-vs-rd-random}
+\end{table}
+
 
 \section{Related Work}
 \label{sec-4}
