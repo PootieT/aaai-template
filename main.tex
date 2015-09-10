@@ -1,7 +1,7 @@
 
 % Take extra care in avoiding ``expansion'' -- stick to ``evaluation''
 
-\todo{Tie-breaking or tiebreaking? Tie-Breaking.}
+\todo{Tie-breaking or tie-breaking? Tie-Breaking.}
 \todo{Inadmissible or non-admissible? Inadmissible.}
 \todo{last frontier or final frontier?}
 
@@ -10,10 +10,10 @@
 Despite the recent improvements in admissible heuristic search techniques
 in classical planning, the exponential growth of
 the size of search plateaus in A* is unavoidable.
-We investigate tie-breaking strategies for A*, and propose simple yet effective methods for improving performance on domains with large serach plateaus.
+We investigate tie-breaking strategies for A*, and propose simple yet effective methods for improving performance on domains with large search plateaus.
 
 %%  % 
-%% We investigate various existing myth on tiebreaking
+%% We investigate various existing myth on tie-breaking
 %% strategies and propose simple yet effective methods for improving the
 %% search performance within plateau.
 %%  % 
@@ -72,8 +72,8 @@ In such domains, the behavior of \astar on the last frontier is critical -- the 
 
 In this paper, we focus on the \emph{tie-breaking} policy used by
 \astar, which selects a node to expand among nodes with the same
-$f$-cost.  Since \astar expandes all nodes with $f$-cost less than $f^*$
-before expanding any nodes with cost $f^*$, the tie-breaking poicy only
+$f$-cost.  Since \astar expands all nodes with $f$-cost less than $f^*$
+before expanding any nodes with cost $f^*$, the tie-breaking policy only
 affects performance when considering the last frontier (nodes with cost
 $f^*$).  \todo[Although there has not been much previous \emph{in-depth} work
 on tie-breaking policies]{mention vallati and ``Merrier''}, it is widely believed that among nodes with
@@ -82,49 +82,49 @@ nodes with smaller $h$ values should be expanded first.  While this is a
 useful rule of thumb in many domains, it turns out that tie-breaking
 requires more careful consideration, particularly for problems with
 large \emph{plateaus} -- regions of the search space with the same $f$-cost.
-\emph{Note that all tiebreaking strategies investigated in this paper
+\emph{Note that all tie-breaking strategies investigated in this paper
 maintain the admissibility of the search because it only affects the node expansion
 order among the nodes with the same $f$-cost.}
 
 We first empirically clarify two facts regarding the
-existing tiebreaking strategy for \astar.
+existing tie-breaking strategy for \astar.
 % 
 First, in implementing the open list of \astar, priority queue which holds
 \lifo-buckets for each $f$ tends to be more efficient than that holds \fifo-buckets.
 % 
-Second, with \lifo-based implementation, $h$-based tiebreaking which
-frequently appears in the heuristic search literatures have little
+Second, with \lifo-based implementation, $h$-based tie-breaking which
+frequently appears in the heuristic search literature have little
 impact on the performance.
 % 
 %% Remove?
 % \todo[
-% Third, the \lifo-based bucket implementation and $h$-based tiebreaking
+% Third, the \lifo-based bucket implementation and $h$-based tie-breaking
 % both share the greedy search pattern within the plateau of the
 % search space.]{this is not shown yet. how to show it? xy-plot of the node
 % evaluation order?}
 Through these experiments, we points out a hidden bias in the current set of
-benchmark domains, and show the importance of tiebreaking strategy in
+benchmark domains, and show the importance of tie-breaking strategy in
 the more practical cost-minimization problems.
 
 Next, in order to solve those cost-minimization problems,
-we propose three tiebreaking methods
+we propose three tie-breaking methods
 based on the \emph{depth} within the plateau.
 We show that one strategies called RandomDepth provides a significant performance improvement
-compared to the other tiebreaking strategies with the same heuristic function.
+compared to the other tie-breaking strategies with the same heuristic function.
 
-Also, we show the robustness of our tiebreaking strategies
+Also, we show the robustness of our tie-breaking strategies
 against a particular action ordering in the domain definition.
 Our the depth-based tie-breaking is a part of multi-level tie-breaking strategy,
 and we show that the notion of depth is the principal factor of the performance.
 At the same time, we show that 
-the performance of above \lifo tiebreaking can be explained by its
+the performance of above \lifo tie-breaking can be explained by its
 depth-first strategy, and the other characteristics of \lifo such as
 machine-level efficiency have little effect on the performance.
 
 \section{Tie-breaking Strategies in \astar}
 
 %Aside from the heuristic function, most best-first family of search
-%algorithms, including \astar, IDA* and so on, have a tiebreaking criteria which is used
+%algorithms, including \astar, IDA* and so on, have a tie-breaking criteria which is used
 %when two nodes have the same $f$ value.
 
 If multiple nodes with the same $f$-cost are possible, \astar
@@ -171,18 +171,18 @@ the work by \cite{RogerH10} (based on Fast-Downward), uses
 a First-In-First-Out (\fifo) second-level tie-breaking policy. We could
 not find any explanation for this choice either.
 
-%\citeauthor{Korf1985depth} uses $h$-based tiebreaking in the context of WA*
+%\citeauthor{Korf1985depth} uses $h$-based tie-breaking in the context of WA*
 %\cite{korf1993linear}.  
 % ** not sure how/where to put this..
 
 \subsection{Reevaluating the Existing Strategies}
 
 
-We tested various tiebreaking strategies throughout this paper.  In the
+We tested various tie-breaking strategies throughout this paper.  In the
 following sections, we use a convenient array-based notation of a
-combination of tiebreaking strategy.  For example, $[f,h,\fifo]$ denotes
-standard \astar with $h$-based first-level tiebreaking and \fifo
-second-level tiebreaking.
+combination of tie-breaking strategy.  For example, $[f,h,\fifo]$ denotes
+standard \astar with $h$-based first-level tie-breaking and \fifo
+second-level tie-breaking.
 %% I removed \fd because it is not yet proposed at this point
 
 All planners are based on the latest Fast Downward code base, and all
@@ -211,8 +211,8 @@ supplemental material. \todo{probably better to show full results for this parti
  \input{tables/aaai16-30min-5min-cut/aaai16prelim3/1-1-basic-queues.tex}
  \input{tables/aaai16-30min-5min-cut/aaai16prelim3/1-1-basic-queues-noh.tex}
  \caption{Experiments comparing the performance of \fifo and \lifo
- second-level tiebreaking, with (left) and without (right) the
- conventional first-level $h$-tiebreaking.  For the space reason, we
+ second-level tie-breaking, with (left) and without (right) the
+ conventional first-level $h$ tie-breaking.  For the space reason, we
  omitted those domains whose results are the same (Full results are
  available in the supplemental material.) Each cell denotes the problem
  solved with 5 min, 2GB setting. \textbf{Boldface} denotes the case
@@ -222,17 +222,17 @@ supplemental material. \todo{probably better to show full results for this parti
 
 \refig{f-h-eval} gives us a
 more fine-grained analysis by comparing the number of node evaluation
-(computations of \lmcut) on different tiebreakings.
+(computations of \lmcut) on different tie-breakings.
 
 \begin{figure}[tb]
  \centering \relsize{-3}
  \includegraphics{tables/aaai16-30min/aaai16prelim3/evaluated-lmcut_ff-lmcut_lf.pdf}
  \caption{Comparisons of \# of Evaluations between simple \lifo and
- \fifo second-level tiebreaking, with first-level $h$-tiebreaking. Each
+ \fifo second-level tie-breaking, with first-level $h$ tie-breaking. Each
  line shows $\times 2,4,6\ldots$ boundary.}  \label{f-h-eval}
 \end{figure}
 
-According to \reftbl{single-coverage} (left) with $h$-tiebreaking, \lifo
+According to \reftbl{single-coverage} (left) with $h$ tie-breaking, \lifo
 mostly outperforms \fifo, but \fifo performed best in Airport.
 \refig{f-h-eval} also shows that the difference in the number of nodes
 evaluated can sometimes be larger than a factor of 10, especially in
@@ -242,7 +242,7 @@ Openstacks and Cybersec.
 
 Next, we investigated whether $h$-based, first-level tie-breaking is necessary.
 In \reftbl{single-coverage} (right), which shows the results when  first-level
-tiebreaking based on $h$ is disabled, $[f, \lifo]$, which simply breaks ties among nodes with the same $f$-cost by expanding most recently generated nodes first (first suggested in \cite{korf1985depth}),
+tie-breaking based on $h$ is disabled, $[f, \lifo]$, which simply breaks ties among nodes with the same $f$-cost by expanding most recently generated nodes first (first suggested in \cite{korf1985depth}),
 clearly dominates $[f, \fifo]$.
 
 Interestingly, the performance of the $[f, \lifo]$ strategy
@@ -261,7 +261,7 @@ plateau, it also means $h$ decrease quickly, resulting in the similar behavior.
 % Random order always dominates the others}.
 
 % However, there are noticeable
-% performance difference caused by these different tiebreaking strategies.
+% performance difference caused by these different tie-breaking strategies.
 
 \subsubsection{Plateaus and Tie-Breaking}
 
@@ -280,10 +280,10 @@ relying solely on the tie-breaking criterion, in order to
 find a goal node.
 %, i.e., the problems where the
 %heuristic function is not informative and the planner relies heavily on
-%the tiebreaking criteria.
+%the tie-breaking criteria.
 
 \refig{plateau} plots the size of the final search plateau on 1104 IPC
-benchmark instances \emph{with $h$-tiebreaking}.
+benchmark instances \emph{with $h$ tie-breaking}.
 The $y$-axis
 represents the number of nodes with $[f,h]=[f^*,0]$, and the $x$-axis represents the total
 number of nodes with $f\leq f^*$.
@@ -291,12 +291,12 @@ Clearly, in some domains such as Openstacks and Cybersec, the planner can spend 
 searching the final plateau.
 It also
 means that these domains have very large variance in the runtime caused
-by the difference in second-level tiebreakings. 
+by the difference in second-level tie-breakings. 
 
 %% Removed
-% \refig{fig:plateau-noh} in the introduction is the same figure without $h$-tiebreaking.
+% \refig{fig:plateau-noh} in the introduction is the same figure without $h$ tie-breaking.
 % As expected, when the
-% $h$-based tiebreaking is disabled in \refig{fig:plateau-noh}, much
+% $h$-based tie-breaking is disabled in \refig{fig:plateau-noh}, much
 % larger effort could be spent on the final plateau.
 
 %  The size of the bucket does not change
@@ -444,14 +444,14 @@ runtime-minimization problems.
  \centering \relsize{-3}
   \includegraphics{tables/aaai16-frontier/zerocost/lmcut_frontier-front.pdf}
   \caption{Same plot as \refig{plateau}, but from the zerocost
-  domains. Even with $h$-tiebreaking, zerocost domains force the planner
+  domains. Even with $h$ tie-breaking, zerocost domains force the planner
   to search much larger plateau.}
  \label{plateau-zerocost}
 \end{figure}
 
 
 
-\subsection{Depth-based Tiebreaking}
+\subsection{Depth-based Tie-Breaking}
 
 In order to solve problems with large final plateaus, the
 planner needs to run an efficient knowledge-free search within the
@@ -461,7 +461,7 @@ of steps from the entrance of the plateau.
 Given a node $n$, if its current parent $\parent{n}$ is from the other
 plateau, i.e., $\parent{n}$ has a
 different $f$-value, or different $h$-value used for the first
-tiebreaking, then $\depth{n} = 0$. Nodes with $\depth{n} = 0$ are called
+tie-breaking, then $\depth{n} = 0$. Nodes with $\depth{n} = 0$ are called
 the \emph{entrance} of the plateau.
 If $n$ and $\parent{n}$ are in the same plateau and share the same $f$ and $h$,
 $\depth{n}$ is defined as $\depth{\parent{n}} + 1$.
@@ -489,27 +489,27 @@ This is a case
 where RandomDepth is the safest practice: 
 Choosing the random depth will balance the exploration and exploitation.
 
-\subsubsection{Third-Level Tiebreaking}
+\subsubsection{Third-Level Tie-Breaking}
 
 Since there can be multiple nodes with the same $f$, $h$ and depth,
 a further tie-breaking criterion is necessary to select among nodes in the same depth bucket.
-There are 3 possibilities in implementing this third-level tiebreaking:
+There are 3 possibilities in implementing this third-level tie-breaking:
 \fifo, \lifo and Random Order (\ro), which
 randomly selects an element from the depth bucket selected by the depth-based tie-breaking.
 
 Among \fifo, \lifo and \ro, the natural policy is Random Order.
-This is because the effectiveness of the third-level tiebreaking behavior
+This is because the effectiveness of the third-level tie-breaking behavior
 is affected by the accidental bias in action ordering in the PDDL domain
 definition.  Recent work \cite{vallati2015effective} showed that the
 planner performance is greatly affected by changing the action ordering
-(and also variable ordering, but it is irrelevant to the tiebreaking behavior). 
-However, finding the best third-level tiebreaking is not the scope of this paper.
+(and also variable ordering, but it is irrelevant to the tie-breaking behavior). 
+However, finding the best third-level tie-breaking is not the scope of this paper.
 Thus, focusing on \ro and assess its expected/average
 performance is the most reasonable practice to understand the behavior of second-level,
-depth-based tiebreaking.
+depth-based tie-breaking.
 
 
-\subsubsection{Evaluating Depth-based Tiebreaking}
+\subsubsection{Evaluating Depth-based Tie-Breaking}
 
 We evaluated five 3-level tie-breaking strategies and three 2-level
 tie-breaking strategies in all.
@@ -554,7 +554,7 @@ the populations in which normal distribution cannot be assumed.
 
 The 3 rightmost columns in \reftbl{depth} show the $p$ values of the
 test. The results depend on the domains, but in many situations we
-observed a significant difference among 3 second-level tiebreaking, and
+observed a significant difference among 3 second-level tie-breaking, and
 RandomDepth dominated the others. Although in most domains LastDepth and
 RandomDepth behave similar, the performance of RandomDepth in some
 domains are noticeable (e.g., Cybersec, Woodworking-cut). Also, the
@@ -565,7 +565,7 @@ FirstDepth is dominated by the others, except in scanalyzer-analyse.
 \todo{Any idea to improve this explanation?}
 % removed \fifo
 Finally, we answer two following concerns regarding \lifo final-level
-tiebreaking criteria which we re-evaluated in the earlier sections and
+tie-breaking criteria which we re-evaluated in the earlier sections and
 now appear in $[f,h,\ld,\lifo]$ (and $[f,h,\lifo]$, which is basically a
 same algorithm): First, the performance of \lifo could be affected by
 the action orderings.
@@ -577,13 +577,13 @@ They are both rejected because the
 coverage of $[f,h,\ld,\lifo]$ (and $[f,h,\lifo]$) is not significantly
 different from $[f,h,\ld,\ro]$, i.e.,
 $859,857 \in [863.5-8.9,863.5+8.9]$,
-despite the difference in the third-level tiebreaking (\lifo vs \ro).
+despite the difference in the third-level tie-breaking (\lifo vs \ro).
 % 
 It means that the
 performance of $[f,h,\ld,\lifo]$ was not caused by the third-level
-\lifo, but instead by the second-level tiebreaking LastDepth.
+\lifo, but instead by the second-level tie-breaking LastDepth.
 Besides, this problem is not important now that RandomDepth
-is outperforming LastDepth-based tiebreaking strategy.
+is outperforming LastDepth-based tie-breaking strategy.
 % 
 With the similar logic, we can claim that the bad performance of
 $[f,h,\fd,\fifo]$ and $[f,h,\fifo]$ can be attributed to its the
@@ -595,7 +595,7 @@ inherent second-level FirstDepth, and not to the third-level \fifo.
 % abstraction-based heuristics. We also added the results in the figures
 % in the supplemental materials. Above trends are mostly consistent when
 % M\&S and blind heuristics are used, regardless of first-level
-% tiebreaking by $h$-value. However, we note that many instances quickly
+% tie-breaking by $h$-value. However, we note that many instances quickly
 % exhausted the 2GB memory limit with those heuristics, and is less
 % informative compared to the result by LMcut.
 
@@ -618,7 +618,7 @@ inherent second-level FirstDepth, and not to the third-level \fifo.
  \centering \relsize{-3}
  \input{tables/aaai16-robustnesscheck/aaai16prelim3_zerocost_2zerocost/1-7-rx-and-sig-wilcox-remove-same.tex}
  \caption{Comparison of the coverages of basic randomized queue with or
- without depth tiebreaking, $[f,h,\ro]$ and $[f,h,\rd,\ro]$. Each cell
+ without depth tie-breaking, $[f,h,\ro]$ and $[f,h,\rd,\ro]$. Each cell
  shows the average coverage of the domain obtained by 10 runs with 5
  min, 2GB setting.  For the space reason, we omitted those domains in
  which the results are not significantly different under Wilcoxon test
@@ -626,19 +626,19 @@ inherent second-level FirstDepth, and not to the third-level \fifo.
  }  \label{r-vs-rd-random}
 \end{table}
 
-\subsubsection{Do the Action Orderings Affect the Performance of Tiebreaking?}
+\subsubsection{Do the Action Orderings Affect the Performance of Tie-Breaking?}
 
-Finally, we show that the performance of our depth-based tiebreaking is
+Finally, we show that the performance of our depth-based tie-breaking is
 not affected by the bias introduced in the action orderings in the PDDL
 domain definition.  We created 3 individual sets of domains in which the
-original names of action schemas are uglyfied into a random name. This is because
+original names of action schema are uglyfied randomly. This is because
 the Fast Downward code base has a preprocessing
 step which sorts the action schemas according to the dictionary
 order, and it affects the order of the applicable actions of each search node.
 Each set of domains contains all of the benchmark and zerocost
 domains.
 
-We tested our most successful tiebreaking method $[f,h,\rd,\ro]$ on each
+We tested our most successful tie-breaking method $[f,h,\rd,\ro]$ on each
 set of randomized domains, three times each with different random seeds,
 resulting in 9 runs in total.
 
@@ -705,7 +705,7 @@ The PLUSONE\footnote{This term is used on the Fast Downward website.}
 cost-type is a non-admissible search technique in the LAMA planner
 \cite{richter2010lama} which increases every action costs by 1.
 By eliminating zero-cost actions, this has the effect similar to our
-FirstDepth tiebreaking.
+FirstDepth tie-breaking.
 %Using PLUSONE, three successive
 %applications of zero-cost operators have cost 3, and two
 %applications have cost 2, and smaller cost is preferred, just as
@@ -714,14 +714,14 @@ This technique explicitly targeted zero-cost actions observed in Openstacks,
 and resulted in a significantly better performance in IPC-6 satisficing track.\todo{citation? -- add specific page+quotation in comment}
 % There's a long discussion of Openstacks in \cite{richter2010lama}, p.167-169, but I can't find PLUSONE anywhere. Maybe it's called something else in the paper?  Maybe \richter2010lama is the wrong citation??
 
-The major difference of our depth-based tiebreaking from PLUSONE
-strategy is twofold.  First, depth-based tiebreaking is admissible,
+The major difference of our depth-based tie-breaking from PLUSONE
+strategy is twofold.  First, depth-based tie-breaking is admissible,
 because unlike PLUSONE, action costs are not modified.  Also, \emph{we
 do not always favor smaller depth over larger depth}. LAMA treats the
 increased cost as the part of sorting criteria and always prefers
 smaller cost, much like in our FirstDepth strategy.  However, FirstDepth
 strategy is the worst strategy in our experiments and the best
-performing depth-based tiebreaking methods are LastDepth and RandomDepth
+performing depth-based tie-breaking methods are LastDepth and RandomDepth
 in our experiments, and they do not prefer the smaller depth.
 
 % It's not clear what these techniques have in common, except that they are all orthogonal to heuristics,
@@ -753,7 +753,7 @@ in our experiments, and they do not prefer the smaller depth.
 %% % Although in some particular
 %% % case they may be able to return a perfect heuristics, they are still not
 %% % always a perfect heuristics, implying that the plateau is unavoidable.
-%% In contrast, our tiebreaking techniques aims specifically at the case
+%% In contrast, our tie-breaking techniques aims specifically at the case
 %% where the plateau is encountered and the planners are forced to run a
 %% knowledge-free search.
 
@@ -772,9 +772,9 @@ by object reordering is due to the impact of the tie-breaking,
 however it is not clear that the analysis can be
 directly applicable to the admissible planning.
 We avoided the effect of action orderings by using the randomized third
-tiebreakings.
+tie-breakings.
 In contrast, we continued to use the variable ordering in the original domains
-because the effect of variable ordering is irrelevant to the tiebreaking
+because the effect of variable ordering is irrelevant to the tie-breaking
 criteria.
 
 \section{Conclusion}
