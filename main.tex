@@ -719,16 +719,27 @@ criteria.
 
 \section{Conclusion}
 
-In this paper, we proposed two novel tie-braking methods for the admissible search using \astar. We empirically showed that they improve the performance on various domains, and they are heuristic-agnostic improvements. We showed that they have a significant impact on the final step of the search in large plateau.
+In this paper, we investigated the exisiting myth about the tie breaking
+strategy of admissible search using \astar, and proposed a novel
+depth-based tie-braking method which improves planner's performance in various
+cost-minimization domains.
+We showed that
+our method is a heuristic-agnostic improvement which have a significant
+impact on the search behavior in a large search plateau.
+It also avoids the effect of action ordering in the domain definition,
+providing a robust behavior.
+
  % when the distribution of optimal solutions is not uniform within the open list.
 % We also showed that this nonuniform distribution still appears when we have almost-perfect % heuristics.
 
-Our method differs from the pruning techniques because we actually
-do not prune any states, nor from the other general improvements to the
-heuristic accuracy because we just change the evaluation order within the
-same $f$, yet it address the fundamental problems in the limitation of
-heuristic forward search.  Future work includes a development of learning
-technique for adaptively altering the search behavior in the plateau.
+Our method differs from the pruning techniques because we do not prune
+any states, nor from the other general improvements to the heuristic
+accuracy because we just change the evaluation order within the same
+$f$, yet it address the fundamental problems in the heuristic forward
+search. 
+% 
+Future work includes a development of learning technique for
+adaptively altering the search behavior in the plateau.
 
 
 
