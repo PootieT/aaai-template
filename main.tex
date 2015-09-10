@@ -44,9 +44,10 @@ nodes with $f(n) < f^*$, where $f^*$ is the cost of the optimal solution.
 %All nodes with $f(n) = k$ are expanded before any node with $f(n) > k$ are expanded.
 %Thus, after all nodes with $f(n) < f^*$ have been expanded, 
 \astar expands \emph{some} of the nodes with $f(n) = f^*$, and never expands a node with $f(n) > f^*$.
-Thus, the \emph{effective search space of \astar}, $N$, is the set of nodes with 
+Thus, the \emph{effective search space of \astar} is the set of nodes with 
 $f(n) \leq f^*$, and
-much of the work in the AI search and planning literature  has focused on reducing the size of $N$ by
+much of the work in the AI search and planning literature  has focused
+on reducing the size of this effective search space by
 developing more accurate, admissible heuristic functions.
 
 In many problems, the size of the \emph{last frontier}, the set of nodes with $f(n)=f^*$, accounts for a significant portion of $A$.
@@ -84,7 +85,7 @@ maintain the admissibility of the search because it only affects the node expans
 order among the nodes with the same $f$-cost.}
 
 We first empirically clarify two facts regarding the
-existing tiebreaking strategy for \astar as follows.
+existing tiebreaking strategy for \astar.
 % 
 First, in implementing the open list of \astar, priority queue which holds
 \lifo-buckets for each $f$ tends to be more efficient than that holds \fifo-buckets.
@@ -128,7 +129,7 @@ If multiple nodes with the same $f$-cost are possible, \astar
 must implement some tie-breaking policy (either
 explicitly or implicitly) in order to select from among these nodes.
 The early literature on heuristic search seems to have been mostly agnostic on the issue of tie-breaking.
-The original paper proposing \astar paper, as well as Nilsson's
+The original paper proposing \astar, as well as Nilsson's
 subsequent textbook states: ``Select the open node $n$ whose value $f$
 is smallest. Resolve ties arbitrarily, but always in favor of any [goal
 node]'' \cite[p.102 Step 2]{hart1968formal} \cite[p.69]{Nilsson71}.
@@ -136,7 +137,7 @@ node]'' \cite[p.102 Step 2]{hart1968formal} \cite[p.69]{Nilsson71}.
 % since goal nodes are the special case where $h=0$,
 % they make no further metion of tie-breaking.
 Pearl's seminal textbook on search specifies that best-first search should ``break ties arbitrarily'' (\citeyear{pearl1984heuristics}, p.48, Step 3), but does not specifically mention tie-breaking for \astar.
-Interestingly, in his analysis of IDA*, Korf mentions that ``If \astar employs the tie-breaking rule of 'most-recently generated', it must also expand the same nodes [as IDA*]'' (\citeyear{korf1985depth}) -- this last-in-first-out ordering is the first explicit mention we found of a tie-breaking policy not based on $h$.
+Interestingly, in his analysis of IDA*, Korf mentions that ``If \astar employs the tie-breaking rule of 'most-recently generated', it must also expand the same nodes [as IDA*]'' (\citeyear{korf1985depth}) -- this Last-In-First-Out ordering is the first explicit mention we found of a tie-breaking policy not based on $h$.
 
 In recent years, tie-breaking accoording to $h$-values has become ``folklore'' in the search community.
 \citeauthor{hansen2007anytime} state that ``It is well-known 
@@ -156,13 +157,16 @@ We are not aware of any work that explicitly mentions 2nd-level tie-breaking.
 While the survey of efficient \astar implementatins in \citeauthor{burns2012implementing} did not explicitly mention 2nd-level tie-breaking, their code first breaks ties according to $h$, and then breaks remaining ties according to a Last-In-First-Out (\lifo) policy (most recently generated nodes first).\footnote{https://github.com/eaburns/search}
 Although not documented, their choice of a \lifo 2nd-level tie-breaking policy appears to be a natural consequence of the fact that the \lifo policy can be trivially, efficiently implemented in their two-level bucket (vector) implementation of their OPEN list.
 In contrast, the current implementation of \sota \astar based planner Fast
-Downward \cite{Helmert2006}\footnote{http://www.fast-downward.org} uses a First-In-First-Out (\fifo) second-level tie-breaking policy. We could not find any documentation for this choice. 
+Downward \cite{Helmert2006}\footnote{http://www.fast-downward.org}, and
+the work by \cite{RogerH10} (based on Fast-Downward), uses
+a First-In-First-Out (\fifo) second-level tie-breaking policy. We could
+not find any explanation for this choice either.
 
 %\citeauthor{Korf1985depth} uses $h$-based tiebreaking in the context of WA*
 %\cite{korf1993linear}.  
 % ** not sure how/where to put this..
 
-\subsection{Reevaluating the Strategies}
+\subsection{Reevaluating the Existing Strategies}
 
 
 We tested various tiebreaking strategies throughout this paper.  In the
@@ -175,7 +179,7 @@ second-level tiebreaking.
 All planners are based on the latest Fast Downward code base, and all
 experiments are run using 5 minutes runtime cutoff with 2GB memory
 limit. Experiments were conducted on Xeon E5410@2.33GHz CPUs.
-Our experimental results include 28 standard benchmark domains with 1104
+Our experimental results include 35 standard benchmark domains with 1104
 problems.
 
 We first compared two strategies $[f,h,\fifo]$, $[f,h,\lifo]$, which
@@ -207,7 +211,7 @@ Thus, we also show results for unmodified FD -- as expected, $[f,h,\fifo]$ domin
  \label{single-coverage}
 \end{table}
 
-\refig{f-h-eval} also gives us a
+\refig{f-h-eval} gives us a
 more fine-grained analysis by comparing the number of node evaluation
 (computations of \lmcut) on different tiebreakings.
 
@@ -359,10 +363,10 @@ From the practical point of
 view, cost minimization domains would have wider interest compared to
 the simple runtime minimization.
 Also, as shown previously, such domains pose a
-difficulty to the current heuristic planners since they have large plateau.
-% 
+difficulty to the current heuristic planners due to their large plateaus.
+
 Therefore, in this paper, we modified various domains to have many
-zero-cost actions in order to turn them into a cost minimization domains.
+zero-cost actions in order to turn them into cost minimization domains.
 For example, elevators-up is a variation of
 Elevators domain where the target is to minimize
 the energy consumption caused by ``up'' action, which moves the elevator
@@ -508,7 +512,7 @@ with $[f,h,\lifo]$ and $[f,h,\fifo]$, respectively, in order to see
 the extra cost of managing the depth-based buckets.
 The node evaluation order of $[f,h,\fd,\fifo]$ and $[f,h,\ld,\lifo]$
 are exactly the same as $[f,h,\fifo]$ and $[f,h,\lifo]$.
-This can be described as follows:
+This is because:
 (1) $[f,h,\lifo]$ expands the most recently evaluated/inserted
 states, and (2) the depth increases monotonically,
 thus (3) $[f,h,\lifo]$ always expands the largest depth. (Similar logic
@@ -518,7 +522,7 @@ applies to $[f,h,\fifo]$.)
 % depth-based buckets.
 As expected, the performances of $[f,h,\ld,\lifo]$ and
 $[f,h,\fd,\fifo]$ are slightly worse than $[f,h,\lifo]$ and
-$[f,h,\fifo]$ due to the cost of managing the depth-based buckets.
+$[f,h,\fifo]$, respectively, due to the cost of managing the depth-based buckets.
 
 Next, we compared the performance of 3 configurations.
 They are $[f,h,\fd,\ro]$, $[f,h,\ld,\ro]$, $[f,h,\rd,\ro]$: Each using
@@ -531,7 +535,7 @@ section).
 Since these configurations contain a randomized element, we run 10
 experiments with different random seeds for each configuration and
 tested the significance of the coverage difference with Wilcoxon test,
-which does not assume a normal distribution.  The rightmost columns in
+which does not assume a normal distribution.  The 4 rightmost columns in
 \reftbl{depth} show the $p$ values of the test. The results depend on
 the domains, but in many situations we observed a significant difference
 among 3 second-level tiebreaking. From the results, RandomDepth
