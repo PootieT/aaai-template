@@ -517,9 +517,10 @@ tie-breaking strategies in all.
 % 
 In addition to the 35 IPC benchmark domains with 1104 problems used in
 the previous set of experiments, we added 29 zerocost domains with 640
-problems in this evaluation.  \refig{depth} shows the coverage results
+problems in this evaluation.  \reftbl{depth} shows the coverage results
 on benchmark domains and zerocost domains. For randomized strategies, we
-showed the mean and standard deviation of 10 individual runs.
+showed the mean and the standard deviation of the coverages obtained by
+10 individual runs.
 
 First, we compared $[f,h,\ld,\lifo]$ and $[f,h,\fd,\fifo]$
 with $[f,h,\lifo]$ and $[f,h,\fifo]$, respectively, in order to see
@@ -545,34 +546,50 @@ the depth-based 2nd-level tie-breaking criterion, and finally,
 \ro as the 3rd-level criterion, in order to
 avoid the bias caused by the action orderings (as stated in the previous
 section).
-
 Since these configurations contain a randomized element, we run 10
 experiments with different random seeds for each configuration and
-tested the significance of the coverage difference with Wilcoxon test,
-which does not assume a normal distribution.  The 4 rightmost columns in
-\reftbl{depth} show the $p$ values of the test. The results depend on
-the domains, but in many situations we observed a significant difference
-among 3 second-level tiebreaking. From the results, RandomDepth
-dominated the others. Although in most domains LastDepth and RandomDepth
-behave similar, the performance of RandomDepth in some domains are
-noticeable (e.g., cybersec, woodworking-cut). Also, the standard
-deviation of the coverage results of RandomDepth is smaller than that
-of LastDepth, indicating the robustness of RandomDepth.
-FirstDepth is dominated by the others, except in
-scanalyzer-analyse.
+tested the significance of the difference of the mean coverage with Wilcoxon test,
+a non-parametric significance testing method applicable to
+the populations in which normal distribution cannot be assumed.
 
-Finally, we answer two particular concerns regarding \lifo and \fifo
-final tiebreaking.  First, the performance of \lifo and \fifo could be
-affected by the action orderings. Also, using \lifo could affect the
-performance because of its efficient low-level memory access pattern.
-They are both rejected because the coverage of $[f,h,\ld,\lifo]$
-($=[f,h,\lifo]$) is not significantly different from $[f,h,\ld,\ro]$
-($859 \in [863.5-8.9,863.5+8.9]$) despite the difference in the third-level
-tiebreaking. It means that the performance of $[f,h,\ld,\lifo]$ was not
-caused by the third-level \lifo, but instead by the second-level
-tiebreaking LastDepth.  Similarly, the bad performance of
+The 3 rightmost columns in \reftbl{depth} show the $p$ values of the
+test. The results depend on the domains, but in many situations we
+observed a significant difference among 3 second-level tiebreaking, and
+RandomDepth dominated the others. Although in most domains LastDepth and
+RandomDepth behave similar, the performance of RandomDepth in some
+domains are noticeable (e.g., Cybersec, Woodworking-cut). Also, the
+standard deviation of the coverage results of RandomDepth is smaller
+than that of LastDepth, indicating the robustness of RandomDepth.
+FirstDepth is dominated by the others, except in scanalyzer-analyse.
+
+\todo{Any idea to improve this explanation?}
+% removed \fifo
+Finally, we answer two following concerns regarding \lifo final-level
+tiebreaking criteria which we re-evaluated in the earlier sections and
+now appear in $[f,h,\ld,\lifo]$ (and $[f,h,\lifo]$, which is basically a
+same algorithm): First, the performance of \lifo could be affected by
+the action orderings.
+Second, using \lifo
+could benefit from its efficient low-level memory access pattern (high
+probability of hitting the cache) and its performance may not
+corresponds to the search efficiency.
+They are both rejected because the
+coverage of $[f,h,\ld,\lifo]$ (and $[f,h,\lifo]$) is not significantly
+different from $[f,h,\ld,\ro]$, i.e.,
+$859,857 \in [863.5-8.9,863.5+8.9]$,
+despite the difference in the third-level tiebreaking (\lifo vs \ro).
+% 
+It means that the
+performance of $[f,h,\ld,\lifo]$ was not caused by the third-level
+\lifo, but instead by the second-level tiebreaking LastDepth.
+Besides, this problem is not important now that RandomDepth
+is outperforming LastDepth-based tiebreaking strategy.
+% 
+With the similar logic, we can claim that the bad performance of
 $[f,h,\fd,\fifo]$ and $[f,h,\fifo]$ can be attributed to its the
 inherent second-level FirstDepth, and not to the third-level \fifo.
+%% Unfortunately, 829,828 is not \in 816.7 +- 2.2.
+%% this can be changed if we rerun _random with O(1) random deletion.
 
 % Another issue in this result is the lack of analysis on
 % abstraction-based heuristics. We also added the results in the figures
@@ -592,7 +609,7 @@ inherent second-level FirstDepth, and not to the third-level \fifo.
  [original]-[name of nonzero action].
  For the space reason, we omitted those domains in which all coverages are
  the same (deterministic configuration),
- or did not pass the significance test under $p=0.05$ (randomized configuration).
+ or did not pass the Wilcoxon significance test under $p=0.05$ (randomized configuration).
  Full results are available in the supplemental material.
 }  \label{depth}
 \end{table}
@@ -607,6 +624,45 @@ inherent second-level FirstDepth, and not to the third-level \fifo.
  which the results are not significantly different under Wilcoxon test
  with $p=0.05$. Full results are available in the supplemental material.
  }  \label{r-vs-rd-random}
+\end{table}
+
+\subsubsection{Do the Action Orderings Affect the Performance of Tiebreaking?}
+
+Finally, we show that the performance of our depth-based tiebreaking is
+not affected by the bias introduced in the action orderings in the PDDL
+domain definition.  We created 3 individual sets of domains in which the
+original names of action schemas are uglyfied into a random name. This is because
+the Fast Downward code base has a preprocessing
+step which sorts the action schemas according to the dictionary
+order, and it affects the order of the applicable actions of each search node.
+Each set of domains contains all of the benchmark and zerocost
+domains.
+
+We tested our most successful tiebreaking method $[f,h,\rd,\ro]$ on each
+set of randomized domains, three times each with different random seeds,
+resulting in 9 runs in total.
+
+The coverage results are shown in \reftbl{actionordering-robustness}.
+We analysed these results using statistical methods.
+We first applied Bartlett test to test if the sample groups wrto each
+set of randomized domains share the same variance.
+There is no significant difference between the variances of the sample
+groups with confidence $p=0.00 < 0.05$.
+
+Since the variances are the same, we applied one-way ANOVA to test if
+the sample groups have the same mean values.
+%%
+% Since the variances are not the same, we applied 
+% non-parametric Kruskal-Wallis test to test if
+% the sample groups have the same mean values.
+This was verified with a confidence $p=0.00<0.05$.
+
+\begin{table}[tb]
+ \centering \relsize{-3}
+ \input{tables/aaai16-robustnesscheck/aaai16prelim3_zerocost_2zerocost/1-7-rx-and-sig-wilcox-remove-same.tex}
+ \caption{Results showing the total coverages of three runs on three sets
+ of domains. Each set contains all of benchmark domains and zerocost
+ domains.} \label{actionordering-robustness}
 \end{table}
 
 
