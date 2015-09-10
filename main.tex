@@ -495,11 +495,11 @@ randomly selects an element from the depth bucket selected by the depth-based ti
 
 Among \fifo, \lifo and \ro, the natural policy is Random Order.
 This is because the effectiveness of the third-level tiebreaking behavior
-is likely to be affected by the action ordering in the PDDL domain
+is affected by the accidental bias in action ordering in the PDDL domain
 definition.  Recent work \cite{vallati2015effective} showed that the
-planner performance is greatly affected by changing the action and
-variable ordering. However, finding the best third-level tiebreaking is
-not the scope of this paper.
+planner performance is greatly affected by changing the action ordering
+(and also variable ordering, but it is irrelevant to the tiebreaking behavior). 
+However, finding the best third-level tiebreaking is not the scope of this paper.
 Thus, focusing on \ro and assess its expected/average
 performance is the most reasonable practice to understand the behavior of second-level,
 depth-based tiebreaking.
