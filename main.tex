@@ -27,8 +27,6 @@ We investigate tie-breaking strategies for A*, and propose simple yet effective 
 %Motivation: The Importance of the Last Frontier in A* and Domains with Large Plateaus
 \label{sec-1}
 
-
-
 %\subsubparagraph{\astar and perfect heuristics}
 
 This paper investigates tie-breaking strategies for \astar.
@@ -100,24 +98,24 @@ impact on the performance.
 % both share the greedy search pattern within the plateau of the
 % search space.]{this is not shown yet. how to show it? xy-plot of the node
 % evaluation order?}
- 
-Next, we propose three tiebreaking methods
-based on the \emph{depth} within the plateau, and
-we show that the depth-based tibreaking in the plateau is
-the principal factor of the performance which is
-not affected by the particular action ordering in the domain definition.
-% 
-With this result, we also show that 
+Through these experiments, we points out a hidden bias in the current set of
+benchmark domains, and show the importance of tiebreaking strategy in
+the more practical cost-minimization problems.
+
+Next, in order to solve those cost-minimization problems,
+we propose three tiebreaking methods
+based on the \emph{depth} within the plateau.
+We show that one strategies called RandomDepth provides a significant performance improvement
+compared to the other tiebreaking strategies with the same heuristic function.
+
+Also, we show the robustness of our tiebreaking strategies
+against a particular action ordering in the domain definition.
+Our the depth-based tie-breaking is a part of multi-level tie-breaking strategy,
+and we show that the notion of depth is the principal factor of the performance.
+At the same time, we show that 
 the performance of above \lifo tiebreaking can be explained by its
-depth-first strategy, and its machine-level efficiency of \lifo
-has little effect on the performance.
-% 
-We also show that,
-although the performances of the depth-based tiebreaking
-methods are not affected by the
-different action orderings of the same domain definition,
-three tiebreaking methods perform differently on different domains,
-with no clear dominance relationship among domains.
+depth-first strategy, and the other characteristics of \lifo such as
+machine-level efficiency have little effect on the performance.
 
 \section{Tie-breaking Strategies in \astar}
 
