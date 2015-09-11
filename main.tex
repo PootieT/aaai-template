@@ -681,6 +681,26 @@ dominates the other strategies, including those with $h$ tie-breaking.
  domains.} \label{rd-without-h}
 \end{table}
 
+\subsubsection{Search Behavior within a Plateau}
+
+To understand the behavior of RandomDepth, we plotted the histogram of
+the depths of search nodes opened by RandomDepth in the final search
+plateau until the solution is found.
+\refig{depth-histogram} shows a result of $[f,h,\rd,\ro]$, modified to produce lots of outputs,
+in Woodworking-Cut domain.
+Large dots show the depth where the solution was found.
+In this domain, the LastDepth could search arbitrarly longer path in the
+plateau, which would ignore the nodes in the intermediate depth.
+\todo{better to plot all solutions}
+
+\begin{table}[tb]
+ \centering \relsize{-3}
+ \includegraphics{tables/aaai16-log-rd/2zerocost/depth-histogram-lmcut_rdlog1-woodworking-cut.pdf}
+ \caption{Histogram of the depths in the final search plateau.}
+ \label{depth-histogram}
+\end{table}
+
+
 
 \section{Related Work}
 \label{sec-4}
