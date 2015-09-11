@@ -665,6 +665,22 @@ This was verified with a confidence $p=0.00<0.05$.
  domains.} \label{actionordering-robustness}
 \end{table}
 
+\subsubsection{How Depth-based Tie-breakings Perform without $h$ Tie-Breaking?}
+
+In earlier sections, we showed that $[f,\lifo]$ tie-breaking is
+sufficient for solving the benchmark instances, and $h$ tie-breaking may
+not be necessary. We further strengthen our claim by showing the results
+of $[f,\rd,\ro]$. In \reftbl{rd-without-h}, we see that $[f,\rd,\ro]$
+dominates the other strategies, including those with $h$ tie-breaking.
+
+\begin{table}[tb]
+ \centering \relsize{-3}
+ \input{tables/aaai16-robustnesscheck/aaai16prelim3_zerocost_2zerocost/1-7-rx-and-sig-wilcox-remove-same.tex}
+ \caption{Results showing the total coverages of three runs on three sets
+ of domains. Each set contains all of benchmark domains and zerocost
+ domains.} \label{rd-without-h}
+\end{table}
+
 
 \section{Related Work}
 \label{sec-4}
