@@ -702,7 +702,7 @@ using a secondary heuristic as a tie-breaking criterion in our multi-level tie-b
 for cost-optimal search is an interesting direction for future work.
 
 The PLUSONE\footnote{This term is used on the Fast Downward website.}
-cost-type is a non-admissible search technique in the LAMA planner
+cost-type is a non-admissible search technique in the Fast Downward/LAMA planner
 \cite{richter2010lama} which increases every action costs by 1.
 By eliminating zero-cost actions, this has the effect similar to our
 FirstDepth tie-breaking.
@@ -710,8 +710,10 @@ FirstDepth tie-breaking.
 %applications of zero-cost operators have cost 3, and two
 %applications have cost 2, and smaller cost is preferred, just as
 %\astar always expands the node with smaller $f$-value.
-This technique explicitly targeted zero-cost actions observed in Openstacks,
-and resulted in a significantly better performance in IPC-6 satisficing track.\todo{citation? -- add specific page+quotation in comment}
+This technique explicitly targeted zero-cost actions,
+and resulted in a significantly better performance in IPC-6
+satisficing track \cite[p.137, Sec. 3.3.2]{richter2010lama}.
+\todo*{citation}
 % There's a long discussion of Openstacks in \cite{richter2010lama}, p.167-169, but I can't find PLUSONE anywhere. Maybe it's called something else in the paper?  Maybe \richter2010lama is the wrong citation??
 
 The major difference of our depth-based tie-breaking from PLUSONE
