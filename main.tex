@@ -265,7 +265,7 @@ plateau, it also means $h$ decrease quickly, resulting in the similar behavior.
 
 \subsubsection{Plateaus and Tie-Breaking}
 
-In our comparison of the simple two-level tie-breaking strategies
+In the comparison of the simple two-level tie-breaking strategies
 above, we observed that large differences in performance between
 two-level tie-breaking strategies tend to occur in problems where
 there are many nodes that have the same $f$ and $h$ values, creating
@@ -346,7 +346,7 @@ such as 24-puzzle, Rubik's Cube etc.
 % There are also several problems with non-unit costs, sometimes
 % artificially but also sometimes naturally, such as in multiple
 % sequence alignment (MSA).
-
+% 
 In the plannning community,
 %  actions with non-unit costs were first introduced in 
 % IPC-2002. The actions in these domains
@@ -434,7 +434,7 @@ We call this set of 29 domains as \emph{zerocost domains} hereafter.
 % solving domains which are unit-cost by origin is not called
 % ``inadmissible''. Above modification addresses this problem.
 
-We plotted the size of plateau of the zerocost domains just like in
+We plotted the size of the final plateau of the zerocost domain instances just like in
 \refig{plateau}. The trend of large plateau becomes universal among
 instances. Thus, in these cost-minimization problems, the search strategy within
 plateau becomes much more important than in the
@@ -453,41 +453,41 @@ runtime-minimization problems.
 
 \subsection{Depth-based Tie-Breaking}
 
-In order to solve problems with large final plateaus, the
-planner needs to run an efficient knowledge-free search within the
-plateau.  One useful notion which can be used to both understand and control the search in this
-situation is the \emph{depth} of a node, which represents the number 
-of steps from the entrance of the plateau.
-Given a node $n$, if its current parent $\parent{n}$ is from the other
-plateau, i.e., $\parent{n}$ has a
-different $f$-value, or different $h$-value used for the first
-tie-breaking, then $\depth{n} = 0$. Nodes with $\depth{n} = 0$ are called
-the \emph{entrance} of the plateau.
-If $n$ and $\parent{n}$ are in the same plateau and share the same $f$ and $h$,
-$\depth{n}$ is defined as $\depth{\parent{n}} + 1$.
-Based on this simple notion of depth,
-we propose \emph{depth-based tie-breaking},
-where the nodes are inserted to buckets associated with depths,
-and the depth is used as a tie-breaking criterion.
-FirstDepth(\fd), RandomDepth(\rd) and LastDepth(\ld) breaks ties by choosing a node from 
-the bucket with the smallest depth, a random depth, or the largest depth, respectively.
+In order to solve zerocost problems, the planner needs to run an
+efficient knowledge-free search within the large final plateau.
+One useful notion which can be used to both understand and control the
+search in this situation is the \emph{depth} of a node, which represents
+the number of steps from the entrance of the plateau.  Given a node $n$,
+if its current parent $\parent{n}$ is from the other plateau, i.e.,
+$\parent{n}$ has a different $f$-value, or different $h$-value when the
+first tie-breaking is present, then $\depth{n} = 0$. Nodes with
+$\depth{n} = 0$ are called the \emph{entrance} of the plateau.  If $n$
+and $\parent{n}$ are in the same plateau and share the same $f$ and $h$,
+$\depth{n}$ is defined as $\depth{\parent{n}} + 1$.  Based on this
+simple notion of depth, we propose three \emph{depth-based
+tie-breaking}, where the nodes are inserted to buckets associated with
+depths, and upon expansion, the buckets are chosen in different manners.
+FirstDepth(\fd), RandomDepth(\rd) and LastDepth(\ld) respectively break
+ties by choosing a node from the bucket with the smallest depth, a
+random depth, or the largest depth.
 
-The effectiveness of second-level depth-based strategy depends on the
+The effectiveness of this second-level depth-based strategy depends on the
 structure of the problem instance.  In the knowledge-free search within
 the plateau, all nodes have the same $f$ and $h$ values
 % yes, for simplicity, I'm assuming 3-level tiebreaks, ignoring no-h for the time being..
 and it is impossible to guess whether the goal is concentrated near, far
 away or in a particular step from the entrance.  In the first case, the
 search should be focused around the entrance favoring the smaller depths
-(FirstDepth), and the behavior should be much like breadth-first. In the
+(FirstDepth), and the behavior in the plateau should be much like breadth-first. In the
 second case, the planner should greedily explore the various area of the
-plateau by preferring larger depth (LastDepth), much like in
+plateau by preferring largest depth (LastDepth), much like in
 depth-first. In the final case where the goal nodes are concentrated in
 a particular depth, FirstDepth would take too much time to reach that
-depth. Also, LastDepth would greedily go past and ignore the depth.
+depth, and LastDepth would greedily go past and ignore the depth.
 This is a case
 where RandomDepth is the safest practice: 
-Choosing the random depth will balance the exploration and exploitation.
+Choosing the random depth will balance the exploration and exploitation
+and it maintains the possibility to expand the nodes in intermediate depths.
 
 \subsubsection{Third-Level Tie-Breaking}
 
@@ -501,7 +501,7 @@ Among \fifo, \lifo and \ro, the natural policy is Random Order.
 This is because the effectiveness of the third-level tie-breaking behavior
 is affected by the accidental bias in action ordering in the PDDL domain
 definition.  Recent work \cite{vallati2015effective} showed that the
-planner performance is greatly affected by changing the action ordering
+planner performance is greatly affected by changing and tuning the action ordering
 (and also variable ordering, but it is irrelevant to the tie-breaking behavior). 
 However, finding the best third-level tie-breaking is not the scope of this paper.
 Thus, focusing on \ro and assess its expected/average
