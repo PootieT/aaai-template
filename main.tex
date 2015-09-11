@@ -630,7 +630,7 @@ inherent second-level FirstDepth, and not to the third-level \fifo.
 Finally, we show that the performance of our depth-based tie-breaking is
 not affected by the bias introduced in the action orderings in the PDDL
 domain definition.  We created 3 individual sets of domains in which the
-original names of action schema are uglyfied randomly. This is because
+original names of action schema are uglyfied into random strings. This is because
 the Fast Downward code base has a preprocessing
 step which sorts the action schemas according to the dictionary
 order, and it affects the order of the applicable actions of each search node.
@@ -639,7 +639,8 @@ domains.
 
 We tested our most successful tie-breaking method $[f,h,\rd,\ro]$ on each
 set of randomized domains, three times each with different random seeds,
-resulting in 9 runs in total.
+resulting in 9 runs in total. Note that the robustness wrto random seed is
+already proven in the last section.
 
 The coverage results are shown in \reftbl{actionordering-robustness}.
 We analysed these results using statistical methods.
