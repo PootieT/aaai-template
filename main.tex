@@ -259,12 +259,19 @@ clearly dominates $[f, \fifo]$.
 
 Interestingly, the performance of the $[f, \lifo]$ strategy
 is comparable to $[f,h,\lifo]$ and $[f,h,\fifo]$, the two-level strategies that first break ties according to $h$.
-This is somewhat surprising, considering the ubiquity of $h$-based tie-breaking in the search and planning communities.
+This may be somewhat surprising, considering the ubiquity of $h$-based tie-breaking in the search and planning communities.
 % 
-This can be understood as \lifo behaves very similar to $h$
-tie-breaking.  \lifo greedily explores the plateau space and quickly
-increases the $g$ value. At the same time $h$ decrease quickly because $f$
-is fixed within the plateau.
+However, \lifo behaves somewhat similarly to $h$-based tie-breaking, in the following sense:
+\lifo expandes the most recently generated node $n$.
+If the heuristic function is admissible, there are only 3 possibilities for any child $n'$: 
+(1) $f(n') > f(n)$  (plateau escape), 
+(2) $f(n') = f(n), g(n') > g(n), h(n')  h(n)$, and 
+(3) $f(n') = f(n), g(n') = g(n), h(n') = h(n)$.
+Thus, \lifo will expand nodes in a ``depth-first'' manner, and as the depth increases,
+the nodes that continue to be expanded by \lifo's 
+dept-first exploration will have non-decreasing $g$-values and non-increasing $h$-values,
+This is similar to actively expanding nodes with low $h$-values, which is the behavior for $h$-based tiebreaking.
+Therefore, the performance of $[f,\lifo]$ is comparable to the performance of $[f,h,\lifo]$.
 % \citeauthor{burns2012implementing}
 % (\citeyear{burns2012implementing}) writes ``the goal can be found more
 % quickly in the final $f$ layer of search'' about $h$ tie-breaking.
@@ -278,10 +285,11 @@ In the comparison
 above, we observed that large differences in performance between
 two-level tie-breaking strategies tend to occur in problems where
 there are many nodes with the same $f$ and $h$ values, creating
-large plateau regions where the heuristic does not provide
-useful guidance -- in effect, these plateau regions in the last
-frontier ($f=f^*$) by definition requires blind search, i.e., 
-relying solely on the tie-breaking criterion.
+large plateau regions where the heuristic does not provide any
+useful guidance -- by definition, these plateau regions in the last
+frontier ($f=f^*$) by require a blind search (because all nodes have the same $h$) which 
+relies solely on the tie-breaking criterion.
+
 %%%, in order to
 %% in the final plateau, there is no need to escape the
 %% plateau. ``escape'' is a word for inadmissible search. A* is never
@@ -300,8 +308,8 @@ number of nodes with $f\leq f^*$.
 Clearly, in some domains such as Openstacks and Cybersec, the planner can spend most of the runtime
 searching the final plateau.
 It also
-means that these domains have very large variance in the runtime caused
-by the difference in second-level tie-breakings. 
+means that runtime on these domains varies significantly depending on the second-level tie-breaking strategy.
+
 
 %% Removed
 % \refig{fig:plateau-noh} in the introduction is the same figure without $h$ tie-breaking.
@@ -329,13 +337,14 @@ by the difference in second-level tie-breakings.
 
 %% best to put openstacks here, considering the connection to the
 %% previous section
-Openstacks domain is a cost
+\pddl{Openstacks}  is a cost
 minimization domain first introduced in IPC-2006, where the objective is to 
 minimize the number of stacks used.
 There are many zero-cost actions (i.e., actions that don't increase the number of stacks), and
 they prevent the standard heuristics from producing
 informative guidance.
-For example, \lmcut \cite{Helmert2009} fails to find a good cost
+According to \cite{richter2010lama}, %Richter talks about the failures on openstacks starting around p.167
+ \lmcut \cite{Helmert2009} fails to find a good cost
 partitioning with non-zero values, 
 % A detailed discussion of Openstacks domain and poor performance of landmarks is in \cite{richter10lama}, p.167-169.
 and most edges in the abstraction
@@ -346,15 +355,11 @@ space of M\&S \cite{helmert2007flexible} have zero costs.
 % necessary for this AAAI submission. 
 % (2) It's better if this paper is not so strongly associated with the ICAPS community only -- this work applies in general to search with A*, and is not strongly tied to almost-perfect heuristics, lmcut, m&s, etc.
 
-Such domains are
-not common in the current set of benchmarks.
+Although domains with zero-cost actions are not common in the current set of benchmarks, we argue that this is a historical accident, and that in fact, domains with zero-cost actions are an important class of models for cost-minimization problems.
 % 
-Historically, the study of the shortest path finding algorithms has
-started on the unit cost domains as the simplest case, where every
-search edge has a cost 1,
+Traditionally, the heuristic search literature tended to focus on \emph{unit-cost} domains where every edge in the search space graph has cost 1. These include sliding tiles puzzles, Rubik's Cube, Towers of Hanoi, etc.
 % . Experimental study of \astar was somewhat biased to
 % the unit-cost domains
-such as 24-puzzle, Rubik's Cube etc.
 % There are also several problems with non-unit costs, sometimes
 % artificially but also sometimes naturally, such as in multiple
 % sequence alignment (MSA).
@@ -705,6 +710,8 @@ difference was not observed.
  \label{actionordering-robustness}
 \end{table}
 
+
+
 \subsubsection{How Depth-based Tie-breakings Perform without $h$ Tie-Breaking?}
 
 In earlier sections, we showed that $[f,\lifo]$ tie-breaking is
@@ -747,6 +754,25 @@ future work.
  \caption{Histogram of the depths in the final search plateau.}
  \label{depth-histogram}
 \end{figure}
+
+
+\subsubsection{Is Depth-based Tie-breaking actually  Important?}
+% is this the right location -- maybe this should in a discussion section?
+We have shown that $[f,h,\rd,\ro]$ performs well overall, but
+one might wonder whether the power of this strategy really comes from depth-based tie-breaking, or from randomness.
+We have seen (??) that $[f,h,\ro]$ performs poorly, so clearly, 1 level of randomness is clearly not enough.
+The reason that $[f,h,\ro]$ performs so poorly is that if we select uniformly from a the bucket of all open nodes in the plateau, there is a very strong bias for selecting a node with low depth, simply because at any given point during the search in the plateau region, more nodes closer to the entrance of the plateau (i.e., lower depth) will have been generated.
+By randomly selecting a depth bucket, $[f,h,\rd,\ro]$ explicitly eliminates this bias for selecting nodes for low depth.
+
+One might also wonder whether the power of $[f,h,\rd,\ro]$ comes from having multiple levels of randomness, and not from the notion of depth.
+This is not the case -- multiple levels of randomness do not suffice.
+Consider another possible randomized selection process, $[f,randomh,\ro]$, which first picks a random $h$-bucket, 
+and then picks a random element from that bucket.
+When the final plateau of [f,h] is small, this will behave similarly to $[f,\rd,\ro]$.
+However, when the final plateau of [f,h] is large, then $[f,randomh,\ro]$ will behave similarly to $[f,h,\ro]$, because almost all nodes in the search space have the same h-value, and we have shown that $[f,h,\ro]$ performs poorly on domains with large plateaus, i.e., domains with zero-cost-actions., compared to $[f,h,\rd,\ro]$.
+Thus, multiple levels of randomness alone are not sufficient for explaining the power of $[f,h,\rd,\ro]$, and the notion of depth buckets seems necessary.
+
+
 
 
 \section{Related Work}
