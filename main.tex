@@ -62,7 +62,7 @@ In such domains, the behavior of \astar on the last frontier is critical -- the 
 
 \begin{figure}[tb]
  \centering \relsize{-3} 
- \includegraphics{tables/aaai16-frontier/aaai16prelim3/lmcut_frontier_noh-front.pdf}
+ \includegraphics{tables/aaai16-frontier/aaai16prelim3/lmcut_frontier_noh-front-mono.pdf}
  \caption{
  The number of the nodes with cost $f=f^*$ (y-axis) compared to the
  total number of nodes in the search space with cost $f\leq f^*$ on 1104 IPC benchmark problems
@@ -315,12 +315,14 @@ by the difference in second-level tie-breakings.
 
 \begin{figure}[tb]
  \centering \relsize{-3}
-  \includegraphics{tables/aaai16-frontier/aaai16prelim3/lmcut_frontier-front.pdf}
+  % \includegraphics{tables/aaai16-frontier/aaai16prelim3/lmcut_frontier-front.pdf}
+  \includegraphics{tables/aaai16-frontier/aaai16prelim3/lmcut_frontier-front-mono.pdf}
   \caption{Comparing the size of the $[f,h]$ search plateau to the total
   evaluation below $f\leq f^*$. Data were obtained by the result of
-  \lmcut on the standard benchmark instances. Both axes are
-  logarithmic. Dotted lines represent $\times 10^n$ boundaries.
-  Openstacks clearly has the large plateaus.}  \label{plateau}
+  \lmcut on the standard benchmark instances. We do not show all labels
+  for point types. Both axes are logarithmic. Dotted lines represent
+  $\times 10^n$ boundaries.  Openstacks clearly has the large plateaus.}
+  \label{plateau}
 \end{figure}
 
 \subsection{Domains with Zero-cost Actions}
