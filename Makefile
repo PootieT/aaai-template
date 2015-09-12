@@ -48,8 +48,15 @@ en_pdf: $(name).pdf
 open: $(name).pdf
 	nohup evince $< &>/dev/null &
 
+pull:
+	git pull
+	make
+
 auto:
 	./make-periodically.sh
+
+auto-pull:
+	./make-periodically.sh pull
 
 imgs:
 	$(MAKE) -C img
