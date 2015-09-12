@@ -1,0 +1,45 @@
+
+\subsubsection{Do Action Orderings Affect the Performance?}
+
+Finally, we show that the performances of tie-breaking strategies are
+not affected by the bias introduced in the action orderings in the PDDL
+domain definition.
+In \textbf{satisficing planning}, tie-breaking behavior
+is known to be affected by the accidental bias in action ordering in the PDDL domain
+definition \cite{vallati2015effective}.
+
+We tested $[f,h,\lifo]$ and $[f,h,\fifo]$
+on 3 individual sets of domains in which the
+original names of action schema are uglyfied into random strings. This is because
+the Fast Downward code base has a preprocessing
+step which sorts the action schemas according to the dictionary
+order, and it affects the order of the applicable actions of each search node.
+% 
+The coverage results are shown in \reftbl{actionordering-robustness}.
+The result suggests that in cost-optimal planning, the effect of action
+ordering has little effect on the performance.
+\todo{maybe better to increase the number of runs.}
+% We analysed these results using statistical methods.
+% We first applied Bartlett test to test if the sample groups wrto each
+% set of randomized domains share the same variance.
+% There is no significant difference between the variances of the sample
+% groups with confidence $p=0.00 < 0.05$.
+% 
+% Since the variances are the same, we applied one-way ANOVA to test if
+% the sample groups have the same mean values.
+% %%
+% % Since the variances are not the same, we applied 
+% % non-parametric Kruskal-Wallis test to test if
+% % the sample groups have the same mean values.
+% This was verified with a confidence $p=0.00<0.05$.
+
+\begin{table}[tb]
+ \centering \relsize{-3}
+ \input{tables/aaai16-actionordering/aaai16prelim3random1_aaai16prelim3random2_aaai16prelim3random3/1-1-all.tex}
+\input{tables/aaai16-actionordering/aaai16prelim3random1_aaai16prelim3random2_aaai16prelim3random3_zrandom1_zrandom2_zrandom3_2zrandom1_2zrandom2_2zrandom3/1-1-all.tex}
+ \caption{Results showing the total coverages and evaluations
+ of $[f,h,\lifo]$ and $[f,h,\fifo]$
+ on three uglified versions of the same set of domains. The effect
+ of action ordering is too small to affect the coverage.}
+ \label{actionordering-robustness}
+\end{table}
