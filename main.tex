@@ -630,8 +630,9 @@ inherent second-level FirstDepth, and not to the third-level \fifo.
 \begin{table}[tb]
  \centering \relsize{-3}
  \input{tables/aaai16-robustnesscheck/aaai16prelim3_zerocost_2zerocost/1-7-rx-and-sig-wilcox-remove-same.tex}
- \caption{Comparison of the coverages of basic randomized queue with or
- without depth tie-breaking, $[f,h,\ro]$ and $[f,h,\rd,\ro]$. Each cell
+ \caption{Comparison of the mean and standard deviation of coverages by
+ the RandomOrder last-level tiebreaking with and
+ without second-level depth tie-breaking, $[f,h,\ro]$ and $[f,h,\rd,\ro]$. Each cell
  shows the average coverage of the domain obtained by 10 runs with 5
  min, 2GB setting.  For the space reason, we omitted those domains in
  which the results are not significantly different under Wilcoxon test
@@ -675,9 +676,8 @@ This was verified with a confidence $p=0.00<0.05$.
  \centering \relsize{-3}
  %\input{tables/aaai16-actionordering/aaai16prelim3random1_zrandom1_2zrandom1_aaai16prelim3random2_zrandom2_2zrandom2_aaai16prelim3random3_zrandom3_2zrandom3/1-1-all.tex}
  \input{tables/aaai16-actionordering/aaai16prelim3random1_aaai16prelim3random2_aaai16prelim3random3_zrandom1_zrandom2_zrandom3_2zrandom1_2zrandom2_2zrandom3/1-1-all.tex}
- \caption{Results showing the total coverages and total evaluations of
- three runs on three uglified versions of the same set of domains. Each
- set contains all of benchmark domains and zerocost domains. The effect
+ \caption{Results showing the total coverages and evaluations with
+ three seeds on three uglified versions of the same set of domains. The effect
  of action ordering in the domain definition is so small that it does not
  affect the coverage. In contrast, $[f,h,\lifo]$ is greatly affected by
  the action ordering. TODO}
@@ -696,9 +696,8 @@ dominates the other strategies, including those with $h$ tie-breaking.
  \centering \relsize{-3}
  %\input{tables/aaai16-robustnesscheck/aaai16prelim3_zerocost_2zerocost/1-8-h-lf-vs-rd-random-noh.tex}
  \input{tables/aaai16-robustnesscheck/aaai16prelim3_zerocost_2zerocost/1-9-h-lf-vs-rd-random-noh-remove-same.tex}
- \caption{Results showing TODO TODO TODO TODO TODO TODO TODO TODO TODO
- TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO
- TODO.} \label{rd-without-h}
+ \caption{Results comparing the (mean) coverages of $[f,h,\fifo]$,
+ $[f,h,\lifo]$ and $[f,h,\rd,\ro]$.} \label{rd-without-h}
 \end{table}
 
 \subsubsection{Search Behavior within a Plateau}
