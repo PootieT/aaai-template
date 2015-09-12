@@ -38,8 +38,8 @@ This paper investigates tie-breaking strategies for \astar.
 from an initial state $s$ to some goal state $g \in G$ in a search space represented as a graph \cite{hart1968formal}.
 In each iteration, \astar selects and \emph{expands} a node $n$ from the OPEN priority queue.
 $n$ is the node which has the lowest $f$-cost in OPEN, where for node $n$, $f(n)$ is the sum of  $g(n)$, the cost of the current path from the start state to $n$, and $h(n)$, a heuristic estimate of the cost from $n$ to a goal state.
-\astar returns an optimal solution when $h$ is admissible, i.e., when it
-never overestimates the true distance to the goal $h^*$.
+\astar returns an optimal solution when $h$ is admissible, i.e., when $h \leq h^*$, where $h^*$ is the true distance to the goal.
+
 
 In order to guarantee solution optimality, \astar expands all
 nodes with $f(n) < f^*$, where $f^*$ is the cost of the optimal solution.
@@ -75,8 +75,8 @@ In this paper, we focus on the \emph{tie-breaking} policy used by
 $f$-cost.  Since \astar expands all nodes with $f$-cost less than $f^*$
 before expanding any nodes with cost $f^*$, the tie-breaking policy only
 affects performance when considering the last frontier (nodes with cost
-$f^*$).  \todo[Although there has not been much previous \emph{in-depth} work
-on tie-breaking policies]{mention vallati and ``Merrier''}, it is widely believed that among nodes with
+$f^*$).  Although there has not been much previous \emph{in-depth} work
+on tie-breaking policies for admissible search algorithms, it is widely believed that among nodes with
 cost $f(n) = f^*$, ties should be broken according to $h(n)$, i.e.,
 nodes with smaller $h$ values should be expanded first.  While this is a
 useful rule of thumb in many domains, it turns out that tie-breaking
@@ -86,14 +86,12 @@ large \emph{plateaus} -- regions of the search space with the same $f$-cost.
 maintain the admissibility of the search because it only affects the node expansion
 order among the nodes with the same $f$-cost.}
 
-We first empirically clarify two facts regarding the
-existing tie-breaking strategy for \astar.
+We first empirically evaluate widely used tie-breaking strategy for \astar, and show that 
 % 
-First, in implementing the open list of \astar, priority queue which holds
-\lifo-buckets for each $f$ tends to be more efficient than that holds \fifo-buckets.
+(1) a Last-In-First-Out (\lifo) policy for breaking ties among nodes with the same $f$ {\bf and h?} value tends to be more efficient than an a First-In-First-Out (\fifo) policy, and 
 % 
-Second, with \lifo-based implementation, $h$-based tie-breaking which
-frequently appears in the heuristic search literature have little
+(2) with \lifo implementation, tie-breaking according to $h$, which
+frequently appears in the heuristic search literature, has little 
 impact on the performance.
 % 
 %% Remove?
@@ -102,24 +100,31 @@ impact on the performance.
 % both share the greedy search pattern within the plateau of the
 % search space.]{this is not shown yet. how to show it? xy-plot of the node
 % evaluation order?}
-Through these experiments, we points out a bias in the current set of
-benchmark domains and the importance of tie-breaking in
-the more practical cost-minimization problems.
 
-Next, in order to solve those cost-minimization problems,
-we propose three tie-breaking methods
-based on the \emph{depth} within the plateau.
+These experiments show that there are significant performances differences among tie-breaking strategies
+when domains have zero-cost actions.  While there are relatively few domains with zero-cost actions in the existing IPC benchmark sets, we argue that this is a historical accident, and that in fact, many unit-cost domains may be more appropriately modelled using zero-cost actions.
+%Through these experiments, we points out a bias in the current set of
+%benchmark domains and the importance of tie-breaking in
+%the more practical cost-minimization problems.
+
+Next, in order to solve those cost-minimization problems with zero-cost actions,
+we propose 
+tie-breaking methods
+based on a notion of \emph{depth} within the plateau, which corresponds to the number of steps 
+a node is from the ``entrance'' to the plateau region.
 We show that one strategies called RandomDepth provides a significant performance improvement
-compared to the other tie-breaking strategies with the same heuristic function.
+compared to the other tie-breaking strategies using the same heuristic function.
 
 Finally, we show the robustness of our tie-breaking strategies
 against a particular action ordering in the domain definition.
-Our the depth-based tie-breaking is a part of multi-level tie-breaking strategy,
-and we show that the notion of depth is the principal factor of the performance.
-At the same time, we show that 
-the performance of above \lifo tie-breaking can be explained by its
-depth-first strategy, and the other characteristics of \lifo such as
-machine-level efficiency have little effect on the performance.
+Our depth-based tie-breaking is a part of multi-level tie-breaking strategy,
+and we show that the notion of depth is the principal factor in determining performance.
+
+% XXX It's doubtful that anybody would believe that machine-level efficiency of LIFO (compared to FIFO) is important in domain-independent planning.
+%At the same time, we show that 
+%the performance of above \lifo tie-breaking can be explained by its
+%depth-first strategy, and the other characteristics of \lifo such as
+%machine-level efficiency have little effect on the performance.
 
 %% Above describes the enough detail of the paper structure?
 
@@ -131,7 +136,7 @@ machine-level efficiency have little effect on the performance.
 
 If multiple nodes with the same $f$-cost are possible, \astar
 must implement some tie-breaking policy (either
-explicitly or implicitly) in order to select from among these nodes.
+explicitly or implicitly) which selects from among these nodes.
 The early literature on heuristic search seems to have been mostly agnostic on the issue of tie-breaking.
 The original paper proposing \astar, as well as Nilsson's
 subsequent textbook states: ``Select the open node $n$ whose value $f$
@@ -140,8 +145,8 @@ node]'' \cite[p.102 Step 2]{hart1968formal} \cite[p.69]{Nilsson71}.
 % Although it is possible to interpret this to imply $h$-based tie-breaking
 % since goal nodes are the special case where $h=0$,
 % they make no further metion of tie-breaking.
-Pearl's seminal textbook on search specifies that best-first search should ``break ties arbitrarily'' (\citeyear{pearl1984heuristics}, p.48, Step 3), but does not specifically mention tie-breaking for \astar.
-Interestingly, in his analysis of IDA*, Korf mentions that ``If \astar employs the tie-breaking rule of 'most-recently generated', it must also expand the same nodes [as IDA*]'' (\citeyear{korf1985depth}) -- this Last-In-First-Out ordering is the first explicit mention we found of a tie-breaking policy not based on $h$.
+Pearl's textbook on heuristic search specifies that best-first search should ``break ties arbitrarily'' (\citeyear{pearl1984heuristics}, p.48, Step 3), but does not specifically mention tie-breaking for \astar.
+Interestingly, in his analysis of IDA*, Korf mentions that ``If \astar employs the tie-breaking rule of 'most-recently generated', it must also expand the same nodes [as IDA*]'' (\citeyear{korf1985depth}) -- this purely \lifo ordering is the first explicit mention we found of a tie-breaking policy not based on $h$.
 
 In recent years, tie-breaking accoording to $h$-values has become ``folklore'' in the search community.
 \citeauthor{hansen2007anytime} state that ``It is well-known 
@@ -149,10 +154,10 @@ that \astar achieves best performance when it breaks ties
 in favor of nodes with least h-cost'' \cite{hansen2007anytime}.
 \citeauthor{holte2010common} writes ``\astar breaks ties in favour
 of larger g values, as is most often done'' \cite[note that since $f=g+h$,
-preferring large $g$ is equivalent to preferring smaller $h$]{holte2010common}.
+preferring large $g$ is equivalent to preferring smaller $h$](\citeyear{holte2010common}.
 % \citeauthor{felner2011inconsistent} also assume ``ties are broken in
 % favor of low h-values'' in describing Bidirectional Pathmax for \astar.
-In their detailed survey/tutorial of efficient \astar implementations,
+In their detailed survey/tutorial on efficient \astar implementations,
 \citeauthor{burns2012implementing} (\citeyear{burns2012implementing})
 also break ties ``preferring high $g$.''
 %% this could be moved to later analysis
@@ -167,13 +172,14 @@ implicit) are required if multiple nodes can have the same $f$ and
 $h$ values.
 %% we do, in Roger, Helmert
 % We are not aware of any work that explicitly mentions 2nd-level tie-breaking.
-While the survey of efficient \astar implementatins in \citeauthor{burns2012implementing} did not explicitly mention 2nd-level tie-breaking, their code first breaks ties according to $h$, and then breaks remaining ties according to a Last-In-First-Out (\lifo) policy (most recently generated nodes first).\footnote{https://github.com/eaburns/search}
-Although not documented, their choice of a \lifo 2nd-level tie-breaking policy appears to be a natural consequence of the fact that the \lifo policy can be trivially, efficiently implemented in their two-level bucket (vector) implementation of their OPEN list.
+While the survey of efficient \astar implementations in \citeauthor{burns2012implementing} did not explicitly mention 2nd-level tie-breaking, their code first breaks ties according to $h$, and then breaks remaining ties according to a \lifo policy (most recently generated nodes first).\footnote{https://github.com/eaburns/search}
+Although not documented, their choice of a \lifo 2nd-level tie-breaking policy appears to be a natural consequence of the fact that the \lifo policy can be trivially, efficiently implemented in their two-level bucket (vector) implementation of OPEN.
 In contrast, the current implementation of \sota \astar based planner Fast
 Downward \cite{Helmert2006}\footnote{http://www.fast-downward.org}, and
 the work by \cite{RogerH10} (based on Fast-Downward), uses
-a First-In-First-Out (\fifo) second-level tie-breaking policy. We could
-not find any explanation for this choice either.
+a \fifo second-level tie-breaking policy. 
+Although we could not find an explanation, this is choice is mot likely due to their use of alternating OPEN lists, in which case the \fifo policy serves to provide a limited form of fairness.
+%We could not find any explanation for this choice either.
 
 %\citeauthor{Korf1985depth} uses $h$-based tie-breaking in the context of WA*
 %\cite{korf1993linear}.  
@@ -198,15 +204,15 @@ problems.
 We first compared two strategies $[f,h,\fifo]$, $[f,h,\lifo]$, which
 first breaks ties according to $h$, and then applies \fifo or \lifo
 second-level tie-breaking, respectively.
-\todo{can't this be removed?}
-Although the search behavior of $[f,h,\fifo]$ corresponds to the default behavior of Fast Downward, this implementation differs 
-from the original, unmodified code because we enabled caching of $h$-values, so that reopened nodes refer to cached $h$-values.\footnote{The current Fast Downward code disables $h$-caching because its current implementation is not compatible with multiple admissible heuristics.}
-Thus, we also show results for unmodified Fast Downward -- as expected, $[f,h,\fifo]$ dominates unmodified FD.
+% The following will be necessary in a future version, if we use LOP:
+%Although the search behavior of $[f,h,\fifo]$ corresponds to the default behavior of Fast Downward, this implementation differs 
+%from the original, unmodified code because we enabled caching of $h$-values, so that reopened nodes refer to cached $h$-values.\footnote{The current Fast Downward code disables $h$-caching because its current implementation is not compatible with multiple admissible heuristics.}
+%Thus, we also show results for unmodified Fast Downward -- as expected, $[f,h,\fifo]$ dominates unmodified FD.
 
 The results for \astar using the LM-cut heuristic \cite{Helmert2009} are
 shown in \reftbl{single-coverage} (Left).
 Differences in coverage are observed in several domains.
-Due to the space limitation, we show only the domains
+Due to space limitation, we show only the domains
 where there was any difference. Full data is available in the
 supplemental material. \todo{probably better to show full results for this particular experiment}
 
@@ -239,7 +245,6 @@ more fine-grained analysis by comparing the number of node evaluation
 \end{figure}
 
 According to \reftbl{single-coverage} (left) with $h$ tie-breaking, \lifo
-% mostly outperforms \fifo, but \fifo performed best in Airport.
 outperforms \fifo.
 \refig{f-h-eval} also shows that the difference in the number of nodes
 evaluated can sometimes be larger than a factor of 10, especially in
