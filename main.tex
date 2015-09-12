@@ -102,8 +102,8 @@ impact on the performance.
 % both share the greedy search pattern within the plateau of the
 % search space.]{this is not shown yet. how to show it? xy-plot of the node
 % evaluation order?}
-Through these experiments, we points out a hidden bias in the current set of
-benchmark domains, and show the importance of tie-breaking strategy in
+Through these experiments, we points out a bias in the current set of
+benchmark domains and the importance of tie-breaking in
 the more practical cost-minimization problems.
 
 Next, in order to solve those cost-minimization problems,
@@ -112,7 +112,7 @@ based on the \emph{depth} within the plateau.
 We show that one strategies called RandomDepth provides a significant performance improvement
 compared to the other tie-breaking strategies with the same heuristic function.
 
-Also, we show the robustness of our tie-breaking strategies
+Finally, we show the robustness of our tie-breaking strategies
 against a particular action ordering in the domain definition.
 Our the depth-based tie-breaking is a part of multi-level tie-breaking strategy,
 and we show that the notion of depth is the principal factor of the performance.
@@ -120,6 +120,8 @@ At the same time, we show that
 the performance of above \lifo tie-breaking can be explained by its
 depth-first strategy, and the other characteristics of \lifo such as
 machine-level efficiency have little effect on the performance.
+
+%% Above describes the enough detail of the paper structure?
 
 \section{Tie-breaking Strategies in \astar}
 
@@ -152,9 +154,11 @@ preferring large $g$ is equivalent to preferring smaller $h$]{holte2010common}.
 % favor of low h-values'' in describing Bidirectional Pathmax for \astar.
 In their detailed survey/tutorial of efficient \astar implementations,
 \citeauthor{burns2012implementing} (\citeyear{burns2012implementing})
-also break ties ``preferring high $g$.''  They further write: ``The
-reasoning is that the goal can be found more quickly in the final $f$
-layer of search''.  Thus, tie-breaking according to $h$-values appears
+also break ties ``preferring high $g$.''
+%% this could be moved to later analysis
+% They further write: ``The reasoning is that the goal can be found more
+% quickly in the final $f$ layer of search''.
+Thus, tie-breaking according to $h$-values appears
 to be ubiquitous in practice.
 
 Although the standard practice of tie-breaking according to $h$ might be
@@ -210,13 +214,15 @@ supplemental material. \todo{probably better to show full results for this parti
  \centering \relsize{-3}
  \input{tables/aaai16-30min-5min-cut/aaai16prelim3/1-1-basic-queues.tex}
  \input{tables/aaai16-30min-5min-cut/aaai16prelim3/1-1-basic-queues-noh.tex}
- \caption{Experiments comparing the performance of \fifo and \lifo
+ \caption{Experiments with 5 min, 2GB setting,
+ comparing the coverages of \fifo and \lifo
  second-level tie-breaking, with (left) and without (right) the
  conventional first-level $h$ tie-breaking.  For the space reason, we
- omitted those domains whose results are the same (Full results are
- available in the supplemental material.) Each cell denotes the problem
- solved with 5 min, 2GB setting. \textbf{Boldface} denotes the case
- where it achieved the best result among configurations.}
+ omitted those domains whose results are the same. (Full results are
+ available in the supplemental material.)
+ % \textbf{Boldface} denotes the case
+ % where it achieved the best result among configurations.
+ }
  \label{single-coverage}
 \end{table}
 
@@ -233,7 +239,8 @@ more fine-grained analysis by comparing the number of node evaluation
 \end{figure}
 
 According to \reftbl{single-coverage} (left) with $h$ tie-breaking, \lifo
-mostly outperforms \fifo, but \fifo performed best in Airport.
+% mostly outperforms \fifo, but \fifo performed best in Airport.
+outperforms \fifo.
 \refig{f-h-eval} also shows that the difference in the number of nodes
 evaluated can sometimes be larger than a factor of 10, especially in
 Openstacks and Cybersec.
@@ -248,36 +255,34 @@ clearly dominates $[f, \fifo]$.
 Interestingly, the performance of the $[f, \lifo]$ strategy
 is comparable to $[f,h,\lifo]$ and $[f,h,\fifo]$, the two-level strategies that first break ties according to $h$.
 This is somewhat surprising, considering the ubiquity of $h$-based tie-breaking in the search and planning communities.
-\todo*{Explanation of why $[f,\lifo]$ performs so well. }
 % 
-This can be understood as \lifo greedily explores the plateau space
-and quickly aggregates the $g$ value. Since $f$ is fixed within the
-plateau, it also means $h$ decrease quickly, resulting in the similar behavior.
+This can be understood as \lifo behaves very similar to $h$
+tie-breaking.  \lifo greedily explores the plateau space and quickly
+increases the $g$ value. At the same time $h$ decrease quickly because $f$
+is fixed within the plateau.
+% \citeauthor{burns2012implementing}
+% (\citeyear{burns2012implementing}) writes ``the goal can be found more
+% quickly in the final $f$ layer of search'' about $h$ tie-breaking.
 
-% We reemphasize that, although \lifo dominated the others, we consider
-% this is just by a coincidence due to the selection of time limit, memory
-% limit and problems in the current standard IPC competition
-% settings. \emph{We are not trying to claim that any of \lifo or \fifo or
-% Random order always dominates the others}.
-
-% However, there are noticeable
-% performance difference caused by these different tie-breaking strategies.
+% Note that \lifo no longer requires the gradient provided by $h$.
 
 \subsubsection{Plateaus and Tie-Breaking}
 
-In the comparison of the simple two-level tie-breaking strategies
+In the comparison
+% of the simple two-level tie-breaking strategies
 above, we observed that large differences in performance between
 two-level tie-breaking strategies tend to occur in problems where
-there are many nodes that have the same $f$ and $h$ values, creating
+there are many nodes with the same $f$ and $h$ values, creating
 large plateau regions where the heuristic does not provide
 useful guidance -- in effect, these plateau regions in the last
 frontier ($f=f^*$) by definition requires blind search, i.e., 
-relying solely on the tie-breaking criterion, in order to
+relying solely on the tie-breaking criterion.
+%%%, in order to
 %% in the final plateau, there is no need to escape the
 %% plateau. ``escape'' is a word for inadmissible search. A* is never
 %% allowed to escape the plateau until all nodes are expanded.
 % escape the plateau and
-find a goal node.
+%%% find a goal node.
 %, i.e., the problems where the
 %heuristic function is not informative and the planner relies heavily on
 %the tie-breaking criteria.
@@ -321,7 +326,7 @@ Openstacks domain is a cost
 minimization domain first introduced in IPC-2006, where the objective is to 
 minimize the number of stacks used.
 There are many zero-cost actions (i.e., actions that don't increase the number of stacks), and
-these zero-cost actions confound and prevent the commonly used heuristics from producing
+they prevent the standard heuristics from producing
 informative guidance.
 For example, \lmcut \cite{Helmert2009} fails to find a good cost
 partitioning with non-zero values, 
