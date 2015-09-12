@@ -379,8 +379,8 @@ the simple runtime minimization.
 Also, as shown previously, such domains pose a
 difficulty to the current heuristic planners due to their large plateaus.
 
-Therefore, in this paper, we modified various domains to have many
-zero-cost actions in order to turn them into cost minimization domains.
+Therefore, in this paper, we modified various domains
+into cost minimization domains with many zero-cost actions.
 For example, elevators-up is a variation of
 Elevators domain where the target is to minimize
 the energy consumption caused by ``up'' action, which moves the elevator
@@ -440,7 +440,7 @@ We call this set of 29 domains as \emph{zerocost domains} hereafter.
 % ``inadmissible''. Above modification addresses this problem.
 
 We plotted the size of the final plateau of the zerocost domain instances just like in
-\refig{plateau}. The trend of large plateau becomes universal among
+\refig{plateau}. The trend of large plateaus becomes universal among
 instances. Thus, in these cost-minimization problems, the search strategy within
 plateau becomes much more important than in the
 runtime-minimization problems.
@@ -476,6 +476,8 @@ FirstDepth(\fd), RandomDepth(\rd) and LastDepth(\ld) respectively break
 ties by choosing a node from the bucket with the smallest depth, a
 random depth, or the largest depth.
 
+\todo{remove this part if complete plot in \refig{depth-histogram} did
+not succeed}
 The effectiveness of this second-level depth-based strategy depends on the
 structure of the problem instance.  In the knowledge-free search within
 the plateau, all nodes have the same $f$ and $h$ values
@@ -492,7 +494,7 @@ depth, and LastDepth would greedily go past and ignore the depth.
 This is a case
 where RandomDepth is the safest practice: 
 Choosing the random depth will balance the exploration and exploitation
-and it maintains the possibility to expand the nodes in intermediate depths.
+and maintains the possibility to expand the nodes in intermediate depths.
 
 \subsubsection{Third-Level Tie-Breaking}
 
@@ -505,13 +507,22 @@ randomly selects an element from the depth bucket selected by the depth-based ti
 Among \fifo, \lifo and \ro, the natural policy is Random Order.
 This is because the effectiveness of the third-level tie-breaking behavior
 is affected by the accidental bias in action ordering in the PDDL domain
-definition.  Recent work \cite{vallati2015effective} showed that the
-planner performance is greatly affected by changing and tuning the action ordering
-(and also variable ordering, but it is irrelevant to the tie-breaking behavior). 
-However, finding the best third-level tie-breaking is not the scope of this paper.
+definition \cite{vallati2015effective}.
+Finding the best action ordering is not the scope of this paper.
 Thus, focusing on \ro and assess its expected/average
 performance is the most reasonable practice to understand the behavior of second-level,
 depth-based tie-breaking.
+
+% Among \fifo, \lifo and \ro, the natural policy is Random Order.
+% This is because the effectiveness of the third-level tie-breaking behavior
+% is affected by the accidental bias in action ordering in the PDDL domain
+% definition.  Recent work \cite{vallati2015effective} showed that the
+% planner performance is greatly affected by changing and tuning the action ordering
+% (and also variable ordering, but it is irrelevant to the tie-breaking behavior). 
+% However, finding the best third-level tie-breaking is not the scope of this paper.
+% Thus, focusing on \ro and assess its expected/average
+% performance is the most reasonable practice to understand the behavior of second-level,
+% depth-based tie-breaking.
 
 
 \subsubsection{Evaluating Depth-based Tie-Breaking}
@@ -521,9 +532,8 @@ tie-breaking strategies in all.
 %REDUNDANT? , i.e., $[f,h,depthStrategy,LFR]$, where the first-level tie-breaking is according to $h$ (break ties in favor of small $h$), the second-level strategy is based on depth and $depthStrategy \in \{\fd, \ld, \rd\}$, and the third level tie-breaking strategy $LFR \in \{\lifo, \fifo, \ro\}$.
 % 
 In addition to the 35 IPC benchmark domains with 1104 problems used in
-the previous set of experiments, we added 29 zerocost domains with 640
-problems in this evaluation.  \reftbl{depth} shows the coverage results
-on benchmark domains and zerocost domains. For randomized strategies, we
+the previous set of experiments, we used 29 zerocost domains with 640
+problems.  \reftbl{depth} shows the coverage results. For randomized strategies, we
 showed the mean and the standard deviation of the coverages obtained by
 10 individual runs.
 
@@ -534,7 +544,7 @@ The node evaluation order of $[f,h,\fd,\fifo]$ and $[f,h,\ld,\lifo]$
 are exactly the same as $[f,h,\fifo]$ and $[f,h,\lifo]$.
 This is because:
 (1) $[f,h,\lifo]$ expands the most recently evaluated/inserted
-states, and (2) the depth increases monotonically,
+states, and (2) the depth increases monotonically within the same $[f,h]$,
 thus (3) $[f,h,\lifo]$ always expands the largest depth. (Similar logic
 applies to $[f,h,\fifo]$.)
 % 
@@ -544,20 +554,19 @@ As expected, the performances of $[f,h,\ld,\lifo]$ and
 $[f,h,\fd,\fifo]$ are slightly worse than $[f,h,\lifo]$ and
 $[f,h,\fifo]$, respectively, due to the cost of managing the depth-based buckets.
 
-Next, we compared the performance of 3 configurations.
-They are $[f,h,\fd,\ro]$, $[f,h,\ld,\ro]$, $[f,h,\rd,\ro]$: Each using
+Next, we compared the performance of
+$[f,h,\fd,\ro]$, $[f,h,\ld,\ro]$, $[f,h,\rd,\ro]$: Each using
 $h$ as the first-level tie-breaking criterion, one of \fd, \ld, \rd as
 the depth-based 2nd-level tie-breaking criterion, and finally,
-\ro as the 3rd-level criterion, in order to
-avoid the bias caused by the action orderings (as stated in the previous
-section).
+\ro as the 3rd-level criterion.
 Since these configurations involves randomness, we run 10
 experiments with different random seeds for each configuration and
 tested the significance of the difference of the mean coverage with Wilcoxon test,
 a non-parametric significance testing method applicable to
 the populations in which normal distribution cannot be assumed.
 
-The 3 rightmost columns in \reftbl{depth} show the $p$ values of the
+\reftbl{depth} shows the mean and standard deviation of the coverages,
+along with 3 rightmost columns showing the $p$ values of the
 test. The results depend on the domains, but in many situations we
 observed a significant difference among 3 second-level tie-breaking, and
 RandomDepth dominated the others. Although in most domains LastDepth and
@@ -609,12 +618,12 @@ inherent second-level FirstDepth, and not to the third-level \fifo.
  \input{tables/aaai16-robustnesscheck/aaai16prelim3_zerocost_2zerocost/1-4-all-and-sig-wilcox-remove-same.tex}
  \caption{Experiments comparing the coverages of 7 configurations.
  Each cell shows the coverage of the domain solved with 5 min, 2GB
- setting. Zerocost domains are named according to
- [original]-[name of nonzero action].
+ setting. Zerocost domains are named as
+ [original name]-[name of nonzero action].
  For the space reason, we omitted those domains in which all coverages are
  the same (deterministic configuration),
  or did not pass the Wilcoxon significance test under $p=0.05$ (randomized configuration).
- Full results are available in the supplemental material.
+ Full results are in the supplemental material.
 }  \label{depth}
 \end{table}
 
@@ -703,12 +712,12 @@ In this domain, the LastDepth could search arbitrarly longer path in the
 plateau, which would ignore the nodes in the intermediate depth.
 \todo{better to plot all solutions}
 
-\begin{table}[tb]
+\begin{figure}[tb]
  \centering \relsize{-3}
  \includegraphics{tables/aaai16-log-rd/2zerocost/depth-histogram-lmcut_rdlog1-woodworking-cut.pdf}
  \caption{Histogram of the depths in the final search plateau.}
  \label{depth-histogram}
-\end{table}
+\end{figure}
 
 
 
