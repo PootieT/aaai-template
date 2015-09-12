@@ -726,6 +726,14 @@ In this domain, the LastDepth could search arbitrarly longer path in the
 plateau, which would ignore the nodes in the intermediate depth.
 \todo{better to plot all solutions}
 
+The figure also illustrates the behavior of RandomDepth: Although it
+randomly selects from the \emph{current} set of nonempty buckets,
+a new depth is found only when the largest-depth bucket is selected,
+resulting in non-flat curves.
+RandomDepth is balancing the search in the smaller depth and larger
+depth, however finding the optimal balance is an interesting avenue of
+future work.
+
 \begin{figure}[tb]
  \centering \relsize{-3}
  \includegraphics{tables/aaai16-log-rd/2zerocost/depth-histogram-lmcut_rdlog1-woodworking-cut.pdf}
