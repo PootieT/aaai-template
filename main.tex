@@ -535,7 +535,7 @@ In the absence of useful prior knowledge and heuristic guidance,
 choosing a random depth will balance exploration and exploitation,
 while allowing nodes at intermediate depths to be expanded.
 
-\subsubsection{Tie-Breaking within depth-buckets} % changing from ``third-level'' because we'll also consider that sue depth as the 1st-level policy, e.g., [rd,random] (noh).
+\subsubsection{Tie-Breaking within Depth-Buckets} % changing from ``third-level'' because we'll also consider that sue depth as the 1st-level policy, e.g., [rd,random] (noh).
 Since there can be multiple nodes within the same depth bucket
 a further tie-breaking criterion may be necessary to break times among them.
 We could, for example, apply \lifo or \fifo policies at this level -- 
