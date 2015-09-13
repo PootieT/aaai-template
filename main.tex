@@ -779,6 +779,8 @@ order of the schema names, which affects the order of applicable ground
 actions of each node, which in turn affects the order in which nodes
 are inserted into OPEN.
 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%5
+
 We tested the robustness of the standard $[h,\lifo]$ and $[h,\fifo]$ strategies, as well as $[h,\rd,\ro]$,
 with respect to 
 biases introduced by domain configuration (action naming) in the PDDL domain definition.
@@ -796,42 +798,32 @@ We ran each of the 3 methods on each
 set of randomized domains, three times each with different random seeds,
 resulting in 9 runs per method (recall that robustness wrto random seed was shown in \refsec{sec:depth-based-evaluation}.)
 
-The coverage results are shown in \reftbl{actionordering-robustness}.
-%We analysed these results using statistical methods.
-We first applied Bartlett test to test if the sample groups wrto each
-set of randomized domains share the same variance.
-% There is no significant difference between the variances of the sample
-% groups with confidence $p=0.00 < 0.05$.
-Due to the small sample size, 
-we could not verify the homogeneity of variances ($p=0.70$).
-% (ql:quickload :rcl)
-% (use-package :rcl)
-% (r-init)
-% (r "bartlett.test" '((571 573 571) (572 572 570) (573 575 571)))
-%
-% Since the variances are the same, we applied one-way ANOVA to test if
-% the sample groups have the same mean values.
-%%
-Since the variances are not the same, we applied 
-non-parametric Kruskal-Wallis test to see if
-there is any difference in the mean values between the sample groups.
-The null hypothesis is retained ($p=0.47$) and the significant
+The coverage results are shown in \reftbl{actionordering-robustness} (We
+also included the original 10 runs in \reftbl{depth}).
+We analysed the results of $[h,\rd,\ro]$ using statistical methods
+in order to see if any result of 4 set of differently reordered domains
+have the significantly dominating average coverages than the others.
+
+In order to test the significance of mean value,
+we first applied Fligner-Killeen's non-parametric test to see if the sample groups 
+in each set of randomized domains share the same variance.
+We could not reject the homogeneity of variances ($p=0.74$).
+Since the variances are not significantly different,
+we can apply non-parametric Kruskal-Wallis test to see if
+there is any difference in the mean values between the original
+population of the sample groups.
+The null hypothesis could not be rejected ($p=0.26$) and the significant
 difference was not observed.
+Thus, there is no significant reasons to believe that the domain
+difference has affected the performance.
 
-% (ql:quickload :rcl)
-% (use-package :rcl)
-% (r-init)
-% (r "kruskal.test" '((571 573 571) (572 572 570) (573 575 571)))
-
-In contrast to the results for satisficing search by \cite{vallati2015effective}, 
-the effect of domain configuration  seems to be relatively weak for cost-optimal search using \astar, at least when the domain configuration is limited to action renamining.
-We conjecture that this is because 
-the behavior of \astar with $[h,\lifo]$, $[h,\fifo]$, and $[h,rd,\ro]$ highly constrained due to the constraint that \astar strictly expands nodes in order of $f$, and furthermore, the 3 strategies we evaluated first break ties according to $h$, so
-the effects of domain configuration is limited to 2nd (and higher) level tie-breaking.
-
-
-
-
+Thus, in contrast to the results for satisficing search by \cite{vallati2015effective}, 
+the effect of action ordering  seems to be relatively weak for cost-optimal search using \astar.
+This may be because 
+compared to the satisficing, best-first serach algorithms evaluated in \cite{vallati2015effective},
+the behavior of $[h,\lifo]$, $[h,\fifo]$, and $[h,rd,\ro]$ highly
+constrained, in that all nodes with cost $f$ must be expanded before any
+nodes with cost larger than $f$.
 
 \begin{table}[tb]
  \setlength{\tabcolsep}{0.2em}
@@ -841,9 +833,8 @@ the effects of domain configuration is limited to 2nd (and higher) level tie-bre
  %\input{tables/aaai16-actionordering/aaai16prelim3random1_aaai16prelim3random2_aaai16prelim3random3_zrandom1_zrandom2_zrandom3_2zrandom1_2zrandom2_2zrandom3/1-1-all.tex}
  \input{tables/aaai16-actionordering/aaai16prelim3random1_aaai16prelim3random2_aaai16prelim3random3_aaai16prelim3-_zrandom1_zrandom2_zrandom3_zerocost/1-1-all.tex}
  \caption{Results showing the total coverages of $[h,\fifo]$, $[h,\lifo]$
- and $[h,\rd,\ro]$ with three seeds. It contains 8 rows, each
- representing the original set of
- domains and its three action-reordered variants. The effect
+ and $[h,\rd,\ro]$ with three seeds. Each row represents the original set of
+ domains or its three action-reordered variants. The effect
  of action ordering is small enough for $[h,\rd,\ro]$ to
  constantly perform better than the traditional tiebreaking methods.}
  \label{actionordering-robustness}
