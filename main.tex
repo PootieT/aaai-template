@@ -703,27 +703,28 @@ the depths of search nodes opened by RandomDepth in the final search
 plateau until the solution is found.
 
 \refig{depth-histogram} shows the histogram 
-for 
- $[h,\rd,\ro]$ %, modified to produce lots of outputs,
+for $[h,\rd,\ro]$ %, modified to produce lots of outputs,
 on the \pddl{Woodworking-cut} domain.
-Large dots show the depth where the solution was found.
+% 
 In this domain, the LastDepth would tend to search could search arbitrarly longer path in the
 plateau, which would ignore the nodes in the intermediate depth.
 \todo{better to plot all solutions}
+In contrast, RandomDepth is balancing the search in the smaller depth and larger
+depth, resulting in larger coverages in \reftbl{depth}.
 
 The figure also illustrates the behavior of RandomDepth: Although it
 randomly selects from the \emph{current} set of nonempty buckets,
 a new depth is found only when the largest-depth bucket is selected,
 resulting in non-flat curves.
-RandomDepth is balancing the search in the smaller depth and larger
-depth, however finding the optimal balance is an interesting avenue of
+Finding the optimal balance is an interesting avenue of
 future work.
 
 \begin{figure}[tb]
  \centering \relsize{-3}
  \includegraphics{tables/aaai16-log-rd/2zerocost/depth-histogram-lmcut_rdlog1-woodworking-cut.pdf}
- \caption{Histogram of the depths in the $[f,h]$-plateau in
-\pddl{Woodworkin-cut} instances. Solution can be found in variety of depths.
+ \caption{Histogram of the depths in the plateau in
+\pddl{Woodworkin-cut} instances using $[h,\rd,\ro]$. $y$ axis is logarithmic.
+ Large dots show where the solutions were found.
  }
  \label{depth-histogram}
 \end{figure}
