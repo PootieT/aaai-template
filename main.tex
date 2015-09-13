@@ -128,7 +128,29 @@ and we show that the notion of depth is the principal factor in determining perf
 
 %% Above describes the enough detail of the paper structure?
 
-\section{Tie-breaking Strategies in \astar}
+\section{Preliminaries}
+
+We first define some notation and terminology used throughout the rest of the paper.
+A \emph{tie-breaking strategy} selects from among nodes with the same $f$-value.
+Tie-breaking strategies are denoted as $[\text{criterion}_1, \text{criterion}_2, ..., \text{criterion}_k]$,
+which means: If there multiple nodes with the same $f$-vaue, first, break ties using $\text{criterion}_1$. 
+If there still multiple nodes remaining, then break ties using $\text{criterion}_2$ and so on, until a single node is selected.
+The \emph{first-level tie-breaking policy} of a strategy is $\text{criterion}_1$, the \emph{second-level tie-breaking policy} is $\text{criterion}_2$, and so on.
+
+TODO: Plateau
+
+TODO(?) Frontier
+
+In our experiments, all planners are based on the latest Fast Downward code base, and all
+experiments are run using 5 minutes runtime cutoff with a 2GB memory 
+limit for the search binary (FD translation/preprocessing time are not included in the 5-minute limit).
+
+All experiments were conducted on Xeon E5410@2.33GHz CPUs.
+Our experimental results include 35 standard benchmark domains with 1104
+problems.
+XXXTODO?-mentionzerocost here also? %as well as... zerocost.
+
+\section{Background: Tie-breaking Strategies in \astar}
 
 %Aside from the heuristic function, most best-first family of search
 %algorithms, including \astar, IDA* and so on, have a tie-breaking criteria which is used
@@ -137,7 +159,7 @@ and we show that the notion of depth is the principal factor in determining perf
 If multiple nodes with the same $f$-cost are possible, \astar
 must implement some tie-breaking policy (either
 explicitly or implicitly) which selects from among these nodes.
-The early literature on heuristic search seems to have been mostly agnostic on the issue of tie-breaking.
+The early literature on heuristic search seems to have been mostly agnostic regarding tie-breaking.
 The original paper proposing \astar, as well as Nilsson's
 subsequent textbook states: ``Select the open node $n$ whose value $f$
 is smallest. Resolve ties arbitrarily, but always in favor of any [goal
@@ -172,13 +194,12 @@ implicit) are required if multiple nodes can have the same $f$ and
 $h$ values.
 %% we do, in Roger, Helmert
 % We are not aware of any work that explicitly mentions 2nd-level tie-breaking.
-While the survey of efficient \astar implementations in \citeauthor{burns2012implementing} did not explicitly mention 2nd-level tie-breaking, their code first breaks ties according to $h$, and then breaks remaining ties according to a \lifo policy (most recently generated nodes first).\footnote{https://github.com/eaburns/search}
+While the survey of efficient \astar implementations in \citeauthor{burns2012implementing} did not explicitly mention 2nd-level tie-breaking, their code first breaks ties according to $h$, and then breaks remaining ties according to a \lifo policy (most recently generated nodes first), i.e.,a $[h,\lifo]$ strategy.\footnote{https://github.com/eaburns/search}
 Although not documented, their choice of a \lifo 2nd-level tie-breaking policy appears to be a natural consequence of the fact it can be trivially, efficiently implemented in their two-level bucket (vector) implementation of OPEN.
 In contrast, the current implementation of \sota \astar based planner Fast
 Downward \cite{Helmert2006}\footnote{http://www.fast-downward.org}, as well as 
-the work by \cite{RogerH10} uses
-a \fifo second-level tie-breaking policy. 
-Although we could not find an explanation, this choice is most likely due to their use of alternating OPEN lists, in which case the \fifo policy serves to provide a limited form of fairness.
+the work by \cite{RogerH10} uses a $[h,\fifo]$ tie-breaking strategy.
+Although we could not find an explanation, this choice is most likely due to their use of alternating OPEN lists, in which case the \fifo second-level policy serves to provide a limited form of fairness.
 %We could not find any explanation for this choice either.
 
 %\citeauthor{Korf1985depth} uses $h$-based tie-breaking in the context of WA*
@@ -187,21 +208,7 @@ Although we could not find an explanation, this choice is most likely due to the
 
 \subsection{Reevaluating the Existing Strategies}
 
-
-We tested various tie-breaking strategies throughout this paper.  In the
-following sections, we use a convenient array-based notation of a
-combination of tie-breaking strategy.  For example, $[f,h,\fifo]$ denotes
-standard \astar with $h$-based first-level tie-breaking and \fifo
-second-level tie-breaking.
-%% I removed \fd because it is not yet proposed at this point
-
-All planners are based on the latest Fast Downward code base, and all
-experiments are run using 5 minutes runtime cutoff with 2GB memory
-limit. Experiments were conducted on Xeon E5410@2.33GHz CPUs.
-Our experimental results include 35 standard benchmark domains with 1104
-problems.
-
-We first compared two strategies $[f,h,\fifo]$, $[f,h,\lifo]$, which
+We first compared two strategies $[h,\fifo]$, $[h,\lifo]$, which
 first breaks ties according to $h$, and then applies \fifo or \lifo
 second-level tie-breaking, respectively.
 % The following will be necessary in a future version, if we use LOP:
@@ -214,7 +221,7 @@ shown in \reftbl{single-coverage} (Left).
 Differences in coverage are observed in several domains.
 Due to space limitation, we show only the domains
 where there was any difference. Full data is available in the
-supplemental material. \todo{probably better to show full results for this particular experiment}
+supplemental material. 
 % 
 \refig{f-h-eval} gives us a
 more fine-grained analysis by comparing the number of node evaluation
@@ -244,8 +251,8 @@ more fine-grained analysis by comparing the number of node evaluation
  \fifo second-level tie-breaking, with first-level $h$ tie-breaking.}  \label{f-h-eval}
 \end{figure}
 
-According to \reftbl{single-coverage} (left) with $h$ tie-breaking, \lifo
-outperforms \fifo.
+According to \reftbl{single-coverage} (left) with $[h,\lifo]$
+outperforms $[h,\fifo]$.
 \refig{f-h-eval} also shows that the difference in the number of nodes
 evaluated can sometimes be larger than a factor of 10, especially in
 \pddl{Openstacks} and \pddl{Cybersec}.
@@ -253,12 +260,11 @@ evaluated can sometimes be larger than a factor of 10, especially in
 \subsubsection{Is $h$-Based Tie-Breaking necessary?}
 
 Next, we investigated whether $h$-based, first-level tie-breaking is necessary.
-In \reftbl{single-coverage} (right), which shows the results when  first-level
-tie-breaking based on $h$ is disabled, $[f, \lifo]$, which simply breaks ties among nodes with the same $f$-cost by expanding most recently generated nodes first (first suggested in \cite{korf1985depth}),
-clearly dominates $[f, \fifo]$.
+In \reftbl{single-coverage} (right), which shows the results when  relying only on \fifo or \lifo tie-breaking.
+$[\lifo]$, which simply breaks ties among nodes with the same $f$-cost by expanding most recently generated nodes first (first suggested in \cite{korf1985depth}), clearly dominates $[\fifo]$.
 
-Interestingly, the performance of the $[f, \lifo]$ strategy
-is comparable to $[f,h,\lifo]$ and $[f,h,\fifo]$, the two-level strategies that first break ties according to $h$.
+Interestingly, the performance of the $[\lifo]$ strategy
+is comparable to $[h,\lifo]$ and $[h,\fifo]$, the two-level strategies that first break ties according to $h$.
 This may be somewhat surprising, considering the ubiquity of $h$-based tie-breaking in the search and planning communities.
 % 
 However, \lifo behaves somewhat similarly to $h$-based tie-breaking, in the following sense:
@@ -271,7 +277,7 @@ Thus, \lifo will expand nodes in a ``depth-first'' manner, and as the depth incr
 the nodes that continue to be expanded by \lifo's 
 dept-first exploration will have non-decreasing $g$-values and non-increasing $h$-values.
 This is similar to actively expanding nodes with low $h$-values, which is the behavior for $h$-based tiebreaking.
-Therefore, the performance of $[f,\lifo]$ is comparable to the performance of $[f,h,\lifo]$.
+Therefore, the performance of $[f,\lifo]$ is comparable to the performance of $[h,\lifo]$.
 % \citeauthor{burns2012implementing}
 % (\citeyear{burns2012implementing}) writes ``the goal can be found more
 % quickly in the final $f$ layer of search'' about $h$ tie-breaking.
@@ -576,9 +582,11 @@ the depth-based 2nd-level tie-breaking criterion, and finally,
 \ro as the 3rd-level criterion.
 Since these configurations involves randomness, we run 10
 experiments with different random seeds for each configuration and
-tested the significance of the difference of the mean coverage with Wilcoxon test,
-a non-parametric significance testing method applicable to
-the populations in which normal distribution cannot be assumed.
+tested the significance of the difference of the mean coverage with 
+the non-paremetric Wilcoxon test.   % ``non-parametric'' means ``normal distribution not assumed
+%Wilcoxon test,
+%a non-parametric significance testing method applicable to
+%the populations in which normal distribution cannot be assumed.
 
 \reftbl{depth} shows the mean and standard deviation of the coverages,
 along with 3 rightmost columns showing the $p$ values of the
