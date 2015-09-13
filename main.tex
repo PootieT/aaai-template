@@ -234,7 +234,8 @@ $h$ values.
 While the survey of efficient \astar implementation techniques in \citeauthor{burns2012implementing} did not explicitly mention 2nd-level tie-breaking, their code first breaks ties according to $h$, and then breaks remaining ties according to a \lifo policy (most recently generated nodes first), i.e.,a $[h,\lifo]$ strategy \cite{burnscode}. %\footnote{https://github.com/eaburns/search} 
 Although not documented, their choice of a \lifo 2nd-level tie-breaking policy appears to be a natural consequence of the fact it can be trivially, efficiently implemented in their two-level bucket (vector) implementation of OPEN.
 In contrast, the current implementation of \sota \astar based planner Fast
-Downward \cite{Helmert2006}\footnote{http://www.fast-downward.org}, as well as 
+Downward \cite{Helmert2006}, %\footnote{http://www.fast-downward.org}, <-- takes up 2 lines!
+as well as 
 the work by \cite{RogerH10} uses a $[h,\fifo]$ tie-breaking strategy.
 Although we could not find an explanation, this choice is most likely due to their use of alternating OPEN lists, in which case the \fifo second-level policy serves to provide a limited form of fairness.
 %We could not find any explanation for this choice either.
@@ -244,7 +245,7 @@ Although we could not find an explanation, this choice is most likely due to the
 %\cite{korf1993linear}.  
 % ** not sure how/where to put this..
 
-\subsection{Evaluation of  Commonly Used Tie-Breaking Strategies}
+\section{Evaluation of  Standard Strategies}
 \label{sec:eval-common-strategies}
 
 We first compared two commonly used tie-breaking strategies $[h,\fifo]$, $[h,\lifo]$, which
@@ -488,9 +489,9 @@ We call this set of 29 domains as \emph{zerocost domains} hereafter.
 % solving domains which are unit-cost by origin is not called
 % ``inadmissible''. Above modification addresses this problem.
 
-We plotted the size of the final plateau of the zerocost domain instances just like in
-\refig{plateau}. The trend of large plateaus becomes universal among
-instances. Thus, in these cost-minimization problems, the search strategy within
+\refig{plateau-zerocost} plots the size of the final plateau of the zerocost domain instances
+All of these zerocost domains have large plateaus.
+Thus, in these cost-minimization problems, the search strategy within
 plateau becomes much more important than in the
 runtime-minimization problems.
 
@@ -509,16 +510,16 @@ and $\parent{n}$ are in the same plateau and share the same $f$ and $h$,
 $\depth{n}$ is defined as $\depth{\parent{n}} + 1$.  Based on this
 simple notion of depth, we propose three \emph{depth-based
 tie-breaking}, where the nodes are inserted to buckets associated with
-depths, and upon expansion, the buckets are chosen in different manners.
-FirstDepth(\fd), RandomDepth(\rd) and LastDepth(\ld) respectively break
-ties by choosing a node from the bucket with the smallest depth, a
-random depth, or the largest depth.
+depths, and upon expansion, the buckets are chosen according to some policy.
+FirstDepth(\fd), LastDepth(\ld), and RandomDepth(\rd) 
+choosing a node from the bucket with the smallest,
+largest, or random depth, respectively.
 
 \todo{remove this part if complete plot in \refig{depth-histogram} did
 not succeed}
 The effectiveness of each of these three depth-based poicies depends on the
 structure of the problem instance.  Within
-the plateau region, all nodes have the same $f$ and $h$ values
+the plateau region, all nodes have the same $f$ and $h$ values, 
 % yes, for simplicity, I'm assuming 3-level tiebreaks, ignoring no-h for the time being..
 and it is impossible to guess whether the goals are likely to be  near or far
 away or from the entrance.  In the first case, the
@@ -527,27 +528,23 @@ search should be focused around the entrance favoring the smaller depths
 second case, the planner should greedily explore the various area of the
 plateau by preferring largest depth (LastDepth), much like in
 depth-first. 
-It may also be possible for a goalsto be at an intermediate depth, in which case
+It may also be possible for a goals to be at an intermediate depth, in which case
 FirstDepth would take too much time to reach that
 depth, and LastDepth would greedily go past and ignore the depth.
-This is a case
-where RandomDepth is the safest practice: 
-In the absence of useful prior knowledge and heuristic guidance,
-choosing a random depth will balance exploration and exploitation,
-while allowing nodes at intermediate depths to be expanded.
+By an adversary argument, RandomDepth, which has no depth bias would seem to be the safest policy.
 
 
 \subsubsection{Tie-Breaking within Depth-Buckets} % changing from ``third-level'' because we'll also consider that sue depth as the 1st-level policy, e.g., [rd,random] (noh).
 Since there can be multiple nodes within the same depth bucket
 a further tie-breaking criterion may be necessary to break times among them.
 We could, for example, apply \lifo or \fifo policies at this level -- 
-ote that $[h,\fd,\fifo]$ and $[h,\ld,\lifo]$ are equivalent to $[h,\fifo]$ and $[h,\lifo]$, respectively.
+note that $[h,\fd,\fifo]$ and $[h,\ld,\lifo]$ are equivalent to $[h,\fifo]$ and $[h,\lifo]$, respectively.
 
 However, 
 we use a Random Order (\ro) policy, which 
 randomly selects an element from the depth bucket selected by the depth-based tie-breaking.
 This is because the effectiveness of the tie-breaking behavior within a bucket
-is affected by accidental biases, e.g., action ordering in the PDDL domain
+can be affected by accidental biases, e.g., names/orders of action schema in the PDDL domain
 definition \cite{vallati2015effective}.
 %Finding the best action ordering is not the scope of this paper.
 Thus, we avoid bias at this level of tie-breaking by using \ro and assess its expected/average
@@ -571,7 +568,6 @@ performance.
 \label{sec:depth-based-evaluation}
 We evaluated three 3-level tie-breaking strategies and four 2-level
 tie-breaking strategies in all.
-
 %REDUNDANT? , i.e., $[f,h,depthStrategy,LFR]$, where the first-level tie-breaking is according to $h$ (break ties in favor of small $h$), the second-level strategy is based on depth and $depthStrategy \in \{\fd, \ld, \rd\}$, and the third level tie-breaking strategy $LFR \in \{\lifo, \fifo, \ro\}$.
 % 
 In addition to the 35 IPC benchmark domains with 1104 problems used in
@@ -618,8 +614,8 @@ the performance was significantly affected by 2nd-level tie-breaking, and
 RandomDepth dominated the others. 
 Although LastDepth and RandomDepth behave similarly on most domains, 
 the performance of RandomDepth in some
-domains are noticeable (e.g., \pddl{Cybersec}, \pddl{Woodworking-cut}). Also, the
-standard deviation of the coverage results of RandomDepth tends to be smaller
+domains are noticeable (e.g., \pddl{Cybersec}, \pddl{Woodworking-cut}). 
+The std deviation of RandomDepth coverage tends to be smaller
 than that of LastDepth, indicating that RandomDepth is robust with respect to random seeds.
 FirstDepth is mostly dominated by the RandomDepth and LastDepth, except in \pddl{Scanalyzer-analyse}
 and \pddl{Sokoban-pushgoal}.
@@ -664,7 +660,7 @@ and \pddl{Sokoban-pushgoal}.
 
 \begin{table}[tb]
  \centering
- \relsize{-3}
+ \relsize{-2} % XXX \unfortunately, relsize{-3} was unreadable unless zoomed, so unusable for submission
  \input{tables/aaai16-robustnesscheck/aaai16prelim3_zerocost/1-4-all-and-sig-wilcox-remove-same.tex}
  \caption{Experiments comparing the coverages of 6 configurations.
  Each cell shows the coverage of the domain solved with 5 min, 2GB.
@@ -762,7 +758,7 @@ By randomly selecting a depth bucket, $[h,\rd,\ro]$ explicitly eliminates this b
 % Thus, multiple levels of randomness alone do not account for the success of $[h,\rd,\ro]$, and the notion of depth buckets seems necessary.
 
 
-\section{The Effect of Domain-Configuration on \astar Tie-Breaking}
+\section{Domain-Configuration and Tie-Breaking}
 %Moved this out of the depth-based evaluation section because we also evaluate [h,fifo] and [h,lifo], and the results show that all are robust wrto actin ordering
 Recently, \citeauthor{vallati2015effective} showed that the performance of 
 satisficing planners was significantly affected by PDDL domain \emph{configurations}, which includes the name/ordering of actions, propositions, and objects in the PDDL input file (\citeyear{vallati2015effective}).
@@ -770,11 +766,10 @@ satisficing planners was significantly affected by PDDL domain \emph{configurati
 They conjectured that the reason for the performance variations caused
 by object reordering is due to the impact that the ordering of objects has on tie-breaking.
 % in \cite{vallati2015effective} p.7, col2, par#1
-
-In Fast Downward, action names can affect search performance, because it 
+In Fast Downward, action names can affect search performance, because FD 
 sorts the action schemas according to the dictionary
 order of the schema names, which affects the order of applicable ground
-actions of each node, which in turn affects the order in which nodes
+actions, which in turn affects the order in which nodes
 are inserted into OPEN.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%5
@@ -798,7 +793,7 @@ resulting in 9 runs per method (recall that robustness wrto random seed was show
 
 The coverage results are shown in \reftbl{actionordering-robustness} (We
 also included the original 10 runs in \reftbl{depth}).
-We analysed the results of $[h,\rd,\ro]$ using statistical methods
+We statistically analysed the results of $[h,\rd,\ro]$ 
 to see if any result of 4 set of differently reordered domains
 significantly outperformed the others.
 %In order to test the significance of mean value,
