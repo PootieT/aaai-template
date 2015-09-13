@@ -8,7 +8,7 @@
 \begin{abstract}
 % this current version is intentionally ambiguous as possible
 Despite the recent improvements in admissible heuristic search techniques
-in classical planning, the exponential growth of
+for classical planning, the exponential growth of
 the size of search plateaus in A* is unavoidable.
 We investigate tie-breaking strategies for A*, and propose simple yet effective methods for improving performance on domains with large search plateaus.
 
@@ -535,22 +535,21 @@ In the absence of useful prior knowledge and heuristic guidance,
 choosing a random depth will balance exploration and exploitation,
 while allowing nodes at intermediate depths to be expanded.
 
-\subsubsection{Third-Level Tie-Breaking}
-
-Since there can be multiple nodes with the same $f$, $h$ and depth,
-a further tie-breaking criterion is necessary to select among nodes in the same depth bucket.
-There are 3 possibilities in implementing this third-level tie-breaking:
-\fifo, \lifo and Random Order (\ro), which
+\subsubsection{Tie-Breaking within depth-buckets} % changing from ``third-level'' because we'll also consider that sue depth as the 1st-level policy, e.g., [rd,random] (noh).
+Since there can be multiple nodes within the same depth bucket
+a further tie-breaking criterion may be necessary to break times among them.
+Three natural candidate policies for tie-breaking within a depth bucket are
+\fifo, \lifo, and Random Order (\ro), which
 randomly selects an element from the depth bucket selected by the depth-based tie-breaking.
 
-Among \fifo, \lifo and \ro, the natural policy is Random Order.
-This is because the effectiveness of the third-level tie-breaking behavior
-is affected by the accidental bias in action ordering in the PDDL domain
+We focus on the Random Order policy,
+because the effectiveness of the tie-breaking behavior within a bucket
+is affected by accidental biases introduced by, e.g.,  action ordering in the PDDL domain
 definition \cite{vallati2015effective}.
-Finding the best action ordering is not the scope of this paper.
+%Finding the best action ordering is not the scope of this paper.
 Thus, focusing on \ro and assess its expected/average
-performance is the most reasonable practice to understand the behavior of second-level,
-depth-based tie-breaking.
+performance is the most reasonable practice to understand the behavior of 
+depth-based tie-breaking policies.
 
 % Among \fifo, \lifo and \ro, the natural policy is Random Order.
 % This is because the effectiveness of the third-level tie-breaking behavior
@@ -566,7 +565,7 @@ depth-based tie-breaking.
 
 \subsubsection{Evaluating Depth-based Tie-Breaking}
 
-We evaluated five 3-level tie-breaking strategies and three 2-level
+We evaluated five, 3-level tie-breaking strategies and three 2-level
 tie-breaking strategies in all.
 %REDUNDANT? , i.e., $[f,h,depthStrategy,LFR]$, where the first-level tie-breaking is according to $h$ (break ties in favor of small $h$), the second-level strategy is based on depth and $depthStrategy \in \{\fd, \ld, \rd\}$, and the third level tie-breaking strategy $LFR \in \{\lifo, \fifo, \ro\}$.
 % 
