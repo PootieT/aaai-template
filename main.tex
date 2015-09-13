@@ -48,16 +48,16 @@ nodes with $f(n) < f^*$, where $f^*$ is the cost of the optimal solution.
 \astar expands \emph{some} of the nodes with $f(n) = f^*$, and never expands a node with $f(n) > f^*$.
 Thus, the \emph{effective search space of \astar} is the set of nodes with 
 $f(n) \leq f^*$, and
-much of the work in the AI search and planning literature  has focused
+much of the work in the search and planning literature  has focused
 on reducing the size of this effective search space by
 developing more accurate, admissible heuristic functions.
 
-In many problems, the size of the \emph{last frontier}, the set of nodes with $f(n)=f^*$, accounts for a significant portion of $A$.
+In many problems, the size of the \emph{last frontier}, the set of nodes with $f(n)=f^*$, accounts for a significant portion of the effective search space of \astar.
 \refig{fig:plateau-noh} plots the number of states with $f(n) = f^*$ (y-axis)
 versus the number of states with $f(n) \leq f^*$
 for a set of 1104 benchmark problem instances from the ICAPS International Planning Competition (IPC1998-2011).
 For many instances in \refig{fig:plateau-noh},  a large fraction of the nodes with $f(n) \leq f^*$ have $f(n)=f^*$.
-For example, in the Openstacks domain, almost all states with $f(n) \leq f^*$ have cost $f^*$.
+For example, in the \pddl{Openstacks} domain, almost all states with $f(n) \leq f^*$ have cost $f^*$.
 In such domains, the behavior of \astar on the last frontier is critical -- the policy for deciding which nodes to expand in the last frontier can have a significant impact on the performance of \astar.
 
 \begin{figure}[tb]
@@ -90,9 +90,9 @@ We first empirically evaluate widely used tie-breaking strategy for \astar, and 
 % 
 (1) a Last-In-First-Out (\lifo) policy for breaking ties among nodes with the same $f$ {\bf and h?} value tends to be more efficient than an a First-In-First-Out (\fifo) policy, and 
 % 
-(2) with \lifo implementation, tie-breaking according to $h$, which
+(2) tie-breaking according to $h$, which
 frequently appears in the heuristic search literature, has little 
-impact on the performance.
+impact on the performance as long as a \lifo policy is used.
 % 
 %% Remove?
 % \todo[
@@ -173,10 +173,10 @@ $h$ values.
 %% we do, in Roger, Helmert
 % We are not aware of any work that explicitly mentions 2nd-level tie-breaking.
 While the survey of efficient \astar implementations in \citeauthor{burns2012implementing} did not explicitly mention 2nd-level tie-breaking, their code first breaks ties according to $h$, and then breaks remaining ties according to a \lifo policy (most recently generated nodes first).\footnote{https://github.com/eaburns/search}
-Although not documented, their choice of a \lifo 2nd-level tie-breaking policy appears to be a natural consequence of the fact that the \lifo policy can be trivially, efficiently implemented in their two-level bucket (vector) implementation of OPEN.
+Although not documented, their choice of a \lifo 2nd-level tie-breaking policy appears to be a natural consequence of the fact it can be trivially, efficiently implemented in their two-level bucket (vector) implementation of OPEN.
 In contrast, the current implementation of \sota \astar based planner Fast
-Downward \cite{Helmert2006}\footnote{http://www.fast-downward.org}, and
-the work by \cite{RogerH10} (based on Fast-Downward), uses
+Downward \cite{Helmert2006}\footnote{http://www.fast-downward.org}, as well as 
+the work by \cite{RogerH10} uses
 a \fifo second-level tie-breaking policy. 
 Although we could not find an explanation, this choice is most likely due to their use of alternating OPEN lists, in which case the \fifo policy serves to provide a limited form of fairness.
 %We could not find any explanation for this choice either.
@@ -248,7 +248,7 @@ According to \reftbl{single-coverage} (left) with $h$ tie-breaking, \lifo
 outperforms \fifo.
 \refig{f-h-eval} also shows that the difference in the number of nodes
 evaluated can sometimes be larger than a factor of 10, especially in
-Openstacks and Cybersec.
+\pddl{Openstacks} and \pddl{Cybersec}.
 
 \subsubsection{Is $h$-Based Tie-Breaking necessary?}
 
@@ -305,7 +305,7 @@ benchmark instances \emph{with $h$ tie-breaking}.
 The $y$-axis
 represents the number of nodes with $[f,h]=[f^*,0]$, and the $x$-axis represents the total
 number of nodes with $f\leq f^*$.
-In some domains such as Openstacks and Cybersec, the planner can spend most of the runtime
+In some domains such as \pddl{Openstacks} and \pddl{Cybersec}, the planner can spend most of the runtime
 searching the final plateau even with $h$ tiebreaking.
 It also
 means that runtime on these domains varies significantly depending on the second-level tie-breaking strategy.
@@ -330,7 +330,7 @@ means that runtime on these domains varies significantly depending on the second
   \lmcut on the standard benchmark instances. We do not show all labels
   for point types, while supplemental material includes larger, fully
  labelled, colored variant. Both axes are logarithmic. Dotted lines represent
-  $\times 10^n$ boundaries. We see many Openstacks and Cybersec
+  $\times 10^n$ boundaries. We see many \pddl{Openstacks} and \pddl{Cybersec}
  instances near the $y=x$ line.}
   \label{plateau}
 \end{figure}
@@ -397,13 +397,13 @@ difficulty to the current heuristic planners due to their large plateaus.
 Therefore, in this paper, we modified various domains
 into cost minimization domains with many zero-cost actions.
 For example, elevators-up is a variation of
-Elevators domain where the target is to minimize
+the \pddl{Elevators} domain where the target is to minimize
 the energy consumption caused by ``up'' action, which moves the elevator
 up, and all other actions have zero-cost.  Modification was done in a
 practically reasonable manner in a sense of cost minimization. Most
 transportation-type domains are modified so that they use less
-fuel (Logistics-fuel etc.). Assembly-type domains are modified so that it minimizes the
-resource usage (Floortile-ink minimizes ink usage, or Woodworking-cut
+fuel (\pddl{Logistics-fuel} etc.). Assembly-type domains are modified so that it minimizes the
+resource usage (\pddl{Floortile-ink} minimizes ink usage, or \pddl{Woodworking-cut}
 minimizes wood usage, etc). For nontrivial domains, we selected one action
 arbitrarily, and made other actions to have zero cost. We did not
 include domains with single action schema and domains already with many
@@ -586,7 +586,7 @@ test. The results depend on the domains, but in many situations we
 observed a significant difference among 3 second-level tie-breaking, and
 RandomDepth dominated the others. Although in most domains LastDepth and
 RandomDepth behave similar, the performance of RandomDepth in some
-domains are noticeable (e.g., Cybersec, Woodworking-cut). Also, the
+domains are noticeable (e.g., \pddl{Cybersec}, Woodworking-cut). Also, the
 standard deviation of the coverage results of RandomDepth tends to be smaller
 than that of LastDepth, indicating the robustness of RandomDepth wrto seeds.
 FirstDepth is dominated by the others, except in scanalyzer-analyse
@@ -815,7 +815,7 @@ for cost-optimal search is an interesting direction for future work.
 
 The PLUSONE\footnote{This term is used on the Fast Downward website.}
 cost-type is a non-admissible search technique in the Fast Downward/LAMA planner
-\cite{richter2010lama} which increases every action costs by 1.
+\cite{richter2010lama} which increases all action costs by 1.
 By eliminating zero-cost actions, this has the effect similar to our
 FirstDepth tie-breaking.
 %Using PLUSONE, three successive
@@ -827,9 +827,8 @@ and resulted in a significantly better performance in IPC-6
 satisficing track \cite[p.137, Sec. 3.3.2]{richter2010lama}.
 \todo*{citation}
 % There's a long discussion of Openstacks in \cite{richter2010lama}, p.167-169, but I can't find PLUSONE anywhere. Maybe it's called something else in the paper?  Maybe \richter2010lama is the wrong citation??
-
-The major difference of our depth-based tie-breaking from PLUSONE
-strategy is twofold.  First, depth-based tie-breaking is admissible,
+There are two  major differences between  our depth-based tie-breaking PLUSONE.
+First, depth-based tie-breaking is admissible,
 because unlike PLUSONE, action costs are not modified.  Also, \emph{we
 do not always favor smaller depth over larger depth}. LAMA treats the
 increased cost as the part of sorting criteria and always prefers
