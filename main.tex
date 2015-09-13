@@ -535,7 +535,8 @@ In the absence of useful prior knowledge and heuristic guidance,
 choosing a random depth will balance exploration and exploitation,
 while allowing nodes at intermediate depths to be expanded.
 
-\subsection{Tie-Breaking within depth-buckets} % changing from ``third-level'' because we'll also consider that sue depth as the 1st-level policy, e.g., [rd,random] (noh).
+
+\subsubsection{Tie-Breaking within Depth-Buckets} % changing from ``third-level'' because we'll also consider that sue depth as the 1st-level policy, e.g., [rd,random] (noh).
 Since there can be multiple nodes within the same depth bucket
 a further tie-breaking criterion may be necessary to break times among them.
 We could, for example, apply \lifo or \fifo policies at this level -- 
@@ -567,8 +568,9 @@ performance.
 
 \subsection{Evaluating Depth-based Tie-Breaking}
 \label{sec:depth-based-evaluation}
-We evaluated five, three-level tie-breaking strategies and three 2-level
-tie-breaking strategies in all. XXXTODOrecount!
+We evaluated three 3-level tie-breaking strategies and four 2-level
+tie-breaking strategies in all.
+
 %REDUNDANT? , i.e., $[f,h,depthStrategy,LFR]$, where the first-level tie-breaking is according to $h$ (break ties in favor of small $h$), the second-level strategy is based on depth and $depthStrategy \in \{\fd, \ld, \rd\}$, and the third level tie-breaking strategy $LFR \in \{\lifo, \fifo, \ro\}$.
 % 
 In addition to the 35 IPC benchmark domains with 1104 problems used in
@@ -663,7 +665,7 @@ and \pddl{Sokoban-pushgoal}.
  \centering
  \relsize{-3}
  \input{tables/aaai16-robustnesscheck/aaai16prelim3_zerocost/1-4-all-and-sig-wilcox-remove-same.tex}
- \caption{Experiments comparing the coverages of 7 configurations.
+ \caption{Experiments comparing the coverages of 6 configurations.
  Each cell shows the coverage of the domain solved with 5 min, 2GB
  setting. Zerocost domains are named as
  [original name]-[name of nonzero action].
@@ -833,7 +835,8 @@ In comparison to best-first search algorithms for satisficing search.
  \centering \relsize{-3}
  %\input{tables/aaai16-actionordering/aaai16prelim3random1_zrandom1_2zrandom1_aaai16prelim3random2_zrandom2_2zrandom2_aaai16prelim3random3_zrandom3_2zrandom3/1-1-all.tex}
  %\input{tables/aaai16-actionordering/aaai16prelim3random1_aaai16prelim3random2_aaai16prelim3random3_zrandom1_zrandom2_zrandom3_2zrandom1_2zrandom2_2zrandom3/1-1-all.tex}
- \input{tables/aaai16-actionordering/aaai16prelim3random1_aaai16prelim3random2_aaai16prelim3random3_zrandom1_zrandom2_zrandom3_2zrandom1_2zrandom2_2zrandom3/1-1-all.tex}
+ %\input{tables/aaai16-actionordering/aaai16prelim3random1_aaai16prelim3random2_aaai16prelim3random3_zrandom1_zrandom2_zrandom3_2zrandom1_2zrandom2_2zrandom3/1-1-all.tex}
+ \input{tables/aaai16-actionordering/aaai16prelim3random1_aaai16prelim3random2_aaai16prelim3random3_aaai16prelim3-_zrandom1_zrandom2_zrandom3_zerocost/1-1-all.tex}
  \caption{Results showing the total coverages with
  three seeds on three uglified versions of the same set of domains. The effect
  of action ordering in the domain definition is so small that it does not
