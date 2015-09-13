@@ -67,11 +67,11 @@ In such domains, the behavior of \astar on the last frontier is critical -- the 
   \centering
  \includegraphics{tables/aaai16-frontier/aaai16prelim3/lmcut_frontier_noh-front-mono.pdf}
  \caption{
- The number of the nodes with $f=f^*$ (y-axis) compared to the
- total number of nodes in the search space with $f\leq f^*$ on 1104 IPC benchmark problems
+ The number of nodes with $f=f^*$ (y-axis) compared to the
+ total number of nodes in the search space (x-axis) with $f\leq f^*$ on 1104 IPC benchmark problems
   (search space analyzed using Fast Downward with \lmcut heuristic,
   slightly modified to generate all nodes with cost $f^*$).
-  Both axes are logarithmic. Dotted lines represent $\times 10^n$ boundaries.
+  Dotted lines represent $\times 10^n$ boundaries.
   }
  \label{fig:plateau-noh}
  \end{minipage}
@@ -81,13 +81,13 @@ In such domains, the behavior of \astar on the last frontier is critical -- the 
   % \includegraphics{tables/aaai16-frontier/aaai16prelim3/lmcut_frontier-front.pdf}
   \includegraphics{tables/aaai16-frontier/aaai16prelim3/lmcut_frontier-front-mono.pdf}
   \caption{
-  Same plot as \refig{fig:plateau-noh} except the $y$-axis showing
-  the number of the nodes with $[f,h]=[f^*,0]$, which forms the final
+  Similar to \refig{fig:plateau-noh} except the $y$-axis shows
+  \# nodes with $[f,h]=[f^*,0]$, which forms the final
   plateau when $h$ tie-breaking is enabled.
-  We see many Openstacks and Cybersec instances near the $y=x$ line.
-  We do not show all labels
-  for point types, while supplemental material includes larger, fully
-  labelled, colored variant.
+  Many \pddl{Openstacks} and \pddl{Cybersec} are instances near the $y=x$ line.
+  Due to space, We do not show all labels
+  for point types. See supplement for a larger, fully
+  labelled, colored version.
   }
   \label{plateau}
  \end{minipage} 
@@ -95,10 +95,12 @@ In such domains, the behavior of \astar on the last frontier is critical -- the 
  \begin{minipage}[t]{0.23\textwidth}
   \centering
   \includegraphics{tables/aaai16-frontier/zerocost/lmcut_frontier-front-mono.pdf}
-  \caption{Same plot as \refig{plateau}, but from the cost-minimization
+  \caption{Similar to \refig{plateau}, but for XXX instances from our cost-minimization
   domains with many zero-cost actions (\emph{zerocost domains}).
-  Even with $h$ tie-breaking, these domains force the planner
-  to search much larger plateau.}
+  Zero-cost actions induce very large plateau regions.
+%  Even with $h$ tie-breaking, these domains force the planner
+%  to search much larger plateau.}
+ }
  \label{plateau-zerocost}
  \end{minipage} 
 \end{figure*}
@@ -242,7 +244,7 @@ Although we could not find an explanation, this choice is most likely due to the
 %\cite{korf1993linear}.  
 % ** not sure how/where to put this..
 
-\subsection{Reevaluating the Existing Strategies}
+\subsection{Evaluation of  Commonly Used Tie-Breaking Strategies}
 
 We first compared two commonly used tie-breaking strategies $[h,\fifo]$, $[h,\lifo]$, which
 first breaks ties according to $h$, and then applies \fifo or \lifo
@@ -301,7 +303,7 @@ evaluated can sometimes be larger than a factor of 10, especially in
 
 Next, we investigated whether $h$-based, first-level tie-breaking is necessary.
 In \reftbl{single-coverage} (right), which shows the results when  relying only on \fifo or \lifo tie-breaking.
-$[\lifo]$, which simply breaks ties among nodes with the same $f$-cost by expanding most recently generated nodes first (first suggested in \cite{korf1985depth}), clearly dominates $[\fifo]$.
+$[\lifo]$, which simply breaks ties among nodes with the same $f$-cost by expanding most recently generated nodes first (suggested in \cite{korf1985depth}), clearly dominates $[\fifo]$.
 
 Interestingly, the performance of the $[\lifo]$ strategy
 is comparable to $[h,\lifo]$ and $[h,\fifo]$, the two-level strategies that first break ties according to $h$.
@@ -415,7 +417,7 @@ nonzero positive costs are reasonable because
 every actions are supposed to consume a fraction of time.
 However, such formulation is not suitable for general optimization
 problems.  For example, when you try to minimize the energy consumption
-by the elevators in Elevators domain, many actions would have zero-cost
+by the elevators inpddl{Elevators} domain, many actions would have zero-cost
 --- it does not consume electricity for either boarding or leaving the
 passenger, or moving the elevator down.
 % 
@@ -427,7 +429,7 @@ difficulty to the current heuristic planners due to their large plateaus.
 
 Therefore, in this paper, we modified various domains
 into cost minimization domains with many zero-cost actions.
-For example, elevators-up is a variation of
+For example, \pddl{Elevators-up} is a variation of
 the \pddl{Elevators} domain where the target is to minimize
 the energy consumption caused by ``up'' action, which moves the elevator
 up, and all other actions have zero-cost.  Modification was done in a
@@ -513,23 +515,25 @@ random depth, or the largest depth.
 
 \todo{remove this part if complete plot in \refig{depth-histogram} did
 not succeed}
-The effectiveness of this second-level depth-based strategy depends on the
-structure of the problem instance.  In the knowledge-free search within
-the plateau, all nodes have the same $f$ and $h$ values
+The effectiveness of each of these three depth-based poicies depends on the
+structure of the problem instance.  Within
+the plateau region, all nodes have the same $f$ and $h$ values
 % yes, for simplicity, I'm assuming 3-level tiebreaks, ignoring no-h for the time being..
-and it is impossible to guess whether the goal is concentrated near, far
-away or in a particular step from the entrance.  In the first case, the
+and it is impossible to guess whether the goals are likely to be  near or far
+away or from the entrance.  In the first case, the
 search should be focused around the entrance favoring the smaller depths
 (FirstDepth), and the behavior in the plateau should be much like breadth-first. In the
 second case, the planner should greedily explore the various area of the
 plateau by preferring largest depth (LastDepth), much like in
-depth-first. In the final case where the goal nodes are concentrated in
-a particular depth, FirstDepth would take too much time to reach that
+depth-first. 
+It may also be possible for a goalsto be at an intermediate depth, in which case
+FirstDepth would take too much time to reach that
 depth, and LastDepth would greedily go past and ignore the depth.
 This is a case
 where RandomDepth is the safest practice: 
-Choosing the random depth will balance the exploration and exploitation
-and maintains the possibility to expand the nodes in intermediate depths.
+In the absence of useful prior knowledge and heuristic guidance,
+choosing a random depth will balance exploration and exploitation,
+while allowing nodes at intermediate depths to be expanded.
 
 \subsubsection{Third-Level Tie-Breaking}
 
