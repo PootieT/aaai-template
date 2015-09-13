@@ -9,8 +9,11 @@
 % this current version is intentionally ambiguous as possible
 Despite the recent improvements in admissible heuristic search techniques
 for classical planning, the exponential growth of
-the size of search plateaus in A* is unavoidable.
-We investigate tie-breaking strategies for A*, and propose simple yet effective methods for improving performance on domains with large search plateaus.
+the size of the search frontier in A* is unavoidable.
+We investigate tie-breaking strategies for A*, 
+experimentally analyzing the performance of commonly used tie-breaking strategies that break ties according to the heuristic value of the nodes.
+We find that tie-breaking has a significant impact on search algorithm performance when there are actions with zero cost that induce large plateau regions in the search space.
+We develop a new framework for tie-breaking based on a depth metric which measures distance from the entrance to the plateau, and propose a new, randomized strategy which significantly outperforms standard tie-breaking strategies on existing planning benchmark domains as well as newly generated domains with zero-cost actions.
 
 %%  % 
 %% We investigate various existing myth on tie-breaking
@@ -67,10 +70,10 @@ In such domains, the behavior of \astar on the last frontier is critical -- the 
   \centering
  \includegraphics{tables/aaai16-frontier/aaai16prelim3/lmcut_frontier_noh-front-mono.pdf}
  \caption{
- The number of nodes with $f=f^*$ (y-axis) compared to the
- total number of nodes in the search space (x-axis) with $f\leq f^*$ on 1104 IPC benchmark problems
-  (search space analyzed using Fast Downward with \lmcut heuristic,
-  slightly modified to generate all nodes with cost $f^*$).
+ The \# of nodes with $f=f^*$ (y-axis) compared to the
+ total \# of nodes in the search space (x-axis) with $f\leq f^*$ on 1104 IPC benchmark problems
+  (search space analyzed using modified Fast Downward with \lmcut heuristic which 
+  generates all nodes with cost $f^*$).
   Dotted lines represent $\times 10^n$ boundaries.
   }
  \label{fig:plateau-noh}
@@ -81,7 +84,7 @@ In such domains, the behavior of \astar on the last frontier is critical -- the 
   % \includegraphics{tables/aaai16-frontier/aaai16prelim3/lmcut_frontier-front.pdf}
   \includegraphics{tables/aaai16-frontier/aaai16prelim3/lmcut_frontier-front-mono.pdf}
   \caption{
-  Similar to \refig{fig:plateau-noh} except the $y$-axis shows
+  Similar to \refig{fig:plateau-noh}; $y$-axis is
   \# nodes with $[f,h]=[f^*,0]$, which forms the final
   plateau when $h$ tie-breaking is enabled.
   Many \pddl{Openstacks} and \pddl{Cybersec} are instances near the $y=x$ line.
@@ -96,7 +99,7 @@ In such domains, the behavior of \astar on the last frontier is critical -- the 
   \centering
   \includegraphics{tables/aaai16-frontier/zerocost/lmcut_frontier-front-mono.pdf}
   \caption{Similar to \refig{plateau}, but for XXX instances from our cost-minimization
-  domains with many zero-cost actions (\emph{zerocost domains}).
+  \emph{zerocost domains} (\refsec{sec:zerocost-domains}).
   Zero-cost actions induce very large plateau regions.
 %  Even with $h$ tie-breaking, these domains force the planner
 %  to search much larger plateau.}
@@ -105,7 +108,7 @@ In such domains, the behavior of \astar on the last frontier is critical -- the 
  \end{minipage} 
 \end{figure*}
 
-In this paper, we focus on the \emph{tie-breaking} policy used by
+In this paper, we investigate \emph{tie-breaking} strategy used by
 \astar, which selects a node to expand among nodes with the same
 $f$-cost.  Since \astar expands all nodes with $f$-cost less than $f^*$
 before expanding any nodes with cost $f^*$, the tie-breaking policy only
@@ -369,7 +372,7 @@ means that runtime on these domains varies significantly depending on the second
 % between $[f,h,\fifo]$, $[f,h,\lifo]$ and $[f,h,\ro]$.
 
 \section{Domains with Zero-cost Actions}
-
+\label{sec:zerocost-domains}
 %% best to put openstacks here, considering the connection to the
 %% previous section
 \pddl{Openstacks}  is a cost
@@ -680,13 +683,11 @@ and \pddl{Sokoban-pushgoal}.
  \setlength{\tabcolsep}{0.3em}
  \centering \relsize{-1}
  \input{tables/aaai16-robustnesscheck/aaai16prelim3_zerocost/1-7-rx-and-sig-wilcox-remove-same.tex}
- \caption{Comparison of the mean and standard deviation of coverages by
- the RandomOrder last-level tiebreaking with and
- without second-level depth tie-breaking, $[h,\ro]$ and $[h,\rd,\ro]$. Each cell
- shows the average coverage of the domain obtained by 10 runs with 5
- min, 2GB setting.  For the space reason, we omitted those domains in
- which the results are not significantly different under Wilcoxon test
- with $p=0.05$. Full results are available in the supplemental material.
+ \caption{Performance of RandomOrder last-level tiebreaking with/without 2nd-level depth tie-breaking, $[h,\ro]$ and $[h,\rd,\ro]$. Each cell
+ shows the coverage (mean $\pm$ sd) on each domain (5min, 2GB)$\times$10 runs. 
+Due to space, only domains with results 
+ significantly different results  (according to the Wilcoxon test, $p<0.05$) are shown.
+See supplement for full results.
  }  \label{r-vs-rd-random}
 \end{table}
 
