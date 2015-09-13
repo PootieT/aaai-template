@@ -752,16 +752,10 @@ difference was not observed.
 In earlier sections, we showed that $[f,\lifo]$ tie-breaking is
 sufficient for solving the benchmark instances, and $h$ tie-breaking may
 not be necessary. We further strengthen our claim by showing the results
-of $[f,\rd,\ro]$. In \reftbl{rd-without-h}, we see that $[f,\rd,\ro]$
-dominates the other strategies, including those with $h$ tie-breaking.
+of $[f,\rd,\ro]$. In \reftbl{depth}, we see that $[f,\rd,\ro]$ dominates $[h,\fifo]$,
+and perform comparable to $[h,\lifo]$.
 
-\begin{table}[tb]
- \centering \relsize{-3}
- %\input{tables/aaai16-robustnesscheck/aaai16prelim3_zerocost_2zerocost/1-8-h-lf-vs-rd-random-noh.tex}
- \input{tables/aaai16-robustnesscheck/aaai16prelim3_zerocost_2zerocost/1-9-h-lf-vs-rd-random-noh-remove-same.tex}
- \caption{Results comparing the (mean) coverages of $[f,h,\fifo]$,
- $[f,h,\lifo]$ and $[f,h,\rd,\ro]$.} \label{rd-without-h}
-\end{table}
+%% moved to Table 2
 
 \subsubsection{Search Behavior within a Plateau}
 
