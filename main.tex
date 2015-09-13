@@ -60,15 +60,48 @@ For many instances in \refig{fig:plateau-noh},  a large fraction of the nodes wi
 For example, in the \pddl{Openstacks} domain, almost all states with $f(n) \leq f^*$ have cost $f^*$.
 In such domains, the behavior of \astar on the last frontier is critical -- the policy for deciding which nodes to expand in the last frontier can have a significant impact on the performance of \astar.
 
-\begin{figure}[tb]
- \centering \relsize{-3} 
+\begin{figure*}[bt]
+ \newcommand{\minilength}{0.36\textwidth}
+ \newcommand{\minisep}{0.02\textwidth}
+ \begin{minipage}[t]{\minilength}
+  \centering
  \includegraphics{tables/aaai16-frontier/aaai16prelim3/lmcut_frontier_noh-front-mono.pdf}
  \caption{
- The number of the nodes with cost $f=f^*$ (y-axis) compared to the
- total number of nodes in the search space with cost $f\leq f^*$ on 1104 IPC benchmark problems
-(search space analyzed using Fast Downward with \lmcut heuristic, slightly modified to generate all nodes with cost $f^*$).}
-\label{fig:plateau-noh}
-\end{figure}
+ The number of the nodes with $f=f^*$ (y-axis) compared to the
+ total number of nodes in the search space with $f\leq f^*$ on 1104 IPC benchmark problems
+  (search space analyzed using Fast Downward with \lmcut heuristic,
+  slightly modified to generate all nodes with cost $f^*$).
+  Both axes are logarithmic. Dotted lines represent $\times 10^n$ boundaries.
+  }
+ \label{fig:plateau-noh}
+ \end{minipage}
+ \hfill
+ \begin{minipage}[t]{\minilength}
+  \centering
+  % \includegraphics{tables/aaai16-frontier/aaai16prelim3/lmcut_frontier-front.pdf}
+  \includegraphics{tables/aaai16-frontier/aaai16prelim3/lmcut_frontier-front-mono.pdf}
+  \caption{
+  Same plot as \refig{fig:plateau-noh} except the $y$-axis showing
+  the number of the nodes with $[f,h]=[f^*,0]$, which forms the final
+  plateau when $h$ tie-breaking is enabled.
+  We see many Openstacks and Cybersec instances near the $y=x$ line.
+  We do not show all labels
+  for point types, while supplemental material includes larger, fully
+  labelled, colored variant.
+  }
+  \label{plateau}
+ \end{minipage} 
+ \hfill
+ \begin{minipage}[t]{0.23\textwidth}
+  \centering
+  \includegraphics{tables/aaai16-frontier/zerocost/lmcut_frontier-front-mono.pdf}
+  \caption{Same plot as \refig{plateau}, but from the cost-minimization
+  domains with many zero-cost actions (\emph{zerocost domains}).
+  Even with $h$ tie-breaking, these domains force the planner
+  to search much larger plateau.}
+ \label{plateau-zerocost}
+ \end{minipage} 
+\end{figure*}
 
 In this paper, we focus on the \emph{tie-breaking} policy used by
 \astar, which selects a node to expand among nodes with the same
@@ -127,6 +160,7 @@ and we show that the notion of depth is the principal factor in determining perf
 %machine-level efficiency have little effect on the performance.
 
 %% Above describes the enough detail of the paper structure?
+
 
 \section{Preliminaries}
 
@@ -188,6 +222,7 @@ also break ties ``preferring high $g$.''
 Thus, tie-breaking according to $h$-values appears
 to be ubiquitous in practice.
 
+
 Although the standard practice of tie-breaking according to $h$ might be
 sufficient in some domains, further levels of tie-breaking (explicit or
 implicit) are required if multiple nodes can have the same $f$ and
@@ -202,13 +237,14 @@ the work by \cite{RogerH10} uses a $[h,\fifo]$ tie-breaking strategy.
 Although we could not find an explanation, this choice is most likely due to their use of alternating OPEN lists, in which case the \fifo second-level policy serves to provide a limited form of fairness.
 %We could not find any explanation for this choice either.
 
+
 %\citeauthor{Korf1985depth} uses $h$-based tie-breaking in the context of WA*
 %\cite{korf1993linear}.  
 % ** not sure how/where to put this..
 
 \subsection{Reevaluating the Existing Strategies}
 
-We first compared two strategies $[h,\fifo]$, $[h,\lifo]$, which
+We first compared two commonly used tie-breaking strategies $[h,\fifo]$, $[h,\lifo]$, which
 first breaks ties according to $h$, and then applies \fifo or \lifo
 second-level tie-breaking, respectively.
 % The following will be necessary in a future version, if we use LOP:
@@ -226,6 +262,7 @@ supplemental material.
 \refig{f-h-eval} gives us a
 more fine-grained analysis by comparing the number of node evaluation
 (computations of \lmcut) on different tie-breakings.
+
 
 \begin{table}[tb]
  \centering \relsize{-3}
@@ -247,8 +284,11 @@ more fine-grained analysis by comparing the number of node evaluation
 \begin{figure}[tb]
  \centering \relsize{-3}
  \includegraphics{tables/aaai16-30min-5min-cut/aaai16prelim3/evaluated-lmcut_ff-lmcut_lf.pdf}
- \caption{Comparisons of \# of Evaluations between simple \lifo and
- \fifo second-level tie-breaking, with first-level $h$ tie-breaking.}  \label{f-h-eval}
+ \caption{Comparisons of the number evaluations between simple \lifo and
+ \fifo second-level tie-breaking, with first-level $h$
+ tie-breaking. \lifo evaluates less than $1/10$ of the nodes evaluated
+ by \fifo in Cybersec and Openstacks.}
+ \label{f-h-eval}
 \end{figure}
 
 According to \reftbl{single-coverage} (left) with $[h,\lifo]$
@@ -326,21 +366,6 @@ means that runtime on these domains varies significantly depending on the second
 %  The size of the bucket does not change
 % between $[f,h,\fifo]$, $[f,h,\lifo]$ and $[f,h,\ro]$.
 
-
-\begin{figure}[tb]
- \centering \relsize{-3}
-  % \includegraphics{tables/aaai16-frontier/aaai16prelim3/lmcut_frontier-front.pdf}
-  \includegraphics{tables/aaai16-frontier/aaai16prelim3/lmcut_frontier-front-mono.pdf}
-  \caption{Comparing the size of the $[f,h]$ search plateau to the total
-  evaluation below $f\leq f^*$. Data were obtained by the result of
-  \lmcut on the standard benchmark instances. We do not show all labels
-  for point types, while supplemental material includes larger, fully
- labelled, colored variant. Both axes are logarithmic. Dotted lines represent
-  $\times 10^n$ boundaries. We see many \pddl{Openstacks} and \pddl{Cybersec}
- instances near the $y=x$ line.}
-  \label{plateau}
-\end{figure}
-
 \subsection{Domains with Zero-cost Actions}
 
 %% best to put openstacks here, considering the connection to the
@@ -353,7 +378,7 @@ they prevent the standard heuristics from producing
 informative guidance.
 According to \cite{richter2010lama}, \textbf{??????}
 %Richter talks about the failures on openstacks starting around p.167
- \lmcut \cite{Helmert2009} fails to find a good cost
+\lmcut \cite{Helmert2009} fails to find a good cost
 partitioning with non-zero values, 
 % A detailed discussion of Openstacks domain and poor performance of landmarks is in \cite{richter10lama}, p.167-169.
 and most edges in the abstraction
@@ -465,17 +490,6 @@ We plotted the size of the final plateau of the zerocost domain instances just l
 instances. Thus, in these cost-minimization problems, the search strategy within
 plateau becomes much more important than in the
 runtime-minimization problems.
-
-\begin{figure}[tb]
- \centering \relsize{-3}
-  \includegraphics{tables/aaai16-frontier/zerocost/lmcut_frontier-front-mono.pdf}
-  \caption{Same plot as \refig{plateau}, but from the zerocost
-  domains. Even with $h$ tie-breaking, zerocost domains force the planner
-  to search much larger plateau.}
- \label{plateau-zerocost}
-\end{figure}
-
-
 
 \subsection{Depth-based Tie-Breaking}
 
