@@ -126,7 +126,7 @@ order among the nodes with the same $f$-cost.}
 
 We first empirically evaluate widely used tie-breaking strategy for \astar, and show that 
 % 
-(1) a Last-In-First-Out (\lifo) policy for breaking ties among nodes with the same $f$ {\bf and h?} value tends to be more efficient than an a First-In-First-Out (\fifo) policy, and 
+(1) a Last-In-First-Out (\lifo) policy for tends to be more efficient than an a First-In-First-Out (\fifo) policy, and 
 % 
 (2) tie-breaking according to $h$, which
 frequently appears in the heuristic search literature, has little 
@@ -138,25 +138,24 @@ impact on the performance as long as a \lifo policy is used.
 % both share the greedy search pattern within the plateau of the
 % search space.]{this is not shown yet. how to show it? xy-plot of the node
 % evaluation order?}
-
 These experiments show that there are significant performances differences among tie-breaking strategies
 when domains have zero-cost actions.  While there are relatively few domains with zero-cost actions in the existing IPC benchmark sets, we argue that this is a historical accident, and that in fact, many unit-cost domains may be more appropriately modelled using zero-cost actions.
 %Through these experiments, we points out a bias in the current set of
 %benchmark domains and the importance of tie-breaking in
 %the more practical cost-minimization problems.
 
-Next, in order to solve those cost-minimization problems with zero-cost actions,
+In order to solve such \emph{zero-cost-action} problems more efficently,
 we propose 
 tie-breaking methods
 based on a notion of \emph{depth} within the plateau, which corresponds to the number of steps 
-a node is from the ``entrance'' to the plateau region.
-We show that one strategies called RandomDepth provides a significant performance improvement
-compared to the other tie-breaking strategies using the same heuristic function.
-
+a node is from the ``entrance'' to the plateau region, and show that a randomized, depth-based strategy
+significant outperforms 
+other tie-breaking strategies using the same heuristic function.
+Although depth-based tie-breaking is part of a multi-level tie-breaking strategy,
+and we show that the notion of depth is the principal factor in determining performance.
 Finally, we show the robustness of our tie-breaking strategies
 against a particular action ordering in the domain definition.
-Our depth-based tie-breaking is a part of multi-level tie-breaking strategy,
-and we show that the notion of depth is the principal factor in determining performance.
+
 
 % XXX It's doubtful that anybody would believe that machine-level efficiency of LIFO (compared to FIFO) is important in domain-independent planning.
 %At the same time, we show that 
@@ -180,10 +179,8 @@ TODO: Plateau
 
 TODO(?) Frontier
 
-In our experiments, all planners are based on the latest Fast Downward code base, and all
-experiments are run using 5 minutes runtime cutoff with a 2GB memory 
-limit for the search binary (FD translation/preprocessing time are not included in the 5-minute limit).
-
+In our experiments, all planners are based on Fast Downward ({\bf 2015/X/XX version}), and all
+experiments are run with a 5-minute, 2GB memory limit for the search binary (FD translation/preprocessing times are not included in the 5-minute limit).
 All experiments were conducted on Xeon E5410@2.33GHz CPUs.
 Our experimental results include 35 standard benchmark domains with 1104
 problems.
@@ -199,7 +196,7 @@ If multiple nodes with the same $f$-cost are possible, \astar
 must implement some tie-breaking policy (either
 explicitly or implicitly) which selects from among these nodes.
 The early literature on heuristic search seems to have been mostly agnostic regarding tie-breaking.
-The original paper proposing \astar, as well as Nilsson's
+The original \astar paper, as well as Nilsson's
 subsequent textbook states: ``Select the open node $n$ whose value $f$
 is smallest. Resolve ties arbitrarily, but always in favor of any [goal
 node]'' \cite[p.102 Step 2]{hart1968formal} \cite[p.69]{Nilsson71}.
@@ -207,7 +204,7 @@ node]'' \cite[p.102 Step 2]{hart1968formal} \cite[p.69]{Nilsson71}.
 % since goal nodes are the special case where $h=0$,
 % they make no further metion of tie-breaking.
 Pearl's textbook on heuristic search specifies that best-first search should ``break ties arbitrarily'' (\citeyear{pearl1984heuristics}, p.48, Step 3), but does not specifically mention tie-breaking for \astar.
-Interestingly, in his analysis of IDA*, Korf mentions that ``If \astar employs the tie-breaking rule of 'most-recently generated', it must also expand the same nodes [as IDA*]'' (\citeyear{korf1985depth}) -- this purely \lifo ordering is the first explicit mention we found of a tie-breaking policy not based on $h$.
+Interestingly, in his analysis of IDA*, Korf mentions that ``If \astar employs the tie-breaking rule of 'most-recently generated', it must also expand the same nodes [as IDA*]'' (\citeyear{korf1985depth}) -- this pure \lifo ordering is the first explicit mention we found of a tie-breaking policy not based on $h$.
 
 In recent years, tie-breaking accoording to $h$-values has become ``folklore'' in the search community.
 \citeauthor{hansen2007anytime} state that ``It is well-known 
@@ -226,15 +223,15 @@ also break ties ``preferring high $g$.''
 % quickly in the final $f$ layer of search''.
 Thus, tie-breaking according to $h$-values appears
 to be ubiquitous in practice.
-
+To our knowledge, there has never been an in-depth, experimental analysis of tie-breaking strategies for \astar.
 
 Although the standard practice of tie-breaking according to $h$ might be
 sufficient in some domains, further levels of tie-breaking (explicit or
 implicit) are required if multiple nodes can have the same $f$ and
 $h$ values.
-%% we do, in Roger, Helmert
+%% we do, in Roger, Helmert 
 % We are not aware of any work that explicitly mentions 2nd-level tie-breaking.
-While the survey of efficient \astar implementations in \citeauthor{burns2012implementing} did not explicitly mention 2nd-level tie-breaking, their code first breaks ties according to $h$, and then breaks remaining ties according to a \lifo policy (most recently generated nodes first), i.e.,a $[h,\lifo]$ strategy.\footnote{https://github.com/eaburns/search}
+While the survey of efficient \astar implementation techniques in \citeauthor{burns2012implementing} did not explicitly mention 2nd-level tie-breaking, their code first breaks ties according to $h$, and then breaks remaining ties according to a \lifo policy (most recently generated nodes first), i.e.,a $[h,\lifo]$ strategy \cite{burnscode}. %\footnote{https://github.com/eaburns/search} 
 Although not documented, their choice of a \lifo 2nd-level tie-breaking policy appears to be a natural consequence of the fact it can be trivially, efficiently implemented in their two-level bucket (vector) implementation of OPEN.
 In contrast, the current implementation of \sota \astar based planner Fast
 Downward \cite{Helmert2006}\footnote{http://www.fast-downward.org}, as well as 
@@ -755,13 +752,14 @@ We have seen that $[h,\ro]$ performs poorly, so clearly, random tie-breaking com
 The reason that $[h,\ro]$ performs so poorly is that if we select uniformly from a the bucket of all open nodes in the plateau, there is a very strong bias for selecting a node with low depth, simply because at any given point during the search in the plateau region, more nodes closer to the entrance of the plateau (i.e., lower depth) will have been generated.
 By randomly selecting a depth bucket, $[h,\rd,\ro]$ explicitly eliminates this bias for selecting nodes for low depth.
 
-One might also wonder whether the power of $[h,\rd,\ro]$ comes from having multiple levels of randomness, and not from the notion of depth.
-This is not the case -- multiple levels of randomness would not suffice to capture the power of $[h,\rd,\ro]$ due to the following reason:
-Consider another possible randomized strategy, $[random-h,\ro]$, which first picks a random $h$-bucket, 
-and then picks a random element from that bucket.
-When the final plateau of [f,h] is small, this will behave similarly to $[\rd,\ro]$.
-However, when the final plateau of [f,h] is large, then $[random-h,\ro]$ will behave similarly to $[h,\ro]$, because almost all nodes in the search space have the same h-value, and we have shown that $[h,\ro]$ performs poorly on domains with large plateaus, i.e., domains with zero-cost-actions., compared to $[h,\rd,\ro]$.
-Thus, multiple levels of randomness alone do not account for the success of $[h,\rd,\ro]$, and the notion of depth buckets seems necessary.
+% COMMENTED OUT: random-h is too weak, because if we have an admissible heuristic, the adversary can't fool h.
+% One might also wonder whether the power of $[h,\rd,\ro]$ comes from having multiple levels of randomness, and not from the notion of depth.
+% This is not the case -- multiple levels of randomness would not suffice to capture the power of $[h,\rd,\ro]$ due to the following reason:
+% Consider another possible randomized strategy, $[random-h,\ro]$, which first picks a random $h$-bucket, 
+% and then picks a random element from that bucket.
+% When the final plateau of [f,h] is small, tie-breaking strategies do not significantly affect performance.
+% However, when the final plateau of [f,h] is large, then $[random-h,\ro]$ will behave similarly to $[h,\ro]$, because almost all nodes in the search space have the same h-value, and we have shown that $[h,\ro]$ performs poorly on domains with large plateaus, i.e., domains with zero-cost-actions., compared to $[h,\rd,\ro]$.
+% Thus, multiple levels of randomness alone do not account for the success of $[h,\rd,\ro]$, and the notion of depth buckets seems necessary.
 
 
 \section{The Effect of Domain-Configuration on \astar Tie-Breaking}
@@ -801,13 +799,12 @@ resulting in 9 runs per method (recall that robustness wrto random seed was show
 The coverage results are shown in \reftbl{actionordering-robustness} (We
 also included the original 10 runs in \reftbl{depth}).
 We analysed the results of $[h,\rd,\ro]$ using statistical methods
-in order to see if any result of 4 set of differently reordered domains
-have the significantly dominating average coverages than the others.
-
-In order to test the significance of mean value,
-we first applied Fligner-Killeen's non-parametric test to see if the sample groups 
-in each set of randomized domains share the same variance.
-We could not reject the homogeneity of variances ($p=0.74$).
+to see if any result of 4 set of differently reordered domains
+significantly outperformed the others.
+%In order to test the significance of mean value,
+We first applied Fligner-Killeen's non-parametric test to see if the sample groups 
+in each set of randomized domains share the same variance, 
+but could not reject the homogeneity of variances ($p=0.74$).
 Since the variances are not significantly different,
 we can apply non-parametric Kruskal-Wallis test to see if
 there is any difference in the mean values between the original
