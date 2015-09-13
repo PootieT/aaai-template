@@ -154,7 +154,7 @@ that \astar achieves best performance when it breaks ties
 in favor of nodes with least h-cost'' \cite{hansen2007anytime}.
 \citeauthor{holte2010common} writes ``\astar breaks ties in favour
 of larger g values, as is most often done'' \cite[note that since $f=g+h$,
-preferring large $g$ is equivalent to preferring smaller $h$](\citeyear{holte2010common}.
+preferring large $g$ is equivalent to preferring smaller $h$]{holte2010common}.
 % \citeauthor{felner2011inconsistent} also assume ``ties are broken in
 % favor of low h-values'' in describing Bidirectional Pathmax for \astar.
 In their detailed survey/tutorial on efficient \astar implementations,
@@ -178,7 +178,7 @@ In contrast, the current implementation of \sota \astar based planner Fast
 Downward \cite{Helmert2006}\footnote{http://www.fast-downward.org}, and
 the work by \cite{RogerH10} (based on Fast-Downward), uses
 a \fifo second-level tie-breaking policy. 
-Although we could not find an explanation, this is choice is mot likely due to their use of alternating OPEN lists, in which case the \fifo policy serves to provide a limited form of fairness.
+Although we could not find an explanation, this choice is most likely due to their use of alternating OPEN lists, in which case the \fifo policy serves to provide a limited form of fairness.
 %We could not find any explanation for this choice either.
 
 %\citeauthor{Korf1985depth} uses $h$-based tie-breaking in the context of WA*
@@ -215,6 +215,10 @@ Differences in coverage are observed in several domains.
 Due to space limitation, we show only the domains
 where there was any difference. Full data is available in the
 supplemental material. \todo{probably better to show full results for this particular experiment}
+% 
+\refig{f-h-eval} gives us a
+more fine-grained analysis by comparing the number of node evaluation
+(computations of \lmcut) on different tie-breakings.
 
 \begin{table}[tb]
  \centering \relsize{-3}
@@ -232,9 +236,6 @@ supplemental material. \todo{probably better to show full results for this parti
  \label{single-coverage}
 \end{table}
 
-\refig{f-h-eval} gives us a
-more fine-grained analysis by comparing the number of node evaluation
-(computations of \lmcut) on different tie-breakings.
 
 \begin{figure}[tb]
  \centering \relsize{-3}
@@ -264,11 +265,11 @@ However, \lifo behaves somewhat similarly to $h$-based tie-breaking, in the foll
 \lifo expandes the most recently generated node $n$.
 If the heuristic function is admissible, there are only 3 possibilities for any child $n'$: 
 (1) $f(n') > f(n)$  (plateau escape), 
-(2) $f(n') = f(n), g(n') > g(n), h(n')  h(n)$, and 
-(3) $f(n') = f(n), g(n') = g(n), h(n') = h(n)$.
+(2) $f(n') = f(n), g(n') > g(n) (\therefore h(n') < h(n))$, and 
+(3) $f(n') = f(n), g(n') = g(n) (\therefore h(n') = h(n))$.
 Thus, \lifo will expand nodes in a ``depth-first'' manner, and as the depth increases,
 the nodes that continue to be expanded by \lifo's 
-dept-first exploration will have non-decreasing $g$-values and non-increasing $h$-values,
+dept-first exploration will have non-decreasing $g$-values and non-increasing $h$-values.
 This is similar to actively expanding nodes with low $h$-values, which is the behavior for $h$-based tiebreaking.
 Therefore, the performance of $[f,\lifo]$ is comparable to the performance of $[f,h,\lifo]$.
 % \citeauthor{burns2012implementing}
@@ -282,12 +283,12 @@ Therefore, the performance of $[f,\lifo]$ is comparable to the performance of $[
 In the comparison
 % of the simple two-level tie-breaking strategies
 above, we observed that large differences in performance between
-two-level tie-breaking strategies tend to occur in problems where
-there are many nodes with the same $f$ and $h$ values, creating
-large plateau regions where the heuristic does not provide any
-useful guidance -- by definition, these plateau regions in the last
-frontier ($f=f^*$) by require a blind search (because all nodes have the same $h$) which 
-relies solely on the tie-breaking criterion.
+two-level tie-breaking strategies $[f,h,\lifo]$ and $[f,h,\fifo]$ tend
+to occur in problems where there are many nodes with the same $f$ and
+$h$ values, creating large plateau regions where the heuristic does not
+provide any useful guidance -- by definition, these plateau regions in
+the last frontier ($f=f^*$) require a blind search (because all nodes
+have the same $h$) which relies solely on the tie-breaking criterion.
 
 %%%, in order to
 %% in the final plateau, there is no need to escape the
@@ -304,8 +305,8 @@ benchmark instances \emph{with $h$ tie-breaking}.
 The $y$-axis
 represents the number of nodes with $[f,h]=[f^*,0]$, and the $x$-axis represents the total
 number of nodes with $f\leq f^*$.
-Clearly, in some domains such as Openstacks and Cybersec, the planner can spend most of the runtime
-searching the final plateau.
+In some domains such as Openstacks and Cybersec, the planner can spend most of the runtime
+searching the final plateau even with $h$ tiebreaking.
 It also
 means that runtime on these domains varies significantly depending on the second-level tie-breaking strategy.
 
@@ -327,8 +328,10 @@ means that runtime on these domains varies significantly depending on the second
   \caption{Comparing the size of the $[f,h]$ search plateau to the total
   evaluation below $f\leq f^*$. Data were obtained by the result of
   \lmcut on the standard benchmark instances. We do not show all labels
-  for point types. Both axes are logarithmic. Dotted lines represent
-  $\times 10^n$ boundaries.  Openstacks clearly has the large plateaus.}
+  for point types, while supplemental material includes larger, fully
+ labelled, colored variant. Both axes are logarithmic. Dotted lines represent
+  $\times 10^n$ boundaries. We see many Openstacks and Cybersec
+ instances near the $y=x$ line.}
   \label{plateau}
 \end{figure}
 
@@ -342,7 +345,8 @@ minimize the number of stacks used.
 There are many zero-cost actions (i.e., actions that don't increase the number of stacks), and
 they prevent the standard heuristics from producing
 informative guidance.
-According to \cite{richter2010lama}, %Richter talks about the failures on openstacks starting around p.167
+According to \cite{richter2010lama}, \textbf{??????}
+%Richter talks about the failures on openstacks starting around p.167
  \lmcut \cite{Helmert2009} fails to find a good cost
 partitioning with non-zero values, 
 % A detailed discussion of Openstacks domain and poor performance of landmarks is in \cite{richter10lama}, p.167-169.
