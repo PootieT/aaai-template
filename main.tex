@@ -687,63 +687,6 @@ and \pddl{Sokoban-pushgoal}.
  }  \label{r-vs-rd-random}
 \end{table}
 
-\subsubsection{Do the Action Orderings Affect the Performance of Tie-Breaking?}
-
-Finally, we show that the performance of our depth-based tie-breaking is
-not affected by the bias introduced in the action orderings in the PDDL
-domain definition.  We created 3 individual sets of domains in which the
-original names of action schema are uglyfied into random strings. This is because
-the Fast Downward code base has a preprocessing
-step which sorts the action schemas according to the dictionary
-order, and it affects the order of the applicable actions of each search node.
-Each set of domains contains all of the benchmark and zerocost
-domains.
-
-We tested our most successful tie-breaking method $[f,h,\rd,\ro]$ on each
-set of randomized domains, three times each with different random seeds,
-resulting in 9 runs in total. Note that the robustness wrto random seed is
-already proven in the last section.
-
-The coverage results are shown in \reftbl{actionordering-robustness}.
-We analysed these results using statistical methods.
-We first applied Bartlett test to test if the sample groups wrto each
-set of randomized domains share the same variance.
-% There is no significant difference between the variances of the sample
-% groups with confidence $p=0.00 < 0.05$.
-Due to the small sample size, 
-we could not verify the homogeneity of variances ($p=0.70$).
-
-% (ql:quickload :rcl)
-% (use-package :rcl)
-% (r-init)
-% (r "bartlett.test" '((571 573 571) (572 572 570) (573 575 571)))
-
-% Since the variances are the same, we applied one-way ANOVA to test if
-% the sample groups have the same mean values.
-%%
-Since the variances are not the same, we applied 
-non-parametric Kruskal-Wallis test to see if
-there is any difference in the mean values between the sample groups.
-The null hypothesis is retained ($p=0.47$) and the significant
-difference was not observed.
-
-% (ql:quickload :rcl)
-% (use-package :rcl)
-% (r-init)
-% (r "kruskal.test" '((571 573 571) (572 572 570) (573 575 571)))
-
-\begin{table}[tb]
- \centering \relsize{-3}
- %\input{tables/aaai16-actionordering/aaai16prelim3random1_zrandom1_2zrandom1_aaai16prelim3random2_zrandom2_2zrandom2_aaai16prelim3random3_zrandom3_2zrandom3/1-1-all.tex}
- %\input{tables/aaai16-actionordering/aaai16prelim3random1_aaai16prelim3random2_aaai16prelim3random3_zrandom1_zrandom2_zrandom3_2zrandom1_2zrandom2_2zrandom3/1-1-all.tex}
- \input{tables/aaai16-actionordering/aaai16prelim3random1_aaai16prelim3random2_aaai16prelim3random3_zrandom1_zrandom2_zrandom3_2zrandom1_2zrandom2_2zrandom3/1-1-all.tex}
- \caption{Results showing the total coverages with
- three seeds on three uglified versions of the same set of domains. The effect
- of action ordering in the domain definition is so small that it does not
- affect the coverage. In contrast, $[f,h,\lifo]$ is greatly affected by
- the action ordering. TODO}
- \label{actionordering-robustness}
-\end{table}
 
 
 
@@ -810,7 +753,88 @@ However, when the final plateau of [f,h] is large, then $[f,randomh,\ro]$ will b
 Thus, multiple levels of randomness alone are not sufficient for explaining the power of $[f,h,\rd,\ro]$, and the notion of depth buckets seems necessary.
 
 
+\section{The Effect of Action Ordering on \astar Tie-Breaking}
+%Moved this out of the depth-based evaluation section because we also evaluate [h,fifo] and [h,lifo], and the results show that all are robust wrto actin ordering
+Recently, Vallati et al showed that the performance of tie-breaking strategies was significantly affected by the ordering of actions, propositions, and objects in the PDDL input files (\citeyear{vallati2015effective}).
+They conjectured that the reason for the performance variations caused
+by object reordering is due to the impact that the ordering of objects has on tie-breaking.
+% in \cite{vallati2015effective} p.7, col2, par#1
 
+Since we implemented 
+the tie-breaking strategies for \astar investigated in this paper using the Fast Downward (FD) codebase, 
+it is possible for the results to be affected by the order in which action schema appear 
+in the PDDL domain file.
+This is because during preprocessing, FD sorts the action schemas according to the dictionary
+order of the schema names, which affects the order applicable ground actions are considered, which in turn affects the order in which search nodes
+that are inserted into OPEN.
+
+We tested the robustness of the standard $[h,lifo]$ and $[h,fifo]$ strategies, as well as $[h,\rd,\ro]$ 
+with respect to 
+biases introduced by action ordering in the PDDL domain definition.
+We created 3 different sets of domains in which the
+original names of action schema are changed into random strings. 
+We only reordered the actions becasue in the FD codebase, the order of propositions has no effect on tie-breaking.
+%  XXXTODO CHECK whether above sentence correctly summarizes the sentence below.
+%% In contrast, we continued to use the variable ordering in the original domains
+%% because the effect of variable ordering is irrelevant to the tie-breaking
+%% criteria.
+% %We avoided the effect of action orderings by using the randomized third tie-breakings.
+Each set of action-reordered domains contains all of the benchmark and zerocost
+domains.
+We ran each of the 3 methods on each
+set of randomized domains, three times each with different random seeds,
+resulting in 9 runs per method (recall that robustness wrto random seed was shown in Section \ref{sec:XXXX}.
+
+The coverage results are shown in \reftbl{actionordering-robustness}.
+We analysed these results using statistical methods.
+We first applied Bartlett test to test if the sample groups wrto each
+set of randomized domains share the same variance.
+% There is no significant difference between the variances of the sample
+% groups with confidence $p=0.00 < 0.05$.
+Due to the small sample size, 
+we could not verify the homogeneity of variances ($p=0.70$).
+
+% (ql:quickload :rcl)
+% (use-package :rcl)
+% (r-init)
+% (r "bartlett.test" '((571 573 571) (572 572 570) (573 575 571)))
+
+% Since the variances are the same, we applied one-way ANOVA to test if
+% the sample groups have the same mean values.
+%%
+Since the variances are not the same, we applied 
+non-parametric Kruskal-Wallis test to see if
+there is any difference in the mean values between the sample groups.
+The null hypothesis is retained ($p=0.47$) and the significant
+difference was not observed.
+
+% (ql:quickload :rcl)
+% (use-package :rcl)
+% (r-init)
+% (r "kruskal.test" '((571 573 571) (572 572 570) (573 575 571)))
+
+Thus, in contrast to the results for satisficing search by \cite{vallati2015effective}, 
+the effect of action ordering  seems to be relatively weak for cost-optimal search using \astar.
+This may be because 
+compared to the satisficing, best-first serach algorithms evaluated in \cite{vallati2015effective},
+the behavior of $[h,lifo]$, $[h,fifo]$, and $[h,rd,\ro]$ highly constrained, in that all nodes with cost $f$ must be expanded before any nodes with cost $>f$.
+In comparison to best-first search algorithms for satisficing search.
+
+
+
+
+\begin{table}[tb]
+ \centering \relsize{-3}
+ %\input{tables/aaai16-actionordering/aaai16prelim3random1_zrandom1_2zrandom1_aaai16prelim3random2_zrandom2_2zrandom2_aaai16prelim3random3_zrandom3_2zrandom3/1-1-all.tex}
+ %\input{tables/aaai16-actionordering/aaai16prelim3random1_aaai16prelim3random2_aaai16prelim3random3_zrandom1_zrandom2_zrandom3_2zrandom1_2zrandom2_2zrandom3/1-1-all.tex}
+ \input{tables/aaai16-actionordering/aaai16prelim3random1_aaai16prelim3random2_aaai16prelim3random3_zrandom1_zrandom2_zrandom3_2zrandom1_2zrandom2_2zrandom3/1-1-all.tex}
+ \caption{Results showing the total coverages with
+ three seeds on three uglified versions of the same set of domains. The effect
+ of action ordering in the domain definition is so small that it does not
+ affect the coverage. In contrast, $[f,h,\lifo]$ is greatly affected by
+ the action ordering. TODO}
+ \label{actionordering-robustness}
+\end{table}
 
 \section{Related Work}
 \label{sec-4}
@@ -909,20 +933,6 @@ cost-bounded depth-first \emph{lookahead} from each node as it is generated.
 Although this work was not done in the context of tie-breaking strategies, it is interesting to note that 
 when the lookahead cost bound $k=0$ ($LA^*_0$ in their notation), only nodes with the same $f$-value as the current \astar frontier are expanded, which corresponds to a LastDepth strategy.
 
-Vallati et al \shortcite{vallati2015effective} investigated the effect
-of the ordering of objects (including operators, predicates, etc. ) in
-PDDL domain models, and showed that orderings can have a significant
-impact on planner performance in satisficing planning.
-They conjectured that the reason for the performance variations caused
-by object reordering is due to the impact of the tie-breaking,
-% in \cite{vallati2015effective} p.7, col2, par#1
-however it is not clear that the analysis can be
-directly applicable to the admissible planning.
-We avoided the effect of action orderings by using the randomized third
-tie-breakings.
-In contrast, we continued to use the variable ordering in the original domains
-because the effect of variable ordering is irrelevant to the tie-breaking
-criteria.
 
 \section{Conclusion}
 
