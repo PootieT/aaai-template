@@ -300,7 +300,7 @@ evaluated can sometimes be larger than a factor of 10, especially in
 \pddl{Openstacks} and \pddl{Cybersec}.
 
 \subsubsection{Is $h$-Based Tie-Breaking necessary?}
-
+\label{sec:h-necessary}
 Next, we investigated whether $h$-based, first-level tie-breaking is necessary.
 In \reftbl{single-coverage} (right), which shows the results when  relying only on \fifo or \lifo tie-breaking.
 $[\lifo]$, which simply breaks ties among nodes with the same $f$-cost by expanding most recently generated nodes first (suggested in \cite{korf1985depth}), clearly dominates $[\fifo]$.
@@ -368,7 +368,7 @@ means that runtime on these domains varies significantly depending on the second
 %  The size of the bucket does not change
 % between $[f,h,\fifo]$, $[f,h,\lifo]$ and $[f,h,\ro]$.
 
-\subsection{Domains with Zero-cost Actions}
+\section{Domains with Zero-cost Actions}
 
 %% best to put openstacks here, considering the connection to the
 %% previous section
@@ -493,7 +493,7 @@ instances. Thus, in these cost-minimization problems, the search strategy within
 plateau becomes much more important than in the
 runtime-minimization problems.
 
-\subsection{Depth-based Tie-Breaking}
+\section{Depth-based Tie-Breaking}
 
 In order to solve zerocost problems, the planner needs to run an
 efficient knowledge-free search within the large final plateau.
@@ -535,7 +535,7 @@ In the absence of useful prior knowledge and heuristic guidance,
 choosing a random depth will balance exploration and exploitation,
 while allowing nodes at intermediate depths to be expanded.
 
-\subsubsection{Tie-Breaking within depth-buckets} % changing from ``third-level'' because we'll also consider that sue depth as the 1st-level policy, e.g., [rd,random] (noh).
+\subsection{Tie-Breaking within depth-buckets} % changing from ``third-level'' because we'll also consider that sue depth as the 1st-level policy, e.g., [rd,random] (noh).
 Since there can be multiple nodes within the same depth bucket
 a further tie-breaking criterion may be necessary to break times among them.
 We could, for example, apply \lifo or \fifo policies at this level -- 
@@ -565,8 +565,8 @@ performance.
 % depth-based tie-breaking.
 
 
-\subsubsection{Evaluating Depth-based Tie-Breaking}
-
+\subsection{Evaluating Depth-based Tie-Breaking}
+\label{sec:depth-based-evaluation}
 We evaluated five, three-level tie-breaking strategies and three 2-level
 tie-breaking strategies in all. XXXTODOrecount!
 %REDUNDANT? , i.e., $[f,h,depthStrategy,LFR]$, where the first-level tie-breaking is according to $h$ (break ties in favor of small $h$), the second-level strategy is based on depth and $depthStrategy \in \{\fd, \ld, \rd\}$, and the third level tie-breaking strategy $LFR \in \{\lifo, \fifo, \ro\}$.
@@ -690,13 +690,20 @@ and \pddl{Sokoban-pushgoal}.
 
 
 
-\subsubsection{How Depth-based Tie-breakings Perform without $h$ Tie-Breaking?}
+\subsubsection{Depth-based Tie-breakings that ignore $h$}
 
-In earlier sections, we showed that $[f,\lifo]$ tie-breaking is
-sufficient for solving the benchmark instances, and $h$ tie-breaking may
-not be necessary. We further strengthen our claim by showing the results
-of $[f,\rd,\ro]$. In \reftbl{depth}, we see that $[f,\rd,\ro]$ dominates $[h,\fifo]$,
-and perform comparable to $[h,\lifo]$.
+In \refsec{sec:h-necessary}, we showed that $[\lifo]$ tie-breaking (without considering $h$) is
+sufficient for the standard IPC benchmarks -- the performance of $[\lifo]$, $[h,\lifo]$, and $[h,\fifo]$ are comparable.
+\reftbl{depth}, shows that $[\rd,\ro]$, which randomly selects an element from a randomlyh selected depth-bucket, dominates $[h,\fifo]$,
+and performs comparably to $[h,\lifo]$.
+Although $[\rd,\ro]$ behaves in a less greedy/depth-first manner than $[\lifo]$, 
+it explores nodes with high depth sufficiently often so that even if \lifo behavior (seeking nodes that are far from the plateau entrance) is required, $[\rd,\ro]$ will eventually find the plateau exit.
+On the other hand, there are some problems such as \pddl{miconic} where a the more randomized behavior of $[\rd,\ro]$ is advantageous.
+Thus, overall, $[\rd,\ro]$ performs moderately well, and 
+\emph{neither $h$ nor \lifo-behavior is necessary in order to obtain performance that is competitive with the standard
+tie-breaking strategies}.
+
+
 
 %% moved to Table 2
 
@@ -705,10 +712,13 @@ and perform comparable to $[h,\lifo]$.
 To understand the behavior of RandomDepth, we plotted the histogram of
 the depths of search nodes opened by RandomDepth in the final search
 plateau until the solution is found.
-\refig{depth-histogram} shows a result of $[f,h,\rd,\ro]$, modified to produce lots of outputs,
-in Woodworking-Cut domain.
+
+\refig{depth-histogram} shows the histogram 
+for 
+ $[h,\rd,\ro]$ %, modified to produce lots of outputs,
+on the \pddl{Woodworking-cut} domain.
 Large dots show the depth where the solution was found.
-In this domain, the LastDepth could search arbitrarly longer path in the
+In this domain, the LastDepth would tend to search could search arbitrarly longer path in the
 plateau, which would ignore the nodes in the intermediate depth.
 \todo{better to plot all solutions}
 
@@ -724,27 +734,29 @@ future work.
  \centering \relsize{-3}
  \includegraphics{tables/aaai16-log-rd/2zerocost/depth-histogram-lmcut_rdlog1-woodworking-cut.pdf}
  \caption{Histogram of the depths in the $[f,h]$-plateau in
- Woodworkin-cut instances. Solution can be found in variety of depths.
+\pddl{Woodworkin-cut} instances. Solution can be found in variety of depths.
  }
  \label{depth-histogram}
 \end{figure}
 
 
-\subsubsection{Is Depth-based Tie-breaking actually  Important?}
+\subsubsection{Is Depth-based Tie-breaking Necessary?}
 % is this the right location -- maybe this should in a discussion section?
-We have shown that $[f,h,\rd,\ro]$ performs well overall, but
-one might wonder whether the power of this strategy really comes from depth-based tie-breaking, or from randomness.
-We have seen (??) that $[f,h,\ro]$ performs poorly, so clearly, 1 level of randomness is clearly not enough.
-The reason that $[f,h,\ro]$ performs so poorly is that if we select uniformly from a the bucket of all open nodes in the plateau, there is a very strong bias for selecting a node with low depth, simply because at any given point during the search in the plateau region, more nodes closer to the entrance of the plateau (i.e., lower depth) will have been generated.
-By randomly selecting a depth bucket, $[f,h,\rd,\ro]$ explicitly eliminates this bias for selecting nodes for low depth.
 
-One might also wonder whether the power of $[f,h,\rd,\ro]$ comes from having multiple levels of randomness, and not from the notion of depth.
-This is not the case -- multiple levels of randomness do not suffice.
-Consider another possible randomized selection process, $[f,randomh,\ro]$, which first picks a random $h$-bucket, 
+{\bf XXXTODO: $[h,\ro]$ results need to be included in some table so that we can refer to it here.}
+We have shown that $[h,\rd,\ro]$ performs well overall, but
+one might wonder whether the power of this strategy really comes from depth-based tie-breaking, or from randomness.
+We have seen that $[h,\ro]$ performs poorly, so clearly, random tie-breaking combined with $h$-based tie-breaking is clearly not sufficient.
+The reason that $[h,\ro]$ performs so poorly is that if we select uniformly from a the bucket of all open nodes in the plateau, there is a very strong bias for selecting a node with low depth, simply because at any given point during the search in the plateau region, more nodes closer to the entrance of the plateau (i.e., lower depth) will have been generated.
+By randomly selecting a depth bucket, $[h,\rd,\ro]$ explicitly eliminates this bias for selecting nodes for low depth.
+
+One might also wonder whether the power of $[h,\rd,\ro]$ comes from having multiple levels of randomness, and not from the notion of depth.
+This is not the case -- multiple levels of randomness would not suffice to capture the power of $[h,\rd,\ro]$ due to the following reason:
+Consider another possible randomized strategy, $[random-h,\ro]$, which first picks a random $h$-bucket, 
 and then picks a random element from that bucket.
-When the final plateau of [f,h] is small, this will behave similarly to $[f,\rd,\ro]$.
-However, when the final plateau of [f,h] is large, then $[f,randomh,\ro]$ will behave similarly to $[f,h,\ro]$, because almost all nodes in the search space have the same h-value, and we have shown that $[f,h,\ro]$ performs poorly on domains with large plateaus, i.e., domains with zero-cost-actions., compared to $[f,h,\rd,\ro]$.
-Thus, multiple levels of randomness alone are not sufficient for explaining the power of $[f,h,\rd,\ro]$, and the notion of depth buckets seems necessary.
+When the final plateau of [f,h] is small, this will behave similarly to $[\rd,\ro]$.
+However, when the final plateau of [f,h] is large, then $[random-h,\ro]$ will behave similarly to $[h,\ro]$, because almost all nodes in the search space have the same h-value, and we have shown that $[h,\ro]$ performs poorly on domains with large plateaus, i.e., domains with zero-cost-actions., compared to $[h,\rd,\ro]$.
+Thus, multiple levels of randomness alone do not account for the success of $[h,\rd,\ro]$, and the notion of depth buckets seems necessary.
 
 
 \section{The Effect of Action Ordering on \astar Tie-Breaking}
@@ -762,7 +774,7 @@ This is because during preprocessing, FD sorts the action schemas according to t
 order of the schema names, which affects the order applicable ground actions are considered, which in turn affects the order in which search nodes
 that are inserted into OPEN.
 
-We tested the robustness of the standard $[h,lifo]$ and $[h,fifo]$ strategies, as well as $[h,\rd,\ro]$ 
+We tested the robustness of the standard $[h,\lifo]$ and $[h,\fifo]$ strategies, as well as $[h,\rd,\ro]$ 
 with respect to 
 biases introduced by action ordering in the PDDL domain definition.
 We created 3 different sets of domains in which the
@@ -777,7 +789,7 @@ Each set of action-reordered domains contains all of the benchmark and zerocost
 domains.
 We ran each of the 3 methods on each
 set of randomized domains, three times each with different random seeds,
-resulting in 9 runs per method (recall that robustness wrto random seed was shown in Section \ref{sec:XXXX}.
+resulting in 9 runs per method (recall that robustness wrto random seed was shown in \refsec{sec:depth-based-evaluation}.
 
 The coverage results are shown in \reftbl{actionordering-robustness}.
 We analysed these results using statistical methods.
@@ -811,7 +823,7 @@ Thus, in contrast to the results for satisficing search by \cite{vallati2015effe
 the effect of action ordering  seems to be relatively weak for cost-optimal search using \astar.
 This may be because 
 compared to the satisficing, best-first serach algorithms evaluated in \cite{vallati2015effective},
-the behavior of $[h,lifo]$, $[h,fifo]$, and $[h,rd,\ro]$ highly constrained, in that all nodes with cost $f$ must be expanded before any nodes with cost $>f$.
+the behavior of $[h,\lifo]$, $[h,\fifo]$, and $[h,rd,\ro]$ highly constrained, in that all nodes with cost $f$ must be expanded before any nodes with cost $>f$.
 In comparison to best-first search algorithms for satisficing search.
 
 
