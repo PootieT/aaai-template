@@ -764,20 +764,21 @@ Thus, multiple levels of randomness alone do not account for the success of $[h,
 
 \section{The Effect of Action Ordering on \astar Tie-Breaking}
 %Moved this out of the depth-based evaluation section because we also evaluate [h,fifo] and [h,lifo], and the results show that all are robust wrto actin ordering
-Recently, Vallati et al showed that the performance of tie-breaking strategies was significantly affected by the ordering of actions, propositions, and objects in the PDDL input files (\citeyear{vallati2015effective}).
+Recently, \citeauthor{vallati2015effective} showed that the performance of tie-breaking
+strategies in satisficing planning was significantly affected by the ordering of actions, propositions, and objects in the PDDL input files (\citeyear{vallati2015effective}).
 They conjectured that the reason for the performance variations caused
 by object reordering is due to the impact that the ordering of objects has on tie-breaking.
 % in \cite{vallati2015effective} p.7, col2, par#1
 
-Since we implemented 
-the tie-breaking strategies for \astar investigated in this paper using the Fast Downward (FD) codebase, 
-it is possible for the results to be affected by the order in which action schema appear 
-in the PDDL domain file.
-This is because during preprocessing, FD sorts the action schemas according to the dictionary
-order of the schema names, which affects the order applicable ground actions are considered, which in turn affects the order in which search nodes
+Thus, it is possible for the results to be affected by how the actions are
+ordered, even if the fundamental domain structures are the same.
+In Fast Downward, it becomes a problem of action names because it
+sorts the action schemas according to the dictionary
+order of the schema names, which affects the order of applicable ground
+actions of each node, which in turn affects the order in which search nodes
 that are inserted into OPEN.
 
-We tested the robustness of the standard $[h,\lifo]$ and $[h,\fifo]$ strategies, as well as $[h,\rd,\ro]$ 
+We tested the robustness of the standard $[h,\lifo]$ and $[h,\fifo]$ strategies, as well as $[h,\rd,\ro]$,
 with respect to 
 biases introduced by action ordering in the PDDL domain definition.
 We created 3 different sets of domains in which the
@@ -792,7 +793,7 @@ Each set of action-reordered domains contains all of the benchmark and zerocost
 domains.
 We ran each of the 3 methods on each
 set of randomized domains, three times each with different random seeds,
-resulting in 9 runs per method (recall that robustness wrto random seed was shown in \refsec{sec:depth-based-evaluation}.
+resulting in 9 runs per method (recall that robustness wrto random seed was shown in \refsec{sec:depth-based-evaluation}.)
 
 The coverage results are shown in \reftbl{actionordering-robustness}.
 We analysed these results using statistical methods.
@@ -840,9 +841,10 @@ In comparison to best-first search algorithms for satisficing search.
  %\input{tables/aaai16-actionordering/aaai16prelim3random1_aaai16prelim3random2_aaai16prelim3random3_zrandom1_zrandom2_zrandom3_2zrandom1_2zrandom2_2zrandom3/1-1-all.tex}
  \input{tables/aaai16-actionordering/aaai16prelim3random1_aaai16prelim3random2_aaai16prelim3random3_aaai16prelim3-_zrandom1_zrandom2_zrandom3_zerocost/1-1-all.tex}
  \caption{Results showing the total coverages of $[h,\fifo]$, $[h,\lifo]$
- and $[h,\rd,\ro]$ with three seeds. Domains are the original set of
- domains and its three uglified versions. The effect
- of action ordering in the domain definition is small enough to be
+ and $[h,\rd,\ro]$ with three seeds. It contains 8 rows, each
+ representing the original set of
+ domains and its three action-reordered variants. The effect
+ of action ordering is small enough for $[h,\rd,\ro]$ to
  constantly perform better than the traditional tiebreaking methods.}
  \label{actionordering-robustness}
 \end{table}
