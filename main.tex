@@ -762,17 +762,16 @@ However, when the final plateau of [f,h] is large, then $[random-h,\ro]$ will be
 Thus, multiple levels of randomness alone do not account for the success of $[h,\rd,\ro]$, and the notion of depth buckets seems necessary.
 
 
-\section{The Effect of Action Ordering on \astar Tie-Breaking}
+\section{The Effect of Domain-Configuration on \astar Tie-Breaking}
 %Moved this out of the depth-based evaluation section because we also evaluate [h,fifo] and [h,lifo], and the results show that all are robust wrto actin ordering
-Recently, \citeauthor{vallati2015effective} showed that the performance of tie-breaking
-strategies in satisficing planning was significantly affected by the ordering of actions, propositions, and objects in the PDDL input files (\citeyear{vallati2015effective}).
+Recently, \citeauthor{vallati2015effective} showed that the performance of 
+satisficing planners was significantly affected by PDDL domain \emph{configurations}, which includes the name/ordering of actions, propositions, and objects in the PDDL input file (\citeyear{vallati2015effective}).
+% note that vallati et al did not show that tie-breaking was affected -- they observed that performance of the planners was affected by configuration, and conjectured that the performance variation was due to the effects of configuration on tie-breaking.
 They conjectured that the reason for the performance variations caused
 by object reordering is due to the impact that the ordering of objects has on tie-breaking.
 % in \cite{vallati2015effective} p.7, col2, par#1
 
-Thus, it is possible for the results to be affected by how the actions are
-ordered, even if the fundamental domain structures are the same.
-In Fast Downward, it becomes a problem of action names because it
+In Fast Downward, action names can affect search performance, because it 
 sorts the action schemas according to the dictionary
 order of the schema names, which affects the order of applicable ground
 actions of each node, which in turn affects the order in which search nodes
@@ -780,16 +779,16 @@ that are inserted into OPEN.
 
 We tested the robustness of the standard $[h,\lifo]$ and $[h,\fifo]$ strategies, as well as $[h,\rd,\ro]$,
 with respect to 
-biases introduced by action ordering in the PDDL domain definition.
+biases introduced by domain configuration (action naming) in the PDDL domain definition.
 We created 3 different sets of domains in which the
 original names of action schema are changed into random strings. 
-We only reordered the actions becasue in the FD codebase, the order of propositions has no effect on tie-breaking.
+%We only reordered the actions becasue in the FD codebase, the order of propositions has no effect on tie-breaking. --- let's avoid talking about anything other than action names, in case there are other configuration factors.
 %  XXXTODO CHECK whether above sentence correctly summarizes the sentence below.
 %% In contrast, we continued to use the variable ordering in the original domains
 %% because the effect of variable ordering is irrelevant to the tie-breaking
 %% criteria.
 % %We avoided the effect of action orderings by using the randomized third tie-breakings.
-Each set of action-reordered domains contains all of the benchmark and zerocost
+Each set of action-renamed domains contains all of the benchmark and zerocost
 domains.
 We ran each of the 3 methods on each
 set of randomized domains, three times each with different random seeds,
@@ -824,11 +823,11 @@ difference was not observed.
 % (r "kruskal.test" '((571 573 571) (572 572 570) (573 575 571)))
 
 Thus, in contrast to the results for satisficing search by \cite{vallati2015effective}, 
-the effect of action ordering  seems to be relatively weak for cost-optimal search using \astar.
-This may be because 
-compared to the satisficing, best-first serach algorithms evaluated in \cite{vallati2015effective},
-the behavior of $[h,\lifo]$, $[h,\fifo]$, and $[h,rd,\ro]$ highly constrained, in that all nodes with cost $f$ must be expanded before any nodes with cost $>f$.
-In comparison to best-first search algorithms for satisficing search.
+the effect of domain configuration  seems to be relatively weak for cost-optimal search using \astar, at least when the domain configuration is limited to action renamining.
+We conjecture that this is because 
+the behavior of \astar with $[h,\lifo]$, $[h,\fifo]$, and $[h,rd,\ro]$ highly constrained due to the constraint that \astar strictly expands nodes in order of $f$, and furthermore, the 3 strategies we evaluated first break ties according to $h$, so
+the effects of domain configuration is limited to 2nd (and higher) level tie-breaking.
+
 
 
 
