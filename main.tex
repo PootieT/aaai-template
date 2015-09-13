@@ -60,15 +60,48 @@ For many instances in \refig{fig:plateau-noh},  a large fraction of the nodes wi
 For example, in the \pddl{Openstacks} domain, almost all states with $f(n) \leq f^*$ have cost $f^*$.
 In such domains, the behavior of \astar on the last frontier is critical -- the policy for deciding which nodes to expand in the last frontier can have a significant impact on the performance of \astar.
 
-\begin{figure}[tb]
- \centering \relsize{-3} 
+\begin{figure*}[bt]
+ \newcommand{\minilength}{0.36\textwidth}
+ \newcommand{\minisep}{0.02\textwidth}
+ \begin{minipage}[t]{\minilength}
+  \centering
  \includegraphics{tables/aaai16-frontier/aaai16prelim3/lmcut_frontier_noh-front-mono.pdf}
  \caption{
- The number of the nodes with cost $f=f^*$ (y-axis) compared to the
- total number of nodes in the search space with cost $f\leq f^*$ on 1104 IPC benchmark problems
-(search space analyzed using Fast Downward with \lmcut heuristic, slightly modified to generate all nodes with cost $f^*$).}
-\label{fig:plateau-noh}
-\end{figure}
+ The number of the nodes with $f=f^*$ (y-axis) compared to the
+ total number of nodes in the search space with $f\leq f^*$ on 1104 IPC benchmark problems
+  (search space analyzed using Fast Downward with \lmcut heuristic,
+  slightly modified to generate all nodes with cost $f^*$).
+  Both axes are logarithmic. Dotted lines represent $\times 10^n$ boundaries.
+  }
+ \label{fig:plateau-noh}
+ \end{minipage}
+ \hfill
+ \begin{minipage}[t]{\minilength}
+  \centering
+  % \includegraphics{tables/aaai16-frontier/aaai16prelim3/lmcut_frontier-front.pdf}
+  \includegraphics{tables/aaai16-frontier/aaai16prelim3/lmcut_frontier-front-mono.pdf}
+  \caption{
+  Same plot as \refig{fig:plateau-noh} except the $y$-axis showing
+  the number of the nodes with $[f,h]=[f^*,0]$, which forms the final
+  plateau when $h$ tie-breaking is enabled.
+  We see many Openstacks and Cybersec instances near the $y=x$ line.
+  We do not show all labels
+  for point types, while supplemental material includes larger, fully
+  labelled, colored variant.
+  }
+  \label{plateau}
+ \end{minipage} 
+ \hfill
+ \begin{minipage}[t]{0.23\textwidth}
+  \centering
+  \includegraphics{tables/aaai16-frontier/zerocost/lmcut_frontier-front-mono.pdf}
+  \caption{Same plot as \refig{plateau}, but from the cost-minimization
+  domains with many zero-cost actions (\emph{zerocost domains}).
+  Even with $h$ tie-breaking, these domains force the planner
+  to search much larger plateau.}
+ \label{plateau-zerocost}
+ \end{minipage} 
+\end{figure*}
 
 In this paper, we focus on the \emph{tie-breaking} policy used by
 \astar, which selects a node to expand among nodes with the same
@@ -128,97 +161,98 @@ and we show that the notion of depth is the principal factor in determining perf
 
 %% Above describes the enough detail of the paper structure?
 
+
 \section{Tie-breaking Strategies in \astar}
 
-%Aside from the heuristic function, most best-first family of search
-%algorithms, including \astar, IDA* and so on, have a tie-breaking criteria which is used
-%when two nodes have the same $f$ value.
+ %Aside from the heuristic function, most best-first family of search
+ %algorithms, including \astar, IDA* and so on, have a tie-breaking criteria which is used
+ %when two nodes have the same $f$ value.
 
-If multiple nodes with the same $f$-cost are possible, \astar
-must implement some tie-breaking policy (either
-explicitly or implicitly) which selects from among these nodes.
-The early literature on heuristic search seems to have been mostly agnostic on the issue of tie-breaking.
-The original paper proposing \astar, as well as Nilsson's
-subsequent textbook states: ``Select the open node $n$ whose value $f$
-is smallest. Resolve ties arbitrarily, but always in favor of any [goal
-node]'' \cite[p.102 Step 2]{hart1968formal} \cite[p.69]{Nilsson71}.
-% Although it is possible to interpret this to imply $h$-based tie-breaking
-% since goal nodes are the special case where $h=0$,
-% they make no further metion of tie-breaking.
-Pearl's textbook on heuristic search specifies that best-first search should ``break ties arbitrarily'' (\citeyear{pearl1984heuristics}, p.48, Step 3), but does not specifically mention tie-breaking for \astar.
-Interestingly, in his analysis of IDA*, Korf mentions that ``If \astar employs the tie-breaking rule of 'most-recently generated', it must also expand the same nodes [as IDA*]'' (\citeyear{korf1985depth}) -- this purely \lifo ordering is the first explicit mention we found of a tie-breaking policy not based on $h$.
+ If multiple nodes with the same $f$-cost are possible, \astar
+ must implement some tie-breaking policy (either
+ explicitly or implicitly) which selects from among these nodes.
+ The early literature on heuristic search seems to have been mostly agnostic on the issue of tie-breaking.
+ The original paper proposing \astar, as well as Nilsson's
+ subsequent textbook states: ``Select the open node $n$ whose value $f$
+ is smallest. Resolve ties arbitrarily, but always in favor of any [goal
+ node]'' \cite[p.102 Step 2]{hart1968formal} \cite[p.69]{Nilsson71}.
+ % Although it is possible to interpret this to imply $h$-based tie-breaking
+ % since goal nodes are the special case where $h=0$,
+ % they make no further metion of tie-breaking.
+ Pearl's textbook on heuristic search specifies that best-first search should ``break ties arbitrarily'' (\citeyear{pearl1984heuristics}, p.48, Step 3), but does not specifically mention tie-breaking for \astar.
+ Interestingly, in his analysis of IDA*, Korf mentions that ``If \astar employs the tie-breaking rule of 'most-recently generated', it must also expand the same nodes [as IDA*]'' (\citeyear{korf1985depth}) -- this purely \lifo ordering is the first explicit mention we found of a tie-breaking policy not based on $h$.
 
-In recent years, tie-breaking accoording to $h$-values has become ``folklore'' in the search community.
-\citeauthor{hansen2007anytime} state that ``It is well-known 
-that \astar achieves best performance when it breaks ties
-in favor of nodes with least h-cost'' \cite{hansen2007anytime}.
-\citeauthor{holte2010common} writes ``\astar breaks ties in favour
-of larger g values, as is most often done'' \cite[note that since $f=g+h$,
-preferring large $g$ is equivalent to preferring smaller $h$]{holte2010common}.
-% \citeauthor{felner2011inconsistent} also assume ``ties are broken in
-% favor of low h-values'' in describing Bidirectional Pathmax for \astar.
-In their detailed survey/tutorial on efficient \astar implementations,
-\citeauthor{burns2012implementing} (\citeyear{burns2012implementing})
-also break ties ``preferring high $g$.''
-%% this could be moved to later analysis
-% They further write: ``The reasoning is that the goal can be found more
-% quickly in the final $f$ layer of search''.
-Thus, tie-breaking according to $h$-values appears
-to be ubiquitous in practice.
+ In recent years, tie-breaking accoording to $h$-values has become ``folklore'' in the search community.
+ \citeauthor{hansen2007anytime} state that ``It is well-known 
+ that \astar achieves best performance when it breaks ties
+ in favor of nodes with least h-cost'' \cite{hansen2007anytime}.
+ \citeauthor{holte2010common} writes ``\astar breaks ties in favour
+ of larger g values, as is most often done'' \cite[note that since $f=g+h$,
+ preferring large $g$ is equivalent to preferring smaller $h$]{holte2010common}.
+ % \citeauthor{felner2011inconsistent} also assume ``ties are broken in
+ % favor of low h-values'' in describing Bidirectional Pathmax for \astar.
+ In their detailed survey/tutorial on efficient \astar implementations,
+ \citeauthor{burns2012implementing} (\citeyear{burns2012implementing})
+ also break ties ``preferring high $g$.''
+ %% this could be moved to later analysis
+ % They further write: ``The reasoning is that the goal can be found more
+ % quickly in the final $f$ layer of search''.
+ Thus, tie-breaking according to $h$-values appears
+ to be ubiquitous in practice.
 
-Although the standard practice of tie-breaking according to $h$ might be
-sufficient in some domains, further levels of tie-breaking (explicit or
-implicit) are required if multiple nodes can have the same $f$ and
-$h$ values.
-%% we do, in Roger, Helmert
-% We are not aware of any work that explicitly mentions 2nd-level tie-breaking.
-While the survey of efficient \astar implementations in \citeauthor{burns2012implementing} did not explicitly mention 2nd-level tie-breaking, their code first breaks ties according to $h$, and then breaks remaining ties according to a \lifo policy (most recently generated nodes first).\footnote{https://github.com/eaburns/search}
-Although not documented, their choice of a \lifo 2nd-level tie-breaking policy appears to be a natural consequence of the fact it can be trivially, efficiently implemented in their two-level bucket (vector) implementation of OPEN.
-In contrast, the current implementation of \sota \astar based planner Fast
-Downward \cite{Helmert2006}\footnote{http://www.fast-downward.org}, as well as 
-the work by \cite{RogerH10} uses
-a \fifo second-level tie-breaking policy. 
-Although we could not find an explanation, this choice is most likely due to their use of alternating OPEN lists, in which case the \fifo policy serves to provide a limited form of fairness.
-%We could not find any explanation for this choice either.
+ Although the standard practice of tie-breaking according to $h$ might be
+ sufficient in some domains, further levels of tie-breaking (explicit or
+ implicit) are required if multiple nodes can have the same $f$ and
+ $h$ values.
+ %% we do, in Roger, Helmert
+ % We are not aware of any work that explicitly mentions 2nd-level tie-breaking.
+ While the survey of efficient \astar implementations in \citeauthor{burns2012implementing} did not explicitly mention 2nd-level tie-breaking, their code first breaks ties according to $h$, and then breaks remaining ties according to a \lifo policy (most recently generated nodes first).\footnote{https://github.com/eaburns/search}
+ Although not documented, their choice of a \lifo 2nd-level tie-breaking policy appears to be a natural consequence of the fact that the \lifo policy can be trivially, efficiently implemented in their two-level bucket (vector) implementation of OPEN.
+ In contrast, the current implementation of \sota \astar based planner Fast
+ Downward \cite{Helmert2006}\footnote{http://www.fast-downward.org}, and
+ the work by \cite{RogerH10} (based on Fast-Downward), uses
+ a \fifo second-level tie-breaking policy. 
+ Although we could not find an explanation, this choice is most likely due to their use of alternating OPEN lists, in which case the \fifo policy serves to provide a limited form of fairness.
+ %We could not find any explanation for this choice either.
 
-%\citeauthor{Korf1985depth} uses $h$-based tie-breaking in the context of WA*
-%\cite{korf1993linear}.  
-% ** not sure how/where to put this..
+ %\citeauthor{Korf1985depth} uses $h$-based tie-breaking in the context of WA*
+ %\cite{korf1993linear}.  
+ % ** not sure how/where to put this..
 
-\subsection{Reevaluating the Existing Strategies}
+ \subsection{Reevaluating the Existing Strategies}
 
 
-We tested various tie-breaking strategies throughout this paper.  In the
-following sections, we use a convenient array-based notation of a
-combination of tie-breaking strategy.  For example, $[f,h,\fifo]$ denotes
-standard \astar with $h$-based first-level tie-breaking and \fifo
-second-level tie-breaking.
-%% I removed \fd because it is not yet proposed at this point
+ We tested various tie-breaking strategies throughout this paper.  In the
+ following sections, we use a convenient array-based notation of a
+ combination of tie-breaking strategy.  For example, $[f,h,\fifo]$ denotes
+ standard \astar with $h$-based first-level tie-breaking and \fifo
+ second-level tie-breaking.
+ %% I removed \fd because it is not yet proposed at this point
 
-All planners are based on the latest Fast Downward code base, and all
-experiments are run using 5 minutes runtime cutoff with 2GB memory
-limit. Experiments were conducted on Xeon E5410@2.33GHz CPUs.
-Our experimental results include 35 standard benchmark domains with 1104
-problems.
+ All planners are based on the latest Fast Downward code base, and all
+ experiments are run using 5 minutes runtime cutoff with 2GB memory
+ limit. Experiments were conducted on Xeon E5410@2.33GHz CPUs.
+ Our experimental results include 35 standard benchmark domains with 1104
+ problems.
 
-We first compared two strategies $[f,h,\fifo]$, $[f,h,\lifo]$, which
-first breaks ties according to $h$, and then applies \fifo or \lifo
-second-level tie-breaking, respectively.
-% The following will be necessary in a future version, if we use LOP:
-%Although the search behavior of $[f,h,\fifo]$ corresponds to the default behavior of Fast Downward, this implementation differs 
-%from the original, unmodified code because we enabled caching of $h$-values, so that reopened nodes refer to cached $h$-values.\footnote{The current Fast Downward code disables $h$-caching because its current implementation is not compatible with multiple admissible heuristics.}
-%Thus, we also show results for unmodified Fast Downward -- as expected, $[f,h,\fifo]$ dominates unmodified FD.
+ We first compared two strategies $[f,h,\fifo]$, $[f,h,\lifo]$, which
+ first breaks ties according to $h$, and then applies \fifo or \lifo
+ second-level tie-breaking, respectively.
+ % The following will be necessary in a future version, if we use LOP:
+ %Although the search behavior of $[f,h,\fifo]$ corresponds to the default behavior of Fast Downward, this implementation differs 
+ %from the original, unmodified code because we enabled caching of $h$-values, so that reopened nodes refer to cached $h$-values.\footnote{The current Fast Downward code disables $h$-caching because its current implementation is not compatible with multiple admissible heuristics.}
+ %Thus, we also show results for unmodified Fast Downward -- as expected, $[f,h,\fifo]$ dominates unmodified FD.
 
-The results for \astar using the LM-cut heuristic \cite{Helmert2009} are
-shown in \reftbl{single-coverage} (Left).
-Differences in coverage are observed in several domains.
-Due to space limitation, we show only the domains
-where there was any difference. Full data is available in the
-supplemental material. \todo{probably better to show full results for this particular experiment}
-% 
-\refig{f-h-eval} gives us a
-more fine-grained analysis by comparing the number of node evaluation
-(computations of \lmcut) on different tie-breakings.
+ The results for \astar using the LM-cut heuristic \cite{Helmert2009} are
+ shown in \reftbl{single-coverage} (Left).
+ Differences in coverage are observed in several domains.
+ Due to space limitation, we show only the domains
+ where there was any difference. Full data is available in the
+ supplemental material. \todo{probably better to show full results for this particular experiment}
+ % 
+ \refig{f-h-eval} gives us a
+ more fine-grained analysis by comparing the number of node evaluation
+ (computations of \lmcut) on different tie-breakings.
 
 \begin{table}[tb]
  \centering \relsize{-3}
@@ -240,8 +274,11 @@ more fine-grained analysis by comparing the number of node evaluation
 \begin{figure}[tb]
  \centering \relsize{-3}
  \includegraphics{tables/aaai16-30min-5min-cut/aaai16prelim3/evaluated-lmcut_ff-lmcut_lf.pdf}
- \caption{Comparisons of \# of Evaluations between simple \lifo and
- \fifo second-level tie-breaking, with first-level $h$ tie-breaking.}  \label{f-h-eval}
+ \caption{Comparisons of the number evaluations between simple \lifo and
+ \fifo second-level tie-breaking, with first-level $h$
+ tie-breaking. \lifo evaluates less than $1/10$ of the nodes evaluated
+ by \fifo in Cybersec and Openstacks.}
+ \label{f-h-eval}
 \end{figure}
 
 According to \reftbl{single-coverage} (left) with $h$ tie-breaking, \lifo
@@ -320,21 +357,6 @@ means that runtime on these domains varies significantly depending on the second
 %  The size of the bucket does not change
 % between $[f,h,\fifo]$, $[f,h,\lifo]$ and $[f,h,\ro]$.
 
-
-\begin{figure}[tb]
- \centering \relsize{-3}
-  % \includegraphics{tables/aaai16-frontier/aaai16prelim3/lmcut_frontier-front.pdf}
-  \includegraphics{tables/aaai16-frontier/aaai16prelim3/lmcut_frontier-front-mono.pdf}
-  \caption{Comparing the size of the $[f,h]$ search plateau to the total
-  evaluation below $f\leq f^*$. Data were obtained by the result of
-  \lmcut on the standard benchmark instances. We do not show all labels
-  for point types, while supplemental material includes larger, fully
- labelled, colored variant. Both axes are logarithmic. Dotted lines represent
-  $\times 10^n$ boundaries. We see many \pddl{Openstacks} and \pddl{Cybersec}
- instances near the $y=x$ line.}
-  \label{plateau}
-\end{figure}
-
 \subsection{Domains with Zero-cost Actions}
 
 %% best to put openstacks here, considering the connection to the
@@ -347,7 +369,7 @@ they prevent the standard heuristics from producing
 informative guidance.
 According to \cite{richter2010lama}, \textbf{??????}
 %Richter talks about the failures on openstacks starting around p.167
- \lmcut \cite{Helmert2009} fails to find a good cost
+\lmcut \cite{Helmert2009} fails to find a good cost
 partitioning with non-zero values, 
 % A detailed discussion of Openstacks domain and poor performance of landmarks is in \cite{richter10lama}, p.167-169.
 and most edges in the abstraction
@@ -459,17 +481,6 @@ We plotted the size of the final plateau of the zerocost domain instances just l
 instances. Thus, in these cost-minimization problems, the search strategy within
 plateau becomes much more important than in the
 runtime-minimization problems.
-
-\begin{figure}[tb]
- \centering \relsize{-3}
-  \includegraphics{tables/aaai16-frontier/zerocost/lmcut_frontier-front-mono.pdf}
-  \caption{Same plot as \refig{plateau}, but from the zerocost
-  domains. Even with $h$ tie-breaking, zerocost domains force the planner
-  to search much larger plateau.}
- \label{plateau-zerocost}
-\end{figure}
-
-
 
 \subsection{Depth-based Tie-Breaking}
 
