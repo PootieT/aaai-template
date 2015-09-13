@@ -677,19 +677,6 @@ and \pddl{Sokoban-pushgoal}.
 }  \label{depth}
 \end{table}
 
-\begin{table}[tb]
- \setlength{\tabcolsep}{0.3em}
- \centering \relsize{-1}
- \input{tables/aaai16-robustnesscheck/aaai16prelim3_zerocost/1-7-rx-and-sig-wilcox-remove-same.tex}
- \caption{Performance of RandomOrder last-level tiebreaking with/without 2nd-level depth tie-breaking, $[h,\ro]$ and $[h,\rd,\ro]$. Each cell
- shows the coverage (mean $\pm$ sd) on each domain (5min, 2GB)$\times$10 runs. 
-Due to space, only domains with results 
- significantly different results  (according to the Wilcoxon test, $p<0.05$) are shown.
-See supplement for full results.
- }  \label{r-vs-rd-random}
-\end{table}
-
-
 
 
 \subsubsection{Depth-based Tie-breakings that ignore $h$}
@@ -745,10 +732,22 @@ future work.
 \subsubsection{Is Depth-based Tie-breaking Necessary?}
 % is this the right location -- maybe this should in a discussion section?
 
-{\bf XXXTODO: $[h,\ro]$ results need to be included in some table so that we can refer to it here.}
+
+\begin{table}[tb]
+ \setlength{\tabcolsep}{0.3em}
+ \centering \relsize{-1}
+ \input{tables/aaai16-robustnesscheck/aaai16prelim3_zerocost/1-7-rx-and-sig-wilcox-remove-same.tex}
+ \caption{Performance of RandomOrder last-level tiebreaking with/without RandomDepth tie-breaking. Each cell
+ shows the coverage (mean $\pm$ sd) on each domain (5min, 2GB)$\times$10 runs. 
+Due to space, only domains with results 
+ significantly different results  (according to the Wilcoxon test, $p<0.05$) are shown.
+See supplement for full results.
+ }  \label{r-vs-rd-random}
+\end{table}
+
 We have shown that $[h,\rd,\ro]$ performs well overall, but
 one might wonder whether the power of this strategy really comes from depth-based tie-breaking, or from randomness.
-We have seen that $[h,\ro]$ performs poorly, so clearly, random tie-breaking combined with $h$-based tie-breaking is clearly not sufficient.
+\reftbl{r-vs-rd-random} shows that $[h,\ro]$ performs poorly, so clearly, random tie-breaking combined with $h$-based tie-breaking is not sufficient.
 The reason that $[h,\ro]$ performs so poorly is that if we select uniformly from a the bucket of all open nodes in the plateau, there is a very strong bias for selecting a node with low depth, simply because at any given point during the search in the plateau region, more nodes closer to the entrance of the plateau (i.e., lower depth) will have been generated.
 By randomly selecting a depth bucket, $[h,\rd,\ro]$ explicitly eliminates this bias for selecting nodes for low depth.
 
