@@ -120,7 +120,7 @@ nodes with smaller $h$ values should be expanded first.  While this is a
 useful rule of thumb in many domains, it turns out that tie-breaking
 requires more careful consideration, particularly for problems with
 large \emph{plateaus} -- regions of the search space with the same $f$-cost.
-\emph{Note that all tie-breaking strategies investigated in this paper
+\emph{All tie-breaking strategies investigated in this paper
 maintain the admissibility of the search because it only affects the node expansion
 order among the nodes with the same $f$-cost.}
 
@@ -248,6 +248,7 @@ Although we could not find an explanation, this choice is most likely due to the
 % ** not sure how/where to put this..
 
 \subsection{Evaluation of  Commonly Used Tie-Breaking Strategies}
+\label{sec:eval-common-strategies}
 
 We first compared two commonly used tie-breaking strategies $[h,\fifo]$, $[h,\lifo]$, which
 first breaks ties according to $h$, and then applies \fifo or \lifo
@@ -256,8 +257,7 @@ second-level tie-breaking, respectively.
 %Although the search behavior of $[f,h,\fifo]$ corresponds to the default behavior of Fast Downward, this implementation differs 
 %from the original, unmodified code because we enabled caching of $h$-values, so that reopened nodes refer to cached $h$-values.\footnote{The current Fast Downward code disables $h$-caching because its current implementation is not compatible with multiple admissible heuristics.}
 %Thus, we also show results for unmodified Fast Downward -- as expected, $[f,h,\fifo]$ dominates unmodified FD.
-
-The results for \astar using the LM-cut heuristic \cite{Helmert2009} are
+Results for the LM-cut heuristic \cite{Helmert2009} are
 shown in \reftbl{single-coverage} (Left).
 Differences in coverage are observed in several domains.
 Due to space limitation, we show only the domains
@@ -275,9 +275,10 @@ more fine-grained analysis by comparing the number of node evaluation
  \input{tables/aaai16-30min-5min-cut/aaai16prelim3/1-1-basic-queues-noh.tex}
  \caption{Experiments with 5 min, 2GB setting,
  comparing the coverages of \fifo and \lifo
- second-level tie-breaking, with (left) and without (right) the
- conventional first-level $h$ tie-breaking.  For the space reason, we
- omitted those domains whose results are the same. (Full results are
+ tie-breaking, with (left) and without (right) the
+ conventional first-level $h$-based tie-breaking.  Due to space, 
+only domains with results that differ are shown.
+(Full results are
  available in the supplemental material.)
  % \textbf{Boldface} denotes the case
  % where it achieved the best result among configurations.
@@ -296,8 +297,8 @@ more fine-grained analysis by comparing the number of node evaluation
  \label{f-h-eval}
 \end{figure}
 
-According to \reftbl{single-coverage} (left) with $[h,\lifo]$
-outperforms $[h,\fifo]$.
+According to \reftbl{single-coverage} (left),
+$[h,\lifo]$ outperforms $[h,\fifo]$.
 \refig{f-h-eval} also shows that the difference in the number of nodes
 evaluated can sometimes be larger than a factor of 10, especially in
 \pddl{Openstacks} and \pddl{Cybersec}.
@@ -329,12 +330,12 @@ Therefore, the performance of $[f,\lifo]$ is comparable to the performance of $[
 
 % Note that \lifo no longer requires the gradient provided by $h$.
 
-\subsubsection{Plateaus and Tie-Breaking}
+\subsection{Plateaus and Tie-Breaking}
 
-In the comparison
+In \refsec{sec:eval-common-strategies}
 % of the simple two-level tie-breaking strategies
-above, we observed that large differences in performance between
-two-level tie-breaking strategies $[f,h,\lifo]$ and $[f,h,\fifo]$ tend
+we observed that large performance differences between
+2-level tie-breaking strategies $[h,\lifo]$ and $[h,\fifo]$ tend
 to occur in problems where there are many nodes with the same $f$ and
 $h$ values, creating large plateau regions where the heuristic does not
 provide any useful guidance -- by definition, these plateau regions in
@@ -396,7 +397,7 @@ space of M\&S \cite{helmert2007flexible} have zero costs.
 
 Although domains with zero-cost actions are not common in the current set of benchmarks, we argue that this is a historical accident, and that in fact, domains with zero-cost actions are an important class of models for cost-minimization problems.
 % 
-Traditionally, the heuristic search literature tended to focus on \emph{unit-cost} domains where every edge in the search space graph has cost 1. These include sliding tiles puzzles, Rubik's Cube, Towers of Hanoi, etc.
+Traditionally, the heuristic search literature tended to focus on \emph{unit-cost} domains where all operators have cost 1, such as sliding tile puzzles, Rubik's Cube, Towers of Hanoi, etc.
 % . Experimental study of \astar was somewhat biased to
 % the unit-cost domains
 % There are also several problems with non-unit costs, sometimes
@@ -579,8 +580,8 @@ tie-breaking strategies in all.
 In addition to the 35 IPC benchmark domains with 1104 problems used in
 the previous set of experiments, we used 29 zerocost domains with 640
 problems.  \reftbl{depth} shows the coverage results. For randomized strategies, we
-showed the mean and the standard deviation of the coverages obtained on
-10 individual runs.
+showed the coverage (mean $\pm$ sd) of the coverages on
+10 independent runs.
 
 % This comparison below may be useful in a future version of the paper, but not necessary in this version.
 %% First, we compared $[h,\ld,\lifo]$ and $[h,\fd,\fifo]$
@@ -613,7 +614,7 @@ the non-parametric Wilcoxon test.   % ``non-parametric'' means ``normal distribu
 %a non-parametric significance testing method applicable to
 %the populations in which normal distribution cannot be assumed.
 
-\reftbl{depth} shows the mean and standard deviation of the coverages,
+\reftbl{depth} shows the coverage (mean $\pm$ sd),
 along with 3 rightmost columns showing the $p$ values of the
 test. The results depend on the domains, but in many domains,
 the performance was significantly affected by 2nd-level tie-breaking, and
@@ -669,8 +670,8 @@ and \pddl{Sokoban-pushgoal}.
  \relsize{-3}
  \input{tables/aaai16-robustnesscheck/aaai16prelim3_zerocost/1-4-all-and-sig-wilcox-remove-same.tex}
  \caption{Experiments comparing the coverages of 6 configurations.
- Each cell shows the coverage of the domain solved with 5 min, 2GB
- setting. Zerocost domains are named as
+ Each cell shows the coverage of the domain solved with 5 min, 2GB.
+ Zerocost domains are named as
  [original name]-[name of nonzero action].
  For the space reason, we omitted those domains in which all coverages are
  the same (deterministic configuration),
@@ -775,8 +776,8 @@ by object reordering is due to the impact that the ordering of objects has on ti
 In Fast Downward, action names can affect search performance, because it 
 sorts the action schemas according to the dictionary
 order of the schema names, which affects the order of applicable ground
-actions of each node, which in turn affects the order in which search nodes
-that are inserted into OPEN.
+actions of each node, which in turn affects the order in which nodes
+are inserted into OPEN.
 
 We tested the robustness of the standard $[h,\lifo]$ and $[h,\fifo]$ strategies, as well as $[h,\rd,\ro]$,
 with respect to 
@@ -796,19 +797,18 @@ set of randomized domains, three times each with different random seeds,
 resulting in 9 runs per method (recall that robustness wrto random seed was shown in \refsec{sec:depth-based-evaluation}.)
 
 The coverage results are shown in \reftbl{actionordering-robustness}.
-We analysed these results using statistical methods.
+%We analysed these results using statistical methods.
 We first applied Bartlett test to test if the sample groups wrto each
 set of randomized domains share the same variance.
 % There is no significant difference between the variances of the sample
 % groups with confidence $p=0.00 < 0.05$.
 Due to the small sample size, 
 we could not verify the homogeneity of variances ($p=0.70$).
-
 % (ql:quickload :rcl)
 % (use-package :rcl)
 % (r-init)
 % (r "bartlett.test" '((571 573 571) (572 572 570) (573 575 571)))
-
+%
 % Since the variances are the same, we applied one-way ANOVA to test if
 % the sample groups have the same mean values.
 %%
@@ -823,7 +823,7 @@ difference was not observed.
 % (r-init)
 % (r "kruskal.test" '((571 573 571) (572 572 570) (573 575 571)))
 
-Thus, in contrast to the results for satisficing search by \cite{vallati2015effective}, 
+In contrast to the results for satisficing search by \cite{vallati2015effective}, 
 the effect of domain configuration  seems to be relatively weak for cost-optimal search using \astar, at least when the domain configuration is limited to action renamining.
 We conjecture that this is because 
 the behavior of \astar with $[h,\lifo]$, $[h,\fifo]$, and $[h,rd,\ro]$ highly constrained due to the constraint that \astar strictly expands nodes in order of $f$, and furthermore, the 3 strategies we evaluated first break ties according to $h$, so
@@ -874,12 +874,12 @@ skip or escape a plateau whenever possible, while
 admissible search cannot skip the remaining nodes in a plateau unless it
 is the final plateau and it directly finds a solution.
 
-In their work on combining multiple heuristics in a planner, \citeauthor{RogerH10}
-(\citeyear{RogerH10}) considered a tie-breaking approach which works as follows:
+%In their work on combining multiple heuristics in a planner, 
+\citeauthor{RogerH10} (\citeyear{RogerH10}) considered a tie-breaking approach which works as follows:
 When combining two heuristics, one of the
 heuristics is used as the primary criterion for guiding the search,
-and the second heuristic is used to break ties when the primary
-heuristic values are the same for two states.
+and the second heuristic is used to break ties among nodes with the same primary
+heuristic value.
 While this did not perform well in their work on satisficing planning, 
 using a secondary heuristic as a tie-breaking criterion in our multi-level tie-breaking framework 
 for cost-optimal search is an interesting direction for future work.
@@ -898,9 +898,9 @@ and resulted in a significantly better performance in IPC-6
 satisficing track \cite[p.137, Sec. 3.3.2]{richter2010lama}.
 \todo*{citation}
 % There's a long discussion of Openstacks in \cite{richter2010lama}, p.167-169, but I can't find PLUSONE anywhere. Maybe it's called something else in the paper?  Maybe \richter2010lama is the wrong citation??
-There are two  major differences between  our depth-based tie-breaking PLUSONE.
-First, depth-based tie-breaking is admissible,
-because unlike PLUSONE, action costs are not modified.  Also, \emph{we
+Unlike PLUSONE, depth-based tie-breaking is admissible.
+%because unlike PLUSONE, action costs are not modified.  
+Also, \emph{we
 do not always favor smaller depth over larger depth}. LAMA treats the
 increased cost as the part of sorting criteria and always prefers
 smaller cost, much like in our FirstDepth strategy.  However, FirstDepth
@@ -943,8 +943,8 @@ in our experiments, and they do not prefer the smaller depth.
 
 $LA^*$ \cite{stern2010look} extends \astar by performing a
 cost-bounded depth-first \emph{lookahead} from each node as it is generated.
-Although this work was not done in the context of tie-breaking strategies, it is interesting to note that 
-when the lookahead cost bound $k=0$ ($LA^*_0$ in their notation), only nodes with the same $f$-value as the current \astar frontier are expanded, which corresponds to a LastDepth strategy.
+%Although this work was not done in the context of tie-breaking strategies, it is interesting to note that 
+when the lookahead cost bound $k=0$ ($LA^*_0$ in their notation), only nodes with the same $f$-value as the current \astar frontier are expanded, which corresponds to a LastDepth tie-breaking strategy.
 
 
 \section{Conclusion}
