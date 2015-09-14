@@ -649,9 +649,9 @@ the performance of RandomDepth in some
 domains are noticeable (e.g., \pddl{Cybersec}, \pddl{Woodworking-cut}). 
 The std deviation of RandomDepth coverage tends to be smaller
 than that of LastDepth, indicating that RandomDepth is robust with respect to random seeds.
-FirstDepth is mostly dominated by the RandomDepth and LastDepth, except in \pddl{Scanalyzer-analyse}
+FirstDepth is not shown due to space, but is mostly dominated by the RandomDepth and LastDepth, except in \pddl{Scanalyzer-analyse}
 and \pddl{Sokoban-pushgoal}.
-
+Although we only show results using the LM-cut heuristic due to space, see the supplement for similar results using the M\&S heuristic.
 % 2015/9/13 -- let's try not including the following analysis in this submission -- due to space, and also too complicated, without sufficient payoff.
 % We no longer need the ``depth as explanation of LIFO/FIFO'' story, because  the ``random is good'' depth-based methods [h,rd,ro]  story is simpler.
 
@@ -960,13 +960,18 @@ when the lookahead cost bound $k=0$ ($LA^*_0$ in their notation), only nodes wit
 
 \section{Conclusion}
 
-In this paper, we investigated the exisiting myth about the tie breaking
-strategy of admissible search using \astar, and proposed a novel
-depth-based tie-braking method which improves planner's performance in various
-cost-minimization domains.
-We showed that
-our method is a heuristic-agnostic improvement which have a significant
-impact on the search behavior in a large search plateau.
+In this paper, we evaluated standard tie-breaking
+strategies for \astar, and proposed a simple,
+depth-based, randomized strategy $[h,\rd,\ro]$, which 
+significantly outperforms previous strategies on domains with zero-cost actions, 
+and slightly outperforms previous strategies on benchmark problems without zero-cost actions.
+Although we only showed results on a planner using the LM-cut heuristic due to space, 
+results were similar using the M\&S heuristic  (please see Supplement), so our results regarding tie-breaking are consistent when using different heuristic functions.
+
+Our approach is effective on domains where zero-cost actions create large plateau regions where all nodes have the same $f$ and $h$ costs
+and the heuristic function provides no useful guidance.
+We argued that such domains arise naturally when considering resource optimization problems.
+
 It also avoids the effect of action ordering in the domain definition,
 providing a robust behavior.
 
