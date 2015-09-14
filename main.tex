@@ -98,11 +98,11 @@ In such domains, the tie-breaking policy which decides which nodes to expand in 
  \begin{minipage}[t]{0.23\textwidth}
   \centering
   \includegraphics{tables/aaai16-frontier/zerocost/lmcut_frontier-front-mono.pdf}
-  \caption{Similar to \refig{plateau}, but for XXX instances from our cost-minimization
+  \caption{Similar to \refig{plateau}, but for 640 instances from our cost-minimization
   \emph{zerocost domains} (\refsec{sec:zerocost-domains}).
   Zero-cost actions induce very large plateau regions.
 %  Even with $h$ tie-breaking, these domains force the planner
-%  to search much larger plateau.}
+%  to search much larger plateau.
  }
  \label{plateau-zerocost}
  \end{minipage} 
@@ -121,7 +121,7 @@ cost $f(n) = f^*$, ties should be broken according to $h(n)$, i.e.,
 nodes with smaller $h$-values should be expanded first.  While this is a
 useful rule of thumb in many domains, it turns out that tie-breaking
 requires more careful consideration, particularly for problems with
-large \emph{plateaus} -- regions of the search space with the same $f$-cost.
+large \emph{plateaus} -- regions of the search space with the same $f$ and $h$.
 \emph{All tie-breaking strategies in this paper
 maintain the admissibility of the search because they only affect node expansion
 order among the nodes with the same $f$-cost.}
@@ -185,8 +185,8 @@ In our experiments, all planners are based on Fast Downward ({\bf 2015/X/XX vers
 experiments are run with a 5-minute, 2GB memory limit for the search binary (FD translation/preprocessing times are not included in the 5-minute limit).
 All experiments were conducted on Xeon E5410@2.33GHz CPUs.
 Our experimental results include 35 standard benchmark domains with 1104
-problems.
-XXXTODO?-mentionzerocost here also? %as well as... zerocost.
+problems and 29 \emph{zero-cost-action} domains with 640 problems, which is
+described later.
 
 \section{Background: Tie-breaking Strategies in \astar}
 
@@ -234,7 +234,11 @@ implicit) are required if multiple nodes can have the same $f$ and
 $h$ values.
 %% we do, in Roger, Helmert 
 % We are not aware of any work that explicitly mentions 2nd-level tie-breaking.
-While the survey of efficient \astar implementation techniques in \citeauthor{burns2012implementing} did not explicitly mention 2nd-level tie-breaking, their code first breaks ties according to $h$, and then breaks remaining ties according to a \lifo policy (most recently generated nodes first), i.e.,a $[h,\lifo]$ strategy \cite{burnscode}. %\footnote{https://github.com/eaburns/search} 
+While the survey of efficient \astar implementation techniques in
+\citeauthor{burns2012implementing} did not explicitly mention 2nd-level
+tie-breaking, their code \cite{burnscode} first breaks ties according to $h$, and then
+breaks remaining ties according to a \lifo policy (most recently
+generated nodes first), i.e., a $[h,\lifo]$ strategy.
 Although not documented, their choice of a \lifo 2nd-level tie-breaking policy appears to be a natural consequence of the fact it can be trivially, efficiently implemented in their two-level bucket (vector) implementation of OPEN.
 In contrast, the current implementation of \sota \astar based planner Fast
 Downward \cite{Helmert2006}, %\footnote{http://www.fast-downward.org}, <-- takes up 2 lines!
@@ -312,7 +316,7 @@ $[\lifo]$, which simply breaks ties among nodes with the same $f$-cost by expand
 
 Interestingly, the performance of the $[\lifo]$ strategy
 is comparable to $[h,\lifo]$ and $[h,\fifo]$, the two-level strategies that first break ties according to $h$.
-This may be somewhat surprising, considering the ubiquity of $h$-based tie-breaking in the search and planning communities.
+This may be surprising, considering the ubiquity of $h$-based tie-breaking in the search and planning communities.
 % 
 However, \lifo behaves somewhat similarly to $h$-based tie-breaking, in the following sense:
 \lifo expandes the most recently generated node $n$.
@@ -341,8 +345,8 @@ we observed that large performance differences between
 2-level tie-breaking strategies $[h,\lifo]$ and $[h,\fifo]$ tend
 to occur in problems where there are many nodes with the same $f$ and
 $h$ values, creating large plateau regions where the heuristic does not
-provide any useful guidance -- by definition, these plateau regions in
-the last frontier ($f=f^*$) require a blind search (because all nodes
+provide any useful guidance -- by definition, these plateau regions 
+require a blind search (because all nodes
 have the same $h$) which relies solely on the tie-breaking criterion.
 
 %%%, in order to
@@ -356,7 +360,7 @@ have the same $h$) which relies solely on the tie-breaking criterion.
 %the tie-breaking criteria.
 
 \refig{plateau} plots the size of the final search plateau on 1104 IPC
-benchmark instances \emph{with $h$ tie-breaking}.
+benchmark instances.
 The $y$-axis
 represents the number of nodes with $[f,h]=[f^*,0]$, and the $x$-axis represents the total
 number of nodes with $f\leq f^*$.
