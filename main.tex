@@ -88,9 +88,9 @@ In such domains, the tie-breaking policy which decides which nodes to expand in 
   \# nodes with $[f,h]=[f^*,0]$, which forms the final
   plateau when $h$ tie-breaking is enabled.
   Many \pddl{Openstacks} and \pddl{Cybersec} are instances near the $y=x$ line.
-  Due to space, We do not show all labels
+  Due to space, we do not show all labels
   for point types. See supplement for a larger, fully
-  labelled, colored version.
+  labelled, color version.
   }
   \label{plateau}
  \end{minipage} 
@@ -98,9 +98,9 @@ In such domains, the tie-breaking policy which decides which nodes to expand in 
  \begin{minipage}[t]{0.23\textwidth}
   \centering
   \includegraphics{tables/aaai16-frontier/zerocost/lmcut_frontier-front-mono.pdf}
-  \caption{Similar to \refig{plateau}, but for 640 instances from our cost-minimization
-  \emph{zerocost domains} (\refsec{sec:zerocost-domains}).
-  Zero-cost actions induce very large plateau regions.
+  \caption{Similar to \refig{plateau}, but for 640 instances from our 
+  \emph{zerocost domains} (\refsec{sec:zerocost-domains}),
+  where zero-cost actionsinduce very large plateau regions.
 %  Even with $h$ tie-breaking, these domains force the planner
 %  to search much larger plateau.
  }
@@ -182,12 +182,12 @@ $\text{criterion}_2$, and so on.
 % \emph{Last frontier} is the set of open nodes with $f^*$.
 \emph{Plateau} is the set of open nodes with the same $f$ and same $h$.
 
-In our experiments, all planners are based on Fast Downward (revision 6251), and all
+In our experiments, the planners are based on Fast Downward (revision 6251), and all
 experiments are run with a 5-minute, 2GB memory limit for the search binary (FD translation/preprocessing times are not included in the 5-minute limit).
 All experiments were conducted on Xeon E5410@2.33GHz CPUs.
-Our experimental results include 35 standard benchmark domains with 1104
-problems and 29 \emph{zero-cost-action} domains with 640 problems, which is
-described later.
+We used 1104 problems from 35 standard benchmark domains
+and 640 problems from 29 \emph{zero-cost-action} domains (\refsec{sec:zerocost-domains}).
+
 
 \section{Background: Tie-breaking Strategies in \astar}
 
@@ -236,8 +236,9 @@ $h$ values.
 %% we do, in Roger, Helmert 
 % We are not aware of any work that explicitly mentions 2nd-level tie-breaking.
 While the survey of efficient \astar implementation techniques in
-\citeauthor{burns2012implementing} did not explicitly mention 2nd-level
-tie-breaking, their code \cite{burnscode} first breaks ties according to $h$, and then
+\cite{burns2012implementing} did not explicitly mention 2nd-level
+tie-breaking, their code ({\footnotesize https://github.com/eaburns/search})
+first breaks ties according to $h$, and then
 breaks remaining ties according to a \lifo policy (most recently
 generated nodes first), i.e., a $[h,\lifo]$ strategy.
 Although not documented, their choice of a \lifo 2nd-level tie-breaking policy appears to be a natural consequence of the fact it can be trivially, efficiently implemented in their two-level bucket (vector) implementation of OPEN.
@@ -266,15 +267,14 @@ second-level tie-breaking, respectively.
 Results for the LM-cut heuristic \cite{Helmert2009} are
 shown in \reftbl{depth} (Left).
 Differences in coverage are observed in several domains.
-Due to space limitation, we show only the domains
-where there was any difference. Full data is available in the
-supplemental material. 
+% "Due to space..." excuse now in table caption
+%Due to space limitation, we show only the domains
+%where there was any difference. Full data is available in the
+%supplemental material. 
 % 
-\refig{f-h-eval} gives us a
-more fine-grained analysis by comparing the number of node evaluation
-(computations of \lmcut) on different tie-breakings.
-
-
+\refig{f-h-eval} shows 
+more fine-grained results by comparing the number of node evaluations
+(computations of \lmcut) of the $[h,\lifo]$ and $[h,\fifo]$ strategies.
 % \begin{table}[tb]
 %  \centering \relsize{-3}
 %  \input{tables/aaai16-30min-5min-cut/aaai16prelim3/1-1-basic-queues.tex}
@@ -311,7 +311,7 @@ evaluated can sometimes be larger than a factor of 10, especially in
 
 \subsubsection{Is $h$-Based Tie-Breaking necessary?}
 \label{sec:h-necessary}
-Next, we investigated whether $h$-based, first-level tie-breaking is necessary.
+%Next, we investigated whether $h$-based, first-level tie-breaking is necessary.
 In \reftbl{depth}, which shows the results when  relying only on \fifo or \lifo tie-breaking.
 $[\lifo]$, which simply breaks ties among nodes with the same $f$-cost by expanding most recently generated nodes first (suggested in \cite{korf1985depth}), clearly dominates $[\fifo]$.
 
@@ -549,20 +549,20 @@ largest, and random depth, respectively.
 
 \todo{remove this part if complete plot in \refig{depth-histogram} did
 not succeed}
-The effectiveness of each of these three depth-based poicies depends on the
-structure of the problem instance.  Within
+The effectiveness of each of these depth-based poicies depends on the
+problem instance.  Within
 the plateau region, all nodes have the same $f$ and $h$ values, 
 % yes, for simplicity, I'm assuming 3-level tiebreaks, ignoring no-h for the time being..
-and it is impossible to guess whether the goals are likely to be  near or far
-away or from the entrance.  In the first case, the
+and the goals can be near or far
+from the entrance.  In the first case, the
 search should be focused around the entrance favoring the smaller depths
 (\fd), and the behavior in the plateau should be much like breadth-first. In the
 second case, the planner should greedily explore the various area of the
 plateau by preferring largest depth (\ld), much like in
 depth-first. 
 It may also be possible for a goals to be at an intermediate depth, in which case
-\fd would take too much time to reach that
-depth, and \ld would greedily go past and ignore the depth.
+\fd could take too much time to reach that
+depth, and \ld may greedily pass and miss that depth.
 By an adversary argument, \rd, which selects a random depth and has no depth bias would seem to be the safest policy.
 
 
@@ -605,7 +605,7 @@ tie-breaking strategies in all.
 In addition to the 35 IPC benchmark domains with 1104 problems used in
 the previous set of experiments, we used 29 zerocost domains with 640
 problems. For randomized strategies, we
-showed the coverage (mean $\pm$ sd) of the coverages on
+show the coverage (mean $\pm$ sd) of the coverages on
 10 independent runs.
 
 % This comparison below may be useful in a future version of the paper, but not necessary in this version.
