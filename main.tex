@@ -329,7 +329,7 @@ If the heuristic function is admissible, there are only 3 possibilities for any 
 These are derived from $f(n')=g(n')+h(n')$.)
 Thus, \lifo will expand nodes in a ``depth-first'' manner, and as the depth increases,
 the nodes that continue to be expanded by \lifo's 
-depth-first exploration will have non-decreasing $g$-values and non-increasing $h$-values.
+depth-first exploration will have non-increasing $h$-values.
 This is similar to actively expanding nodes with low $h$-values, which is the behavior for $h$-based tiebreaking.
 Therefore, the performance of $[f,\lifo]$ is comparable to the performance of $[h,\lifo]$.
 % \citeauthor{burns2012implementing}
