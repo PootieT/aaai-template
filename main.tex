@@ -632,8 +632,9 @@ $h$ as the first-level tie-breaking criterion, one of \fd, \ld, \rd as
 the depth-based 2nd-level tie-breaking criterion, and finally,
 \ro as the 3rd-level criterion.
 Since these configurations are randomized, we run 10
-experiments with different random seeds for each configuration and
-tested the significance of the difference of the mean coverage with 
+experiments with different random seeds for each configuration.
+To see the difference of $[h,\ld,\ro]$, $[h,\rd,\ro]$,
+we tested the significance of the difference of the mean coverage with 
 the non-parametric Wilcoxon test.   % ``non-parametric'' means ``normal distribution not assumed
 %Wilcoxon test,
 %a non-parametric significance testing method applicable to
@@ -642,7 +643,6 @@ the non-parametric Wilcoxon test.   % ``non-parametric'' means ``normal distribu
 \reftbl{depth} shows the coverage (mean $\pm$ sd),
 along with the rightmost columns showing the $p$ values of the
 Wilcoxon test between $[h,\ld,\ro]$ and $[h,\rd,\ro]$.
-We dropped the result of $[h,\fd,\ro]$ 
 The results depend on the domains, but in many domains,
 the performance was significantly affected by 2nd-level tie-breaking, and
 RandomDepth dominated the others. 
