@@ -969,27 +969,33 @@ strategies for \astar, and proposed a simple,
 depth-based, randomized strategy $[h,\rd,\ro]$, which 
 significantly outperforms previous strategies on domains with zero-cost actions, 
 and slightly outperforms previous strategies on benchmark problems without zero-cost actions.
-Although we only showed results on a planner using the LM-cut heuristic due to space, 
-results were similar using the M\&S heuristic  (please see Supplement), so our results regarding tie-breaking are consistent when using different heuristic functions.
-
-Our approach is effective on domains where zero-cost actions create large plateau regions where all nodes have the same $f$ and $h$ costs
+We have shown that our $[h,\rd,\ro]$ strategy is successful because the randomized depth bucket selection explicitly avoids the depth bias that was present 
+in previous methods. 
+Our approach is highly effective on domains where zero-cost actions create large plateau regions where all nodes have the same $f$ and $h$ costs
 and the heuristic function provides no useful guidance.
 We argued that such domains arise naturally when considering resource optimization problems.
 
-It also avoids the effect of action ordering in the domain definition,
-providing a robust behavior.
+
+Although we only showed results on a planner using the LM-cut heuristic due to space, 
+results were similar using the M\&S heuristic  (please see Supplement), so our results regarding tie-breaking are consistent when using different heuristic functions.
+
+%It also avoids the effect of action ordering in the domain definition,
+%providing a robust behavior.
 
  % when the distribution of optimal solutions is not uniform within the open list.
 % We also showed that this nonuniform distribution still appears when we have almost-perfect % heuristics.
 
-Our method differs from the pruning techniques because we do not prune
-any states, nor from the other general improvements to the heuristic
-accuracy because we just change the evaluation order within the same
-$f$, yet it address the fundamental problems in the heuristic forward
-search. 
-% 
-Future work includes a development of learning technique for
-adaptively altering the search behavior in the plateau.
+%% Our method differs from the pruning techniques because we do not prune
+%% any states, nor from the other general improvements to the heuristic
+%% accuracy because we just change the evaluation order within the same
+%% $f$, yet it address the fundamental problems in the heuristic forward
+%% search. 
+%% % 
+
+While we focused on randomized policies because search plateaus, by definition do not provide useful heuristic information,
+it may be possible to develop methods that exploit the neighborhood structure of the search space
+in order to adaptively adjust the tie-breaking policies. This is a direction for future work.
+
 
 
 
