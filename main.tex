@@ -317,12 +317,14 @@ This may be somewhat surprising, considering the ubiquity of $h$-based tie-break
 However, \lifo behaves somewhat similarly to $h$-based tie-breaking, in the following sense:
 \lifo expandes the most recently generated node $n$.
 If the heuristic function is admissible, there are only 3 possibilities for any child $n'$: 
-(1) $f(n') > f(n)$  (plateau escape), 
-(2) $f(n') = f(n), g(n') > g(n) (\therefore h(n') < h(n))$, and 
-(3) $f(n') = f(n), g(n') = g(n) (\therefore h(n') = h(n))$.
+(1) $f(n') > f(n)$, 
+(2) $f(n') = f(n), g(n') > g(n)$ and thus $h(n') < h(n)$, or
+(3) $f(n') = f(n), g(n') = g(n)$, thus $h(n') = h(n)$.
+(Note that (2, 3) do not assume consistent heuristics.
+These are derived from $f(n')=g(n')+h(n')$.)
 Thus, \lifo will expand nodes in a ``depth-first'' manner, and as the depth increases,
 the nodes that continue to be expanded by \lifo's 
-dept-first exploration will have non-decreasing $g$-values and non-increasing $h$-values.
+depth-first exploration will have non-decreasing $g$-values and non-increasing $h$-values.
 This is similar to actively expanding nodes with low $h$-values, which is the behavior for $h$-based tiebreaking.
 Therefore, the performance of $[f,\lifo]$ is comparable to the performance of $[h,\lifo]$.
 % \citeauthor{burns2012implementing}
