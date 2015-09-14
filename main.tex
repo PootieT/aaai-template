@@ -965,11 +965,13 @@ when the lookahead cost bound $k=0$ ($LA^*_0$ in their notation), only nodes wit
 \section{Conclusion}
 
 In this paper, we evaluated standard tie-breaking
-strategies for \astar, and proposed a simple,
-depth-based, randomized strategy $[h,\rd,\ro]$, which 
+strategies for \astar.
+We showed that contrary to conventional wisdom, tie-breaking based on the heuristic value is not necessary to achieve good performance, and proposed a 
+and proposed a new framework for defining tie-breaking policies based on \emph{depth}.
+We proposed a depth-based, randomized strategy $[h,\rd,\ro]$, which explicitly avoids depth and ordering biases present in previous methods,
 significantly outperforms previous strategies on domains with zero-cost actions, 
 and slightly outperforms previous strategies on benchmark problems without zero-cost actions.
-We have shown that our $[h,\rd,\ro]$ strategy is successful because the randomized depth bucket selection explicitly avoids the depth bias that was present 
+%We have shown that our $[h,\rd,\ro]$ strategy is successful because the randomized depth bucket selection explicitly avoids the depth bias that was present 
 in previous methods. 
 Our approach is highly effective on domains where zero-cost actions create large plateau regions where all nodes have the same $f$ and $h$ costs
 and the heuristic function provides no useful guidance.
