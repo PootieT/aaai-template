@@ -1,0 +1,34 @@
+
+% old table1
+
+\begin{table}[tb]
+ \centering \relsize{-3}
+ \input{tables/aaai16-30min-5min-cut/aaai16prelim3/1-1-basic-queues.tex}
+ \input{tables/aaai16-30min-5min-cut/aaai16prelim3/1-1-basic-queues-noh.tex}
+ \caption{Experiments with 5 min, 2GB setting,
+ comparing the coverages of \fifo and \lifo
+ tie-breaking, with (left) and without (right) the
+ conventional first-level $h$-based tie-breaking.  Due to space, 
+only domains with results that differ are shown.
+(Full results are
+ available in the supplemental material.)
+ % \textbf{Boldface} denotes the case
+ % where it achieved the best result among configurations.
+ }
+ \label{single-coverage}
+\end{table}
+
+
+% old table3
+
+\begin{table}[tb]
+ \setlength{\tabcolsep}{0.3em}
+ \centering \relsize{-1}
+ \input{tables/aaai16-robustnesscheck/aaai16prelim3_zerocost/1-7-rx-and-sig-wilcox-remove-same.tex}
+ \caption{Performance of RandomOrder last-level tiebreaking with/without RandomDepth tie-breaking. Each cell
+ shows the coverage (mean $\pm$ sd) on each domain (5min, 2GB)$\times$10 runs. 
+Due to space, only domains with results 
+ significantly different results  (according to the Wilcoxon test, $p<0.05$) are shown.
+See supplement for full results.
+ }  \label{r-vs-rd-random}
+\end{table}

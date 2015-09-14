@@ -272,25 +272,9 @@ Differences in coverage are observed in several domains.
 %where there was any difference. Full data is available in the
 %supplemental material. 
 % 
-\refig{f-h-eval} shows 
-more fine-grained results by comparing the number of node evaluations
+\refig{f-h-eval} gives us a
+more fine-grained analysis by comparing the number of node evaluation
 (computations of \lmcut) of the $[h,\lifo]$ and $[h,\fifo]$ strategies.
-% \begin{table}[tb]
-%  \centering \relsize{-3}
-%  \input{tables/aaai16-30min-5min-cut/aaai16prelim3/1-1-basic-queues.tex}
-%  \input{tables/aaai16-30min-5min-cut/aaai16prelim3/1-1-basic-queues-noh.tex}
-%  \caption{Experiments with 5 min, 2GB setting,
-%  comparing the coverages of \fifo and \lifo
-%  tie-breaking, with (left) and without (right) the
-%  conventional first-level $h$-based tie-breaking.  Due to space, 
-% only domains with results that differ are shown.
-% (Full results are
-%  available in the supplemental material.)
-%  % \textbf{Boldface} denotes the case
-%  % where it achieved the best result among configurations.
-%  }
-%  \label{single-coverage}
-% \end{table}
 
 
 \begin{figure}[tb]
@@ -730,19 +714,6 @@ tie-breaking strategies}.
 
 \subsubsection{Is Depth-based Tie-breaking Necessary?}
 % is this the right location -- maybe this should in a discussion section?
-
-
-% \begin{table}[tb]
-%  \setlength{\tabcolsep}{0.3em}
-%  \centering \relsize{-1}
-%  \input{tables/aaai16-robustnesscheck/aaai16prelim3_zerocost/1-7-rx-and-sig-wilcox-remove-same.tex}
-%  \caption{Performance of RandomOrder last-level tiebreaking with/without RandomDepth tie-breaking. Each cell
-%  shows the coverage (mean $\pm$ sd) on each domain (5min, 2GB)$\times$10 runs. 
-% Due to space, only domains with results 
-%  significantly different results  (according to the Wilcoxon test, $p<0.05$) are shown.
-% See supplement for full results.
-%  }  \label{r-vs-rd-random}
-% \end{table}
 
 We have shown that $[h,\rd,\ro]$ performs well overall, but
 one might wonder whether the power of this strategy really comes from depth-based tie-breaking, or from randomness.
