@@ -85,7 +85,7 @@ In such domains, the tie-breaking policy which decides which nodes to expand in 
   \includegraphics{tables/aaai16-frontier/aaai16prelim3/lmcut_frontier-front-mono.pdf}
   \caption{
   Similar to \refig{fig:plateau-noh}; $y$-axis is
-  \# nodes with $[f,h]=[f^*,0]$, which forms the final
+  \# nodes with $(f,h)=(f^*,0)$, which forms the final
   plateau when $h$ tie-breaking is enabled.
   Many \pddl{Openstacks} and \pddl{Cybersec} are instances near the $y=x$ line.
   Due to space, we do not show all labels
@@ -180,7 +180,7 @@ $\text{criterion}_1$, the \emph{second-level tie-breaking policy} is
 $\text{criterion}_2$, and so on.
 %% the word frontier is no longer used in the later text.
 % \emph{Last frontier} is the set of open nodes with $f^*$.
-\emph{Plateau} is the set of open nodes with the same $f$ and same $h$.
+A \emph{plateau} is a set of open nodes with the same $f$ and same $h$.
 
 In our experiments, the planners are based on Fast Downward (revision 6251), and all
 experiments are run with a 5-minute, 2GB memory limit for the search binary (FD translation/preprocessing times are not included in the 5-minute limit).
@@ -405,8 +405,8 @@ means that runtime on these domains varies significantly depending on the second
 %% best to put openstacks here, considering the connection to the
 %% previous section
 \pddl{Openstacks}  is a cost
-minimization domain first introduced in IPC-2006, where the objective is to 
-minimize the number of stacks used.
+minimization domain introduced in IPC-2006, where the objective is to 
+minimize the \# of stacks used.
 There are many zero-cost actions (i.e., actions that don't increase the number of stacks), and
 they prevent the standard heuristics from producing
 informative guidance.
@@ -663,7 +663,8 @@ the non-parametric Wilcoxon test.   % ``non-parametric'' means ``normal distribu
 \reftbl{depth} shows the coverage (mean $\pm$ sd),
 along with the rightmost columns showing the $p$ values of the
 Wilcoxon test between $[h,\ld,\ro]$ and $[h,\rd,\ro]$.
-The results depend on the domains, but in many domains,
+%The results depend on the domains, but in many domains, 
+In many domains,
 the performance was significantly affected by 2nd-level tie-breaking, and
 $[h,\rd,\ro]$ dominated the others. 
 Although $[h, \ld, \ro]$ and $[h,\rd,\ro]$ behave similarly on most domains, 
@@ -846,7 +847,7 @@ constrained, because of the first-level tie-breaking according to $h$.
  %\input{tables/aaai16-actionordering/aaai16prelim3random1_aaai16prelim3random2_aaai16prelim3random3_zrandom1_zrandom2_zrandom3_2zrandom1_2zrandom2_2zrandom3/1-1-all.tex}
  %\input{tables/aaai16-actionordering/aaai16prelim3random1_aaai16prelim3random2_aaai16prelim3random3_zrandom1_zrandom2_zrandom3_2zrandom1_2zrandom2_2zrandom3/1-1-all.tex}
  \input{tables/aaai16-actionordering/aaai16prelim3random1_aaai16prelim3random2_aaai16prelim3random3_aaai16prelim3-_zrandom1_zrandom2_zrandom3_zerocost/1-1-all.tex}
- \caption{Results showing the total coverages of $[h,\fifo]$, $[h,\lifo]$
+ \caption{Total coverages of $[h,\fifo]$, $[h,\lifo]$
  and $[h,\rd,\ro]$ (with three seeds). Each row represents the original set of
  domains or its three action-reordered variants. The effect
  of action ordering is small enough for $[h,\rd,\ro]$ to
@@ -892,15 +893,16 @@ for cost-optimal search is an interesting direction for future work.
 The PLUSONE %\footnote{This term is used on the Fast Downward website.} XXfootnote takes too much space
 cost-type is a non-admissible search technique in the Fast Downward/LAMA planner
 \cite{richter2010lama} which increases all action costs by 1.
-By eliminating zero-cost actions, this has the effect similar to our
-FirstDepth tie-breaking.
+By eliminating zero-cost actions, this behaves similar to our
+$[h,\fd,\ro]$ tie-breaking.
 %Using PLUSONE, three successive
 %applications of zero-cost operators have cost 3, and two
 %applications have cost 2, and smaller cost is preferred, just as
 %\astar always expands the node with smaller $f$-value.
 This technique explicitly targeted zero-cost actions,
 and resulted in a significantly better performance in IPC-6
-satisficing track \cite[p.137, Sec. 3.3.2]{richter2010lama}.
+satisficing track \cite{richter2010lama}.
+%\cite[p.137, Sec. 3.3.2]{richter2010lama}.
 \todo*{citation}
 % There's a long discussion of Openstacks in \cite{richter2010lama}, p.167-169, but I can't find PLUSONE anywhere. Maybe it's called something else in the paper?  Maybe \richter2010lama is the wrong citation??
 Unlike PLUSONE, depth-based tie-breaking is admissible.
@@ -908,10 +910,10 @@ Unlike PLUSONE, depth-based tie-breaking is admissible.
 Also, \emph{we
 do not always favor smaller depth over larger depth}. LAMA treats the
 increased cost as the part of sorting criteria and always prefers
-smaller cost, much like in our FirstDepth strategy.  However, FirstDepth
-strategy is the worst strategy in our experiments and the best
-performing depth-based tie-breaking methods are $[h,\ld,\ro]$ and $[h,\rd,\ro]$
-in our experiments, and they do not prefer the smaller depth.
+smaller cost, much like in our $[h,\fd,\ro]$ strategy.  However, the $[h,\fd,\ro]$
+strategy had the worst performance in our experiments (\reftbl{depth}) -- in our experiments, 
+the performing depth-based tie-breaking methods $[h,\ld,\ro]$ and $[h,\rd,\ro]$
+do not prefer smaller depth.
 
 % It's not clear what these techniques have in common, except that they are all orthogonal to heuristics,
 % If that's the case, then there's no need to cite them in this paper -- there's no reason why these particular techniques
@@ -958,18 +960,17 @@ In this paper, we evaluated standard tie-breaking
 strategies for \astar.
 We showed that contrary to conventional wisdom, tie-breaking based on the heuristic value is not necessary to achieve good performance, and proposed
 a new framework for defining tie-breaking policies based on \emph{depth}.
-We proposed a depth-based, randomized strategy $[h,\rd,\ro]$, which explicitly avoids depth and ordering biases present in previous methods,
+We showed that a depth-based, randomized strategy $[h,\rd,\ro]$, which uses the heuristic value, but explicitly avoids depth and ordering biases present in previous methods,
 significantly outperforms previous strategies on domains with zero-cost actions, 
 and slightly outperforms previous strategies on benchmark problems without zero-cost actions.
-%We have shown that our $[h,\rd,\ro]$ strategy is successful because the randomized depth bucket selection explicitly avoids the depth bias that was present 
-in previous methods. 
+%We have shown that our $[h,\rd,\ro]$ strategy is successful because the randomized depth bucket selection explicitly avoids the depth bias that was present in previous methods
 Our approach is highly effective on domains where zero-cost actions create large plateau regions where all nodes have the same $f$ and $h$ costs
 and the heuristic function provides no useful guidance.
 We argued that such domains arise naturally when considering resource optimization problems.
 
 
 Although we only showed results on a planner using the LM-cut heuristic due to space, 
-results were similar using the M\&S heuristic  (please see Supplement), so our results regarding tie-breaking are consistent when using different heuristic functions.
+results were similar using the M\&S heuristic  (please see Supplement), so our results regarding tie-breaking hold with a different heuristic function.
 
 %It also avoids the effect of action ordering in the domain definition,
 %providing a robust behavior.
