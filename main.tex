@@ -2,18 +2,18 @@
 % Take extra care in avoiding ``expansion'' -- stick to ``evaluation''
 
 \todo{Tie-breaking or tie-breaking? Tie-Breaking.}
-\todo{Inadmissible or non-admissible? Inadmissible.}
+%\todo{Inadmissible or non-admissible? Inadmissible.}
 \todo{last frontier or final frontier?}
 
 \begin{abstract}
 % this current version is intentionally ambiguous as possible
-Despite the recent improvements in admissible heuristic search techniques
-for classical planning, the exponential growth of
+Despite recent improvements in search techniques
+for cost-optimal classical planning, the exponential growth of
 the size of the search frontier in A* is unavoidable.
 We investigate tie-breaking strategies for A*, 
-experimentally analyzing the performance of commonly used tie-breaking strategies that break ties according to the heuristic value of the nodes.
-We find that tie-breaking has a significant impact on search algorithm performance when there are actions with zero cost that induce large plateau regions in the search space.
-We develop a new framework for tie-breaking based on a depth metric which measures distance from the entrance to the plateau, and propose a new, randomized strategy which significantly outperforms standard tie-breaking strategies on existing planning benchmark domains as well as newly generated domains with zero-cost actions.
+experimentally analyzing the performance of standard tie-breaking strategies that break ties according to the heuristic value of the nodes.
+We find that tie-breaking has a significant impact on search algorithm performance when there are zero-cost operators that induce large plateau regions in the search space.
+We develop a new framework for tie-breaking based on a depth metric which measures distance from the entrance to the plateau, and propose a new, randomized strategy which significantly outperforms standard strategies on both existing planning benchmark domains and newly generated domains with zero-cost actions.
 
 %%  % 
 %% We investigate various existing myth on tie-breaking
@@ -55,13 +55,13 @@ much of the work in the search and planning literature  has focused
 on reducing the size of this effective search space by
 developing more accurate, admissible heuristic functions.
 
-In many problems, the size of the \emph{last frontier}, the set of nodes with $f(n)=f^*$, accounts for a significant portion of the effective search space of \astar.
-\refig{fig:plateau-noh} plots the number of states with $f(n) = f^*$ (y-axis)
-versus the number of states with $f(n) \leq f^*$
-for a set of 1104 benchmark problem instances from the ICAPS International Planning Competition (IPC1998-2011).
-For many instances in \refig{fig:plateau-noh},  a large fraction of the nodes with $f(n) \leq f^*$ have $f(n)=f^*$.
+In many problems, the size of the \emph{last frontier}, the set of nodes with $f(n)=f^*$, accounts for a significant fraction of the effective search space of \astar.
+\refig{fig:plateau-noh} plots the \# of states with $f(n) = f^*$ (y-axis)
+vs. the \# of states with $f(n) \leq f^*$
+for 1104 problem instances from the International Planning Competition (IPC1998-2011).
+For many instances,  a large fraction of the nodes with $f(n) \leq f^*$ have $f(n)=f^*$.
 For example, in the \pddl{Openstacks} domain, almost all states with $f(n) \leq f^*$ have cost $f^*$.
-In such domains, the behavior of \astar on the last frontier is critical -- the policy for deciding which nodes to expand in the last frontier can have a significant impact on the performance of \astar.
+In such domains, the tie-breaking policy which decides which nodes to expand in the last frontier can have a significant impact on the performance of \astar.
 
 \begin{figure*}[bt]
  \newcommand{\minilength}{0.36\textwidth}
@@ -110,25 +110,27 @@ In such domains, the behavior of \astar on the last frontier is critical -- the 
 
 In this paper, we investigate \emph{tie-breaking} strategy used by
 \astar, which selects a node to expand among nodes with the same
-$f$-cost.  Since \astar expands all nodes with $f$-cost less than $f^*$
-before expanding any nodes with cost $f^*$, the tie-breaking policy only
-affects performance when considering the last frontier (nodes with cost
-$f^*$).  Although there has not been much previous \emph{in-depth} work
-on tie-breaking policies for admissible search algorithms, it is widely believed that among nodes with
+$f$-cost.  
+%Since \astar expands all nodes with $f$-cost less than $f^*$
+%before expanding any nodes with cost $f^*$, the tie-breaking policy only
+%affects performance when considering the last frontier (nodes with cost
+%$f^*$).  Although there has not been much previous \emph{in-depth} work
+%on tie-breaking policies for admissible search algorithms, 
+It is widely believed that among nodes with
 cost $f(n) = f^*$, ties should be broken according to $h(n)$, i.e.,
-nodes with smaller $h$ values should be expanded first.  While this is a
+nodes with smaller $h$-values should be expanded first.  While this is a
 useful rule of thumb in many domains, it turns out that tie-breaking
 requires more careful consideration, particularly for problems with
 large \emph{plateaus} -- regions of the search space with the same $f$-cost.
-\emph{All tie-breaking strategies investigated in this paper
-maintain the admissibility of the search because it only affects the node expansion
+\emph{All tie-breaking strategies in this paper
+maintain the admissibility of the search because they only affect node expansion
 order among the nodes with the same $f$-cost.}
 
-We first empirically evaluate widely used tie-breaking strategy for \astar, and show that 
+We first empirically evaluate standard tie-breaking strategies for \astar, and show that 
 % 
 (1) a Last-In-First-Out (\lifo) policy for tends to be more efficient than an a First-In-First-Out (\fifo) policy, and 
 % 
-(2) tie-breaking according to $h$, which
+(2) tie-breaking according to the heuristic value $h$, which
 frequently appears in the heuristic search literature, has little 
 impact on the performance as long as a \lifo policy is used.
 % 
@@ -139,12 +141,12 @@ impact on the performance as long as a \lifo policy is used.
 % search space.]{this is not shown yet. how to show it? xy-plot of the node
 % evaluation order?}
 These experiments show that there are significant performances differences among tie-breaking strategies
-when domains have zero-cost actions.  While there are relatively few domains with zero-cost actions in the existing IPC benchmark sets, we argue that this is a historical accident, and that in fact, many unit-cost domains may be more appropriately modelled using zero-cost actions.
+when domains include zero-cost actions.  While there are relatively few domains with zero-cost actions in the existing IPC benchmark sets, we argue that this is a historical accident, and that in fact, many unit-cost domains may be more appropriately modelled using zero-cost actions.
 %Through these experiments, we points out a bias in the current set of
 %benchmark domains and the importance of tie-breaking in
 %the more practical cost-minimization problems.
 
-In order to solve such \emph{zero-cost-action} problems more efficently,
+In order to solve such problems more efficently,
 we propose 
 tie-breaking methods
 based on a notion of \emph{depth} within the plateau, which corresponds to the number of steps 
@@ -196,15 +198,16 @@ If multiple nodes with the same $f$-cost are possible, \astar
 must implement some tie-breaking policy (either
 explicitly or implicitly) which selects from among these nodes.
 The early literature on heuristic search seems to have been mostly agnostic regarding tie-breaking.
-The original \astar paper, as well as Nilsson's
-subsequent textbook states: ``Select the open node $n$ whose value $f$
+The original \astar paper, 
+%as well as Nilsson's subsequent textbook 
+states: ``Select the open node $n$ whose value $f$
 is smallest. Resolve ties arbitrarily, but always in favor of any [goal
-node]'' \cite[p.102 Step 2]{hart1968formal} \cite[p.69]{Nilsson71}.
+node]'' \cite[p.102 Step 2]{hart1968formal} %\cite[p.69]{Nilsson71}.
 % Although it is possible to interpret this to imply $h$-based tie-breaking
 % since goal nodes are the special case where $h=0$,
 % they make no further metion of tie-breaking.
-Pearl's textbook on heuristic search specifies that best-first search should ``break ties arbitrarily'' (\citeyear{pearl1984heuristics}, p.48, Step 3), but does not specifically mention tie-breaking for \astar.
-Interestingly, in his analysis of IDA*, Korf mentions that ``If \astar employs the tie-breaking rule of 'most-recently generated', it must also expand the same nodes [as IDA*]'' (\citeyear{korf1985depth}) -- this pure \lifo ordering is the first explicit mention we found of a tie-breaking policy not based on $h$.
+Pearl's textbook on heuristic search specifies that best-first search should ``break ties arbitrarily'' (\citeyear{pearl1984heuristics}, p.48, Step 3), and does not specifically mention tie-breaking for \astar.
+The first explicit mention of a tie-breaking policy that considers node generation order is by Korf in his analysis of IDA*: ``If \astar employs the tie-breaking rule of 'most-recently generated', it must also expand the same nodes [as IDA*]'', i.e., a \lifo ordering.
 
 In recent years, tie-breaking accoording to $h$-values has become ``folklore'' in the search community.
 \citeauthor{hansen2007anytime} state that ``It is well-known 
@@ -763,8 +766,8 @@ By randomly selecting a depth bucket, $[h,\rd,\ro]$ explicitly eliminates this b
 Recently, \citeauthor{vallati2015effective} showed that the performance of 
 satisficing planners was significantly affected by PDDL domain \emph{configurations}, which includes the name/ordering of actions, propositions, and objects in the PDDL input file (\citeyear{vallati2015effective}).
 % note that vallati et al did not show that tie-breaking was affected -- they observed that performance of the planners was affected by configuration, and conjectured that the performance variation was due to the effects of configuration on tie-breaking.
-They conjectured that the reason for the performance variations caused
-by object reordering is due to the impact that the ordering of objects has on tie-breaking.
+They conjectured that performance variations caused
+by different domain configurations is due to the impact that the naming/ordering of objects has on tie-breaking.
 % in \cite{vallati2015effective} p.7, col2, par#1
 In Fast Downward, action names can affect search performance, because FD 
 sorts the action schemas according to the dictionary
@@ -778,44 +781,40 @@ We tested the robustness of the standard $[h,\lifo]$ and $[h,\fifo]$ strategies,
 with respect to 
 biases introduced by domain configuration (action naming) in the PDDL domain definition.
 We created 3 different sets of domains in which the
-original names of action schema are changed into random strings. 
+original names of action schema are mangled into random strings. 
 %We only reordered the actions becasue in the FD codebase, the order of propositions has no effect on tie-breaking. --- let's avoid talking about anything other than action names, in case there are other configuration factors.
 %  XXXTODO CHECK whether above sentence correctly summarizes the sentence below.
 %% In contrast, we continued to use the variable ordering in the original domains
 %% because the effect of variable ordering is irrelevant to the tie-breaking
 %% criteria.
 % %We avoided the effect of action orderings by using the randomized third tie-breakings.
-Each set of action-renamed domains contains all of the benchmark and zerocost
-domains.
-We ran each of the 3 methods on each
-set of randomized domains, three times each with different random seeds,
-resulting in 9 runs per method (recall that robustness wrto random seed was shown in \refsec{sec:depth-based-evaluation}.)
+%Each set of action-renamed domains contains all of the benchmark and zerocost domains.   %XX - can be inferred from table
+We ran each of the 3 strategies on each
+set of mangled domains, three times each with different random seeds,
+resulting in 9 runs per strategy (recall that robustness wrto random seed was shown in \refsec{sec:depth-based-evaluation}.)
 
-The coverage results are shown in \reftbl{actionordering-robustness} (We
-also included the original 10 runs in \reftbl{depth}).
-We statistically analysed the results of $[h,\rd,\ro]$ 
-to see if any result of 4 set of differently reordered domains
+The results are shown in \reftbl{actionordering-robustness} (We
+also included the original 10 runs from  \reftbl{depth}).
+We statistically analysed the results for $[h,\rd,\ro]$ 
+to see if any of the 4 sets of domains
 significantly outperformed the others.
 %In order to test the significance of mean value,
 We first applied Fligner-Killeen's non-parametric test to see if the sample groups 
 in each set of randomized domains share the same variance, 
 but could not reject the homogeneity of variances ($p=0.74$).
-Since the variances are not significantly different,
-we can apply non-parametric Kruskal-Wallis test to see if
+Since the variances were not significantly different,
+we could then apply the non-parametric Kruskal-Wallis test to see if
 there is any difference in the mean values between the original
-population of the sample groups.
-The null hypothesis could not be rejected ($p=0.26$) and the significant
-difference was not observed.
-Thus, there is no significant reasons to believe that the domain
-difference has affected the performance.
+population of the sample groups, which showed that the differences were not significant ($p=0.26$),
+i.e., action name mangling did not significnatly affect performance.
 
 Thus, in contrast to the results for satisficing search by \cite{vallati2015effective}, 
 the effect of action ordering  seems to be relatively weak for cost-optimal search using \astar.
 This may be because 
 compared to the satisficing, best-first serach algorithms evaluated in \cite{vallati2015effective},
 the behavior of $[h,\lifo]$, $[h,\fifo]$, and $[h,rd,\ro]$ highly
-constrained, in that all nodes with cost $f$ must be expanded before any
-nodes with cost larger than $f$.
+constrained, because of the first-level tie-breaking according to $h$.
+%in that all nodes with cost $f$ must be expanded before any nodes with cost larger than $f$. % this is true for best-first-search in general, by definition.
 
 \begin{table}[tb]
  \setlength{\tabcolsep}{0.2em}
@@ -867,7 +866,7 @@ While this did not perform well in their work on satisficing planning,
 using a secondary heuristic as a tie-breaking criterion in our multi-level tie-breaking framework 
 for cost-optimal search is an interesting direction for future work.
 
-The PLUSONE\footnote{This term is used on the Fast Downward website.}
+The PLUSONE %\footnote{This term is used on the Fast Downward website.} XXfootnote takes too much space
 cost-type is a non-admissible search technique in the Fast Downward/LAMA planner
 \cite{richter2010lama} which increases all action costs by 1.
 By eliminating zero-cost actions, this has the effect similar to our
