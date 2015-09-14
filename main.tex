@@ -405,11 +405,20 @@ Traditionally, the heuristic search literature tended to focus on \emph{unit-cos
 % artificially but also sometimes naturally, such as in multiple
 % sequence alignment (MSA).
 % 
-In the plannning community,
-%  actions with non-unit costs were first introduced in 
-% IPC-2002. The actions in these domains
-actions tend to have the nonzero positive costs
-because most domains target the runtime minimization.
+In the plannning literature,  the earliest classical benchmark domains were unit-cost domains, and domains with non-unit cost actions  were not introduced until 
+ IPC-2002. 
+As a result, there are many ``unit cost'' domains included in benchmark sets used to evaluate 
+cost-optimal planning algorithms, where the ``unit-cost'' actions are purely a result of historical accident, and assigning non-unit costs would arguably make more sense from a practical, modeling perspective. 
+For example, consider the classical \pddl{driverlog} domain, where the task is to move packages between locations using a truck. 
+A natural objective function would be to minimize the amount of fuel spent driving the trucks using the \pddl{drive-truck} action, 
+i.e., one natural model would assign all actions zero cost except for \pddl{drive-truck}, so that a cost-optimal plan corresponds to a plan with minimal fuel consumption.
+We argue that such a model is at least as natural as a model that assigns unit cost to all actions.
+
+
+
+
+%The actions in these domains actions tend to have the nonzero positive costs
+%because most domains target the runtime minimization.
 % For example, Elevator and Miconic in the benchmark domains minimize the
 % runtime of moving the passengers up and down.
 % Actions in which the
@@ -417,36 +426,46 @@ because most domains target the runtime minimization.
 % When concerned
  % only with the runtime, it is reasonable to assign nonzero positive costs to
  % every actions
-For runtime minimization,
-nonzero positive costs are reasonable because
-every actions are supposed to consume a fraction of time.
-However, such formulation is not suitable for general optimization
-problems.  For example, when you try to minimize the energy consumption
-by the elevators in \pddl{Elevators} domain, many actions would have zero-cost
---- it does not consume electricity for either boarding or leaving the
-passenger, or moving the elevator down.
-% 
-From the practical point of
-view, cost minimization domains would have wider interest compared to
-the simple runtime minimization.
-Also, as shown previously, such domains pose a
-difficulty to the current heuristic planners due to their large plateaus.
 
+
+% While I agree with the point you're trying to make,
+% There is an ugly issue when arguing that current models try to  optimzie plan-execution time (i.e., makespan), 
+% which is that if we really cared about makespan optimality, we would consider parallel execution of actions whenever possible.
+% however, sequential classical planners do not handle parallel actions at all  (recall ACP).
+% so arguing this path can only lead to trouble.. Let's try a safer line of argument.
+%% For runtime minimization,
+%% nonzero positive costs are reasonable because
+%% every actions are supposed to consume a fraction of time.
+%% However, such formulation is not suitable for general optimization
+%% problems.  For example, when you try to minimize the energy consumption
+%% by the elevators in \pddl{Elevators} domain, many actions would have zero-cost
+%% --- it does not consume electricity for either boarding or leaving the
+%% passenger, or moving the elevator down.
+%% % 
+%% From the practical point of
+%% view, cost minimization domains would have wider interest compared to
+%% the simple runtime minimization.
+%% Also, as shown previously, such domains pose a
+%% difficulty to the current heuristic planners due to their large plateaus.
+
+Many practical applications have some natural
+objective of optimize the usage of one key consumable resource, e.g., fuel/energy cost minimization.
 Therefore, in this paper, we modified various domains
 into cost minimization domains with many zero-cost actions.
-For example, \pddl{Elevators-up} is a variation of
-the \pddl{Elevators} domain where the target is to minimize
-the energy consumption caused by ``up'' action, which moves the elevator
-up, and all other actions have zero-cost.  Modification was done in a
-practically reasonable manner in a sense of cost minimization. Most
-transportation-type domains are modified so that they use less
+%For example, \pddl{Elevators-up} is a variation of
+%the \pddl{Elevators} domain where the target is to minimize
+%the energy consumption caused by ``up'' action, which moves the elevator
+%up, and all other actions have zero-cost.  
+For each modified domain, we identified some reasonable metric that would be appropriate as a 
+critical ``cost'' to be minimized.
+Most transportation-type domains are modified so that they use less
 fuel (\pddl{Logistics-fuel} etc.). Assembly-type domains are modified so that it minimizes the
 resource usage (\pddl{Floortile-ink} minimizes ink usage, or \pddl{Woodworking-cut}
-minimizes wood usage, etc). For nontrivial domains, we selected one action
+minimizes wood usage, etc). For more complex domains, we selected one action
 arbitrarily, and made other actions to have zero cost. We did not
 include domains with single action schema and domains already with many
 zero-cost actions.
-We call this set of 29 domains as \emph{zerocost domains} hereafter.
+We refer to this set of 29 domains as \emph{zerocost domains}.
 
 % \todo[We also modify a same domain
 % in the different minimization criteria, in order to avoid the bias on a
