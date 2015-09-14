@@ -728,40 +728,6 @@ tie-breaking strategies}.
 
 %% moved to Table 2
 
-\subsubsection{Search Behavior within a Plateau}
-
-To understand the behavior of $[h,\rd,\ro]$, we plotted the histogram of
-the depths of search nodes opened by $[h,\rd,\ro]$ in the final search
-plateau until the solution is found.
-
-\refig{depth-histogram} shows the histogram 
-for $[h,\rd,\ro]$ %, modified to produce lots of outputs,
-on the \pddl{Woodworking-cut} domain.
-% 
-In this domain, the $[h,\ld,\ro]$ would tend to search could search arbitrarly longer path in the
-plateau, which would ignore the nodes in the intermediate depth.
-\todo{better to plot all solutions}
-In contrast, $[h,\rd,\ro]$ is balancing the search in the smaller depth and larger
-depth, resulting in larger coverages in \reftbl{depth}.
-
-The figure also illustrates the behavior of $[h,\rd,\ro]$: Although it
-randomly selects from the \emph{current} set of nonempty buckets,
-a new depth is found only when the largest-depth bucket is selected,
-resulting in non-flat curves.
-Finding the optimal balance is an interesting avenue of
-future work.
-
-\begin{figure}[tb]
- \centering \relsize{-3}
- \includegraphics{tables/aaai16-log-rd/2zerocost/depth-histogram-lmcut_rdlog1-woodworking-cut.pdf}
- \caption{Histogram of the depths in the plateau in
-\pddl{Woodworkin-cut} instances using $[h,\rd,\ro]$. $y$ axis is logarithmic.
- Large dots show where the solutions were found.
- }
- \label{depth-histogram}
-\end{figure}
-
-
 \subsubsection{Is Depth-based Tie-breaking Necessary?}
 % is this the right location -- maybe this should in a discussion section?
 
@@ -792,6 +758,40 @@ By randomly selecting a depth bucket, $[h,\rd,\ro]$ explicitly eliminates this b
 % When the final plateau of [f,h] is small, tie-breaking strategies do not significantly affect performance.
 % However, when the final plateau of [f,h] is large, then $[random-h,\ro]$ will behave similarly to $[h,\ro]$, because almost all nodes in the search space have the same h-value, and we have shown that $[h,\ro]$ performs poorly on domains with large plateaus, i.e., domains with zero-cost-actions., compared to $[h,\rd,\ro]$.
 % Thus, multiple levels of randomness alone do not account for the success of $[h,\rd,\ro]$, and the notion of depth buckets seems necessary.
+
+
+\subsubsection{Search Behavior within a Plateau}
+
+To understand the behavior of RandomDepth, we plotted the histogram of
+the depths of search nodes opened by RandomDepth in the final search
+plateau until the solution is found.
+
+\refig{depth-histogram} shows the histogram of the depth
+for $[h,\rd,\ro]$ %, modified to produce lots of outputs,
+on the \pddl{Woodworking-cut} domain.
+% 
+In this domain, the LastDepth could search arbitrarly longer path in the
+plateau, which would ignore the nodes in the intermediate depth.
+%\todo{better to plot all solutions}
+In contrast, RandomDepth is balancing the search in the smaller depth and larger
+depth, resulting in larger coverages in \reftbl{depth}.
+
+The figure also illustrates the behavior of RandomDepth: Although it
+randomly selects from the \emph{current} set of nonempty buckets,
+a new depth is found only when the largest-depth bucket is selected,
+resulting in non-flat, decreasing curves.
+Finding the optimal balance is an interesting avenue of
+future work.
+
+\begin{figure}[tb]
+ \centering \relsize{-3}
+ \includegraphics{tables/aaai16-log-rd/2zerocost/depth-histogram-lmcut_rdlog1-woodworking-cut.pdf}
+ \caption{Histogram of the depths in the plateau in
+\pddl{Woodworkin-cut} instances using $[h,\rd,\ro]$. $y$ axis is logarithmic.
+ Large dots show where the solutions were found.
+ }
+ \label{depth-histogram}
+\end{figure}
 
 
 \section{Domain-Configuration and Tie-Breaking}
