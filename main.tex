@@ -543,9 +543,9 @@ $\depth{n}$ is defined as $\depth{\parent{n}} + 1$.  Based on this
 simple notion of depth, we propose three \emph{depth-based
 tie-breaking}, where the nodes are inserted to buckets associated with
 depths, and upon expansion, the buckets are chosen according to some policy.
-FirstDepth(\fd), LastDepth(\ld), and RandomDepth(\rd) 
-choosing a node from the bucket with the smallest,
-largest, or random depth, respectively.
+``First depth'' (\fd), ``last depth'' (\ld), and ``random depth'' (\rd) 
+choose a bucket with the smallest,
+largest, and random depth, respectively.
 
 \todo{remove this part if complete plot in \refig{depth-histogram} did
 not succeed}
@@ -556,14 +556,14 @@ the plateau region, all nodes have the same $f$ and $h$ values,
 and it is impossible to guess whether the goals are likely to be  near or far
 away or from the entrance.  In the first case, the
 search should be focused around the entrance favoring the smaller depths
-(FirstDepth), and the behavior in the plateau should be much like breadth-first. In the
+(\fd), and the behavior in the plateau should be much like breadth-first. In the
 second case, the planner should greedily explore the various area of the
-plateau by preferring largest depth (LastDepth), much like in
+plateau by preferring largest depth (\ld), much like in
 depth-first. 
 It may also be possible for a goals to be at an intermediate depth, in which case
-FirstDepth would take too much time to reach that
-depth, and LastDepth would greedily go past and ignore the depth.
-By an adversary argument, RandomDepth, which has no depth bias would seem to be the safest policy.
+\fd would take too much time to reach that
+depth, and \ld would greedily go past and ignore the depth.
+By an adversary argument, \rd, which selects a random depth and has no depth bias would seem to be the safest policy.
 
 
 \subsubsection{Tie-Breaking within Depth-Buckets} % changing from ``third-level'' because we'll also consider that sue depth as the 1st-level policy, e.g., [rd,random] (noh).
@@ -645,15 +645,15 @@ Wilcoxon test between $[h,\ld,\ro]$ and $[h,\rd,\ro]$.
 We dropped the result of $[h,\fd,\ro]$ 
 The results depend on the domains, but in many domains,
 the performance was significantly affected by 2nd-level tie-breaking, and
-RandomDepth dominated the others. 
-Although LastDepth and RandomDepth behave similarly on most domains, 
-the performance of RandomDepth in some
+$[h,\rd,\ro]$ dominated the others. 
+Although $[h, \ld, \ro]$ and $[h,\rd,\ro]$ behave similarly on most domains, 
+the performance of $[h,\rd,\ro]$ in some
 domains are noticeable (e.g., \pddl{Cybersec}, \pddl{Woodworking-cut}). 
-The std deviation of RandomDepth coverage tends to be smaller
-than that of LastDepth, indicating that RandomDepth is robust with respect to random seeds.
-FirstDepth is not shown due to space, but is mostly dominated (benchmark
+The std deviation of $[h,\rd,\ro]$ coverage tends to be smaller
+than that of $[h,\ld,\ro]$, indicating that $[h,\rd,\ro]$ is robust with respect to random seeds.
+$[h,\fd,\ro]$ is not shown due to space, but is mostly dominated (benchmark
 coverage 554.6$\pm$0.8, zerocost coverage 262.1$\pm$1.8 and total
-coverage 816.7$\pm$2.2) by the RandomDepth and LastDepth, except in \pddl{Scanalyzer-analyse}
+coverage 816.7$\pm$2.2) by $[h,\rd,\ro]$ and $[h,\ld,\ro]$, except in \pddl{Scanalyzer-analyse}
 and \pddl{Sokoban-pushgoal}.
 Although we only show results using the LM-cut heuristic due to space, see the supplement for similar results using the M\&S heuristic.
 % 2015/9/13 -- let's try not including the following analysis in this submission -- due to space, and also too complicated, without sufficient payoff.
@@ -730,21 +730,21 @@ tie-breaking strategies}.
 
 \subsubsection{Search Behavior within a Plateau}
 
-To understand the behavior of RandomDepth, we plotted the histogram of
-the depths of search nodes opened by RandomDepth in the final search
+To understand the behavior of $[h,\rd,\ro]$, we plotted the histogram of
+the depths of search nodes opened by $[h,\rd,\ro]$ in the final search
 plateau until the solution is found.
 
 \refig{depth-histogram} shows the histogram 
 for $[h,\rd,\ro]$ %, modified to produce lots of outputs,
 on the \pddl{Woodworking-cut} domain.
 % 
-In this domain, the LastDepth would tend to search could search arbitrarly longer path in the
+In this domain, the $[h,\ld,\ro]$ would tend to search could search arbitrarly longer path in the
 plateau, which would ignore the nodes in the intermediate depth.
 \todo{better to plot all solutions}
-In contrast, RandomDepth is balancing the search in the smaller depth and larger
+In contrast, $[h,\rd,\ro]$ is balancing the search in the smaller depth and larger
 depth, resulting in larger coverages in \reftbl{depth}.
 
-The figure also illustrates the behavior of RandomDepth: Although it
+The figure also illustrates the behavior of $[h,\rd,\ro]$: Although it
 randomly selects from the \emph{current} set of nonempty buckets,
 a new depth is found only when the largest-depth bucket is selected,
 resulting in non-flat curves.
@@ -770,7 +770,7 @@ future work.
  \setlength{\tabcolsep}{0.3em}
  \centering \relsize{-1}
  \input{tables/aaai16-robustnesscheck/aaai16prelim3_zerocost/1-7-rx-and-sig-wilcox-remove-same.tex}
- \caption{Performance of RandomOrder last-level tiebreaking with/without RandomDepth tie-breaking. Each cell
+ \caption{Performance of RandomOrder last-level tiebreaking with/without $[h,\rd,\ro]$ tie-breaking. Each cell
  shows the coverage (mean $\pm$ sd) on each domain (5min, 2GB)$\times$10 runs. 
 Due to space, only domains with results 
  significantly different results  (according to the Wilcoxon test, $p<0.05$) are shown.
@@ -920,7 +920,7 @@ do not always favor smaller depth over larger depth}. LAMA treats the
 increased cost as the part of sorting criteria and always prefers
 smaller cost, much like in our FirstDepth strategy.  However, FirstDepth
 strategy is the worst strategy in our experiments and the best
-performing depth-based tie-breaking methods are LastDepth and RandomDepth
+performing depth-based tie-breaking methods are $[h,\ld,\ro]$ and $[h,\rd,\ro]$
 in our experiments, and they do not prefer the smaller depth.
 
 % It's not clear what these techniques have in common, except that they are all orthogonal to heuristics,
@@ -959,7 +959,7 @@ in our experiments, and they do not prefer the smaller depth.
 $LA^*$ \cite{stern2010look} extends \astar by performing a
 cost-bounded depth-first \emph{lookahead} from each node as it is generated.
 %Although this work was not done in the context of tie-breaking strategies, it is interesting to note that 
-when the lookahead cost bound $k=0$ ($LA^*_0$ in their notation), only nodes with the same $f$-value as the current \astar frontier are expanded, which corresponds to a LastDepth tie-breaking strategy.
+when the lookahead cost bound $k=0$ ($LA^*_0$ in their notation), only nodes with the same $f$-value as the current \astar frontier are expanded, which corresponds to a $[h,\ld,\ro]$ tie-breaking strategy.
 
 
 \section{Conclusion}
