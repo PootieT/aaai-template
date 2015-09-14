@@ -655,7 +655,7 @@ $[h,\fd,\ro]$ is not shown due to space, but is mostly dominated (benchmark
 coverage 554.6$\pm$0.8, zerocost coverage 262.1$\pm$1.8 and total
 coverage 816.7$\pm$2.2) by $[h,\rd,\ro]$ and $[h,\ld,\ro]$, except in \pddl{Scanalyzer-analyse}
 and \pddl{Sokoban-pushgoal}.
-Although we only show results using the LM-cut heuristic due to space, see the supplement for similar results using the M\&S heuristic.
+Although we only show results using the LM-cut heuristic due to space, see the supplement for the results using the M\&S heuristic.
 % 2015/9/13 -- let's try not including the following analysis in this submission -- due to space, and also too complicated, without sufficient payoff.
 % We no longer need the ``depth as explanation of LIFO/FIFO'' story, because  the ``random is good'' depth-based methods [h,rd,ro]  story is simpler.
 
@@ -715,10 +715,10 @@ Although we only show results using the LM-cut heuristic due to space, see the s
 
 In \refsec{sec:h-necessary}, we showed that $[\lifo]$ tie-breaking (without considering $h$) is
 sufficient for the standard IPC benchmarks -- the performance of $[\lifo]$, $[h,\lifo]$, and $[h,\fifo]$ are comparable.
-\reftbl{depth}, shows that $[\rd,\ro]$, which randomly selects an element from a randomlyh selected depth-bucket, dominates $[h,\fifo]$,
+\reftbl{depth}, shows that $[\rd,\ro]$, which randomly selects an element from a randomly selected depth-bucket, dominates $[h,\fifo]$,
 and performs comparably to $[h,\lifo]$.
 Although $[\rd,\ro]$ behaves in a less greedy/depth-first manner than $[\lifo]$, 
-it explores nodes with high depth sufficiently often so that even if \lifo behavior (seeking nodes that are far from the plateau entrance) is required, $[\rd,\ro]$ will eventually find the plateau exit.
+it explores nodes with high depth sufficiently often so that even if \lifo behavior (seeking nodes that are far from the plateau entrance) is required, $[\rd,\ro]$ will eventually find the solution.
 On the other hand, there are some problems such as \pddl{miconic} where a the more randomized behavior of $[\rd,\ro]$ is advantageous.
 Thus, overall, $[\rd,\ro]$ performs moderately well, and 
 \emph{neither $h$ nor \lifo-behavior is necessary in order to obtain performance that is competitive with the standard
@@ -736,7 +736,7 @@ tie-breaking strategies}.
  \setlength{\tabcolsep}{0.3em}
  \centering \relsize{-1}
  \input{tables/aaai16-robustnesscheck/aaai16prelim3_zerocost/1-7-rx-and-sig-wilcox-remove-same.tex}
- \caption{Performance of RandomOrder last-level tiebreaking with/without $[h,\rd,\ro]$ tie-breaking. Each cell
+ \caption{Performance of RandomOrder last-level tiebreaking with/without RandomDepth tie-breaking. Each cell
  shows the coverage (mean $\pm$ sd) on each domain (5min, 2GB)$\times$10 runs. 
 Due to space, only domains with results 
  significantly different results  (according to the Wilcoxon test, $p<0.05$) are shown.
