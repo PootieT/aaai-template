@@ -640,8 +640,10 @@ the non-parametric Wilcoxon test.   % ``non-parametric'' means ``normal distribu
 %the populations in which normal distribution cannot be assumed.
 
 \reftbl{depth} shows the coverage (mean $\pm$ sd),
-along with 3 rightmost columns showing the $p$ values of the
-test. The results depend on the domains, but in many domains,
+along with the rightmost columns showing the $p$ values of the
+Wilcoxon test between $[h,\ld,\ro]$ and $[h,\rd,\ro]$.
+We dropped the result of $[h,\fd,\ro]$ 
+The results depend on the domains, but in many domains,
 the performance was significantly affected by 2nd-level tie-breaking, and
 RandomDepth dominated the others. 
 Although LastDepth and RandomDepth behave similarly on most domains, 
