@@ -175,7 +175,12 @@ A \emph{tie-breaking strategy} selects from among nodes with the same $f$-value.
 Tie-breaking strategies are denoted as $[\text{criterion}_1, \text{criterion}_2, ..., \text{criterion}_k]$,
 which means: If there multiple nodes with the same $f$-vaue, first, break ties using $\text{criterion}_1$. 
 If there still multiple nodes remaining, then break ties using $\text{criterion}_2$ and so on, until a single node is selected.
-The \emph{first-level tie-breaking policy} of a strategy is $\text{criterion}_1$, the \emph{second-level tie-breaking policy} is $\text{criterion}_2$, and so on.
+The \emph{first-level tie-breaking policy} of a strategy is
+$\text{criterion}_1$, the \emph{second-level tie-breaking policy} is
+$\text{criterion}_2$, and so on.
+%% the word frontier is no longer used in the later text.
+% \emph{Last frontier} is the set of open nodes with $f^*$.
+\emph{Plateau} is the set of open nodes with the same $f$ and same $h$.
 
 In our experiments, all planners are based on Fast Downward (revision 6251), and all
 experiments are run with a 5-minute, 2GB memory limit for the search binary (FD translation/preprocessing times are not included in the 5-minute limit).
