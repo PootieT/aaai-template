@@ -276,6 +276,42 @@ Differences in coverage are observed in several domains.
 more fine-grained analysis by comparing the number of node evaluation
 (computations of \lmcut) of the $[h,\lifo]$ and $[h,\fifo]$ strategies.
 
+\begin{table*}[tb]
+ \centering
+ \relsize{-1}
+ \input{tables/aaai16-robustnesscheck/aaai16prelim3_zerocost/1-nofd.tex}
+ \caption{Experiments comparing the coverages.
+ Each cell shows the coverage of the domain solved with 5 min, 2GB.
+ Zerocost domains are named as [original name]-[name of nonzero action].
+ % 
+ Due to space, we do not show
+ the individual rows for the following domains whose maximum coverage differences
+ (in randomized configuration, mean coverage of 10 runs)
+ do not exceed 2. These include
+ % 
+ (1) domains with coverage difference 0 (same coverages by all configuration):
+ \pddl{
+ barman-opt11, floortile-opt11, grid, gripper, hanoi, parking-opt11,
+ pegsol-opt11, psr-small, rovers, sokoban-opt11,
+ storage, tpp, transport-opt11, floortile-ink, grid-fuel, parking-movecc,
+ zenotravel-fuel}.
+ % 
+ (2) Coverage difference below 1:
+ \pddl{
+ depot, driverlog, elevators-opt11, freecell, mystery,
+ parcprinter-opt11, pathways, pipesworld-tankage, tidybot-opt11,
+ visitall-opt11, driverlog-fuel, gripper-move, hiking-fuel,
+ logistic00-fuel, nomystery-fuel, pathways-fuel, psr-small-open,
+ sokoban-pushgoal}.
+ % 
+ (3) Coverage difference below 2:
+ \pddl{
+ blocks, nomystery-opt11, pipesworld-notankage, zenotravel, depot-fuel,
+ mystery-feast, rovers-fuel, storage-lift, tidybot-motion}.
+ % 
+ Full results are in the supplemental material.
+}  \label{depth}
+\end{table*}
 
 \begin{figure}[tb]
  \centering \relsize{-3}
@@ -635,10 +671,8 @@ the performance of $[h,\rd,\ro]$ in some
 domains are noticeable (e.g., \pddl{Cybersec}, \pddl{Woodworking-cut}). 
 The std deviation of $[h,\rd,\ro]$ coverage tends to be smaller
 than that of $[h,\ld,\ro]$, indicating that $[h,\rd,\ro]$ is robust with respect to random seeds.
-$[h,\fd,\ro]$ is not shown due to space, but is mostly dominated (benchmark
-coverage 554.6$\pm$0.8, zerocost coverage 262.1$\pm$1.8 and total
-coverage 816.7$\pm$2.2) by $[h,\rd,\ro]$ and $[h,\ld,\ro]$, except in \pddl{Scanalyzer-analyse}
-and \pddl{Sokoban-pushgoal}.
+$[h,\fd,\ro]$ is mostly dominated by $[h,\rd,\ro]$ and $[h,\ld,\ro]$,
+except in \pddl{Scanalyzer-analyse} and \pddl{Sokoban-pushgoal}.
 Although we only show results using the LM-cut heuristic due to space, see the supplement for the results using the M\&S heuristic.
 % 2015/9/13 -- let's try not including the following analysis in this submission -- due to space, and also too complicated, without sufficient payoff.
 % We no longer need the ``depth as explanation of LIFO/FIFO'' story, because  the ``random is good'' depth-based methods [h,rd,ro]  story is simpler.
@@ -677,23 +711,6 @@ Although we only show results using the LM-cut heuristic due to space, see the s
 % tie-breaking by $h$-value. However, we note that many instances quickly
 % exhausted the 2GB memory limit with those heuristics, and is less
 % informative compared to the result by LMcut.
-
-\begin{table*}[tb]
- \centering
- \relsize{-1}
- \input{tables/aaai16-robustnesscheck/aaai16prelim3_zerocost/1-nofd.tex}
- \caption{Experiments comparing the coverages of 6 configurations.
- Each cell shows the coverage of the domain solved with 5 min, 2GB.
- Zerocost domains are named as
- [original name]-[name of nonzero action].
- For the space reason, we omitted those domains in which all coverages are
- the same (deterministic configuration),
- or did not pass the Wilcoxon significance test under $p=0.05$ (randomized configuration).
- Full results are in the supplemental material.
-}  \label{depth}
-\end{table*}
-
-
 
 \subsubsection{Depth-based Tie-breakings that ignore $h$}
 
