@@ -296,18 +296,20 @@ evaluated can sometimes be larger than a factor of 10 (\pddl{Openstacks}, \pddl{
  Zerocost domains are named as [original name]-[name of nonzero action].
  % 
  Due to space, we do not show
- the individual rows for the following domains whose maximum coverage difference $MaxCoverageDiff$
- (in randomized configuration, mean coverage of 10 runs)
+ the individual rows for the following domains whose maximum pairwise coverage difference $\mit{MaxDiff}$
+ (for the randomized configurations, we used the mean coverage of 10
+ runs to calculate the coverage difference)
  do not exceed 2 (Full results are in the supplemental material):\\
  % 
- (1) Domains with $MaxCoverageDiff = 0$ (same coverages by all configuration):
+ (1) Domains with $\mit{MaxDiff} = 0$ (same coverages by all
+ configuration and all runs):
 \pddls{
  barman-opt11, floortile-opt11, grid, gripper, hanoi, parking-opt11,
  pegsol-opt11, psr-small, rovers, sokoban-opt11,
  storage, tpp, transport-opt11, floortile-ink, grid-fuel, parking-movecc,
  zenotravel-fuel}.\\
  % 
- (2) $0 < MaxCoverageDiff < 1$:
+ (2) $0 < \mit{MaxDiff} < 1$:
  \pddls{
  depot, driverlog, elevators-opt11, freecell, mystery,
  parcprinter-opt11, pathways, pipesworld-tankage, tidybot-opt11,
@@ -315,7 +317,7 @@ evaluated can sometimes be larger than a factor of 10 (\pddl{Openstacks}, \pddl{
  logistic00-fuel, nomystery-fuel, pathways-fuel, psr-small-open,
  sokoban-pushgoal}.\\
  % 
- (3) $1 < CD < 2$:
+ (3) $1 < \mit{MaxDiff} < 2$:
  \pddls{
  blocks, nomystery-opt11, pipesworld-notankage, zenotravel, depot-fuel,
  mystery-feast, rovers-fuel, storage-lift, tidybot-motion}.\\
@@ -662,7 +664,7 @@ the depth-based 2nd-level tie-breaking criterion, and finally,
 Since these configurations are randomized, we run each configuration with 10 different random seeds.
 To see whether differences among the mean coverages were statistically significanct,
 % of $[h,\ld,\ro]$, $[h,\rd,\ro]$,
-using the non-parametric Wilcoxon's single-rank test.
+We applied the non-parametric Wilcoxon's single-rank test.
 % ``non-parametric'' means ``normal distribution not assumed
 %Wilcoxon test,
 %a non-parametric significance testing method applicable to
