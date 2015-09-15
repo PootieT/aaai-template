@@ -763,8 +763,11 @@ in the final search plateau until the solution is found.
 We used $[h,\fd,\fifo]$(=$[h,\fifo]$) and $[h,\ld,\lifo]$(=$[h,\lifo]$) to
 measure the depth.
 \refig{depth-histogram} shows the result
-on the \pddl{Woodworking-cut} p04 (left) and \pddl{psr-small-open} p48 (right) as an
-interesting example.
+on
+ \pddl{Openstacks-opt11} p10 (left) and
+ \pddl{Woodworking-cut} p04 (right)
+ % and \pddl{psr-small-open} p48 (right)
+ as an interesting example.
 
 In \pddl{openstacks} and \pddl{Woodworking-cut}, we observed
 LastDepth could search arbitrarly longer path in the
@@ -773,29 +776,39 @@ FirstDepth spends too much time in the shallow region,
 and RandomDepth is balancing the search in the smaller depth and larger
 depth, resulting in larger coverages (\reftbl{depth}).
 % 
-In contrast, \pddl{psr-small-open} instances showed
-almost identical curves, as an explanation to the
-same coverages (all 19 for the three, see supplemental).
+% In contrast, \pddl{psr-small-open} instances showed
+% almost identical curves, as an explanation to the
+% same coverages (all 19 for the three, see supplemental).
 
-The figure also illustrates the behavior of RandomDepth: Although it
-randomly selects from the buckets,
-a new depth is found only when the largest-depth bucket is selected,
-resulting in a decreasing curves.
-Finding the optimal balance is an interesting avenue of
-future work.
+% The figure also illustrates the behavior of RandomDepth: Although it
+% randomly selects from the buckets,
+% a new depth is found only when the largest-depth bucket is selected,
+% resulting in a decreasing curves.
+% Finding the optimal balance is an interesting avenue of
+% future work.
 
 \begin{figure}[tb]
  \centering \relsize{-3}
  \hbox{
  \includegraphics{tables/aaai16-log-rd/aaai16prelim3/depth-histogram-openstacks-opt11-strips-p10.pdf}
  \includegraphics{tables/aaai16-log-rd/2zerocost/depth-histogram-woodworking-cut-p04.pdf}
- \includegraphics{tables/aaai16-log-rd/2zerocost/depth-histogram-psr-small-open-p48.pdf}}
- \caption{Number of nodes ($y$-axis) in a particualr depth ($x$-axis) in the plateau in
- \pddl{Openstacks} p10 (left),
- \pddl{Woodworkin-cut} p04 (center) and
- \pddl{psr-small-open} p48 instances (right) using
- $[h,\fd,\fifo]$, $[h,\ld,\lifo]$, $[h,\rd,\ro]$.
- Axes are logarithmic.
+ % \includegraphics{tables/aaai16-log-rd/2zerocost/depth-histogram-psr-small-open-p48.pdf}
+ }
+ \caption{Number of nodes ($y$-axis) in a particualr depth ($x$-axis) in
+ the plateau.
+ Each figure 
+ % (in left-to-right order)
+ shows
+ \pddl{Openstacks} p10 
+ (left)
+ and
+ \pddl{Woodworkin-cut} p04
+ (right)
+ %  and
+ % \pddl{psr-small-open} p48
+ instance using
+ $[h,\fifo]$, $[h,\lifo]$, $[h,\rd,\ro]$.
+ % Axes are logarithmic.
  }
  \label{depth-histogram}
 \end{figure}
