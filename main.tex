@@ -63,8 +63,8 @@ For many instances,  a large fraction of the nodes with $f(n) \leq f^*$ have $f(
 For example, in the \pddl{Openstacks} domain, almost all states with $f(n) \leq f^*$ have cost $f^*$.
 In such domains, the tie-breaking policy which decides which nodes to expand in the last frontier can have a significant impact on the performance of \astar.
 
-\begin{figure*}[bt]
- \newcommand{\minilength}{0.35\textwidth}
+\begin{figure*}[htb]
+ \newcommand{\minilength}{0.34\textwidth}
  \newcommand{\minisep}{0.02\textwidth}
  \begin{minipage}[t]{\minilength}
   \centering
@@ -89,12 +89,12 @@ In such domains, the tie-breaking policy which decides which nodes to expand in 
   plateau when $h$-based tie-breaking is enabled.
   Note that many \pddl{Openstacks} and \pddl{Cybersec} instances are near the $y=x$ line.
   %Due to space, we do not show all labels for point types. 
-  (larger color version with all labels in supplement:(\refig{plateau-full}).
+  (larger color version with all labels in supplement: \refig{plateau-full}).
   }
   \label{plateau}
  \end{minipage} 
  \hfill
- \begin{minipage}[t]{0.24\textwidth}
+ \begin{minipage}[t]{0.26\textwidth}
   \centering
   \includegraphics{tables/aaai16-frontier/zerocost/lmcut_frontier-front-mono.pdf}
   \caption{Similar to \refig{plateau}, but for 620 instances from our 
@@ -105,7 +105,7 @@ In such domains, the tie-breaking policy which decides which nodes to expand in 
 %  to search much larger plateau.
  }
  \label{plateau-zerocost}
- \end{minipage} 
+ \end{minipage}
 \end{figure*}
 
 In this paper, we investigate \emph{tie-breaking} strategy used by
@@ -287,7 +287,7 @@ $[h,\lifo]$ outperforms $[h,\fifo]$.
 \refig{f-h-eval} also shows that the difference in the \# of nodes
 evaluated can sometimes be larger than a factor of 10 (\pddl{Openstacks}, \pddl{Cybersec} domains).
 
-\begin{table*}[tb]
+\begin{table*}[htb]
  \centering
  \relsize{-1} \setlength{\tabcolsep}{0.3em}
  \input{tables/aaai16-robustnesscheck/aaai16prelim3_zerocost/1-nofd.tex}
@@ -296,12 +296,11 @@ evaluated can sometimes be larger than a factor of 10 (\pddl{Openstacks}, \pddl{
  Zerocost domains are named as [original name]-[name of nonzero action].
  % 
  Due to space, we only show 
- individual rows for the domains whose maximum pairwise coverage difference $\mit{MaxDiff}$
+ the domains whose maximum pairwise coverage difference $\mit{MaxDiff}$
  (for the randomized configurations, we used the mean coverage of 10
  runs to calculate the coverage difference)
- $\geq 2$. (Details for domains with $\mit{MaxDiff}<2$ are in the
- supplemental material, \reftbl{lmcut-ipc-full}, \reftbl{lmcut-zerocost-full}.
- M\&S results are also in the supplemental material, \reftbl{mands-ipc-full}, \reftbl{mands-zerocost-full}).
+ $\geq 2$. (Details for domains with $\mit{MaxDiff}<2$, and M\&S results,
+ are in the supplemental material, Table \ref{lmcut-ipc-full}-\ref{mands-zerocost-full}).
  The following domains had $\mit{MaxDiff}<2$:\\
  % 
  (1) Domains with $\mit{MaxDiff} = 0$ (same coverages by all
@@ -771,7 +770,7 @@ the depths of search nodes opened by
 the most successful depth-based strategy, $[h,\rd,\ro]$, as well as 
 the standard $[h,\fifo]$, $[h,\lifo]$ strategies
 in the final plateau, plateau($f^*,0$) until the solution is found.
-
+% 
 Although $[h,\fifo]$ and $[h,\lifo]$ do not operate with an inherent notion of ``depth'', 
 they are equivalent to the depth-based strategies $[h,\fd,\fifo]$ and $[h,\ld,\lifo]$, respectively, so recorded the depths according to these depth-based equivalents of $[h,\fifo]$ and $[h,\lifo]$.
 %We used $[h,\fd,\fifo]$(=$[h,\fifo]$) and $[h,\ld,\lifo]$(=$[h,\lifo]$) to
