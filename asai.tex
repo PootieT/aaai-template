@@ -28,33 +28,33 @@
 % forbid the direct use of \\ref --- it results in inconsistency in styles, e.g., Figure,Fig., etc.
 % Macros are for styles!
 % !!!WARN!!! this should be removed in the camera-ready version.
-\def\ref{\todo{Do not use ``ref'' directly!}}
-\renewcommand{\subsubparagraph}[1]{%
-\hrule width \linewidth%
-\marginpar[\hfill\relsize{-1} \protect{\rotatebox[origin=c]{90}{#1}} $\triangleright$]{\relsize{-1} $\triangleleft$ \protect{\rotatebox[origin=c]{-90}{#1}}}}
-% \usepackage{soul}
-\makeatletter
-\renewcommand{\@todons}[2]{%
-  \uline{#1}%
-  \marginpar[%
-    \hfill\relsize{-1}%
-    \protect{%
-      \rotatebox[origin=c]{90}{\bf todo: #2}}%
-    $\triangleright$]{%
-    \relsize{-1} $\triangleleft$%
-    \protect{%
-      \rotatebox[origin=c]{-90}{\bf todo: #2}}}}
-\renewcommand{\@todos}[2]{%
-  \uline{#1}%
-  \marginpar[%
-    \hfill\relsize{-1}%
-    \protect{%
-      \rotatebox[origin=c]{90}{done \it #2}}%
-    $\triangleright$]{%
-    \relsize{-1} $\triangleleft$%
-    \protect{%
-      \rotatebox[origin=c]{-90}{done \it #2}}}}
-\makeatother
+% \def\ref{\todo{Do not use ``ref'' directly!}}
+% \renewcommand{\subsubparagraph}[1]{%
+% \hrule width \linewidth%
+% \marginpar[\hfill\relsize{-1} \protect{\rotatebox[origin=c]{90}{#1}} $\triangleright$]{\relsize{-1} $\triangleleft$ \protect{\rotatebox[origin=c]{-90}{#1}}}}
+% % \usepackage{soul}
+% \makeatletter
+% \renewcommand{\@todons}[2]{%
+%   \uline{#1}%
+%   \marginpar[%
+%     \hfill\relsize{-1}%
+%     \protect{%
+%       \rotatebox[origin=c]{90}{\bf todo: #2}}%
+%     $\triangleright$]{%
+%     \relsize{-1} $\triangleleft$%
+%     \protect{%
+%       \rotatebox[origin=c]{-90}{\bf todo: #2}}}}
+% \renewcommand{\@todos}[2]{%
+%   \uline{#1}%
+%   \marginpar[%
+%     \hfill\relsize{-1}%
+%     \protect{%
+%       \rotatebox[origin=c]{90}{done \it #2}}%
+%     $\triangleright$]{%
+%     \relsize{-1} $\triangleleft$%
+%     \protect{%
+%       \rotatebox[origin=c]{-90}{done \it #2}}}}
+% \makeatother
 % \setlength{\columnsep}{0.5em}
 %%%%%%%%%%%%%%%%%%%%%%%%%
 
