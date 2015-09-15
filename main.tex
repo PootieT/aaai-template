@@ -287,29 +287,28 @@ more fine-grained analysis by comparing the number of node evaluation
  Due to space, we do not show
  the individual rows for the following domains whose maximum coverage differences
  (in randomized configuration, mean coverage of 10 runs)
- do not exceed 2. These include
+ do not exceed 2 (Full results are in the supplemental material):\\
  % 
  (1) domains with coverage difference 0 (same coverages by all configuration):
- \pddl{
+\pddls{
  barman-opt11, floortile-opt11, grid, gripper, hanoi, parking-opt11,
  pegsol-opt11, psr-small, rovers, sokoban-opt11,
  storage, tpp, transport-opt11, floortile-ink, grid-fuel, parking-movecc,
- zenotravel-fuel}.
+ zenotravel-fuel}.\\
  % 
  (2) Coverage difference below 1:
- \pddl{
+ \pddls{
  depot, driverlog, elevators-opt11, freecell, mystery,
  parcprinter-opt11, pathways, pipesworld-tankage, tidybot-opt11,
  visitall-opt11, driverlog-fuel, gripper-move, hiking-fuel,
  logistic00-fuel, nomystery-fuel, pathways-fuel, psr-small-open,
- sokoban-pushgoal}.
+ sokoban-pushgoal}.\\
  % 
  (3) Coverage difference below 2:
- \pddl{
+ \pddls{
  blocks, nomystery-opt11, pipesworld-notankage, zenotravel, depot-fuel,
- mystery-feast, rovers-fuel, storage-lift, tidybot-motion}.
+ mystery-feast, rovers-fuel, storage-lift, tidybot-motion}.\\
  % 
- Full results are in the supplemental material.
 }  \label{depth}
 \end{table*}
 
@@ -866,29 +865,25 @@ being misdirected by the heuristic function. Type based bucket
 $[g,h]$ pair and distributes the effort.  Marvin \cite{Coles07} learns plateau-escaping macros
 from the Enhanced Hill Climbing phase of the FF planner
 \cite{Hoffmann01} and later uses these macros to escape the plateau.
-\citeauthor{Hoffmann05} gives a detailed analysis of the
-structure of the search space in the benchmark domains which were
-available in \citeyear{Hoffmann05} \cite{Hoffmann05,Hoffmann14}. 
-The analysis was focused on the plateaus and dead ends which occur during the inadmissible search.
+\citeauthor{Hoffmann05} performed a detailed analysis of search space structures, focusing on  plateaus and dead ends which occur during local inadmissible search \cite{Hoffmann05,Hoffmann14}. 
 % 
-However, to our knowledge, searching in plateaus has not been
+To our knowledge, searching in plateaus has not been
 previously investigated for cost-optimal planning with admissible
 search.
-The meaning of plateau in inadmissible and admissible search are
-different in how to treat the non-final plateaus: Inadmissible search can
-skip or escape a plateau whenever possible, while
+Admissible and inadmissible search differ significantly in how non-final plateaus (plateaus with $f < f^*$) are treated:
+Inadmissible search can skip or escape a plateau using whatever means are possible, while
 admissible search cannot skip the remaining nodes in a plateau unless it
-is the final plateau and it directly finds a solution.
+is the final plateau ($f=f^*$) and a solution is found. %it directly finds a solution.
 
 %In their work on combining multiple heuristics in a planner, 
-\citeauthor{RogerH10} (\citeyear{RogerH10}) considered a tie-breaking approach which works as follows:
-When combining two heuristics, one of the
-heuristics is used as the primary criterion for guiding the search,
+\citeauthor{RogerH10} (\citeyear{RogerH10}) considered 
+the following tie-breaking approach,  which uses 2 heuristic functions.
+One of the heuristics is used as the primary criterion for guiding the search,
 and the second heuristic is used to break ties among nodes with the same primary
 heuristic value.
 While this did not perform well in their work on satisficing planning, 
-using a secondary heuristic as a tie-breaking criterion in our multi-level tie-breaking framework 
-for cost-optimal search is an interesting direction for future work.
+a secondary heuristic as a tie-breaking criterion for cost-optimal planning
+is an interesting direction for future work.
 
 The PLUSONE %\footnote{This term is used on the Fast Downward website.} XXfootnote takes too much space
 cost-type is a non-admissible search technique in the Fast Downward/LAMA planner
