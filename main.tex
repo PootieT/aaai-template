@@ -278,9 +278,8 @@ more fine-grained analysis by comparing the number of node evaluation
 % 
 According to \reftbl{depth},
 $[h,\lifo]$ outperforms $[h,\fifo]$.
-\refig{f-h-eval} also shows that the difference in the number of nodes
-evaluated can sometimes be larger than a factor of 10, especially in
-\pddl{Openstacks} and \pddl{Cybersec}.
+\refig{f-h-eval} also shows that the difference in the \# of nodes
+evaluated can sometimes be larger than a factor of 10 (\pddl{Openstacks}, \pddl{Cybersec} domains).
 
 \begin{table*}[tb]
  \centering
@@ -329,12 +328,12 @@ evaluated can sometimes be larger than a factor of 10, especially in
 \end{figure}
 
 
-\subsubsection{Is $h$-Based Tie-Breaking necessary?}
+\subsubsection{Is $h$-Based Tie-Breaking Necessary?}
 \label{sec:h-necessary}
 %Next, we investigated whether $h$-based, first-level tie-breaking is necessary.
-In \reftbl{depth}, we also show the results of $[\fifo]$ and $[\lifo]$,
+\reftbl{depth}, also show the results of $[\fifo]$ and $[\lifo]$,
 which relies only on \fifo or \lifo tie-breaking.
-$[\lifo]$, which simply breaks ties among nodes with the same $f$-cost by expanding most recently generated nodes first (suggested in \cite{korf1985depth}), clearly dominates $[\fifo]$.
+$[\lifo]$, which simply breaks ties among nodes with the same $f$-cost by expanding most recently generated nodes first \cite{korf1985depth}, clearly dominates $[\fifo]$.
 
 Interestingly, the performance of the $[\lifo]$ strategy
 is comparable to $[h,\lifo]$ and $[h,\fifo]$, the two-level strategies that first break ties according to $h$.
@@ -487,18 +486,18 @@ into cost minimization domains with many zero-cost actions.
 %the \pddl{Elevators} domain where the target is to minimize
 %the energy consumption caused by ``up'' action, which moves the elevator
 %up, and all other actions have zero-cost.  
-For each modified domain, we identified some reasonable metric that would be appropriate as a 
+For each modified domain, we identified some metric that would be appropriate as a 
 critical ``cost'' to be minimized.
 Most transportation-type domains are modified so that they use less
 fuel (\pddl{Logistics-fuel} etc.). Assembly-type domains are modified so
 that it minimizes the resource usage
 %% floortile-ink is not shown, so better not to mention it
 (\pddl{Woodworking-cut} minimizes wood usage, etc.).
-For more complex domains, we selected one action
+For more complex domains, we selected 1 action
 arbitrarily, and made other actions to have zero cost. We did not
 include domains with single action schema and domains already with many
 zero-cost actions.
-We refer to this set of 28 domains as \emph{zerocost domains}.
+We refer to these 28 domains as \emph{zerocost domains}.
 
 % \todo[We also modify a same domain
 % in the different minimization criteria, in order to avoid the bias on a
@@ -718,7 +717,7 @@ Although we only show results using the LM-cut heuristic due to space, see the s
 % exhausted the 2GB memory limit with those heuristics, and is less
 % informative compared to the result by LMcut.
 
-\subsubsection{Depth-based Tie-breakings that ignore $h$}
+\subsubsection{Depth-based Tie-breaking Without Considering $h$}
 
 In \refsec{sec:h-necessary}, we showed that $[\lifo]$ tie-breaking (without considering $h$) is
 sufficient for the standard IPC benchmarks -- the performance of $[\lifo]$, $[h,\lifo]$, and $[h,\fifo]$ are comparable.
@@ -754,7 +753,7 @@ By randomly selecting a depth bucket, $[h,\rd,\ro]$ explicitly eliminates this b
 % Thus, multiple levels of randomness alone do not account for the success of $[h,\rd,\ro]$, and the notion of depth buckets seems necessary.
 
 
-\subsubsection{Search Behavior within a Plateau}
+\subsubsection{Search Behavior Within a Plateau}
 
 To understand the behavior of depth-based policies, we plotted the histogram of
 the depths of search nodes opened by
