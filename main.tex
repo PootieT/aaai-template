@@ -122,9 +122,6 @@ nodes with smaller $h$-values should be expanded first.  While this is a
 useful rule of thumb in many domains, it turns out that tie-breaking
 requires more careful consideration, particularly for problems with
 large \emph{plateaus} -- regions of the search space with the same $f$ and $h$.
-\emph{All tie-breaking strategies in this paper
-maintain the admissibility of the search because they only affect node expansion
-order among the nodes with the same $f$-cost.}
 
 We first empirically evaluate standard tie-breaking strategies for \astar, and show that 
 % 
@@ -155,8 +152,11 @@ significantly outperforms
 other tie-breaking strategies using the same heuristic function.
 Although depth-based tie-breaking is part of a multi-level tie-breaking strategy,
 we show that the notion of depth is the principal factor in determining performance.
-Finally, we show the robustness of our tie-breaking strategies
+We show the robustness of our tie-breaking strategies
 against a particular action ordering in the domain definition.
+\emph{Finally, note that all tie-breaking strategies in this paper
+maintain the admissibility of the search because they only affect node expansion
+order among the nodes with the same $f$-cost.}
 
 
 % XXX It's doubtful that anybody would believe that machine-level efficiency of LIFO (compared to FIFO) is important in domain-independent planning.
