@@ -767,7 +767,7 @@ measure the depth.
 on the \pddl{Woodworking-cut} p04 (left) and \pddl{psr-small-open} p48 (right) as an
 interesting example.
 
-In \pddl{Woodworking-cut} instances, we observed
+In \pddl{openstacks} and \pddl{Woodworking-cut}, we observed
 LastDepth could search arbitrarly longer path in the
 plateau, which would ignore the nodes in the intermediate depth,
 FirstDepth spends too much time in the shallow region,
@@ -787,14 +787,16 @@ future work.
 
 \begin{figure}[tb]
  \centering \relsize{-3}
+ \hbox{
+ \includegraphics{tables/aaai16-log-rd/aaai16prelim3/depth-histogram-openstacks-opt11-strips-p10.pdf}
  \includegraphics{tables/aaai16-log-rd/2zerocost/depth-histogram-woodworking-cut-p04.pdf}
- \includegraphics{tables/aaai16-log-rd/2zerocost/depth-histogram-psr-small-open-p48.pdf}
- % \includegraphics{tables/aaai16-log-rd/2zerocost/depth-histogram-openstacks-p04.pdf}
- % \includegraphics{tables/aaai16-log-rd/2zerocost/depth-histogram-cybersec-p04.pdf}
- \caption{Histogram of the depths in the plateau in
-\pddl{Woodworkin-cut} p04 (left) and \pddl{psr-small-open} p48 (right) instances using
+ \includegraphics{tables/aaai16-log-rd/2zerocost/depth-histogram-psr-small-open-p48.pdf}}
+ \caption{Number of nodes ($y$-axis) in a particualr depth ($x$-axis) in the plateau in
+ \pddl{Openstacks} p10 (left),
+ \pddl{Woodworkin-cut} p04 (center) and
+ \pddl{psr-small-open} p48 instances (right) using
  $[h,\fd,\fifo]$, $[h,\ld,\lifo]$, $[h,\rd,\ro]$.
- $y$ axis is logarithmic. Large dots show where the solutions were found.
+ Axes are logarithmic.
  }
  \label{depth-histogram}
 \end{figure}
