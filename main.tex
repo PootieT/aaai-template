@@ -189,7 +189,8 @@ A \emph{plateau} is a set of nodes in OPEN with the same $f$ and same $h$.
 A plateau whose nodes have $f$-cost $f_p$ and $h$-cost $h_p$ is denoted as
 $plateau(f_p,h_p)$.
 
-The \emph{entrance} to a $plateau(f_p,h_p)$ is the first node expanded with $f=f_p$ and $h=h_p$.
+An  \emph{entrance} to a $plateau(f_p,h_p)$ is a node $n \in plateau(f_p,h_p)$, whose current parent is not a member of $plateau(f_p,h_p)$.
+
 
 The \emph{final plateau},  is the plateau containing the solution found by the search algorithm.
 
@@ -788,13 +789,8 @@ on
 In both instances, 
 % \pddl{openstacks} and \pddl{Woodworking-cut}, 
 we observed that the depth-first behavior of $[h,\lifo]$ results in searching deeper and deeper in the search space, ignoring the nodes at intermediate depth.
-On the other hand, the breadth-first behavior of $[h,\fifo]$ results in spending too much time in the region close to the entrance of the plateau.
-
-LastDepth could search arbitrarly longer path in the
-plateau, which would ignore the nodes in the intermediate depth,
-FirstDepth spends too much time in the shallow region,
-and RandomDepth is balancing the search in the smaller depth and larger
-depth, resulting in larger coverages (\reftbl{depth}).
+On the other hand, the breadth-first behavior of $[h,\fifo]$ results in spending too much time in the region close to the plateau entrance.
+$[h,\rd,\ro]$ is balancing the search at various depths, which results in resulting in successfully solving more problems within the time limit (\reftbl{depth}). %to avoid confusion, avoiding word ``coverage'' here because coverage could refer to search algorithm ``covefring'' the search space.
 % 
 % In contrast, \pddl{psr-small-open} instances showed
 % almost identical curves, as an explanation to the
