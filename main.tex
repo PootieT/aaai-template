@@ -98,7 +98,7 @@ In such domains, the tie-breaking policy which decides which nodes to expand in 
  \begin{minipage}[t]{0.23\textwidth}
   \centering
   \includegraphics{tables/aaai16-frontier/zerocost/lmcut_frontier-front-mono.pdf}
-  \caption{Similar to \refig{plateau}, but for 640 instances from our 
+  \caption{Similar to \refig{plateau}, but for 620 instances from our 
   \emph{zerocost domains} (\refsec{sec:zerocost-domains}),
   where zero-cost actionsinduce very large plateau regions.
 %  Even with $h$ tie-breaking, these domains force the planner
@@ -186,7 +186,7 @@ In our experiments, the planners are based on Fast Downward (revision 6251), and
 experiments are run with a 5-minute, 2GB memory limit for the search binary (FD translation/preprocessing times are not included in the 5-minute limit).
 All experiments were conducted on Xeon E5410@2.33GHz CPUs.
 We used 1104 problems from 35 standard benchmark domains
-and 640 problems from 29 \emph{zero-cost-action} domains (\refsec{sec:zerocost-domains}).
+and 620 problems from 28 \emph{zero-cost-action} domains (\refsec{sec:zerocost-domains}).
 
 
 \section{Background: Tie-breaking Strategies in \astar}
@@ -499,7 +499,7 @@ For more complex domains, we selected one action
 arbitrarily, and made other actions to have zero cost. We did not
 include domains with single action schema and domains already with many
 zero-cost actions.
-We refer to this set of 29 domains as \emph{zerocost domains}.
+We refer to this set of 28 domains as \emph{zerocost domains}.
 
 % \todo[We also modify a same domain
 % in the different minimization criteria, in order to avoid the bias on a
@@ -628,7 +628,7 @@ We evaluated three 3-level tie-breaking strategies.
 %REDUNDANT? , i.e., $[f,h,depthStrategy,LFR]$, where the first-level tie-breaking is according to $h$ (break ties in favor of small $h$), the second-level strategy is based on depth and $depthStrategy \in \{\fd, \ld, \rd\}$, and the third level tie-breaking strategy $LFR \in \{\lifo, \fifo, \ro\}$.
 % 
 In addition to the 35 IPC benchmark domains with 1104 problems used in
-the previous set of experiments, we used 29 zerocost domains with 640
+the previous set of experiments, we used 28 zerocost domains with 620
 problems. For randomized strategies, we
 show the coverage (mean $\pm$ sd) of the coverages on
 10 independent runs.
