@@ -28,7 +28,7 @@ en:	en_pdf check_pages check_overflow
 
 en_pdf: $(name).pdf supplemental.pdf
 
-%.pdf: %.tex imgs $(sources) $(styles) $(reference)
+%.pdf: %.tex $(name).tex supplemental.tex imgs $(sources) $(styles) $(reference)
 	$(latexmk) -pdf \
 		   -latexoption="-halt-on-error" \
 		   -bibtex \
