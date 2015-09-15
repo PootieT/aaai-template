@@ -64,24 +64,24 @@ For example, in the \pddl{Openstacks} domain, almost all states with $f(n) \leq 
 In such domains, the tie-breaking policy which decides which nodes to expand in the last frontier can have a significant impact on the performance of \astar.
 
 \begin{figure*}[bt]
- \newcommand{\minilength}{0.36\textwidth}
+ \newcommand{\minilength}{0.35\textwidth}
  \newcommand{\minisep}{0.02\textwidth}
  \begin{minipage}[t]{\minilength}
   \centering
- \includegraphics{tables/aaai16-frontier/aaai16prelim3/lmcut_frontier_noh-front-mono.pdf}
+  \includegraphics{tables/aaai16-frontier/aaai16prelim3/lmcut_frontier_noh-front-mono.pdf}
  \caption{
  The \# of nodes with $f=f^*$ (y-axis) compared to the
- total \# of nodes in the search space (x-axis) with $f\leq f^*$ on 1104 IPC benchmark problems
-  (search space analyzed using modified Fast Downward with \lmcut heuristic which 
-  generates all nodes with cost $f^*$).
-  Dotted lines represent $\times 10^n$ boundaries.
+ total \# of nodes in the search space (x-axis) with $f\leq f^*$ on 1104 IPC benchmark problems,
+  using modified Fast Downward with \lmcut which 
+  generates all nodes with cost $f^*$.
+  See supplement for a labeled version (\refig{plateau-noh-full})
+  % Dotted lines represent $\times 10^n$ boundaries.
   }
  \label{fig:plateau-noh}
  \end{minipage}
  \hfill
  \begin{minipage}[t]{\minilength}
   \centering
-  % \includegraphics{tables/aaai16-frontier/aaai16prelim3/lmcut_frontier-front.pdf}
   \includegraphics{tables/aaai16-frontier/aaai16prelim3/lmcut_frontier-front-mono.pdf}
   \caption{
   Similar to \refig{fig:plateau-noh}; $y$-axis shows
@@ -90,17 +90,18 @@ In such domains, the tie-breaking policy which decides which nodes to expand in 
   Note that many \pddl{Openstacks} and \pddl{Cybersec} instances are near the $y=x$ line.
   %Due to space, we do not show all labels for point types. 
   See supplement for a larger, 
-  color version with all labels.
+  color version with all labels (\refig{plateau-full}).
   }
   \label{plateau}
  \end{minipage} 
  \hfill
- \begin{minipage}[t]{0.23\textwidth}
+ \begin{minipage}[t]{0.24\textwidth}
   \centering
   \includegraphics{tables/aaai16-frontier/zerocost/lmcut_frontier-front-mono.pdf}
   \caption{Similar to \refig{plateau}, but for 620 instances from our 
   \emph{zerocost domains} (\refsec{sec:zerocost-domains}),
   where zero-cost actions induce very large plateaus.
+  Again, detailed version in supplement: \refig{plateau-zerocost-full}
 %  Even with $h$ tie-breaking, these domains force the planner
 %  to search much larger plateau.
  }
@@ -299,8 +300,10 @@ evaluated can sometimes be larger than a factor of 10 (\pddl{Openstacks}, \pddl{
  individual rows for the domains whose maximum pairwise coverage difference $\mit{MaxDiff}$
  (for the randomized configurations, we used the mean coverage of 10
  runs to calculate the coverage difference)
- $\geq 2$. (Details for domains with $\mit{MaxDiff}<2$ are in the supplemental material,
- \reftbl{lmcut-ipc-full}, \reftbl{lmcut-zerocost-full}). The following domains had $\mit{MaxDiff}<2$:\\
+ $\geq 2$. (Details for domains with $\mit{MaxDiff}<2$ are in the
+ supplemental material, \reftbl{lmcut-ipc-full}, \reftbl{lmcut-zerocost-full}.
+ M\&S results are also in the supplemental material, \reftbl{mands-ipc-full}, \reftbl{mands-zerocost-full}).
+ The following domains had $\mit{MaxDiff}<2$:\\
  % 
  (1) Domains with $\mit{MaxDiff} = 0$ (same coverages by all
  configuration and all runs):
@@ -685,7 +688,9 @@ The std deviation of $[h,\rd,\ro]$ coverage tends to be smaller
 than that of $[h,\ld,\ro]$, indicating that $[h,\rd,\ro]$ is robust with respect to random seeds.
 $[h,\fd,\ro]$ is mostly dominated by $[h,\rd,\ro]$ and $[h,\ld,\ro]$,
 except in \pddl{Scanalyzer-analyse} and \pddl{Sokoban-pushgoal}.
-Due to space, we only show results using the LM-cut heuristic. See the supplement for the results using the M\&S heuristic.
+Due to space, we only show results using the LM-cut heuristic. See
+\reftbl{mands-ipc-full} and \reftbl{mands-zerocost-full} in the
+supplemental material for the results using the M\&S heuristic.
 % 2015/9/13 -- let's try not including the following analysis in this submission -- due to space, and also too complicated, without sufficient payoff.
 % We no longer need the ``depth as explanation of LIFO/FIFO'' story, because  the ``random is good'' depth-based methods [h,rd,ro]  story is simpler.
 

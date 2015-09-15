@@ -37,26 +37,93 @@
 \begin{document}
 \maketitle
 
-\begin{table*}
+\section{\refig{plateau-noh-full}: Colored, fully labeled version of \refig{fig:plateau-noh}}
+
+\begin{figure}[hb]
+ \includegraphics{tables/aaai16-frontier/aaai16prelim3/lmcut_frontier_noh-front.pdf}
+ \caption{
+ The number of nodes with $f=f^*$ (y-axis) compared to the
+ total number of nodes in the search space (x-axis) with $f\leq f^*$
+ on 1104 IPC benchmark problems,
+ using a modified Fast Downward (with \lmcut) which 
+ generates all nodes $f\leq f^*$.
+ Blue lines are $y=x \times 10^n$ for $n=\pm1,\pm2,\cdots$.
+ Many instances belongs to the region $y>x/10$.
+ }
+ \label{plateau-noh-full}
+\end{figure}
+
+\newpage
+
+\section{\refig{plateau-full}: Colored, fully labeled version of \refig{plateau}}
+
+
+\begin{figure}[htb]
+ \includegraphics{tables/aaai16-frontier/aaai16prelim3/lmcut_frontier-front.pdf}
+ \caption{
+ Similar to \refig{plateau-noh-full}; $y$-axis shows
+ number of nodes with $f=f^*, h=0$, which forms the final
+  plateau when $h$-based tie-breaking is enabled.
+  Note that many \pddl{Openstacks} and \pddl{Cybersec} instances are near the $y=x$ line.
+  %Due to space, we do not show all labels for point types. 
+ }
+ \label{plateau-full}
+\end{figure}
+
+\newpage
+\section{\refig{plateau-zerocost-full}: Colored, fully labeled version of \refig{plateau-zerocost}}
+
+\begin{figure}[htb]
+ \includegraphics{tables/aaai16-frontier/zerocost/lmcut_frontier-front.pdf}
+ \caption{Similar to \refig{plateau}, but for 620 instances from our 
+ \emph{zerocost domains} (\refsec{sec:zerocost-domains}),
+ where zero-cost actions induce very large plateaus.
+ Even with $h$ tie-breaking, these domains force the planner
+ to search much larger plateau.
+ }
+ \label{plateau-zerocost-full}
+\end{figure}
+
+\newpage
+\section{\refig{f-h-eval-full}: Colored, fully labeled version of \refig{f-h-eval}}
+
+\begin{figure}[htb]
+ \centering \relsize{-3}
+ \includegraphics{tables/aaai16-30min-5min-cut/aaai16prelim3/evaluated-lmcut_ff-lmcut_lf.pdf}
+ \caption{Comparisons of the number evaluations between simple \lifo and
+ \fifo second-level tie-breaking, with first-level $h$
+ tie-breaking. \lifo evaluates less than $1/10$ of the nodes evaluated
+ by \fifo in Cybersec and Openstacks.}
+ \label{f-h-eval-full}
+\end{figure}
+
+\clearpage
+\onecolumn
+\section{Untruncated Tables for \reftbl{depth} : Part 1, IPC domains, \lmcut}
+
+\begin{table*}[htb]
  {
  \centering
  \input{tables/aaai16-robustnesscheck/aaai16prelim3/1-nofd.tex}
  \caption{
- Full version of the upper half of \reftbl{depth} showing 
+ Untruncated version of the upper half of \reftbl{depth} showing 
  the experiments on the IPC benchmark instances.
  Each cell shows the coverage of the domain solved with 5 min, 2GB,
- using LMcut heuritics.
+ using \lmcut heuritics.
  }
  \label{lmcut-ipc-full}
  }
 \end{table*}
 
-\begin{table*}
+\newpage
+\section{Untruncated Tables for \reftbl{depth} : Part 2, Zerocost domains, \lmcut}
+
+\begin{table*}[htb]
  {
  \centering
  \input{tables/aaai16-robustnesscheck/zerocost/1-nofd.tex}
  \caption{
- Full version of the upper half of \reftbl{depth} showing 
+ Untruncated version of the upper half of \reftbl{depth} showing 
  the experiments on the Zerocost instances.
  Each cell shows the coverage of the domain solved with 5 min, 2GB,
  using \lmcut heuritics.
@@ -65,24 +132,40 @@
  }
 \end{table*}
 
+\newpage
+\section{Untruncated Tables for \reftbl{depth} : Part 3, IPC domains, \mands}
 
-\begin{table*}
+\begin{table*}[htb]
  {
  \centering
  \input{tables/aaai16-robustnesscheck-mands/aaai16prelim3/1-nofd.tex}
- \caption{aaa}
+ \caption{
+ Untruncated version of the upper half of \reftbl{depth} showing 
+ the experiments on the IPC benchmark instances.
+ Each cell shows the coverage of the domain solved with 5 min, 2GB,
+ using \mands heuritics.
+ }
  \label{mands-ipc-full}
  }
 \end{table*}
 
-\begin{table*}
+\newpage
+\section{Untruncated Tables for \reftbl{depth} : Part 4, Zerocost domains, \mands}
+
+\begin{table*}[htb]
  {
  \centering
  \input{tables/aaai16-robustnesscheck-mands/zerocost/1-nofd.tex}
- \caption{aaa}
+ \caption{
+ Untruncated version of the upper half of \reftbl{depth} showing 
+ the experiments on the IPC benchmark instances.
+ Each cell shows the coverage of the domain solved with 5 min, 2GB,
+ using \mands heuritics.
+ }
  \label{mands-zerocost-full}
  }
 \end{table*}
+
 
 
 \end{document}
