@@ -6,7 +6,7 @@
 \hline                                    
  Domain &  $[h,\fifo]$ &  $[h,\lifo]$ &  $[\fifo]$ &  $[\lifo]$ &  $[h,\fd,\ro]$ &  $[h,\ld,\ro]$ &  $[h,\rd,\ro]$ &  $[\rd,\ro]$ &  $[h,\ro]$ & $[h,\fd,\ro]$   & $[h,\ld,\ro]$   & $[h,\ro]$    \\
 \hline                                    
- IPC (1104) &  558 &  565 &  442 &  556 &  554.6\spm{}0.8 &  568.3\spm{}1.8 &  \textbf{570.6\spm{}1.5} &  560.0\spm{}0.9 &  559.8\spm{}1.0 &  \textbf{0.0} &  \textbf{.01} &  \textbf{0.0}  \\
+\lmcut IPC (1104) &  558 &  565 &  442 &  556 &  554.6\spm{}0.8 &  568.3\spm{}1.8 &  \textbf{570.6\spm{}1.5} &  560.0\spm{}0.9 &  559.8\spm{}1.0 &  \textbf{0.0} &  \textbf{.01} &  \textbf{0.0}  \\
 \hline                                    
     {\relsize{-1}airport(50)} &  \textbf{27} &  26 &  18 &  26 &  25.6\spm{}0.5 &  25.8\spm{}0.6 &  25.9\spm{}0.5 &  21.0\spm{}0.0 &  26.0\spm{}0.0 &  .26 &  .72 &  .58  \\
 %   {\relsize{-1}barman-opt11(20)} &  0 &  0 &  0 &  0 &  0.0\spm{}0.0 &  0.0\spm{}0.0 &  0.0\spm{}0.0 &  0.0\spm{}0.0 &  0.0\spm{}0.0 &  1.0 &  1.0 &  1.0  \\
@@ -43,7 +43,7 @@
 %   {\relsize{-1}visitall-opt11(20)} &  10 &  10 &  9 &  10 &  10.0\spm{}0.0 &  10.0\spm{}0.0 &  10.0\spm{}0.0 &  10.0\spm{}0.0 &  10.0\spm{}0.0 &  1.0 &  1.0 &  1.0  \\
     {\relsize{-1}woodworking-opt11(20)} &  10 &  10 &  6 &  9 &  10.0\spm{}0.0 &  10.0\spm{}0.0 &  10.0\spm{}0.0 &  \textbf{11.8\spm{}0.4} &  10.0\spm{}0.0 &  1.0 &  1.0 &  1.0  \\
     {\relsize{-1}zenotravel(20)} &  \textbf{11} &  \textbf{11} &  9 &  \textbf{11} &  \textbf{11.0\spm{}0.0} &  \textbf{11.0\spm{}0.0} &  \textbf{11.0\spm{}0.0} & \textbf{11.0\spm{}0.0} & \textbf{11.0\spm{}0.0} &  1.0 &  1.0 &  1.0 \\\hline
-    Zerocost(620) &  256 &  279 &  212 &  281 &  249.1\spm{}1.8 &  280.2\spm{}7.9 &  \textbf{287.2\spm{}2.4} &  280.2\spm{}4.2 &  264.9\spm{}1.8 &  \textbf{0.0} &  \textbf{.02} &  \textbf{0.0}  \\
+   \lmcut Zerocost(620) &  256 &  279 &  212 &  281 &  249.1\spm{}1.8 &  280.2\spm{}7.9 &  \textbf{287.2\spm{}2.4} &  280.2\spm{}4.2 &  264.9\spm{}1.8 &  \textbf{0.0} &  \textbf{.02} &  \textbf{0.0}  \\
   \hline                                    
     {\relsize{-1}airport-fuel(20)} &  \textbf{15} &  13 &  7 &  \textbf{15} &  14.2\spm{}0.9 &  13.8\spm{}0.6 &  14.4\spm{}0.7 &  10.4\spm{}0.5 &  14.4\spm{}0.7 &  .49 &  .06 &  1.0  \\
     {\relsize{-1}blocks-stack(20)} &  \textbf{17} &  \textbf{17} &  15 &  \textbf{17} &  \textbf{17.0\spm{}0.0} &  \textbf{17.1\spm{}0.3} &  \textbf{17.0\spm{}0.0} &  16.0\spm{}0.0 &  \textbf{17.0\spm{}0.0} &  1.0 &  .37 &  1.0  \\
@@ -74,5 +74,11 @@
     {\relsize{-1}woodworking-cut(20)} &  5 &  7 &  2 &  7 &  4.5\spm{}0.5 &  6.7\spm{}0.5 &  \textbf{8.6\spm{}0.9} &  7.8\spm{}0.7 &  7.1\spm{}0.3 &  \textbf{0.0} &  \textbf{0.0} &  \textbf{0.0}  \\
 %   {\relsize{-1}zenotravel-fuel(20)} &  7 &  7 &  7 &  7 &  7.0\spm{}0.0 &  7.0\spm{}0.0 &  7.0\spm{}0.0 &  7.0\spm{}0.0 &  7.0\spm{}0.0 &  1.0 &  1.0 &  1.0 \\
 \hline
- Total(1724) &  814 &  844 &  654 &  837 &  803.7\spm{}2.2 &  848.5\spm{}8.9 &  \textbf{857.8\spm{}2.9} &  840.2\spm{}4.4 &  824.7\spm{}2.1 &  \textbf{0.0} &  \textbf{.01} &  \textbf{0.0} \\\hline
+\lmcut Total(1724) &  814 &  844 &  654 &  837 &  803.7\spm{}2.2 &  848.5\spm{}8.9 &  \textbf{857.8\spm{}2.9} &  840.2\spm{}4.4 &  824.7\spm{}2.1 &  \textbf{0.0} &  \textbf{.01} &  \textbf{0.0} \\
+\hline
+\hline
+\mands IPC (1104) &  488 &  495 &  458 &  489 &  478.8\spm{}0.4 &  484.8\spm{}0.4 &  484.0\spm{}0.0 &  - &  486.4\spm{}0.8 &  \textbf{.01} &  \textbf{.02} &  \textbf{.01}  \\
+\mands Zerocost (620) &  280 &  303 &  234 &  302 &  274.0\spm{}0.9 &  293.4\spm{}2.1 &  310.2\spm{}2.1 &  - &  288.0\spm{}1.7 &  \textbf{.01} &  \textbf{.01} &  \textbf{.01}  \\
+\mands Total(1724) &  768 &  798 &  692 &  791 &  752.8\spm{}0.7 &  778.2\spm{}1.9 &  794.2\spm{}2.1 &  - &  774.4\spm{}1.2 &  \textbf{.01} &  \textbf{.01} &  \textbf{.01} \\
+\hline
 \end{tabular}
