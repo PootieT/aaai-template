@@ -757,35 +757,44 @@ By randomly selecting a depth bucket, $[h,\rd,\ro]$ explicitly eliminates this b
 
 \subsubsection{Search Behavior within a Plateau}
 
-To understand the behavior of RandomDepth, we plotted the histogram of
-the depths of search nodes opened by RandomDepth in the final search
-plateau until the solution is found.
+To understand the behavior of depth-based policies, we plotted the histogram of
+the depths of search nodes opened by
+$[h,\fifo]$, $[h,\lifo]$ and $[h,\rd,\ro]$
+in the final search plateau until the solution is found.
+We used $[h,\fd,\fifo]$(=$[h,\fifo]$) and $[h,\ld,\lifo]$(=$[h,\lifo]$) to
+measure the depth.
+\refig{depth-histogram} shows the result
+on the \pddl{Woodworking-cut} p04 (left) and \pddl{psr-small-open} p48 (right) as an
+interesting example.
 
-\refig{depth-histogram} shows the histogram of the depth
-for $[h,\rd,\ro]$ %, modified to produce lots of outputs,
-on the \pddl{Woodworking-cut} domain.
+In \pddl{Woodworking-cut} instances, we observed
+LastDepth could search arbitrarly longer path in the
+plateau, which would ignore the nodes in the intermediate depth,
+FirstDepth spends too much time in the shallow region,
+and RandomDepth is balancing the search in the smaller depth and larger
+depth, resulting in larger coverages (\reftbl{depth}).
 % 
-In this domain, the LastDepth could search arbitrarly longer path in the
-plateau, which would ignore the nodes in the intermediate depth.
-%\todo{better to plot all solutions}
-In contrast, RandomDepth is balancing the search in the smaller depth and larger
-depth, resulting in larger coverages in \reftbl{depth}.
+In contrast, \pddl{psr-small-open} instances showed
+almost identical curves, as an explanation to the
+same coverages (all 19 for the three, see supplemental).
 
 The figure also illustrates the behavior of RandomDepth: Although it
-randomly selects from the \emph{current} set of nonempty buckets,
+randomly selects from the buckets,
 a new depth is found only when the largest-depth bucket is selected,
-resulting in non-flat, decreasing curves.
+resulting in a decreasing curves.
 Finding the optimal balance is an interesting avenue of
 future work.
 
 \begin{figure}[tb]
  \centering \relsize{-3}
  \includegraphics{tables/aaai16-log-rd/2zerocost/depth-histogram-woodworking-cut-p04.pdf}
+ \includegraphics{tables/aaai16-log-rd/2zerocost/depth-histogram-psr-small-open-p48.pdf}
  % \includegraphics{tables/aaai16-log-rd/2zerocost/depth-histogram-openstacks-p04.pdf}
  % \includegraphics{tables/aaai16-log-rd/2zerocost/depth-histogram-cybersec-p04.pdf}
  \caption{Histogram of the depths in the plateau in
-\pddl{Woodworkin-cut} instances using $[h,\rd,\ro]$. $y$ axis is logarithmic.
- Large dots show where the solutions were found.
+\pddl{Woodworkin-cut} p04 (left) and \pddl{psr-small-open} p48 (right) instances using
+ $[h,\fd,\fifo]$, $[h,\ld,\lifo]$, $[h,\rd,\ro]$.
+ $y$ axis is logarithmic. Large dots show where the solutions were found.
  }
  \label{depth-histogram}
 \end{figure}
