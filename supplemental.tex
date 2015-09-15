@@ -1,4 +1,4 @@
-\documentclass[10pt]{article}
+\documentclass[10pt,letterpaper]{article}
 \usepackage{aaai}
 \usepackage{xparse}
 \usepackage{times}
@@ -13,25 +13,76 @@
 \usepackage{graphicx}
 \usepackage{abbrev}
 \usepackage{multirow}
+\usepackage{xr}
+\externaldocument{asai}
+\renewcommand{\thetable}{S\arabic{table}}
+\renewcommand{\thefigure}{S\arabic{figure}}
 
-\setlength{\linewidth}{3.3in}
-\setlength{\textwidth}{3.3in}
+\setlength{\pdfpagewidth}{8.5in}
+\setlength{\pdfpageheight}{11in}
 \pagestyle{empty}
 \frenchspacing
-\setlength{\floatsep}{1mm}
-\setlength{\textfloatsep}{1mm}
-\setlength{\abovecaptionskip}{1mm}
-\setlength{\belowcaptionskip}{1mm}
-\setlength{\abovedisplayskip}{1mm}
-\setlength{\belowdisplayskip}{1mm}
-\setlength{\arraycolsep}{0.5mm}
-\setlength{\tabcolsep}{0.02em}
+% \setlength{\floatsep}{1mm}
+% \setlength{\textfloatsep}{1mm}
+% \setlength{\abovecaptionskip}{1mm}
+% \setlength{\belowcaptionskip}{1mm}
+% \setlength{\abovedisplayskip}{1mm}
+% \setlength{\belowdisplayskip}{1mm}
+% \setlength{\arraycolsep}{0.5mm}
+\setlength{\tabcolsep}{0.1em}
 
+\nocopyright
+\author{Submision 974}
+\title{Tiebreaking Strategies for Classical Planning Using $A^*$ Search\\ (Supplemental Material)}
 \begin{document}
+\maketitle
+
+\begin{table*}
+ {
+ \centering
+ \input{tables/aaai16-robustnesscheck/aaai16prelim3/1-nofd.tex}
+ \caption{
+ Full version of the upper half of \reftbl{depth} showing 
+ the experiments on the IPC benchmark instances.
+ Each cell shows the coverage of the domain solved with 5 min, 2GB,
+ using LMcut heuritics.
+ }
+ \label{lmcut-ipc-full}
+ }
+\end{table*}
+
+\begin{table*}
+ {
+ \centering
+ \input{tables/aaai16-robustnesscheck/zerocost/1-nofd.tex}
+ \caption{
+ Full version of the upper half of \reftbl{depth} showing 
+ the experiments on the Zerocost instances.
+ Each cell shows the coverage of the domain solved with 5 min, 2GB,
+ using \lmcut heuritics.
+ }
+ \label{lmcut-zerocost-full}
+ }
+\end{table*}
 
 
 \begin{table*}
- \input{tables/aaai16-robustnesscheck-mands/aaai16prelim3_zerocost/1-nofd.tex}
+ {
+ \centering
+ \input{tables/aaai16-robustnesscheck-mands/aaai16prelim3/1-nofd.tex}
+ \caption{aaa}
+ \label{mands-ipc-full}
+ }
 \end{table*}
+
+\begin{table*}
+ {
+ \centering
+ \input{tables/aaai16-robustnesscheck-mands/zerocost/1-nofd.tex}
+ \caption{aaa}
+ \label{mands-zerocost-full}
+ }
+\end{table*}
+
 
 \end{document}
