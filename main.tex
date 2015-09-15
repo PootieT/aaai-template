@@ -888,9 +888,11 @@ $[g,h]$ pair and distributes the effort.  Marvin \cite{Coles07} learns plateau-e
 from the Enhanced Hill Climbing phase of the FF planner
 \cite{Hoffmann01} and later uses these macros to escape the plateau.
 \citeauthor{Hoffmann05} gives a detailed analysis of the
-structure of the search space in the benchmark domains which were
-available in \citeyear{Hoffmann05} \cite{Hoffmann05,Hoffmann14}. 
-The analysis was focused on the plateaus and dead ends which occur during the inadmissible search.
+structure of the search space in the benchmark domains 
+% which were available in \citeyear{Hoffmann05}
+\cite{Hoffmann05,Hoffmann14}. 
+The analysis was focused on the local search topology, which is
+important in inadmissible search.
 % 
 However, to our knowledge, searching in plateaus has not been
 previously investigated for cost-optimal planning with admissible
@@ -904,11 +906,11 @@ is the final plateau and it directly finds a solution.
 %In their work on combining multiple heuristics in a planner, 
 \citeauthor{RogerH10} (\citeyear{RogerH10}) considered a tie-breaking approach which works as follows:
 When combining two heuristics, one of the
-heuristics is used as the primary criterion for guiding the search,
+heuristics is used as the primary criterion, % for guiding the search,
 and the second heuristic is used to break ties among nodes with the same primary
 heuristic value.
 While this did not perform well in their work on satisficing planning, 
-using a secondary heuristic as a tie-breaking criterion in our multi-level tie-breaking framework 
+additional policy using a secondary heuristic
 for cost-optimal search is an interesting direction for future work.
 
 The PLUSONE %\footnote{This term is used on the Fast Downward website.} XXfootnote takes too much space
@@ -922,19 +924,19 @@ $[h,\fd,\ro]$ tie-breaking.
 %\astar always expands the node with smaller $f$-value.
 This technique explicitly targeted zero-cost actions,
 and resulted in a significantly better performance in IPC-6
-satisficing track \cite{richter2010lama}.
+satisficing track.
 %\cite[p.137, Sec. 3.3.2]{richter2010lama}.
 \todo*{citation}
 % There's a long discussion of Openstacks in \cite{richter2010lama}, p.167-169, but I can't find PLUSONE anywhere. Maybe it's called something else in the paper?  Maybe \richter2010lama is the wrong citation??
 Unlike PLUSONE, depth-based tie-breaking is admissible.
 %because unlike PLUSONE, action costs are not modified.  
 Also, \emph{we
-do not always favor smaller depth over larger depth}. LAMA treats the
-increased cost as the part of sorting criteria and always prefers
-smaller cost, much like in our $[h,\fd,\ro]$ strategy.  However, the $[h,\fd,\ro]$
+do not always favor smaller depth over larger depth}. LAMA always prefer the
+smaller cost including the increased cost, much like in our $[h,\fd,\ro]$ strategy.
+However, $[h,\fd,\ro]$
 strategy had the worst performance in our experiments (\reftbl{depth}) -- in our experiments, 
-the performing depth-based tie-breaking methods $[h,\ld,\ro]$ and $[h,\rd,\ro]$
-do not prefer smaller depth.
+the performing methods are $[h,\ld,\ro]$ and $[h,\rd,\ro]$,
+which do not prefer smaller depth.
 
 % It's not clear what these techniques have in common, except that they are all orthogonal to heuristics,
 % If that's the case, then there's no need to cite them in this paper -- there's no reason why these particular techniques
@@ -972,7 +974,7 @@ do not prefer smaller depth.
 $LA^*$ \cite{stern2010look} extends \astar by performing a
 cost-bounded depth-first \emph{lookahead} from each node as it is generated.
 %Although this work was not done in the context of tie-breaking strategies, it is interesting to note that 
-when the lookahead cost bound $k=0$ ($LA^*_0$ in their notation), only nodes with the same $f$-value as the current \astar frontier are expanded, which corresponds to a $[h,\ld,\ro]$ tie-breaking strategy.
+When the lookahead cost bound $k=0$ ($LA^*_0$ in their notation), only nodes with the same $f$-value as the current \astar frontier are expanded, similar to a $[h,\ld,\ro]$ strategy.
 
 
 \section{Conclusion}
