@@ -180,22 +180,13 @@ $\text{criterion}_1$, the \emph{second-level tie-breaking policy} is
 $\text{criterion}_2$, and so on.
 %% the word frontier is no longer used in the later text.
 % \emph{Last frontier} is the set of open nodes with $f^*$.
-\newtheorem{definition}{Definition}
 
-\begin{definition}{Plateau}
 A \emph{plateau} is a set of nodes in OPEN with the same $f$ and same $h$.
-\end{definition}
-
 A plateau whose nodes have $f$-cost $f_p$ and $h$-cost $h_p$ is denoted as
 $\plateau{f_p,h_p}$.
-
-
-An  \emph{entrance} to a $plateau(f_p,h_p)$ is a node $n \in plateau(f_p,h_p)$, whose current parent is not a member of $plateau(f_p,h_p)$.
-
+An  \emph{entrance} to a $\plateau{f_p,h_p}$ is a node $n \in \plateau{f_p,h_p}$, whose current parent is not a member of $\plateau{f_p,h_p}$.
 The \emph{final plateau},  is the plateau containing the solution found by the search algorithm.
-
-
-
+In \astar using admissible heuristics, it is $\plateau{f^*,0}$.
 
 \section{Background: Tie-breaking Strategies in \astar}
 
