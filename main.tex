@@ -40,8 +40,8 @@ This paper investigates tie-breaking strategies for \astar.
 \astar is a standard search algorithm for finding an optimal-cost path 
 from an initial state $s$ to some goal state $g \in G$ in a search space represented as a graph \cite{hart1968formal}.
 In each iteration, \astar selects and \emph{expands} a node $n$ from the OPEN priority queue.
-$n$ is the node which has the lowest $f$-cost in OPEN, where for node $n$, $f(n)$ is the sum of  $g(n)$, the cost of the current path from the start state to $n$, and $h(n)$, a heuristic estimate of the cost from $n$ to a goal state.
-\astar returns an optimal solution when $h$ is admissible, i.e., when $h \leq h^*$, where $h^*$ is the true distance to the goal.
+$n$ is the node which has the lowest $f$-cost in OPEN, where for node $n$, $f(n)$ is the sum of  $g(n)$, the cost of the current path from the initial state to $n$, and $h(n)$, a heuristic estimate of the cost from $n$ to a goal state.
+\astar returns an optimal solution when $h$ is admissible, i.e., when $h \leq h^*$, where $h^*$ is the optimal distance to the goal.
 
 
 %In order to guarantee solution optimality,
@@ -63,7 +63,8 @@ last layer of search accounts for a significant fraction of the effective search
 \refig{fig:plateau-noh} plots the \# of states with $f(n) = f^*$ (y-axis)
 vs. the \# of states with $f(n) \leq f^*$
 for 1104 problem instances from the International Planning Competition (IPC1998-2011).
-For many instances,  a large fraction of the nodes with $f(n) \leq f^*$ have $f(n)=f^*$.
+For many instances,  a large fraction of the nodes in the effective search space have %with $f(n) \leq f^*$ have 
+$f(n)=f^*$.
 For example, in the \pddl{Openstacks} domain, almost all states with $f(n) \leq f^*$ have cost $f^*$.
 This is because of operators with cost 0.
 In such domains, the tie-breaking policy which decides which nodes to expand in the last frontier can have a significant impact on the performance of \astar.
@@ -143,7 +144,7 @@ impact on the performance as long as a \lifo policy is used.
 % both share the greedy search pattern within the plateau of the
 % search space.]{this is not shown yet. how to show it? xy-plot of the node
 % evaluation order?}
-These experiments show that there are significant performances differences among tie-breaking strategies
+We show that there are significant performances differences among tie-breaking strategies
 when domains include zero-cost actions.  While there are relatively few domains with zero-cost actions in the existing IPC benchmark sets, we argue that this is a historical accident, and that in fact, many unit-cost domains may be more appropriately modeled using zero-cost actions.
 %Through these experiments, we points out a bias in the current set of
 %benchmark domains and the importance of tie-breaking in
@@ -160,8 +161,8 @@ Although depth-based tie-breaking is part of a multi-level tie-breaking strategy
 we show that the notion of depth is the principal factor in determining performance.
 We show the robustness of our tie-breaking strategies
 against a particular action ordering in the domain definition.
-\emph{Finally, note that all tie-breaking strategies in this paper
-maintain the admissibility of the search because they only affect node expansion
+\emph{Note that all tie-breaking strategies in this paper
+maintain the optimality of the search algorithm because they only affect node expansion
 order among the nodes with the same $f$-cost.}
 
 
@@ -208,7 +209,7 @@ The original \astar paper
 %as well as Nilsson's subsequent textbook 
 states: ``Select the open node $n$ whose value $f$
 is smallest. Resolve ties arbitrarily, but always in favor of any [goal
-node]'' \cite[p.102 Step 2]{hart1968formal} %\cite[p.69]{Nilsson71}.
+node]'' \cite[p.102 Step 2]{hart1968formal}. %\cite[p.69]{Nilsson71}.
 % Although it is possible to interpret this to imply $h$-based tie-breaking
 % since goal nodes are the special case where $h=0$,
 % they make no further mention of tie-breaking.
@@ -220,7 +221,7 @@ In recent years, tie-breaking according to $h$-values has become ``folklore'' in
 that \astar achieves best performance when it breaks ties
 in favor of nodes with least h-cost'' \cite{hansen2007anytime}.
 \citeauthor{holte2010common} writes ``\astar breaks ties in favor
-of larger g values, as is most often done'' \cite[note that since $f=g+h$,
+of larger $g$-values, as is most often done'' \cite[note that since $f=g+h$,
 preferring large $g$ is equivalent to preferring smaller $h$]{holte2010common}.
 % \citeauthor{felner2011inconsistent} also assume ``ties are broken in
 % favor of low h-values'' in describing Bidirectional Pathmax for \astar.
@@ -265,11 +266,11 @@ Although we could not find an explanation, this choice is most likely due to the
 In our experiments, the planners are based on Fast Downward (revision 6251), and all
 experiments are run with a 5-minute, 2GB memory limit for the search binary (FD translation/preprocessing times are not included in the 5-minute limit).
 All experiments were conducted on Xeon E5410@2.33GHz CPUs.
-We used 1104 problems from 35 standard benchmark domains.
+We used 1104 instances from 35 standard benchmark domains.
 %and 620 problems from 28 \emph{zero-cost-action} domains (\refsec{sec:zerocost-domains}).
 
 
-We first compared two commonly used tie-breaking strategies $[h,\fifo]$, $[h,\lifo]$, which
+We first compared two commonly used tie-breaking strategies, $[h,\fifo]$, $[h,\lifo]$, which
 first breaks ties according to $h$, and then applies \fifo or \lifo
 second-level tie-breaking, respectively.
 % The following will be necessary in a future version, if we use LOP:
@@ -335,10 +336,10 @@ evaluated can sometimes be larger than a factor of 10 (\pddl{Openstacks}, \pddl{
 \begin{figure}[tb]
  \centering \relsize{-3}
  \includegraphics{tables/aaai16-30min-5min-cut/aaai16prelim3/evaluated-lmcut_ff-lmcut_lf-mono.pdf}
- \caption{Comparisons of the number evaluations between simple \lifo and
+ \caption{Comparisons of the \# of evaluations between simple \lifo and
  \fifo second-level tie-breaking, with first-level $h$
  tie-breaking. \lifo evaluates less than $1/10$ of the nodes evaluated
- by \fifo in Cybersec and Openstacks.}
+ by \fifo in \pddl{Cybersec} and \pddl{Openstacks}.}
  \label{f-h-eval}
 \end{figure}
 
@@ -492,7 +493,7 @@ We argue that such a model is at least as natural as a model that assigns unit c
 %% difficulty to the current heuristic planners due to their large plateaus.
 
 Many practical applications have some natural
-objective of optimize the usage of one key consumable resource, e.g., fuel/energy cost minimization.
+objective to optimize the usage of one key consumable resource, e.g., fuel/energy cost minimization.
 Therefore, in this paper, we modified various domains
 into cost minimization domains with many zero-cost actions.
 %For example, \pddl{Elevators-up} is a variation of
@@ -507,7 +508,7 @@ that it minimizes the resource usage
 %% floortile-ink is not shown, so better not to mention it
 (\pddl{Woodworking-cut} minimizes wood usage, etc.).
 For more complex domains, we selected 1 action
-arbitrarily, and made other actions to have zero cost. We did not
+and made other actions to have zero cost. We did not
 include domains with single action schema and domains already with many
 zero-cost actions.
 We refer to these 28 domains as \emph{zerocost domains}.
@@ -559,8 +560,8 @@ We refer to these 28 domains as \emph{zerocost domains}.
 \refig{plateau-zerocost} plots the size of the final plateau of the zerocost domain instances.
 Many of these zerocost domains have large plateaus.
 Thus, in these cost-minimization problems, the search strategy within
-plateau becomes much more important than in the
-runtime-minimization problems.
+plateaus, i.e., tie-breaking,  becomes very important.
+
 
 \section{Depth-based Tie-Breaking}
 
@@ -607,8 +608,7 @@ a further tie-breaking criterion may be necessary to break times among them.
 We could, for example, apply \lifo or \fifo policies at this level -- 
 note that $[h,\fd,\fifo]$ and $[h,\ld,\lifo]$ are equivalent to $[h,\fifo]$ and $[h,\lifo]$, respectively.
 
-However, 
-we use a Random Order (\ro) policy, which 
+We use a Random Order (\ro) policy, which 
 randomly selects an element from the depth bucket selected by the depth-based tie-breaking.
 This is because the effectiveness of the tie-breaking behavior within a bucket
 can be affected by accidental biases, e.g., names/orders of action schema in the PDDL domain
@@ -638,9 +638,9 @@ We evaluated three 3-level tie-breaking strategies.
 % and four 2-level tie-breaking strategies in all.
 %REDUNDANT? , i.e., $[f,h,depthStrategy,LFR]$, where the first-level tie-breaking is according to $h$ (break ties in favor of small $h$), the second-level strategy is based on depth and $depthStrategy \in \{\fd, \ld, \rd\}$, and the third level tie-breaking strategy $LFR \in \{\lifo, \fifo, \ro\}$.
 % 
-In addition to the 35 IPC benchmark domains with 1104 problems used in
+In addition to the 35 IPC benchmark domains with 1104 instances used in
 the previous set of experiments, we used 28 zerocost domains with 620
-problems. For randomized strategies, we
+instances. For randomized strategies, we
 show the coverage (mean $\pm$ sd) on
 10 independent runs.
 
@@ -670,7 +670,7 @@ the depth-based 2nd-level tie-breaking criterion, and finally,
 Since these configurations are randomized, we run each configuration with 10 different random seeds.
 To see whether differences among the mean coverages were statistically significant,
 % of $[h,\ld,\ro]$, $[h,\rd,\ro]$,
-We applied the non-parametric Wilcoxon's single-rank test.
+We applied the non-parametric Wilcoxon's singned-rank test.
 % ``non-parametric'' means ``normal distribution not assumed
 %Wilcoxon test,
 %a non-parametric significance testing method applicable to
@@ -909,7 +909,7 @@ constrained because of the first-level tie-breaking according to $h$.
 
 Previous work on escaping search space plateaus has focused on
 non-admissible search.  DBFS \cite{imai2011novel} is a technique which
-adds stochastic backtracking to Greedy Best First Search to avoid
+adds stochastic backtracking to Greedy Best First Search (GBFS) to avoid
 being misdirected by the heuristic function. Type based bucket
 \cite{xie14type} classifies the plateau of GBFS according to the
 $[g,h]$ pair and distributes the effort.  Marvin \cite{Coles07} learns plateau-escaping macros
