@@ -298,9 +298,9 @@ evaluated can sometimes be larger than a factor of 10 (\pddl{Openstacks}, \pddl{
  the domains whose maximum pairwise coverage difference $\mit{MaxDiff}$
  (for the randomized strategies, we used the means of 10
  runs to calculate the $\mit{MaxDiff}$)
- $\geq 2$. (Details for domains with $\mit{MaxDiff}<2$, and M\&S results,
+ $> 2$. (Details for domains with $\mit{MaxDiff}\leq 2$, and M\&S results,
  are in the supplemental material, Table \ref{lmcut-ipc-full}-\ref{mands-zerocost-full}).
- The following domains had $\mit{MaxDiff}<2$:\\
+ The following domains had $\mit{MaxDiff}\leq 2$:\\
  % 
  (1) Domains with $\mit{MaxDiff} = 0$ (same coverages by all
  configuration and all runs):
@@ -310,7 +310,7 @@ evaluated can sometimes be larger than a factor of 10 (\pddl{Openstacks}, \pddl{
  storage, tpp, transport-opt11, floortile-ink, grid-fuel, parking-movecc,
  zenotravel-fuel}.\\
  % 
- (2) $0 < \mit{MaxDiff} < 1$:
+ (2) $0 < \mit{MaxDiff} \leq 1$:
  \pddls{
  depot, driverlog, elevators-opt11, freecell, mystery,
  parcprinter-opt11, pathways, pipesworld-tankage, tidybot-opt11,
@@ -318,7 +318,7 @@ evaluated can sometimes be larger than a factor of 10 (\pddl{Openstacks}, \pddl{
  logistic00-fuel, nomystery-fuel, pathways-fuel, psr-small-open,
  sokoban-pushgoal}.\\
  % 
- (3) $1 < \mit{MaxDiff} < 2$:
+ (3) $1 < \mit{MaxDiff} \leq 2$:
  \pddls{
  blocks, nomystery-opt11, pipesworld-notankage, zenotravel, depot-fuel,
  mystery-feast, rovers-fuel, storage-lift, tidybot-motion}.\\
