@@ -125,7 +125,7 @@ large \emph{plateaus} -- regions of the search space with the same $f$ and $h$.
 
 We first empirically evaluate standard tie-breaking strategies for \astar, and show that 
 % 
-(1) a Last-In-First-Out (\lifo) policy tends to be more efficient than an a First-In-First-Out (\fifo) policy, and 
+(1) a Last-In-First-Out (\lifo) policy tends to be more efficient than a First-In-First-Out (\fifo) policy, and 
 % 
 (2) tie-breaking according to the heuristic value $h$, which
 frequently appears in the heuristic search literature, has little 
@@ -138,12 +138,12 @@ impact on the performance as long as a \lifo policy is used.
 % search space.]{this is not shown yet. how to show it? xy-plot of the node
 % evaluation order?}
 These experiments show that there are significant performances differences among tie-breaking strategies
-when domains include zero-cost actions.  While there are relatively few domains with zero-cost actions in the existing IPC benchmark sets, we argue that this is a historical accident, and that in fact, many unit-cost domains may be more appropriately modelled using zero-cost actions.
+when domains include zero-cost actions.  While there are relatively few domains with zero-cost actions in the existing IPC benchmark sets, we argue that this is a historical accident, and that in fact, many unit-cost domains may be more appropriately modeled using zero-cost actions.
 %Through these experiments, we points out a bias in the current set of
 %benchmark domains and the importance of tie-breaking in
 %the more practical cost-minimization problems.
 
-In order to solve such problems more efficently,
+In order to solve such problems more efficiently,
 we propose 
 tie-breaking methods
 based on a notion of \emph{depth} within the plateau, which corresponds to the number of steps 
@@ -173,7 +173,7 @@ order among the nodes with the same $f$-cost.}
 We first define some notation and terminology used throughout the rest of the paper.
 A \emph{tie-breaking strategy} selects from among nodes with the same $f$-value.
 Tie-breaking strategies are denoted as $[\text{criterion}_1, \text{criterion}_2, ..., \text{criterion}_k]$,
-which means: If there multiple nodes with the same $f$-vaue, first, break ties using $\text{criterion}_1$. 
+which means: If there multiple nodes with the same $f$-value, first, break ties using $\text{criterion}_1$. 
 If there are still multiple nodes remaining, then break ties using $\text{criterion}_2$ and so on, until a single node is selected.
 The \emph{first-level tie-breaking policy} of a strategy is
 $\text{criterion}_1$, the \emph{second-level tie-breaking policy} is
@@ -205,15 +205,15 @@ is smallest. Resolve ties arbitrarily, but always in favor of any [goal
 node]'' \cite[p.102 Step 2]{hart1968formal} %\cite[p.69]{Nilsson71}.
 % Although it is possible to interpret this to imply $h$-based tie-breaking
 % since goal nodes are the special case where $h=0$,
-% they make no further metion of tie-breaking.
+% they make no further mention of tie-breaking.
 Pearl's textbook on heuristic search specifies that best-first search should ``break ties arbitrarily'' (\citeyear{pearl1984heuristics}, p.48, Step 3), and does not specifically mention tie-breaking for \astar.
 The first explicit mention of a tie-breaking policy that considers node generation order is by Korf in his analysis of IDA*: ``If \astar employs the tie-breaking rule of 'most-recently generated', it must also expand the same nodes [as IDA*]'', i.e., a \lifo ordering.
 
-In recent years, tie-breaking accoording to $h$-values has become ``folklore'' in the search community.
+In recent years, tie-breaking according to $h$-values has become ``folklore'' in the search community.
 \citeauthor{hansen2007anytime} state that ``It is well-known 
 that \astar achieves best performance when it breaks ties
 in favor of nodes with least h-cost'' \cite{hansen2007anytime}.
-\citeauthor{holte2010common} writes ``\astar breaks ties in favour
+\citeauthor{holte2010common} writes ``\astar breaks ties in favor
 of larger g values, as is most often done'' \cite[note that since $f=g+h$,
 preferring large $g$ is equivalent to preferring smaller $h$]{holte2010common}.
 % \citeauthor{felner2011inconsistent} also assume ``ties are broken in
@@ -349,7 +349,7 @@ is comparable to $[h,\lifo]$ and $[h,\fifo]$, the standard two-level strategies 
 This may be surprising, considering the ubiquity of $h$-based tie-breaking in the search and planning communities.
 % 
 However, \lifo behaves somewhat similarly to $h$-based tie-breaking, in the following sense:
-\lifo expandes the most recently generated node $n$.
+\lifo expands the most recently generated node $n$.
 If the heuristic function is admissible, there are only 3 possibilities for any child $n'$: 
 (1) $f(n') > f(n)$, 
 (2) $f(n') = f(n), g(n') > g(n)$ and thus $h(n') < h(n)$, or
@@ -466,7 +466,7 @@ We argue that such a model is at least as natural as a model that assigns unit c
 
 
 % While I agree with the point you're trying to make,
-% There is an ugly issue when arguing that current models try to  optimzie plan-execution time (i.e., makespan), 
+% There is an ugly issue when arguing that current models try to  optimize plan-execution time (i.e., makespan), 
 % which is that if we really cared about makespan optimality, we would consider parallel execution of actions whenever possible.
 % however, sequential classical planners do not handle parallel actions at all  (recall ACP).
 % so arguing this path can only lead to trouble.. Let's try a safer line of argument.
@@ -529,7 +529,7 @@ We refer to these 28 domains as \emph{zerocost domains}.
 % is verified in the later section). However, limiting our effective
 % experiments only to 2 domains would bias our observation. To avoid this
 % issue, we created several domains where the \sota heuristic functions
-% fail to provide a menaingful guidance.
+% fail to provide a meaningful guidance.
 
 % One important characteristics shared by Openstacks and Cybersec is that they both
 % have large number of zero-cost actions.
@@ -578,7 +578,7 @@ largest, and random depth, respectively.
 
 \todo{remove this part if complete plot in \refig{depth-histogram} did
 not succeed}
-The effectiveness of each of these depth-based poicies depends on the
+The effectiveness of each of these depth-based policies depends on the
 problem instance.  Within
 the plateau region, all nodes have the same $f$ and $h$ values, 
 % yes, for simplicity, I'm assuming 3-level tiebreaks, ignoring no-h for the time being..
@@ -662,7 +662,7 @@ $h$ as the first-level tie-breaking criterion, one of \fd, \ld, \rd as
 the depth-based 2nd-level tie-breaking criterion, and finally,
 \ro as the 3rd-level criterion.
 Since these configurations are randomized, we run each configuration with 10 different random seeds.
-To see whether differences among the mean coverages were statistically significanct,
+To see whether differences among the mean coverages were statistically significant,
 % of $[h,\ld,\ro]$, $[h,\rd,\ro]$,
 We applied the non-parametric Wilcoxon's single-rank test.
 % ``non-parametric'' means ``normal distribution not assumed
@@ -690,7 +690,7 @@ supplemental material for the results using the M\&S heuristic.
 % 2015/9/13 -- let's try not including the following analysis in this submission -- due to space, and also too complicated, without sufficient payoff.
 % We no longer need the ``depth as explanation of LIFO/FIFO'' story, because  the ``random is good'' depth-based methods [h,rd,ro]  story is simpler.
 
-%% \todo{move this to the final section after revieweing the action ordering}
+%% \todo{move this to the final section after reviewing the action ordering}
 %% % removed \fifo
 %% Finally, we answer two following concerns regarding \lifo final-level
 %% tie-breaking criteria which appear in $[h,\lifo]$ and
@@ -783,7 +783,7 @@ In both instances,
 % \pddl{openstacks} and \pddl{Woodworking-cut}, 
 we observed that the depth-first behavior of $[h,\lifo]$ results in searching deeper and deeper in the search space, ignoring the nodes at intermediate depth.
 On the other hand, the breadth-first behavior of $[h,\fifo]$ results in spending too much time in the region close to the plateau entrance.
-$[h,\rd,\ro]$ is balancing the search at various depths, which results in resulting in successfully solving more problems within the time limit (\reftbl{depth}). %to avoid confusion, avoiding word ``coverage'' here because coverage could refer to search algorithm ``covefring'' the search space.
+$[h,\rd,\ro]$ is balancing the search at various depths, which results in resulting in successfully solving more problems within the time limit (\reftbl{depth}). %to avoid confusion, avoiding word ``coverage'' here because coverage could refer to search algorithm ``covering'' the search space.
 % 
 % In contrast, \pddl{psr-small-open} instances showed
 % almost identical curves, as an explanation to the
@@ -809,7 +809,7 @@ $[h,\rd,\ro]$ is balancing the search at various depths, which results in result
  \pddl{Openstacks} p10 
  (left)
  and
- \pddl{Woodworkin-cut} p04
+ \pddl{Woodworking-cut} p04
  (right)
  %  and
  % \pddl{psr-small-open} p48
@@ -824,7 +824,7 @@ $[h,\rd,\ro]$ is balancing the search at various depths, which results in result
 %Moved this out of the depth-based evaluation section because we also evaluate [h,fifo] and [h,lifo], and the results show that all are robust wrto actin ordering
 Recently, \citeauthor{vallati2015effective} showed that the performance of 
 satisficing planners was significantly affected by PDDL domain \emph{configurations}, which includes the name/ordering of actions, propositions, and objects in the PDDL input file (\citeyear{vallati2015effective}).
-% note that vallati et al did not show that tie-breaking was affected -- they observed that performance of the planners was affected by configuration, and conjectured that the performance variation was due to the effects of configuration on tie-breaking.
+% note that vallati et al. did not show that tie-breaking was affected -- they observed that performance of the planners was affected by configuration, and conjectured that the performance variation was due to the effects of configuration on tie-breaking.
 They conjectured that performance variations caused
 by different domain configurations is due to the impact that the naming/ordering of objects has on tie-breaking.
 % in \cite{vallati2015effective} p.7, col2, par#1
@@ -840,12 +840,12 @@ with respect to
 biases introduced by domain configuration (action naming) in the PDDL domain definition.
 We created 3 different sets of domains in which the
 original names of action schema are mangled into random strings. 
-%We only reordered the actions becasue in the FD codebase, the order of propositions has no effect on tie-breaking. --- let's avoid talking about anything other than action names, in case there are other configuration factors.
+%We only reordered the actions because in the FD codebase, the order of propositions has no effect on tie-breaking. --- let's avoid talking about anything other than action names, in case there are other configuration factors.
 %  XXXTODO CHECK whether above sentence correctly summarizes the sentence below.
 %% In contrast, we continued to use the variable ordering in the original domains
 %% because the effect of variable ordering is irrelevant to the tie-breaking
 %% criteria.
-% %We avoided the effect of action orderings by using the randomized third tie-breakings.
+% %We avoided the effect of action orderings by using the randomized third tie-breaking.
 %Each set of action-renamed domains contains all of the benchmark and zerocost domains.   %XX - can be inferred from table
 We ran each of the 3 strategies on each
 set of mangled domains, three times each with different random seeds,
@@ -853,7 +853,7 @@ resulting in 9 runs per strategy (recall that robustness wrto random seed was sh
 
 The results are shown in \reftbl{actionordering-robustness} (We
 also included the original 10 runs from  \reftbl{depth}).
-We statistically analysed the results for $[h,\rd,\ro]$ 
+We statistically analyzed the results for $[h,\rd,\ro]$ 
 to see if any of the 4 sets of domains
 significantly outperformed the others.
 %In order to test the significance of mean value,
@@ -870,7 +870,7 @@ which showed that the mean differences were not significant ($p=0.26$),
 % we could then apply the non-parametric Kruskal-Wallis test to see if
 % there is any difference in the mean values between the original
 % population of the sample groups, which showed that the differences were not significant ($p=0.26$),
-i.e., action name mangling did not significnatly affect performance.
+i.e., action name mangling did not significantly affect performance.
 
 Thus, in contrast to the results for satisficing search by \cite{vallati2015effective}, 
 the effect of action ordering  seems to be relatively weak for cost-optimal search using \astar.
@@ -966,7 +966,7 @@ which do not prefer smaller depth.
 %% \cite{Fox1998,pochter2011exploiting,domshlak2013symmetry} is the search
 %% technique that tries to prune the states with symmetric
 %% paths. \emph{Partial Order Reduction}
-%% % , \emph{Strong Stubbern Sets} and \emph{Expansion Core} are
+%% % , \emph{Strong Stubborn Sets} and \emph{Expansion Core} are
 %% is also a technique which prunes the
 %% intermediate states that reach to the same goal using the different
 %% orders of same actions. \emph{Dominance Pruning} \cite{hall2013faster} is a
@@ -974,9 +974,9 @@ which do not prefer smaller depth.
 %% % 
 %% These are usually not considered an attempt to improve the heuristic
 %% estimates, however, in terms of \emph{Path-dependent globally admissible
-%% heurisitics} \cite{karpas2012optimal}, a class of heuristics which is
+%% heuristics} \cite{karpas2012optimal}, a class of heuristics which is
 %% admissible only on a particular optimal path, generalizes the above
-%% techniques as assigining an infinite cost to some nodes on the other optimal paths.
+%% techniques as assigning an infinite cost to some nodes on the other optimal paths.
 %% % 
 %% % From a slightly different category, Pathmax \cite{mero1984heuristic} and
 %% % Bidirectional Pathmax \cite{felner2011inconsistent} are the techniques
@@ -1029,8 +1029,8 @@ results were similar using the M\&S heuristic  (please see Supplement), so our r
 %% % 
 
 While we focused on randomized policies because plateaus, by definition do not provide useful heuristic information,
-a direction for future work is development of  methods that exploit the neighborhood structure of the search space
-in order to adaptively adjust the tie-breaking policies.
+a direction for future work is development of  on-line adaptation methods that exploit search space neighborhood structure
+in order to adjust the tie-breaking policies.
 
 
 
