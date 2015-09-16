@@ -291,14 +291,13 @@ evaluated can sometimes be larger than a factor of 10 (\pddl{Openstacks}, \pddl{
  \centering
  \relsize{-1} \setlength{\tabcolsep}{0.3em}
  \input{tables/aaai16-robustnesscheck/aaai16prelim3_zerocost/1-nofd.tex}
- \caption{Experiments comparing the coverages.
- Each cell shows the coverage of the domain solved with 5 min, 2GB.
+ \caption{Coverage comparison (\# of instances solved in 5min, 2GB).
  Zerocost domains are named as [original name]-[name of nonzero action].
  % 
  Due to space, we only show 
  the domains whose maximum pairwise coverage difference $\mit{MaxDiff}$
- (for the randomized configurations, we used the mean coverage of 10
- runs to calculate the coverage difference)
+ (for the randomized strategies, we used the means of 10
+ runs to calculate the $\mit{MaxDiff}$)
  $\geq 2$. (Details for domains with $\mit{MaxDiff}<2$, and M\&S results,
  are in the supplemental material, Table \ref{lmcut-ipc-full}-\ref{mands-zerocost-full}).
  The following domains had $\mit{MaxDiff}<2$:\\
@@ -360,8 +359,8 @@ where (2), (3) follow from the fact that $f(n')=g(n')+h(n')$. %do not assume con
 Thus, \lifo will expand nodes in a ``depth-first'' manner, and as the depth increases,
 the nodes that continue to be expanded by \lifo's 
 depth-first exploration will have non-increasing $h$-values.
-This is similar to actively expanding nodes with low $h$-values, which is the behavior for $h$-based tiebreaking.
-Therefore, the performance of $[\lifo]$ is comparable to the performance of $[h,\lifo]$.
+This is similar to actively expanding nodes with low $h$-values, as done by $h$-based tiebreaking.
+Therefore, the performance of $[\lifo]$ is comparable to that of $[h,\lifo]$.
 % \citeauthor{burns2012implementing}
 % (\citeyear{burns2012implementing}) writes ``the goal can be found more
 % quickly in the final $f$ layer of search'' about $h$ tie-breaking.
@@ -393,12 +392,11 @@ have the same $h$) which relies solely on the tie-breaking criterion.
 \refig{plateau} plots the size of the final plateau on 1104 IPC
 benchmark instances.
 The $y$-axis
-represents the number of nodes with $f=f^*, h=0$, i.e., the final plateau, and the $x$-axis represents the total
-number of nodes with $f\leq f^*$.
-In some domains such as \pddl{Openstacks} and \pddl{Cybersec}, the planner can spend most of the runtime
-searching the final plateau even with $h$ tiebreaking.
-It also
-means that runtime on these domains varies significantly depending on the second-level tie-breaking strategy.
+represents the \# of nodes with $f=f^*, h=0$, i.e., the final plateau, and the $x$-axis represents the total
+\# of nodes with $f\leq f^*$.
+In some domains such as \pddl{Openstacks} and \pddl{Cybersec}, the planner spends most of the runtime
+searching the final plateau even with $h$ tiebreaking, and
+runtime on these domains varies significantly depending on the second-level tie-breaking strategy.
 
 
 %% Removed
@@ -1030,9 +1028,9 @@ results were similar using the M\&S heuristic  (please see Supplement), so our r
 %% search. 
 %% % 
 
-While we focused on randomized policies because search plateaus, by definition do not provide useful heuristic information,
-it may be possible to develop methods that exploit the neighborhood structure of the search space
-in order to adaptively adjust the tie-breaking policies. This is a direction for future work.
+While we focused on randomized policies because plateaus, by definition do not provide useful heuristic information,
+a direction for future work is development of  methods that exploit the neighborhood structure of the search space
+in order to adaptively adjust the tie-breaking policies.
 
 
 
