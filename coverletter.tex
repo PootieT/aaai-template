@@ -14,101 +14,38 @@
 %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-\documentclass{scrlttr2}
+\documentclass[12pt]{letter}
 
 \usepackage{marvosym}
 \usepackage{helvet}
 \usepackage{times}
 \usepackage{courier}
 \usepackage{xspace}
+\usepackage{hyperref}
 \usepackage[T1]{fontenc}
 % \usepackage{mycv}
-% \usepackage[top=15mm,left=15mm,right=15mm,bottom=15mm]{geometry}
+\usepackage[top=27mm,left=27mm,right=27mm,bottom=27mm]{geometry}
 
-
-\setlength\parindent{0pt} % Removes all indentation from paragraphs
-
-
-\renewcommand{\normalsize}{\fontsize{12.5}{17}\selectfont} % Sets the font size and leading
-
-%----------------------------------------------------------------------------------------
-%  PERSONAL INFORMATION
-%----------------------------------------------------------------------------------------
-
-\setkomavar{fromname}{Masataro Asai} % Your name
-\setkomavar{fromaddress}{201 Saginuma Viola 6-23-18 Arima\\Miyamae
-Kawasaki\\Kanagawa\\Japan} % Your address
-\setkomavar{fromphone}{+81-50-7576-3690} % Your phone number
-\setkomavar{fromemail}{guicho2.71828@gmail.com} % Your email address
-\setkomavar{place}{} % City written before the date, put your city here if you want this
-\setkomavar{signature}{Masataro Asai} % Your name as you want it to appear in the signature
-
-% These are not used in this document, uncomment if you would like to use them and refer to them as \usekomavar{name}
-%\setkomavar{fromfax}{+1 (1)23 456789} % Your fax number
-%\setkomavar{fromurl}{http://www.johnsmith.com} % Your personal website
-%\setkomavar{frombank}{Postbank 9307157}
-
-%----------------------------------------------------------------------------------------
-%  HEADER SECTION
-%----------------------------------------------------------------------------------------
-
-\firsthead{
-\centering
-{% \addfontfeature{LetterSpace=20.0}
-\Huge\scshape \usekomavar{fromname}}\\[5mm]
-Doctoral Student\\
-Department of General Systems Studies\\
-Graduate School of Arts and Sciences, University of Tokyo
-} % Your current job title
-
-%----------------------------------------------------------------------------------------
-%  FOOTER SECTION
-%----------------------------------------------------------------------------------------
-
-\firstfoot{
-\centering
-% \addfontfeature{LetterSpace=20.0}
-\scshape
-{
-\renewcommand{\\}{\ {\large\textperiodcentered}\ }
-\usekomavar{fromaddress}
-}\\
-{\Large\Letter} \usekomavar{fromemail} \ {\Large\Telefon} \usekomavar{fromphone}
-% If you want your fax number or website URL showing, add it here; you may need to play around with spacing
-}
-
-%----------------------------------------------------------------------------------------
+\pagestyle{empty}
 
 \begin{document}
 
-%----------------------------------------------------------------------------------------
-% COVER LETTER CONTENTS
-%----------------------------------------------------------------------------------------
-
-\begin{letter}{ % Address of the company you are applying to
-Ireland Research Lab\\
-Dublin, Ireland
-% HR Dept. --- Corporation\\
-% 123 Pleasant Lane\\
-% 12345 City, State
+{
+\large
+Response to the selection criteria for the Post-doc position (Job ID 516745)\\
+\\
 }
 
-% \setkomavar{subject}{Cover Letter}
-% This is the bold text saying 'Cover Letter', remove it if you don't like it
+Australian National University
 
-\opening{Dear Recruiter,}
+\vspace{3em}
+
+Dear Dr. Patrik Haslum,
 
 \setlength{\parskip}{0.4em}
 % PARAGRAPH ONE: State the reason for the letter, name the position or
  % type of work you are applying for and identify the source from which
  % you learned of the opening.\\ 
-
-Please find enclosed my CV in application for the position of Research
- Intern (22260BR). Among the list of projects posted on ({\small
- researcher.watson.ibm.com / researcher / view\_group.php ? id=6504}), I
- found one project very interesting because it matches my
- specialization. The project is titled as ``Robust Activity Planning and
- Scheduling with Multi-Modal Travel''.
 
 % PARAGRAPH TWO: Indicate why you are interested in the position, the
 % company, its products, services - above all, stress what you can do
@@ -120,29 +57,50 @@ Please find enclosed my CV in application for the position of Research
 % section is to strengthen your resume by providing details which bring
 % your experiences to life.\\ 
 
-My list of publications shows that I am well prepared for this
-position. I made my papers regularly accepted in the competitive
-research conferences on Planning and Schedulng. I worked on both the
-application-oriented research and the fundamental research.
-I am excited about using my specialization for the real world, fast pased
-development.
 
-I am a fast, clean programmer who can write fast, maintainable and reliable programs.
-I favor collaboration, code review and a good coding standard.
-% is able to fully leverage the metaprogramming
-% techniques which reduces the code size and make the program maintainable.
-My open sourced projects % are publicly hosted on github and
- prove these abilities:
-1) The first prototypes of the most
- complicated systems/projects are finished within 2 weeks.
-2) Most of these projects are continuously tested through CI services
- for reliability.
+% Please find enclosed CV in the application.
+
+I am going to receive a Ph.D degree from the current institution on March 2018.
+I have strong track record in peer-reviewed conferences/journals on planning and scheduling
+and would like to apply to your position that I found in the mailing list.
+
+I am a quick, clean programmer who can write efficient, maintainable and readable programs,
+favoring collaboration, code review, good coding standards and other miscellaneous programmer's virtue,
+as evidenced in my open source activities on github:
+1) The first prototypes of the most complicated systems/projects are finished within 2 weeks.
+2) Most projects are tested under Continuous Integration services for reliability.
  % I occasionally accept bug fixes, merged without breaking the code.
 3) I regularly write concise documentation, using well-defined terms and ideas.
 % 4) With an ability to fully leverage the metaprogramming, I can write even the most
 %  complicated kinds of compile-time optimization within 500 lines of code.
-I can use these abilities for the rapid prototyping and the fast development cycles which ensure
- the success of the entire project.
+% I can use these abilities for the rapid prototyping and the fast development cycles which ensure
+%  the success of the entire project.
+4) I have projects of more than 50 stars which occasionally gets some requests and questions from the users.
+ I help my users understanding and using my product, through which I improve the documentation or the setup process.
+
+I contributed to several projects of a former masters graduate student
+by developing the RESTful API for a solver as well as running the
+experiments for his algorithm. The former was used in his graduate thesis,
+and the latter became a paper in HSDIP workshop in 2016.
+
+I received an award from Japanese Society for Artificial Intelligence,
+the largest local AI conference in Japan.
+Although not being competitive/peer reviewed in nature,
+this is a place for networking where most Japanese AI researchers attend,
+and the award is a proof of excellence among Japanese researchers.
+
+I worked on planning under uncertainty during the internship at IBM Research Ireland.
+My latest publication in IJCAI is based on a hybrid system which uses
+AO* for the low-level journey planning and A* for higher-level task scheduling
+which invokes AO* multiple times. 
+During the development, I significantly modified the AO* code, which was originally designed for one-off planning,
+so that it integrates well to the higher-level planning code with additional caching between multiple invocations.
+I also have familiarity with LAO* and more popular algorithms such as LRTA* or DP for MDP planning.
+
+I received a government-led research funding from JSPS which offers
+stipends and independent research budget (1,000,000JPY annual).
+The application goes through a standard funding procedure where the applicant writes 
+a research proposal and the process is highly selective (\href{aaa}{21.8\%} --- even harder than getting a AAAI paper accepted).
 
 % Moreover, I am a fast learner. I wrote my first conference paper within 6 months after changing the
 % major from Traffic Simulation to Heuristic Search (which I have no
@@ -159,35 +117,15 @@ I can use these abilities for the rapid prototyping and the fast development cyc
  % letter. End the letter by thanking the employer for taking the time
  % to consider your credentials.\\ 
 
+I worked on both the fundamental research and the application-oriented
+research. I am excited about using my specialization for the real
+world, fast pased development.
 Thank you for the valuable time to consider this application. I look forward to hearing from you in the near future.
 
-Sincerely yours, \\
-\usekomavar{signature}
-\end{letter}
+Sincerely yours,
 
-% Example:
-% 
-% Dear Mr Black,
-% 
-% Please find enclosed my CV in application for the post advertised in the
-% Guardian on 30 November.
-% 
-% The nature of my degree course has prepared me for this position. It
-% involved a great deal of independent research, requiring initiative,
-% self-motivation and a wide range of skills. For one course, [insert
-% course], an understanding of the [insert sector] industry was
-% essential. I found this subject very stimulating.
-% 
-% I am a fast and accurate writer, with a keen eye for detail and I should
-% be very grateful for the opportunity to progress to market reporting. I
-% am able to take on the responsibility of this position immediately, and
-% have the enthusiasm and determination to ensure that I make a success
-% of it.
-% 
-% Thank you for taking the time to consider this application and I look
-% forward to hearing from you in the near future.
-% 
-% Yours sincerely
-
+\begin{flushright}
+ Masataro Asai
+\end{flushright}
 
 \end{document}
