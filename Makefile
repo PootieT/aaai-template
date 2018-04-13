@@ -10,7 +10,7 @@ $(info $(sources))
 
 max_pages   = 8
 
-upload     = ~/Dropbox/FukunagaLabShare/OngoingWorks/Asai/
+upload     = ~/Box/OngoingWorks/
 
 ncpu       = $(shell grep "processor" /proc/cpuinfo | wc -l)
 
