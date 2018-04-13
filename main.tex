@@ -31,9 +31,17 @@ carry significant meaning / affect the output.
 While this is not problematic for encoding/decoding, from search/planning perspective this is a major problem,
 because this means that a state can have multiple propositional representation.
 One effective way to suppress this behavior is to have an additional regularization
-for the latent propositions which guides the training toward sparserl, disentangled propositional representation.
-We empirically show that this simple regularization reduces the effect of meaningless propositions
+for the latent propositions which guides the training toward sparser, disentangled propositional representation,
+where all unused propositions converges to 0.
+We empirically show that the resulting zero-suppressed SAE
+has lower variance encoding for each single state
 and improves the performance and the success rate of \latentplanner.
+% XXX TODO: unknown if it is possible
+Furthermore, we show that this Zero-Suppressed SAE can act like a knowledge base
+where you assign a new declarative knowledge in the unused propositions.
+We show this by retraining the network using the mixture of the existing dataset and the new dataset,
+where two datasets depict different domains, and demonstraining that
+the same network can encode the both environments.
 \end{abstract}
 
 \section{Introduction}
