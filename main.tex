@@ -25,23 +25,38 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \begin{abstract}
-As I noted in the appendix of Latplan paper (arxiv version), 
-some of the propositiosn in the latent layer may not
-carry significant meaning / affect the output.
-While this is not problematic for encoding/decoding, from search/planning perspective this is a major problem,
-because this means that a state can have multiple propositional representation.
+% intentionally made different from the 1st-order symbol paper, writing style is also different
+While domain-independent classical planning is an active area of research,
+its applicability to the real-world tasks are limited to those precisely modeled by human.
+Recently, \latentplanner combined classical planning with deep-learning
+to obtain the symbolic description of the image based domain.
+In this paper, we address a problem in their preliminary implementation of \latentplanner,
+specifically the uninformative / random propositions in the latent / symbolic encoding,
+and provides a remedy for it.
+%
+% As was noted in the appendix of \latentplanner paper on Arxiv,
+Those uninformative propositions become true or false depending on the coin flip,
+which means that
+% some of the propositiosn in the latent layer may not carry significant meaning / affect the output.
+% While this is not problematic for encoding/decoding, from search/planning perspective this is a major problem,
+% because this means that 
+ a single state can have multiple propositional representations and no longer the
+unique representation amenable for search algorithms.
+% 
 One effective way to suppress this behavior is to have an additional regularization
-for the latent propositions which guides the training toward sparser, disentangled propositional representation,
-where all unused propositions converges to 0.
-We empirically show that the resulting zero-suppressed SAE
+for the latent propositions which guides the training so that 
+% toward sparser, disentangled propositional representation,
+unused propositions tends to be 0.
+ % 
+We empirically show that this ``Zero-Suppressed SAE''
 has lower variance encoding for each single state
 and improves the performance and the success rate of \latentplanner.
 % XXX TODO: unknown if it is possible
-Furthermore, we show that this Zero-Suppressed SAE can act like a knowledge base
-where you assign a new declarative knowledge in the unused propositions.
-We show this by retraining the network using the mixture of the existing dataset and the new dataset,
-where two datasets depict different domains, and demonstraining that
-the same network can encode the both environments.
+Furthermore, we show that this Zero-Suppressed SAE can act like a declarative knowledge base
+where you incrementally assign new knowledge to unused propositions.
+We show this by retraining an existing network
+with a mixture of the existing and new dataset, and demonstraining that
+it can encode both environments.
 \end{abstract}
 
 \section{Introduction}
@@ -49,11 +64,6 @@ the same network can encode the both environments.
 
 BBB! \refig{fig:ip} \cite{Asai2016}
 
-\begin{figure}[tb]
- \includegraphics{img/static/ip.png}
- \caption{This is Invasion Percolation}
- \label{fig:ip}
-\end{figure}
 
 \lmcut, \mands, \pdb, \ff, \ce, \cg, \ad, \lc heuristics.
 
@@ -78,3 +88,116 @@ In math mode,
       (* n (factorial (1- n)))))
 \end{minted}
 
+\section{Background}
+
+\section{Zero-Suppressed State AutoEncoder (ZSAE)}
+
+The basic idea for additional regularization is simple: Just penalize the
+1-bit in the latent layer. Since Gumbol-Softmax is basically a Softmax function,
+and \latentplanner only uses the category $N=2$, This can be seen as adding an
+asymmetric penalty for a particular class label used in the encoding.
+
+While an asymmetric penalty may seem unintuitive, this is a quite common
+strategy particularly in Zero-Suppressed Binary Decision Diagram (ZDD)
+\cite{Minato??}, a type of binary decision diagram \cite{Bryent88} which
+uses an asymmetric rule for pruning a decision node, achieving a great
+performance over BDD in representing a sparse, ``almost zero'' binary dataset.
+
+\[
+ \brackets{\text{Reconstuction}} + \brackets{\text{GS loss}} + \brackets{\text{Zero-Suppression Loss}}
+\]
+
+\[
+ \int p(z)dz + \frac{\log {\log{U}}}{a} + \alpha \sum z[:,:,0]
+\]
+
+\section{Evaluating ZSAE}
+
+\subsection{State Variance}
+
+We first tested the variance or randomness of the state encoding between
+the original SAE (pure gumbel-softmax latent layer with $N=2$) and the ZSAE with various $\alpha$.
+We randomly generated 100 images with a domain-specific generator for each puzzle domain,
+then encoded them with Z/SAE. For each image, we performed the test 100 times and averaged the results.
+
+We first measured the average number and the percentage of propositions that turned true.
+\reftbl{tab:true-ratio} shows that the ratio significantly drops due to the additional penalty
+for making the propositions true.
+
+\reftbl{tab:true-ratio} also shows that the number of effective bits,
+i.e. the number of bits that ever turns true, does not increase in ZSAE
+regardless of the size of the latent layer (upper bound of the size of
+propositions) after the certain points.  This shows that the additional
+penalty encourages the network to find the more compact representation,
+rather than freely consuming the latent space capacity in an entangled representation.
+The reconstruction loss is still low if you maintain the latent space
+size large enough.
+
+\begin{table}
+ \begin{tabular}{|r|*{12}{c|}}
+  Domain            & \multicolumn{4}{|c|}{True ratio} & \multicolumn{4}{|c|}{Effective bits} & \multicolumn{4}{|c|}{Rec. loss.} \\
+  $\alpha$          & 0  & 0.1 & 0.01 & 0.01 & 0  & 0.1 & 0.01 & 0.01 & 0  & 0.1 & 0.01 & 0.01 \\
+  $M=$              & 36 & 100 & 100  & 1000 & 36 & 100 & 100  & 1000 & 36 & 100 & 100  & 1000  \\
+  MNIST    8-puzzle & & & & & & & & & & & & \\
+  Mandrill 8-puzzle & & & & & & & & & & & & \\
+  Spider   8-puzzle & & & & & & & & & & & & \\
+  LightsOut         & & & & & & & & & & & & \\
+  Twisted LightsOut & & & & & & & & & & & & \\
+  Hanoi             & & & & & & & & & & & & \\
+ \end{tabular}
+ \caption{The percentage of propositions that turned true, averaged for
+ 100 encoding over randomly generated 100 images.
+ $\alpha=0$ means the original SAE without zero suppression.
+ }
+ \label{tab:true-ratio}
+\end{table}
+
+\subsection{Planner Performance}
+
+Next we compared the success ratio of \latentplanner using Z/SAE with various parameters.
+We tested both AMA$_1$ and AMA$_2$ proposed in \cite{Asai2018}.
+The results in \reftbl{tbl:planning} shows a great speedup and performance improvement
+in terms of success ratio.
+
+The reason for the speedup consists of multiple factors.
+First, since in the original SAE a single state could have multiple propositional representations
+that is made by the random bits, the actual state space reachable from the initial state becomes large,
+thus slowing the graph search procedure. This is suppressed in the ZSAE.
+
+Second, [no idea yet].
+
+\begin{table}
+ \centering
+ \begin{tabular}{|r|*{12}{c|}}
+  Domain            & \multicolumn{4}{|c|}{Num. solved} \\
+  $\alpha$          & 0  & 0.1 & 0.01 & 0.01 \\
+  $M=$              & 36 & 100 & 100  & 1000 \\
+  MNIST    8-puzzle & & & & \\
+  Mandrill 8-puzzle & & & & \\
+  Spider   8-puzzle & & & & \\
+  LightsOut         & & & & \\
+  Twisted LightsOut & & & & \\
+  Hanoi             & & & & \\
+ \end{tabular}
+ \caption{Comparison of the number of problems solved out of 100 instances under 3 minutes.}
+ \label{tab:planning}
+\end{table}
+
+
+\section{Declarative Knowledge Base based on ZSAE}
+
+Since the ZSAE achieves a sparse encoding where the unused propositions
+tend to become false, the network has a large amount of unused weights
+which, if retrained properly, could be used for storing additional
+information that is provided afterwards, making the entire network looks
+like a declarative knowledge base where you can incrementally store
+new knowledge.
+
+We verify this hypothesis by first training a ZSAE with some dataset, retraining the same ZSAE with
+a completely new dataset, then finally test the reconstruction accuracy for both dataset.
+
+
+\section{Conclusion}
+
+We introduced Zero-Suppressed State AutoEncoder, inspired from Zero-Suppressed Decision Diagram,
+that achieves a neural-symbolic declarative knowledge base 
