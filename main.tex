@@ -88,7 +88,36 @@ In math mode,
       (* n (factorial (1- n)))))
 \end{minted}
 
-\section{Background}
+\section{\latentplanner}
+
+\latentplanner \cite{Asai2018} is a framework for domain-independent image-based
+classical planning.  Classical planners such as FF \cite{hoffmann01} or
+FastDownward \cite{Helmert04} takes a PDDL model as an input, which
+specifies the state representation, the initial state, the goal
+condition and the transition rules in the form of first order logic
+formula.  In contrast, \latentplanner learns the state representation as well as the transition rules
+entirely from the image-based observation of the environment with deep neural networks, and also claims to
+extend its capability on text/audio-based dialog data.
+
+The system was shown to solve various puzzle domains, such as 8-puzzles or Tower of Hanoi,
+that are represented in the form of image based depiction of the environment that contains noise
+and realistic pictures (sometimes).
+
+The key concept of \latentplanner is the use of Gumbel-Softmax
+reparameterization trick in its deep convolutional autoencoder in order to obtain the
+discretized binary representation of the environment, and use the
+discrete information as the state representation for classical planning.
+The latent layer is a $N\times M$ matrix, where $N=2$ and $M$ specifies
+the number of propositional variables in the state representation.
+
+\begin{figure}
+ \includegraphics[width=\linewidth]{img/train-state-ae.pdf}
+ \caption{State AutoEncoder, a
+ Variational AutoEncoder \cite{Kingma} using Gumbel-Softmax \cite{Jang} reparametrization in its
+ latent layer.}
+\end{figure}
+
+\section{Issues in the State Representation in the Original SAE}
 
 \section{Zero-Suppressed State AutoEncoder (ZSAE)}
 
@@ -110,6 +139,8 @@ performance over BDD in representing a sparse, ``almost zero'' binary dataset.
 \[
  \int p(z)dz + \frac{\log {\log{U}}}{a} + \alpha \sum z[:,:,0]
 \]
+
+[I can't even recall the correct VAE formula LOL]
 
 \section{Evaluating ZSAE}
 
@@ -156,7 +187,7 @@ size large enough.
 
 Next we compared the success ratio of \latentplanner using Z/SAE with various parameters.
 We tested both AMA$_1$ and AMA$_2$ proposed in \cite{Asai2018}.
-The results in \reftbl{tbl:planning} shows a great speedup and performance improvement
+The results in \reftbl{tab:planning} shows a great speedup and performance improvement
 in terms of success ratio.
 
 The reason for the speedup consists of multiple factors.
@@ -164,7 +195,10 @@ First, since in the original SAE a single state could have multiple propositiona
 that is made by the random bits, the actual state space reachable from the initial state becomes large,
 thus slowing the graph search procedure. This is suppressed in the ZSAE.
 
-Second, [no idea yet].
+Second, [speculative] due to the variance reduction and the sparser representation,
+it captures a better, disentangled representation and 
+the training of State/Action Discriminator becomes easier.
+This can be seen from the accuracy of AD/SD in \reftbl{tab:planning} when ZSAE is applied.
 
 \begin{table}
  \centering
@@ -209,5 +243,14 @@ a completely new dataset, then finally test the reconstruction accuracy for both
 
 \section{Conclusion}
 
-We introduced Zero-Suppressed State AutoEncoder, inspired from Zero-Suppressed Decision Diagram,
-that achieves a neural-symbolic declarative knowledge base 
+We introduced Zero-Suppressed State AutoEncoder (ZSAE), inspired from
+Zero-Suppressed Decision Diagram, which addresses an issue in the state
+encoding made by \latentplanner, improves its performance, removes the need
+for aggressive hyperparameter tuning as well as achieves a
+neural-symbolic declarative knowledge base.  The ZSAE improves upon the
+regular State AutoEncoder (SAE) proposed by \citeauthor{Asai2018} by
+adding a new asymmetric penalty term in the optimization metric of
+Neural Network, which tries to minimize the number of true propositions
+when encoding a raw state input such as images.
+A promising direction for future work is to build a first-order logical
+representation of the input domain building upon \latentplanner system.
