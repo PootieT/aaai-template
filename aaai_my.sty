@@ -35,7 +35,6 @@
 
 \makeatletter
 \let\@myref\ref
-\makeatother
 
 \newcommand{\refsec}[1]{Sec.\,\@myref{#1}}
 \newcommand{\refseq}[1]{Sec.\,\@myref{#1}}
@@ -61,3 +60,5 @@ quoted from \cite{#1}\end{flushright}}
 \renewcommand{\thelist}{\thesection .\arabic{list}}
 
 \def\qed{\hfill $\Box$}
+
+\makeatother
