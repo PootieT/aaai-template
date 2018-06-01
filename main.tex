@@ -28,7 +28,7 @@
 % intentionally made different from the 1st-order symbol paper, writing style is also different
 While domain-independent classical planning is an active area of research,
 its applicability to the real-world tasks are limited to those precisely modeled by human.
-Recently, \latentplanner combined classical planning with deep-learning
+Recently, \latentplanner \cite{Asai2018} combined classical planning with deep-learning
 to obtain the symbolic description of the image based domain.
 In this paper, we address a problem in their preliminary implementation of \latentplanner,
 specifically the uninformative / random propositions in the latent / symbolic encoding,
@@ -49,8 +49,8 @@ for the latent propositions which guides the training so that
 unused propositions tends to be 0.
  % 
 We empirically show that this ``Zero-Suppressed SAE''
-has lower variance encoding for each single state
-and improves the performance and the success rate of \latentplanner.
+has lower variance encoding (more stable propositions) for each single state
+and improves the success rate of \latentplanner.
 % XXX TODO: unknown if it is possible
 Furthermore, we show that this Zero-Suppressed SAE can act like a declarative knowledge base
 where you incrementally assign new knowledge to unused propositions.
