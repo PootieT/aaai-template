@@ -100,7 +100,7 @@ entirely from the image-based observation of the environment with deep neural ne
 extend its capability on text/audio-based dialog data in the future.
 The system was shown to solve various puzzle domains, such as 8-puzzles or Tower of Hanoi,
 that are represented in the form of image based depiction of the environment that contains noise
-and realistic pictures (sometimes).
+and realistic pictures.
 
 The key concept of \latentplanner is the use of Gumbel-Softmax
 reparameterization trick in its deep convolutional autoencoder in order to obtain the
@@ -198,6 +198,31 @@ Second, [speculative] due to the variance reduction and the sparser representati
 it captures a better, disentangled representation and 
 the training of State/Action Discriminator becomes easier.
 This can be seen from the accuracy of AD/SD in \reftbl{tab:planning} when ZSAE is applied.
+
+\begin{table}[htbp]
+\centering
+\relsize{-1}
+\begin{tabular}{|r|rrrr|rrrr|}
+\hline
+ & \multicolumn{4}{c|}{SAE} & \multicolumn{4}{c|}{ZSAE} \\ 
+$N=$ & {36} & {64} & {100} & {200} & {36} & {64} & {100} & {200} \\ \hline
+digital & 15 & 14 & 19 & 0 & 22 & 22 & \textbf{47} & 26 \\
+mandrill & 43 & 40 & 18 & 0 & \textbf{53} & 38 & 30 & 46 \\
+mnist & \textbf{54} & 22 & 15 & 0 & 27 & 25 & 44 & 30 \\
+spider & 0 & 15 & 38 & 0 & 31 & 10 & 34 & \textbf{44} \\
+twisted & 8 & 19 & 0 & 0 & 8 & \textbf{23} & 12 & 1 \\ \hline
+total & {120} & {110} & {90} & {0} & {141} & {118} & \textbf{167} & {147} \\ \hline
+\end{tabular}
+\caption{Results using AMA$_1$ (oracular model) for comparing the performance of Z/SAE without effects from AMA performance.
+Best results in each domain are highlighted in \textbf{bold}.
+Results indicates that ZSAE is more robust on different hyperparameters and tend to achieve better performance than vanilla SAE,
+while when tuned appropriately SAE may outperform ZSAE because the effect of regularization from zero-suppression can be too strong
+(e.g. MNIST, $N=36$, which is a tuned parameter used in \cite{Asai2018}).
+}
+\label{ama1}
+\end{table}
+
+
 
 \begin{table}
  \centering
