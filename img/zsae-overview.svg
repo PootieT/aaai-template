@@ -10,9 +10,9 @@
    xmlns:xlink="http://www.w3.org/1999/xlink"
    xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
    xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
-   width="252.47879mm"
-   height="55.113132mm"
-   viewBox="0 0 894.60989 195.28276"
+   width="76.199997mm"
+   height="16.633556mm"
+   viewBox="0 0 269.99999 58.9378"
    id="svg4218"
    version="1.1"
    inkscape:version="0.91 r13725"
@@ -72,9 +72,9 @@
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
      inkscape:zoom="0.7"
-     inkscape:cx="540.23217"
-     inkscape:cy="-42.682187"
-     inkscape:document-units="px"
+     inkscape:cx="124.51785"
+     inkscape:cy="-42.682203"
+     inkscape:document-units="in"
      inkscape:current-layer="layer1"
      showgrid="false"
      fit-margin-top="0"
@@ -102,7 +102,7 @@
      inkscape:label="レイヤー 1"
      inkscape:groupmode="layer"
      id="layer1"
-     transform="translate(95.876368,31.304596)">
+     transform="translate(95.87633,-105.04035)">
     <image
        y="569.30676"
        x="-746.20032"
@@ -112,7 +112,7 @@
        height="810"
        width="2160"
        clip-path="url(#clipPath6725)"
-       transform="matrix(1.0580639,0,0,1.0580639,693.65125,-587.33098)" />
+       transform="matrix(0.31933168,0,0,0.31933168,142.40904,-62.772622)" />
     <image
        y="569.3067"
        x="250.5625"
@@ -122,7 +122,7 @@
        height="810"
        width="2160"
        clip-path="url(#clipPath6721)"
-       transform="matrix(1.0380934,0,0,1.0380934,112.14757,-571.28351)" />
+       transform="matrix(0.31330443,0,0,0.31330443,-33.093171,-57.929372)" />
     <image
        y="569.30676"
        x="-746.20032"
@@ -132,7 +132,7 @@
        height="810"
        width="2160"
        clip-path="url(#clipPath4806)"
-       transform="matrix(1.0580639,0,0,1.0580639,1160.2789,-583.81558)" />
+       transform="matrix(0.31933168,0,0,0.31933168,283.24078,-61.711647)" />
     <image
        y="569.30676"
        x="-746.20032"
@@ -142,28 +142,28 @@
        height="810"
        width="2160"
        clip-path="url(#clipPath4806-5)"
-       transform="matrix(1.0580639,0,0,1.0580639,1439.182,-583.14191)" />
+       transform="matrix(0.31933168,0,0,0.31933168,367.41584,-61.508327)" />
     <text
        xml:space="preserve"
-       style="font-style:normal;font-weight:normal;font-size:40px;line-height:125%;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
-       x="29.119106"
-       y="-0.62100273"
+       style="font-style:normal;font-weight:normal;font-size:12.07230186px;line-height:125%;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       x="-58.151787"
+       y="114.30089"
        id="text6546"
        sodipodi:linespacing="125%"><tspan
          sodipodi:role="line"
          id="tspan6548"
-         x="29.119106"
-         y="-0.62100273">Vanilla SAE</tspan></text>
+         x="-58.151787"
+         y="114.30089">Vanilla SAE</tspan></text>
     <text
        xml:space="preserve"
-       style="font-style:normal;font-weight:normal;font-size:40px;line-height:125%;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
-       x="463.46851"
-       y="-0.62100273"
+       style="font-style:normal;font-weight:normal;font-size:12.07230186px;line-height:125%;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       x="72.938141"
+       y="114.30089"
        id="text6546-8"
        sodipodi:linespacing="125%"><tspan
          sodipodi:role="line"
          id="tspan6548-4"
-         x="463.46851"
-         y="-0.62100273">ZSAE (α=0.7 )</tspan></text>
+         x="72.938141"
+         y="114.30089">ZSAE (α=0.7 )</tspan></text>
   </g>
 </svg>
