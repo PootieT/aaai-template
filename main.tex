@@ -98,10 +98,17 @@ which makes the state space graph disconnected.
 This happens because some edge is connected to only one variant of
 the possible propositional representations of the image.
 
+\begin{figure}[htb]
+ \includegraphics{img/zsae-overview.pdf}
+ \caption{Encoding results of Vanilla SAE and Zero-Suppressed SAE (ZSAE) on a MNIST 8-puzzle state.
+ZSAE obtains a representation that has fewer true bits.}
+ \label{zsae-overview}
+\end{figure}
+
 To address these problems,
 we introduce an additional regularization penalty function for the neural network 
 that makes the learned propositions more ``stable''. In the resulting neural network,
-Zero-Suppressed State AutoEncoder (ZSAE), this penalty function
+Zero-Suppressed State AutoEncoder (ZSAE, \refig{zsae-overview}), this penalty function
 guides the network optimization so that unused propositions tend to 
 take the value of zero (false) instead of random values,
 resulting in a more stable representation.
