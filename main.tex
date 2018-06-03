@@ -88,33 +88,117 @@ In math mode,
       (* n (factorial (1- n)))))
 \end{minted}
 
-\section{\latentplanner}
+\section{Preliminaries}
+\label{background}
 
-\latentplanner \cite{Asai2018} is a framework for domain-independent image-based
-classical planning.  Classical planners such as FF \cite{hoffmann01} or
+\textbf{Symbol Grounding} is an unsupervised process of establishing a mapping
+from huge, noisy, continuous, unstructured inputs
+to a set of compact, % clean
+discrete, identifiable (structured) entities, i.e., symbols \cite{Asai2018}.
+For example, PDDL has six kinds of symbols: Objects, predicates, propositions, actions, problems and domains (\reftbl{tab:type-of-symbols}).
+Each type of symbol requires its own mechanism for grounding.
+For example, the large body of work in the image processing community on recognizing 
+objects (e.g. faces) and their attributes (male, female) in images, or scenes in videos (e.g. cooking)
+can be viewed as corresponding to grounding the object, predicate and action symbols, respectively.
+
+\begin{table}[tbp] 
+\centering
+\relsize{-1}
+\begin{tabular}{ll}
+Types of symbols & \\
+\hline
+Object symbols    & \textbf{panel7, x\(_{\text{0}}\), y\(_{\text{0}}\)} \ldots{}               \\
+Predicate symbols & (\textbf{empty} ?x ?y) (\textbf{up} ?y\(_{\text{0}}\) ?y\(_{\text{1}}\))   \\
+Propositions      & \textbf{empty\(_{\text{5}}\)} = (empty x\(_{\text{2}}\) y\(_{\text{1}}\)) (6th application) \\
+Action symbols    & (\textbf{slide-up} panel\(_{\text{7}}\) x\(_{\text{0}}\) y\(_{\text{1}}\)) \\
+Problem symbols   & \textbf{eight-puzzle-instance1504}, etc.                                   \\
+Domain  symbols   & \textbf{eight-puzzle}, \textbf{hanoi}                                      \\
+\hline
+\end{tabular}
+\caption{6 types of symbols in a PDDL definition.}
+\label{tab:type-of-symbols}
+\end{table}
+
+\textbf{\latentplanner} \cite{Asai2018} is a framework for
+\emph{domain-independent image-based classical planning}.
+\latentplanner addresses two of the 6 types of symbols listed in \reftbl{tab:type-of-symbols},
+namely propositional and action symbols.
+
+Classical planners such as FF \cite{hoffmann01} or
 FastDownward \cite{Helmert04} takes a PDDL model as an input, which
 specifies the state representation, the initial state, the goal
 condition and the transition rules in the form of first order logic
 formula.  In contrast, \latentplanner learns the state representation as well as the transition rules
-entirely from the image-based observation of the environment with deep neural networks, and also claims to
-extend its capability on text/audio-based dialog data in the future.
+entirely from the image-based observation of the environment with deep neural networks.
+% , and also claims to extend its capability on text/audio-based dialog data in the future.
 The system was shown to solve various puzzle domains, such as 8-puzzles or Tower of Hanoi,
-that are represented in the form of image based depiction of the environment that contains noise
-and realistic pictures.
+which are presented in a form of noisy, continuous visual depiction of the environment.
 
-The key concept of \latentplanner is the use of Gumbel-Softmax
-reparameterization trick in its deep convolutional autoencoder in order to obtain the
-discretized binary representation of the environment, and use the
-discrete information as the state representation for classical planning.
-The latent layer is a $N\times M$ matrix, where $N=2$ and $M$ specifies
-the number of propositional variables in the state representation.
+\begin{figure}[htb]
+ \centering
+ \includegraphics[width=\linewidth]{img/planning.pdf}
+ \caption{Classical planning in latent space:
+It uses the learned State Autoencoder (\refig{sae}) to convert pairs of images $(\before,\after)$ to symbolic transitions, from which the AMA component generates an action model.
+It also encodes the initial and goal state images into symbolic initial/goal states.
+A classical planner finds the symbolic solution plan.
+Finally, intermediate states in the plan are decoded back to a human-comprehensible image sequence.}
+\label{fig:overview}
+\end{figure}
 
-\begin{figure}
+\latentplanner takes two inputs.
+The first input is the \emph{transition input} $Tr$, a set of pairs of raw data.
+Each pair $tr_i=(\before_i, \after_i) \in Tr$ represents a transition of the environment before and after some action is executed.
+The second input is the \emph{planning input} $(i, g)$, a pair of raw data, which corresponds to the initial and the goal state of the environment.
+The output of \latentplanner is a data sequence representing the plan execution that reaches $g$ from $i$.
+While the original paper uses an image-based implementation (``data'' = raw images),
+the type of data is arbitrary as long as it is compatible to neural network.
+
+% Emphasize the type of symbol, as readers are not familier with or haven't deeply thought about symbols
+% \subsection{SAE for Propositional Symbol Grounding}
+
+\latentplanner works in 3 phases.
+In Phase 1, a \emph{State Autoencoder} (SAE) (\refig{sae}) learns a bidirectional mapping between raw data (e.g., images)
+ and propositional states from a set of unlabeled, random snapshots of the environment.
+The $Encode$ function maps images to propositional states, and $Decode$ function maps the propositional states back to images.
+After training the SAE from $\braces{\before_i, \after_i\ldots}$,
+it applies $Encode$ to each $tr_i \in Tr$ and obtain $(Encode(\before_i),$ $Encode(\after_i))=$ $(s_i,t_i)=$ $\overline{tr}_i\in \overline{Tr}$,
+the symbolic representations (latent space vectors) of the transitions.
+
+In Phase 2, an AMA method learns an action model from $\overline{Tr}$ in an unsupervised manner.
+The original paper propose two approaches: AMA$_1$ is an oracular model which directly generates a PDDL without learning,
+and AMA$_2$ is a neural machine learning model that can learn from examples.
+
+In Phase 3, a planning problem instance is generated from the planning input $(i,g)$.
+These are converted to symbolic states by the SAE, and the symbolic planner solves the problem.
+For example, an 8-puzzle problem instance consists of an image of the start (scrambled) configuration of the puzzle ($i$), and an image of the solved state ($g$).
+
+Since the intermediate states comprising the plan are SAE-generated latent bit vectors, the ``meaning'' of each state (and thus the plan) is not clear to a human observer.
+However, in the final step, \latentplanner obtain a step-by-step visualization of the plan execution
+by $Decode$'ing the latent bit vectors for each intermediate state.
+This necessitates the bidirectionality of the mapping between the input and the propositional states.
+
+\begin{figure}[htb]
  \includegraphics[width=\linewidth]{img/train-state-ae.pdf}
  \caption{State AutoEncoder, a
- Variational AutoEncoder \cite{Kingma} using Gumbel-Softmax \cite{Jang} reparametrization in its
+ Variational AutoEncoder \cite{kingma2014semi} using Gumbel-Softmax \cite{jang2016categorical} reparametrization in its
  latent layer.}
+ \label{sae}
 \end{figure}
+
+The key concept of the SAE in \latentplanner is the use of Gumbel-Softmax \cite{jang2016categorical}
+reparameterization trick in its latent activation. This allows SAE to obtain the
+discretized binary representation, and \latentplanner uses this
+discrete vector as the state representation for classical planning.
+The latent layer is a $N\times 2$ matrix, where $M$ specifies
+the number of propositional variables in the latent state representation.
+
+% It is necessary for the mapping to be bidirectional, because the
+% propositional variables are machine-generated symbols, and also the
+% resulting plan (returned as a sequence of propositional states) should
+% be decoded back to real-world images which are interpretable for humans.
+
+% \latentplanner also learns the action model using a neural action model acquisition method AMA$_2$,
+% but we omit the details due to space limitation.
 
 \section{Issues in the State Representation in the Vanilla SAE}
 
