@@ -289,39 +289,50 @@ performance over BDD in representing a sparse, ``almost zero'' binary dataset.
 We first tested the variance or randomness of the state encoding between
 the original SAE (pure gumbel-softmax latent layer with $N=2$) and the ZSAE with various $\alpha$.
 We randomly generated 100 images with a domain-specific generator for each puzzle domain,
-then encoded them with Z/SAE. For each image, we performed the test 100 times and averaged the results.
+then encoded them with Z/SAE 100 times.
+We measured the variance of the latent layer, i.e. the variance regarding whether a bit is true or false.
+We show the average over the entire bits and all 100 inputs.
+\reftbl{tab:true-ratio} shows that the propositions made by Vanilla SAE are highly random,
+while additional regularization in ZSAE effectively suppresses the stochastic behavior of the random bits
+and achieves a stable propositional representation.
 
-We first measured the average number and the percentage of propositions that turned true.
+We next measured the average percentage of propositions that turned true.
 \reftbl{tab:true-ratio} shows that the ratio significantly drops due to the additional penalty
 for making the propositions true.
 
-\reftbl{tab:true-ratio} also shows that the number of effective bits,
-i.e. the number of bits that ever turns true, does not increase in ZSAE
+Finally, \reftbl{tab:true-ratio} also shows that the number of effective bits,
+i.e. the number of bits that \emph{ever} turns true, does not increase in ZSAE
 regardless of the size of the latent layer (upper bound of the size of
 propositions) after the certain points.  This shows that the additional
 penalty encourages the network to find the more compact representation,
 rather than freely consuming the latent space capacity in an entangled representation.
-The reconstruction loss is still low if you maintain the latent space
-size large enough.
 
-\begin{table}
- \begin{tabular}{|r|*{12}{c|}}
-  Domain            & \multicolumn{4}{|c|}{True ratio} & \multicolumn{4}{|c|}{Effective bits} & \multicolumn{4}{|c|}{Rec. loss.} \\
-  $\alpha$          & 0  & 0.1 & 0.01 & 0.01 & 0  & 0.1 & 0.01 & 0.01 & 0  & 0.1 & 0.01 & 0.01 \\
-  $M=$              & 36 & 100 & 100  & 1000 & 36 & 100 & 100  & 1000 & 36 & 100 & 100  & 1000  \\
-  MNIST    8-puzzle & & & & & & & & & & & & \\
-  Mandrill 8-puzzle & & & & & & & & & & & & \\
-  Spider   8-puzzle & & & & & & & & & & & & \\
-  LightsOut         & & & & & & & & & & & & \\
-  Twisted LightsOut & & & & & & & & & & & & \\
-  Hanoi             & & & & & & & & & & & & \\
+Furthermore, while regularization in general tends to trade accuracy and
+the desired characteristics in the activation, we observe that the
+reconstruction loss is still low if you maintain the latent space size
+large enough.
+
+\begin{table*}
+ \relsize{-1}
+ \centering
+ \begin{tabular}{|r|*{16}{c|}}
+  Domain            & \multicolumn{4}{c|}{Variance} & \multicolumn{4}{c|}{True ratio}  & \multicolumn{4}{c|}{Effective Bits}  & \multicolumn{4}{c|}{Reconstruction loss} \\
+  $\alpha$          & 0  & 0.1 & 0.01 & 0.01 & 0  & 0.1 & 0.01 & 0.01 & 0  & 0.1 & 0.01 & 0.01 & 0  & 0.1 & 0.01 & 0.01 \\
+  $M=$              & 36 & 100 & 100  & 1000 & 36 & 100 & 100  & 1000 & 36 & 100 & 100  & 1000 & 36 & 100 & 100  & 1000 \\
+  MNIST    8-puzzle &    &     &      &      &    &     &      &      &    &     &      &      &    &     &      &      \\
+  Mandrill 8-puzzle &    &     &      &      &    &     &      &      &    &     &      &      &    &     &      &      \\
+  Spider   8-puzzle &    &     &      &      &    &     &      &      &    &     &      &      &    &     &      &      \\
+  LightsOut         &    &     &      &      &    &     &      &      &    &     &      &      &    &     &      &      \\
+  Twisted LightsOut &    &     &      &      &    &     &      &      &    &     &      &      &    &     &      &      \\
+  Hanoi             &    &     &      &      &    &     &      &      &    &     &      &      &    &     &      &      \\
  \end{tabular}
- \caption{The percentage of propositions that turned true, averaged for
+ \caption{Results comparing the characteristics of Vanilla SAE and ZSAE.
+The percentage of propositions that turned true, averaged for
  100 encoding over randomly generated 100 images.
  $\alpha=0$ means the original SAE without zero suppression.
  }
  \label{tab:true-ratio}
-\end{table}
+\end{table*}
 
 \subsection{Planner Performance}
 
@@ -344,15 +355,14 @@ This can be seen from the accuracy of AD/SD in \reftbl{tab:planning} when ZSAE i
 \centering
 \relsize{-1}
 \begin{tabular}{|r|rrrr|rrrr|}
-\hline
  & \multicolumn{4}{c|}{SAE} & \multicolumn{4}{c|}{ZSAE} \\ 
 $N=$ & {36} & {64} & {100} & {200} & {36} & {64} & {100} & {200} \\ \hline
-digital & 15 & 14 & 19 & 0 & 22 & 22 & \textbf{47} & 26 \\
-mandrill & 43 & 40 & 18 & 0 & \textbf{53} & 38 & 30 & 46 \\
-mnist & \textbf{54} & 22 & 15 & 0 & 27 & 25 & 44 & 30 \\
-spider & 0 & 15 & 38 & 0 & 31 & 10 & 34 & \textbf{44} \\
-twisted & 8 & 19 & 0 & 0 & 8 & \textbf{23} & 12 & 1 \\ \hline
-total & {120} & {110} & {90} & {0} & {141} & {118} & \textbf{167} & {147} \\ \hline
+Digital & 15 & 14 & 19 & 0 & 22 & 22 & \textbf{47} & 26 \\
+Mandrill & 43 & 40 & 18 & 0 & \textbf{53} & 38 & 30 & 46 \\
+MNIST & \textbf{54} & 22 & 15 & 0 & 27 & 25 & 44 & 30 \\
+Spider & 0 & 15 & 38 & 0 & 31 & 10 & 34 & \textbf{44} \\
+Twisted & 8 & 19 & 0 & 0 & 8 & \textbf{23} & 12 & 1 \\ \hline
+Total & {120} & {110} & {90} & {0} & {141} & {118} & \textbf{167} & {147} \\
 \end{tabular}
 \caption{Results using AMA$_1$ (oracular model) for comparing the performance of Z/SAE without effects from AMA performance.
 Best results in each domain are highlighted in \textbf{bold}.
