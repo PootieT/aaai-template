@@ -292,15 +292,15 @@ We randomly generated 100 images with a domain-specific generator for each puzzl
 then encoded them with Z/SAE 100 times.
 We measured the variance of the latent layer, i.e. the variance regarding whether a bit is true or false.
 We show the average over the entire bits and all 100 inputs.
-\reftbl{tab:true-ratio} shows that the propositions made by Vanilla SAE are highly random,
+\reftbl{tab:stability} shows that the propositions made by Vanilla SAE are highly random,
 while additional regularization in ZSAE effectively suppresses the stochastic behavior of the random bits
 and achieves a stable propositional representation.
 
 We next measured the average percentage of propositions that turned true.
-\reftbl{tab:true-ratio} shows that the ratio significantly drops due to the additional penalty
+\reftbl{tab:stability} shows that the ratio significantly drops due to the additional penalty
 for making the propositions true.
 
-Finally, \reftbl{tab:true-ratio} also shows that the number of effective bits,
+Finally, \reftbl{tab:stability} also shows that the number of effective bits,
 i.e. the number of bits that \emph{ever} turns true, does not increase in ZSAE
 regardless of the size of the latent layer (upper bound of the size of
 propositions) after the certain points.  This shows that the additional
@@ -331,14 +331,14 @@ The percentage of propositions that turned true, averaged for
  100 encoding over randomly generated 100 images.
  $\alpha=0$ means the original SAE without zero suppression.
  }
- \label{tab:true-ratio}
+ \label{tab:stability}
 \end{table*}
 
 \subsection{Planner Performance}
 
 Next we compared the success ratio of \latentplanner using Z/SAE with various parameters.
 We tested both AMA$_1$ and AMA$_2$ proposed in \cite{Asai2018}.
-The results in \reftbl{tab:planning} shows a great speedup and performance improvement
+The results in \reftbl{tab:ama1} shows a great speedup and performance improvement
 in terms of success ratio.
 
 The reason for the speedup consists of multiple factors.
@@ -370,27 +370,9 @@ Results indicates that ZSAE is more robust on different hyperparameters and tend
 while when tuned appropriately SAE may outperform ZSAE because the effect of regularization from zero-suppression can be too strong
 (e.g. MNIST, $N=36$, which is a tuned parameter used in \cite{Asai2018}).
 }
-\label{ama1}
+\label{tab:ama1}
 \end{table}
 
-
-
-\begin{table}
- \centering
- \begin{tabular}{|r|*{12}{c|}}
-  Domain            & \multicolumn{4}{|c|}{Num. solved} \\
-  $\alpha$          & 0  & 0.1 & 0.01 & 0.01 \\
-  $M=$              & 36 & 100 & 100  & 1000 \\
-  MNIST    8-puzzle & & & & \\
-  Mandrill 8-puzzle & & & & \\
-  Spider   8-puzzle & & & & \\
-  LightsOut         & & & & \\
-  Twisted LightsOut & & & & \\
-  Hanoi             & & & & \\
- \end{tabular}
- \caption{Comparison of the number of problems solved out of 100 instances under 3 minutes.}
- \label{tab:planning}
-\end{table}
 
 
 \section{Declarative Knowledge Base based on ZSAE}
