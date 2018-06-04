@@ -238,7 +238,8 @@ This necessitates the bidirectionality of the mapping between the input and the 
 \subsection{SAE as a Variational AutoEncoder using Gumbel-Softmax}
 
 The key concept of the SAE in \latentplanner is the use of Gumbel-Softmax \cite{jang2016categorical}
-reparameterization trick in its latent activation. This allows SAE to obtain the
+reparameterization trick in the latent activation of Variational AutoEncoder.
+This allows SAE to obtain the
 discretized binary representation, and \latentplanner uses this
 discrete vector as the state representation for classical planning.
 
