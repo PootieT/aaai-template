@@ -525,9 +525,31 @@ a completely new dataset, then finally test the reconstruction accuracy for both
 
 While an asymmetric penalty may seem unintuitive, this is a quite common
 strategy particularly in Zero-Suppressed Binary Decision Diagram (ZDD)
-\cite{minato1993zero}, a type of binary decision diagram \cite{Bryent88} which
-uses an asymmetric rule for pruning a decision node, achieving a greater
+\cite{minato1993zero}, a type of binary decision diagram \cite{bryant1986graph} which
+uses an asymmetric rule for pruning decision nodes, achieving a greater
 performance over BDD in representing a sparse, ``almost zero'' binary dataset.
+
+Another, rather non-intuitive topic related to the sparser binary representation
+is the connection to \emph{close-world assumption}, which assumes all unknown
+propositions to be false.
+% 
+We could interpret these unknown propositions defaulted to be false as those which are irrelevant
+to the current task that the agent is solving.
+Being always false, the agent can safely ignore them because
+they do not initiate an additional set of rules in the rule database by satisfying further preconditions.
+
+ZDDs can efficiently represent a set of subsets e.g. $\braces{\braces{a,c},\braces{b,c}}$.
+The reduction rule of ZDDs can prune the nodes for items that never appear in the subsets.
+For instance, an item $d$ does not belong to any of the subsets shown above, therefore $d$ does not have
+a corresponding decision node in the diagram.
+While potentially there could be an infinite number of items in the environment, they are 
+all irrelevant to the above set and therefore pruned from the diagram.
+% 
+Similarly, in our Zero-Suppressed SAE, not only nodes that do not affect the output are stabilized to zero
+and can be safely pruned, but also we could conceive that there are infinite number of propositions
+that are already pruned from the network and are just invisible.
+In other words, combining discrete representation and zero-suppression,
+ZSAE embeds closed-world assumption in the network as a model prior.
 
 [Binarized NN]
 
