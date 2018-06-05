@@ -310,11 +310,19 @@ that each pattern is more strongly associated with a fewer set of nodes.
 
 The issues in a vanilla SAE is that the class probability could be
 neutral for class ``true'' and class ``false'', and the resulting value
-of a proposition is decided almost randomly. 
+of a proposition is random (\refig{unstable}).
 The randomness of the vanilla SAE comes from
 the Gumbel distribution $-\log (-\log (\text{Uniform}(0,1)))$ which includes
 a uniform random distribution.
 This causes several problems from the symbolic reasoning (classical planning) point of view.
+
+\begin{figure}[htb]
+ \centering
+ \includegraphics{img/unstable.pdf}
+ \caption{Propositions found by Vanilla SAE may contain several uninformative bits
+ that flip randomly and do not affect the output.}
+ \label{unstable}
+\end{figure}
 
 First, the algorithms that run on the state space generated based on these propositional vectors
 are confused by many variation of the essentially identical real world states.
@@ -323,7 +331,14 @@ however the duplicate detection could not detect it since it completely relies o
 proposition. This slows down the search by increasing the number of nodes that can be reachable from the initial state
 while these are essentially unnecessary amount of work.
 
-Secondly, the state space could be disconnected due to such random variations.
+\begin{figure}[htb]
+ \centering
+ \includegraphics{img/disconnected.pdf}
+ \caption{Two random variations of propositional encoding for a single real-world state could make the state space graph disconnected.}
+ \label{disconnected}
+\end{figure}
+
+Secondly, the state space could be disconnected due to such random variations (\refig{disconnected}).
 Certain state transition (edge) may be only reached via a single variation of the real world state, and is not connected to the
 other variation of the propositional state that represents the same real-world state.
 
@@ -344,20 +359,17 @@ a SAE with additional regularization mechanism specifically designed for a discr
 \section{Zero-Suppressed State AutoEncoder (ZSAE)}
 \label{zsae}
 
-
-The basic idea for additional regularization is simple: Just penalize the
+The basic idea for our additional regularization is simple: Just penalize the
 1-bit in the latent layer. Since Gumbol-Softmax is basically a Softmax function,
-and \latentplanner only uses the category $N=2$, This can be seen as adding an
+and SAE uses 2 categories, this can be seen as adding an
 asymmetric penalty for a particular class label used in the encoding.
 
+The resulting loss function is 
 
-\[
- \brackets{\text{Reconstuction}} + \brackets{\text{GS loss}} + \brackets{\text{Zero-Suppression Loss}}
-\]
-
-\[
+\begin{align*}
+ \brackets{\text{Reconstuction}} + \brackets{\text{GS loss}} + \brackets{\text{Zero-Suppression Loss}} \\ 
  \int p(z)dz + \frac{\log {\log{U}}}{a} + \alpha \sum z[:,:,0]
-\]
+\end{align*}
 
 [I can't even recall the correct VAE formula LOL]
 
@@ -365,6 +377,28 @@ asymmetric penalty for a particular class label used in the encoding.
 \label{evaluation}
 
 \subsection{State Variance}
+
+\begin{table*}[htb]
+ \relsize{-1}
+ \centering
+ \begin{tabular}{|r|*{16}{c|}}
+  Domain            & \multicolumn{4}{c|}{Variance} & \multicolumn{4}{c|}{True ratio}  & \multicolumn{4}{c|}{Effective Bits}  & \multicolumn{4}{c|}{Mean Square Error} \\
+  $\alpha$          & 0   & 0.2 & 0.7 & 0.7  & 0   & 0.2 & 0.7 & 0.7  & 0   & 0.2 & 0.7 & 0.7  & 0   & 0.2 & 0.7 & 0.7  \\
+  $M=$              & 100 & 100 & 100 & 1000 & 100 & 100 & 100 & 1000 & 100 & 100 & 100 & 1000 & 100 & 100 & 100 & 1000 \\
+  MNIST    8-puzzle &     &     &     &      &     &     &     &      &     &     &     &      &     &     &     &      \\
+  Mandrill 8-puzzle &     &     &     &      &     &     &     &      &     &     &     &      &     &     &     &      \\
+  Spider   8-puzzle &     &     &     &      &     &     &     &      &     &     &     &      &     &     &     &      \\
+  LightsOut         &     &     &     &      &     &     &     &      &     &     &     &      &     &     &     &      \\
+  Twisted LightsOut &     &     &     &      &     &     &     &      &     &     &     &      &     &     &     &      \\
+  Hanoi             &     &     &     &      &     &     &     &      &     &     &     &      &     &     &     &      \\
+ \end{tabular}
+ \caption{Results comparing the characteristics of Vanilla SAE and ZSAE.
+The percentage of propositions that turned true, averaged for
+ 100 encoding over randomly generated 100 images.
+ $\alpha=0$ means the original SAE without zero suppression.
+ }
+ \label{tab:stability}
+\end{table*}
 
 We first tested the variance or randomness of the state encoding between
 the original SAE (pure gumbel-softmax latent layer) and the ZSAE with various $\alpha$.
@@ -392,28 +426,6 @@ the desired characteristics in the activation, we observe that the
 reconstruction loss is still low if you maintain the latent space size
 large enough.
 
-\begin{table*}
- \relsize{-1}
- \centering
- \begin{tabular}{|r|*{16}{c|}}
-  Domain            & \multicolumn{4}{c|}{Variance} & \multicolumn{4}{c|}{True ratio}  & \multicolumn{4}{c|}{Effective Bits}  & \multicolumn{4}{c|}{Reconstruction loss} \\
-  $\alpha$          & 0  & 0.1 & 0.01 & 0.01 & 0  & 0.1 & 0.01 & 0.01 & 0  & 0.1 & 0.01 & 0.01 & 0  & 0.1 & 0.01 & 0.01 \\
-  $M=$              & 36 & 100 & 100  & 1000 & 36 & 100 & 100  & 1000 & 36 & 100 & 100  & 1000 & 36 & 100 & 100  & 1000 \\
-  MNIST    8-puzzle &    &     &      &      &    &     &      &      &    &     &      &      &    &     &      &      \\
-  Mandrill 8-puzzle &    &     &      &      &    &     &      &      &    &     &      &      &    &     &      &      \\
-  Spider   8-puzzle &    &     &      &      &    &     &      &      &    &     &      &      &    &     &      &      \\
-  LightsOut         &    &     &      &      &    &     &      &      &    &     &      &      &    &     &      &      \\
-  Twisted LightsOut &    &     &      &      &    &     &      &      &    &     &      &      &    &     &      &      \\
-  Hanoi             &    &     &      &      &    &     &      &      &    &     &      &      &    &     &      &      \\
- \end{tabular}
- \caption{Results comparing the characteristics of Vanilla SAE and ZSAE.
-The percentage of propositions that turned true, averaged for
- 100 encoding over randomly generated 100 images.
- $\alpha=0$ means the original SAE without zero suppression.
- }
- \label{tab:stability}
-\end{table*}
-
 \subsection{Planner Performance}
 
 Next we compared the success ratio of \latentplanner using Z/SAE with various parameters.
@@ -425,12 +437,6 @@ The purpose we test an impractical AMA$_1$ methods is
 to see the pure effect of a better state representation on the planning success ratio
 by removing the effect of the secondary learning procedure in AMA$_2$ that learns the state transitions.
 The results in \reftbl{tab:ama1} shows a great improvement in terms of success ratio.
-
-To see the reason of the improvement, we measured the number of states
-visited on models generated by SAE and ZSAE and successfully solved by
-the planner \refig{fig:ama1-visted}. The plot supports our claim that
-randomness in the state encoding confuses the duplicate detection and
-increases the number of states visited.
 
 \begin{table}[htbp]
 \centering
@@ -453,6 +459,12 @@ while when tuned appropriately SAE may outperform ZSAE because the effect of reg
 }
 \label{tab:ama1}
 \end{table}
+
+To see the reason of the improvement, we measured the number of states
+visited on models generated by SAE and ZSAE and successfully solved by
+the planner \refig{fig:ama1-visted}. The plot supports our claim that
+randomness in the state encoding confuses the duplicate detection and
+increases the number of states visited.
 
 \begin{figure}[htb]
  \vspace{2in}
