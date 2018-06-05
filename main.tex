@@ -364,11 +364,16 @@ The basic idea for our additional regularization is simple: Just penalize the
 and SAE uses 2 categories, this can be seen as adding an
 asymmetric penalty for a particular class label used in the encoding.
 
-The resulting loss function is 
+The resulting loss function is similar to the $l_1$ norm typically
+applied to continuous activation values.
+Similar to $l_1$ regularization, this achieves a sparser representation in the binary domain.
+One additional advantage of applying $l_1$ norm is that, since the representation is deterministic,
+several neurons are completely deactivated, i.e. always takes the value of zero
+and can be pruned afterwards to reduce the network size.
 
 \begin{align*}
- \brackets{\text{Reconstuction}} + \brackets{\text{GS loss}} + \brackets{\text{Zero-Suppression Loss}} \\ 
- \int p(z)dz + \frac{\log {\log{U}}}{a} + \alpha \sum z[:,:,0]
+  &\brackets{\text{Reconstuction Loss}} + \brackets{\text{GS loss}} + \brackets{\text{Zero-Suppress Loss}} \\ 
+ =& \int p(z)dz + \frac{\log {\log{U}}}{a} + \alpha \sum z[:,:,0]
 \end{align*}
 
 [I can't even recall the correct VAE formula LOL]
@@ -536,8 +541,11 @@ encoding made by \latentplanner, improves its performance, removes the need
 for aggressive hyperparameter tuning as well as achieves a
 neural-symbolic declarative knowledge base.  The ZSAE improves upon the
 regular State AutoEncoder (SAE) proposed by \citeauthor{Asai2018} by
-adding a new asymmetric penalty term in the optimization metric of
+adding an asymmetric penalty similar to $l_1$ regularization to the optimization metric of
 Neural Network, which tries to minimize the number of true propositions
 when encoding a raw state input such as images.
+
+% ?
 A promising direction for future work is to build a first-order logical
 representation of the input domain building upon \latentplanner system.
+
