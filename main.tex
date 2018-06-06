@@ -383,27 +383,58 @@ and can be pruned afterwards to reduce the network size.
 
 \subsection{State Variance}
 
-\begin{table*}[htb]
- \relsize{-1}
+% \begin{table*}[htb]
+%  \relsize{-1}
+%  \centering
+%  \begin{tabular}{|r|*{16}{c|}}
+%   Domain            & \multicolumn{4}{c|}{Variance} & \multicolumn{4}{c|}{True ratio}  & \multicolumn{4}{c|}{Effective Bits}  & \multicolumn{4}{c|}{Mean Square Error} \\
+%   $\alpha$          &    0   &    0.2 &    0.7 &    0.7  &    0   &    0.2 &    0.7 &    0.7  &    0   &    0.2 &    0.7 &    0.7  &    0   &    0.2 &    0.7 &    0.7  \\
+%   $M=$              &    100 &    100 &    100 &    1000 &    100 &    100 &    100 &    1000 &    100 &    100 &    100 &    1000 &    100 &    100 &    100 &    1000 \\
+%   MNIST    8-puzzle &        &        &        &         &        &        &        &         &        &        &        &         &        &        &        &         \\
+%   Mandrill 8-puzzle &        &        &        &         &        &        &        &         &        &        &        &         &        &        &        &         \\
+%   Spider   8-puzzle &        &        &        &         &        &        &        &         &        &        &        &         &        &        &        &         \\
+%   LightsOut         &        &        &        &         &        &        &        &         &        &        &        &         &        &        &        &         \\
+%   Twisted LightsOut &        &        &        &         &        &        &        &         &        &        &        &         &        &        &        &         \\
+%   Hanoi             &        &        &        &         &        &        &        &         &        &        &        &         &        &        &        &         \\
+%  \end{tabular}
+%  \caption{Results comparing the characteristics of Vanilla SAE and ZSAE.
+% The percentage of propositions that turned true, averaged for
+%  100 encoding over randomly generated 100 images.
+%  $\alpha=0$ means the original SAE without zero suppression.
+%  }
+%  \label{tab:stability}
+% \end{table*}
+
+\begin{table*}[htbp]
+ \relsize{-2}
  \centering
- \begin{tabular}{|r|*{16}{c|}}
-  Domain            & \multicolumn{4}{c|}{Variance} & \multicolumn{4}{c|}{True ratio}  & \multicolumn{4}{c|}{Effective Bits}  & \multicolumn{4}{c|}{Mean Square Error} \\
-  $\alpha$          & 0   & 0.2 & 0.7 & 0.7  & 0   & 0.2 & 0.7 & 0.7  & 0   & 0.2 & 0.7 & 0.7  & 0   & 0.2 & 0.7 & 0.7  \\
-  $M=$              & 100 & 100 & 100 & 1000 & 100 & 100 & 100 & 1000 & 100 & 100 & 100 & 1000 & 100 & 100 & 100 & 1000 \\
-  MNIST    8-puzzle &     &     &     &      &     &     &     &      &     &     &     &      &     &     &     &      \\
-  Mandrill 8-puzzle &     &     &     &      &     &     &     &      &     &     &     &      &     &     &     &      \\
-  Spider   8-puzzle &     &     &     &      &     &     &     &      &     &     &     &      &     &     &     &      \\
-  LightsOut         &     &     &     &      &     &     &     &      &     &     &     &      &     &     &     &      \\
-  Twisted LightsOut &     &     &     &      &     &     &     &      &     &     &     &      &     &     &     &      \\
-  Hanoi             &     &     &     &      &     &     &     &      &     &     &     &      &     &     &     &      \\
- \end{tabular}
+ \setlength{\tabcolsep}{0.45em}
+ \begin{tabular}{|r|*{24}{c|}}
+          & \multicolumn{6}{c|}{Max. Variance over bits}      & \multicolumn{6}{c|}{True Ratio}      & \multicolumn{6}{c|}{Effective Bits}      & \multicolumn{6}{c|}{Mean Square Error}      \\
+$M$       & \multicolumn{3}{c|}{100}   & \multicolumn{3}{c|}{1000}   & \multicolumn{3}{c|}{100}   & \multicolumn{3}{c|}{1000}   & \multicolumn{3}{c|}{100}   & \multicolumn{3}{c|}{1000}   & \multicolumn{3}{c|}{100}   & \multicolumn{3}{c|}{1000}   \\
+$\alpha$    &  0    &  0.2  &  0.7   &  0     &  0.2   &  0.7   &  0    &  0.2  &  0.7   &  0     &  0.2   &  0.7   &  0   &  0.2 &  0.7  &  0     &  0.2   &  0.7   &  0    &  0.2  &  0.7   &  0     &  0.2   &  0.7     \\
+MNIST       &  0.21 &  0.03 &  0.14  &  0.22  &  0.17  &  0.18  &  0.50 &  0.20 &  0.13  &  0.49  &  0.06  &  0.02  &  100 &  41  &  42   &  1000  &  119   &  46    &  0.00 &  0.00 &  0.00  &  0.00  &  0.00  &  0.00    \\
+Mandrill    &  0.21 &  0.00 &  0.07  &  0.22  &  0.11  &  0.21  &  0.49 &  0.45 &  0.17  &  0.50  &  0.48  &  0.03  &  100 &  90  &  37   &  1000  &  956   &  151   &  0.00 &  0.00 &  0.00  &  0.00  &  0.00  &  0.00    \\
+Spider      &  0.20 &  0.09 &  0.16  &  0.21  &  0.23  &  0.17  &  0.50 &  0.47 &  0.17  &  0.50  &  0.44  &  0.04  &  100 &  94  &  43   &  1000  &  920   &  77    &  0.00 &  0.00 &  0.00  &  0.00  &  0.00  &  0.00    \\
+% LightsOut &  0.21 &  0.09 & (0.21) &  0.20  &  0.21  &  0.20  &  0.50 &  0.41 & (0.43) &  0.50  &  0.46  &  0.04  &  100 &  82  & (100) &  1000  &  921   &  492   &  0.00 &  0.00 & (0.01) &  0.00  &  0.00  &  0.00  \\
+% Twisted   &  0.20 &  0.17 & (0.22) &  0.22  &  0.21  & (0.22) &  0.51 &  0.37 & (0.89) &  0.50  &  0.50  & (0.50) &  100 &  73  & (98)  &  1000  &  998   & (1000) &  0.00 &  0.00 & (0.08) &  0.00  &  0.00  & (0.03) \\
+% Hanoi     &  0.18 &  0.16 & (0.17) & (0.20) & (0.19) & (0.20) &  0.50 &  0.44 & (0.96) & (0.50) & (0.48) & (0.69) &  100 &  100 & (100) & (1000) & (1000) & (1000) &  0.00 &  0.00 & (0.37) & (0.02) & (0.01) & (0.28) \\
+% LightsOut   &  0.21 &  0.09 & -      &  0.20  &  0.21  &  0.20  &  0.50 &  0.41 & -      &  0.50  &  0.46  &  0.04  &  100 &  82  & -     &  1000  &  921   &  492   &  0.00 &  0.00 & -      &  0.00  &  0.00  &  0.00                                             \\
+% Twisted     &  0.20 &  0.17 & -      &  0.22  &  0.21  & -      &  0.51 &  0.37 & -      &  0.50  &  0.50  & -      &  100 &  73  & -     &  1000  &  998   & -      &  0.00 &  0.00 & -      &  0.00  &  0.00  & -                                                 \\
+% Hanoi       &  0.18 &  0.16 & -      & -      & -      & -      &  0.50 &  0.44 & -      & -      & -      & -      &  100 &  100 & -     & -      & -      & -      &  0.00 &  0.00 & -      & -      & -      & -                                                 \\
+LightsOut   &  0.21 &  0.09 & -      &  0.20  &  0.21  &  0.20  &  0.50 &  0.41 & -      &  0.50  &  0.46  &  0.04  &  100 &  82  & -     &  1000  &  921   &  492   &  0.00 &  0.00 & (0.01) &  0.00  &  0.00  &  0.00  \\
+Twisted     &  0.20 &  0.17 & -      &  0.22  &  0.21  & -      &  0.51 &  0.37 & -      &  0.50  &  0.50  & -      &  100 &  73  & -     &  1000  &  998   & -      &  0.00 &  0.00 & (0.08) &  0.00  &  0.00  & (0.03) \\
+Hanoi       &  0.18 &  0.16 & -      & -      & -      & -      &  0.50 &  0.44 & -      & -      & -      & -      &  100 &  100 & -     & -      & -      & -      &  0.00 &  0.00 & (0.37) & (0.02) & (0.01) & (0.28) \\
+\end{tabular}
  \caption{Results comparing the characteristics of Vanilla SAE and ZSAE.
 The percentage of propositions that turned true, averaged for
  100 encoding over randomly generated 100 images.
- $\alpha=0$ means the original SAE without zero suppression.
+ $\alpha=0$ means the vanilla SAE without zero suppression.
  }
- \label{tab:stability}
+\label{tab:stability}
 \end{table*}
+
+
 
 We first tested the variance or randomness of the state encoding between
 the original SAE (pure gumbel-softmax latent layer) and the ZSAE with various $\alpha$.
@@ -447,7 +478,7 @@ The results in \reftbl{tab:ama1} shows a great improvement in terms of success r
 \centering
 \relsize{-1}
 \begin{tabular}{|r|rrrr|rrrr|}
- & \multicolumn{4}{c|}{SAE} & \multicolumn{4}{c|}{ZSAE} \\ 
+ & \multicolumn{4}{c|}{SAE} & \multicolumn{4}{c|}{ZSAE ($\alpha=0.2$)} \\ 
 $N=$ & {36} & {64} & {100} & {200} & {36} & {64} & {100} & {200} \\ \hline
 Digital & 15 & 14 & 19 & 0 & 22 & 22 & \textbf{47} & 26 \\
 Mandrill & 43 & 40 & 18 & 0 & \textbf{53} & 38 & 30 & 46 \\
