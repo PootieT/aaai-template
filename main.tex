@@ -551,8 +551,15 @@ that are already pruned from the network and are just invisible.
 In other words, combining discrete representation and zero-suppression,
 ZSAE embeds closed-world assumption in the network as a model prior.
 
-[Binarized NN]
+[TODO: more on Binarized NN]
 
+Binarized Neural Networks \cite{HubaraCSEB16} are particular implementation method of NNs designed for
+memory-limited embedded applications. They constraint the weights or activation
+values to $\braces{-1,+1}$ and process the forward/backward process of NN by
+efficient binary operations such as XNOR, popcount. 
+To our knowledge, there is no $l_1$-based regularization successfully
+applied to binarized networks, while the use of Dropouts, Batch Normalization, 
+or noisy weights \cite{HubaraCSEB16} are common.
 
 \section{Conclusion}
 \label{conclusion}
