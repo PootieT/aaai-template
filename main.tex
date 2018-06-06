@@ -584,13 +584,19 @@ ZSAE embeds closed-world assumption in the network as a model prior.
 
 [TODO: more on Binarized NN]
 
-Binarized Neural Networks \cite{HubaraCSEB16} are particular implementation method of NNs designed for
-memory-limited embedded applications. They constraint the weights or activation
-values to $\braces{-1,+1}$ and process the forward/backward process of NN by
-efficient binary operations such as XNOR, popcount. 
+Binarized Neural Networks \cite{courbariaux2015binaryconnect,HubaraCSEB16,rastegari2016xnor}
+ are implementation methods of NNs designed for
+memory-limited embedded applications or FPGAs. They constrain the weights and/or activation
+values to $\braces{-1,+1}$ and perform the forward/backward processes of NN using
+efficient binary operations such as XNOR and popcount.
 To our knowledge, there is no $l_1$-based regularization successfully
 applied to binarized networks, while the use of Dropouts, Batch Normalization, 
 or noisy weights \cite{HubaraCSEB16} are common.
+However, note that activations in SAE are binarized only in the latent layer,
+and they are not binarized from the beginning of training
+ as in the case of binarized networks, and that weights are not binarized at all.
+The purpose of implementing a binary representation is also different, where BNNs
+are aimed at memory usage and low-level performance while SAE aims at symbolic computation.
 
 \section{Conclusion}
 \label{conclusion}
