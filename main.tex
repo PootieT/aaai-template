@@ -347,10 +347,10 @@ This causes several problems from the symbolic reasoning (classical planning) po
 
 First, the algorithms that run on the state space generated based on these propositional vectors
 are confused by many variation of the essentially identical real world states.
-It could visit variations of the same real world state that are encoded into different propositional vector,
-however the duplicate detection could not detect it since it completely relies on the atomiticy and deteminisim of the
-proposition. This slows down the search by increasing the number of nodes that can be reachable from the initial state
-while these are essentially unnecessary amount of work.
+It could visit several variations of the same real world state that are encoded into different propositional vectors,
+however the duplicate detection in state space search algorithms (e.g. \astar) treat them as separate states.
+% since it completely relies on the atomiticy and deteminisim of the proposition.
+This slows down the search by increasing the number of nodes that can be reachable from the initial state.
 
 \begin{figure}[htb]
  \centering
@@ -360,7 +360,7 @@ while these are essentially unnecessary amount of work.
 \end{figure}
 
 Secondly, the state space could be disconnected due to such random variations (\refig{disconnected}).
-Certain state transition (edge) may be only reached via a single variation of the real world state, and is not connected to the
+Some states may be reached only via a single variation of the real world state, and is not connected to the
 other variation of the propositional state that represents the same real-world state.
 
 We note that while some values in the latent layer are random, most of values are not.
