@@ -235,9 +235,15 @@ This necessitates the bidirectionality of the mapping between the input and the 
 
 \begin{figure}[htb]
  \includegraphics[width=\linewidth]{img/train-state-ae.pdf}
- \caption{State AutoEncoder, a
- Variational AutoEncoder \cite{kingma2014semi} using Gumbel-Softmax \cite{jang2016categorical} reparametrization in its
- latent layer.}
+ \caption{Step 1:
+Train the State Autoencoder by
+ minimizing the sum of the reconstruction loss and the variational loss of Gumbel-Softmax.
+As the training continues, the output of the network converges to the input images.
+Also, as the Gumbel-Softmax temperature $\tau$ decreases during training,
+the latent values approach either 0 or 1.}
+ % \caption{State AutoEncoder, a
+ % Variational AutoEncoder \cite{kingma2014semi} using Gumbel-Softmax \cite{jang2016categorical} reparametrization in its
+ % latent layer.}
  \label{sae}
 \end{figure}
 
