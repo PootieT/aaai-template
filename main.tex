@@ -392,7 +392,7 @@ applied to continuous activation values:
  % =                      & D_\text{KL}(r || \tilde{r}) &+ & \text{mean}(q \log Mq)           &+ & \text{mean}(b)              \\
  =                        & \text{BCE}(r,\tilde{r})     &+ & \text{mean}(q \log Mq)           &+ & \text{mean}(b)                  
 \end{align*}
-where $M=2$, $q=\text{Softmax}(\log \pi_i)$ and $\log \pi_i$ (logit) is the input to the Gumbel-Softmax.
+where $M=2$, $q=\text{Softmax}(\log \pi_i)$ and $\log \pi_i$ (i.e. logit) is the input to the Gumbel-Softmax.
 Similar to $l_1$ regularization, this achieves a sparser representation in the binary domain.
 One additional advantage of applying $l_1$ norm is that, since the representation is deterministic,
 several neurons are completely deactivated, i.e. always takes the value of zero
