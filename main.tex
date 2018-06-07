@@ -207,9 +207,15 @@ the type of data is arbitrary as long as it is compatible to neural network.
 % \subsection{SAE for Propositional Symbol Grounding}
 
 \latentplanner works in 3 phases.
-In Phase 1, a \emph{State Autoencoder} (SAE) (\refig{sae}) learns a bidirectional mapping between raw data (e.g., images)
- and propositional states from a set of unlabeled, random snapshots of the environment.
-The $Encode$ function maps images to propositional states, and $Decode$ function maps the propositional states back to images.
+In Phase 1, a \emph{State Autoencoder} (SAE) (\refig{sae}) learns a bidirectional mapping between raw data (subsymbolic representation e.g., images)
+ and propositional states (symbolic representation) from a set of unlabeled, random snapshots of the environment.
+% The $Encode$ function maps images to propositional states, and $Decode$ function maps the propositional states back to images:
+The trained SAE provides two functions:
+\begin{itemize} %this is crucial to understanding the rest of the paper, so making an itemize to highlight it
+\setlength{\itemsep}{-0.3em}
+\item $b=Encode(r)$ maps an image  $r$ to a boolean vector $b$.
+\item $\tilde{r}=Decode(b)$ maps a boolean vector $b$ to an image $\tilde{r}$.
+\end{itemize}
 After training the SAE from $\braces{\before_i, \after_i\ldots}$,
 it applies $Encode$ to each $tr_i \in Tr$ and obtain $(Encode(\before_i),$ $Encode(\after_i))=$ $(s_i,t_i)=$ $\overline{tr}_i\in \overline{Tr}$,
 the symbolic representations (latent space vectors) of the transitions.
@@ -275,7 +281,7 @@ $z_i = \text{Softmax}((g_i+\log \pi_i)/\tau)$.
 The output of GS converges to a discrete one-hot vector when $\tau\approx 0$.
 
 In a vanilla SAE \cite{Asai2018}, there are $N$ units of Gumbel-Softmax
-for 2 categories in the latent layer, resulting in a $N\times 2$ matrix,
+for $M=2$ categories in the latent layer, resulting in a $N\times 2$ matrix,
 where $N$ specifies the number of propositional variables in the latent
 state representation. The latent layer can be written as
 $z_{ij}$ where $j\in \braces{0,1}$ and $1\leq i \leq N$.  When the
@@ -364,19 +370,18 @@ The basic idea for our additional regularization is simple: Just penalize the
 and SAE uses 2 categories, this can be seen as adding an
 asymmetric penalty for a particular class label used in the encoding.
 
-The resulting loss function is similar to the $l_1$ norm typically
-applied to continuous activation values.
+The resulting loss function below is similar to the $l_1$ norm typically
+applied to continuous activation values:
+\begin{align*}
+ \brackets{\text{loss}} = & \brackets{\text{\small Reconstruction}} &+ & \brackets{\text{\small Gumbel Softmax}} &+ & \brackets{\text{\small Zero-Suppress}} \\ 
+ % =                      & D_\text{KL}(r || \tilde{r}) &+ & \text{mean}(q \log Mq)           &+ & \text{mean}(b)              \\
+ =                        & \text{BCE}(r,\tilde{r})     &+ & \text{mean}(q \log Mq)           &+ & \text{mean}(b)                  
+\end{align*}
+where $M=2$, $q=\text{Softmax}(\log \pi_i)$ and $\log \pi_i$ (logit) is the input to the Gumbel-Softmax.
 Similar to $l_1$ regularization, this achieves a sparser representation in the binary domain.
 One additional advantage of applying $l_1$ norm is that, since the representation is deterministic,
 several neurons are completely deactivated, i.e. always takes the value of zero
 and can be pruned afterwards to reduce the network size.
-
-\begin{align*}
-  &\brackets{\text{Reconstuction Loss}} + \brackets{\text{GS loss}} + \brackets{\text{Zero-Suppress Loss}} \\ 
- =& \int p(z)dz + \frac{\log {\log{U}}}{a} + \alpha \sum z[:,:,0]
-\end{align*}
-
-[I can't even recall the correct VAE formula LOL]
 
 \section{Empirical Evaluation}
 \label{evaluation}
