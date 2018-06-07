@@ -298,16 +298,25 @@ $\parens{z_{00}\ldots z_{N0}}$.
 
 \subsection{Regularization in Neural Network}
 
-\emph{Regularization} is an imporatnt concept in machine learning
-that limits the representation capacity of the nueral network by adding a constraint
-to the optimization criteria of the neural network that is minimzied by algorithms like Stochastic Gradient Descent.
+\emph{Regularization} is an important and broad concept in machine learning
+that limits the representation capacity of the neural network by adding a constraint,
+so that the network better adapt to the underlying characteristics of the dataset.
 Regularization trades the (training) performance with generalization capability (testing performance, robustness to
-unseen data points) in order to suppress the overfiting.
+unseen data points) in order to suppress overfitting.
+Regularization could be implemented in various ways.
 
-Notable regularization techniques used for neural networks include
-$l_1$ or $l_2$ regularization that penalizes the sum / square sum of the
-activations, or Dropout \cite{srivastava2014dropout}, that randomly drops some neurons so
+One way is to organize and restrain the network connection for the particular data,
+such as Convolutional Networks for images
+or Recurrent Networks for sequential data, or
+Dropout \cite{srivastava2014dropout}, that randomly drops some neurons so
 that each pattern is more strongly associated with a fewer set of nodes.
+
+Another way is to add a penalty term to the optimization metric of the
+neural network that is minimzied by algorithms like Stochastic
+Gradient Descent.
+Common regularization techniques in this category include
+$l_1$ or $l_2$ regularization that penalize the sum / square sum of the
+activations.
 
 % It is necessary for the mapping to be bidirectional, because the
 % propositional variables are machine-generated symbols, and also the
