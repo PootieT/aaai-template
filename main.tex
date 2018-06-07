@@ -377,7 +377,7 @@ and too small $N$ does not converge on the dataset.
 To tackle this problem, we propose Zero-Suppressed State Autoencoder (ZSAE),
 a SAE with additional regularization mechanism specifically designed for a discrete representation.
 
-\section{Zero-Suppressed State AutoEncoder (ZSAE)}
+\section{Zero-Suppressed State AutoEncoder (ZSAE) and Entropy-Minimizing State AutoEncoder (ESAE)}
 \label{zsae}
 
 The basic idea for our additional regularization is simple: Just penalize the
@@ -392,11 +392,39 @@ applied to continuous activation values:
  % =                      & D_\text{KL}(r || \tilde{r}) &+ & \text{mean}(q \log Mq)           &+ & \text{mean}(b)              \\
  =                        & \text{BCE}(r,\tilde{r})     &+ & \text{mean}(q \log Mq)           &+ & \text{mean}(b)                  
 \end{align*}
-where $M=2$, $q=\text{Softmax}(\log \pi_i)$ and $\log \pi_i$ (i.e. logit) is the input to the Gumbel-Softmax.
+where BCE stands for Binary Cross Entropy,
+$M=2$, $q=\text{Softmax}(\log \pi_i)$ and $\log \pi_i$ (i.e. logit) is the input to the Gumbel-Softmax.
 Similar to $l_1$ regularization, this achieves a sparser representation in the binary domain.
 One additional advantage of applying $l_1$ norm is that, since the representation is deterministic,
 several neurons are completely deactivated, i.e. always takes the value of zero
 and can be pruned afterwards to reduce the network size.
+
+Another possible way to reduce the state variance is to reduce the
+\emph{Shannon Entropy} of the state representation.
+Shannon Entropy measures the amount of uncertainty of random variables.
+% 
+Shannon Entropy $H(x)$ of a discrete random variable $x\in
+\braces{1,\ldots,N}$ is obtained by $\sum_{1\leq i \leq N} -P(x=i)\log
+P(x=i)$, and when the random variable takes a binary value
+$b\in\braces{0,1}$, $P(x=1)=\text{mean}(b)$ and $P(x=0)=\text{mean}(1-b)$.
+% 
+However, our latent layer has multiple
+propositional variables. 
+We may want to directly reduce the joint entropy
+$H(b_1,\ldots b_N)$ of $N$ variables but this is a cumbersome process which involves
+computation of conditional entropies between variables.
+However, thanks to the fact $H(b_1,\ldots b_N) \leq \sum_{i} H(b_i)$,
+the sum of entropies of individual proposition $b_i$ is the upper bound of the entropy we want to minimize.
+Thus we instead add them to the loss function (equality holds when all propositions are independent):
+% our loss function is as follows:
+\begin{align*}
+ \brackets{\text{loss}} =    & \brackets{\text{\small Reconstruction}} &+ & \brackets{\text{\small Gumbel Softmax}} &+ & \sum_{i} H(b_i)& \\
+                        \geq & \brackets{\text{\small Reconstruction}} &+ & \brackets{\text{\small Gumbel Softmax}} &+ & \brackets{\text{\small Entropy}}
+\end{align*}
+Note that the entropy term here is rather an estimate of the entropy of the whole state space.
+We assume the distribution of the binary propositional states are sufficiently uniform
+because the input images are similarly sampled from the environment.
+In-depth theoretical analysis is the future work.
 
 \section{Empirical Evaluation}
 \label{evaluation}
