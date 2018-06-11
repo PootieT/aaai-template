@@ -562,9 +562,35 @@ rather than freely consuming the latent space capacity in an entangled represent
 % large enough.
 
 In contrast, while Entropy-minimizing SAE also minimizes the variance in state representation
-(\reftbl{tab:stability}, right columns),
+(\reftbl{tab:stability-esae}),
 and also the idea sounds more mathematically grounded,
 its effect was much weaker than that of Zero-Suppressed SAE.
+
+\begin{table}[htbp]
+ \relsize{-1}
+ \centering
+ \setlength{\tabcolsep}{0.45em}
+ \begin{tabular}{|r|*{1}{*{6}{c|}}}
+     & \multicolumn{6}{c|}{Max. variance over bits}
+  \\
+$N=$ & \multicolumn{3}{c|}{100} & \multicolumn{3}{c|}{1000}
+  \\
+$\alpha=$   & 0 (SAE) &  0.2  &  0.7   & 0 (SAE) &  0.2   &  0.7   \\
+MNIST       &  0.21   &  0.03 &  0.14  &  0.22   &  0.17  &  0.18  \\
+Mandrill    &  0.21   &  0.00 &  0.07  &  0.22   &  0.11  &  0.21  \\
+Spider      &  0.20   &  0.09 &  0.16  &  0.21   &  0.23  &  0.17  \\
+LightsOut   &  0.21   &  0.09 & -      &  0.20   &  0.21  &  0.20  \\
+Twisted     &  0.20   &  0.17 & -      &  0.22   &  0.21  & -      \\
+\end{tabular}
+ \caption{Results comparing the characteristics of Vanilla SAE (ZSAE with $\alpha=0$) and
+ Entropy-minimizing SAE with various $\alpha$,
+ over 100 randomly generated images encoded 100 times.
+ $\alpha=0$ means the vanilla SAE without zero suppression.
+ Results are not shown when the neural network failed to converge (Mean square error between the input and the output larger than 0.01).
+ }
+\label{tab:stability-esae}
+\end{table}
+
 
 This is because the gap between the entropy of the entire propositions $H(b_1,\ldots b_N)$ and
 the sum of entropies of each proposition $\sum_{i} H(b_i)$ is large.
