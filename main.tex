@@ -57,7 +57,45 @@ where you incrementally assign new knowledge to unused propositions.
 We show this by retraining an existing network
 with a mixture of the existing and new dataset, and demonstrating that
 it can encode both environments.
+
+[abstract: second idea]
+ % 
+Symbol Grounding problem is one of the key milestones in AI research for
+it seeks to achieve the high-level intelligence beyond reflexive agents
+that efficiently manipulates a compact set of abstract symbols and
+performs tasks that involves intractable problems such
+as Classical Planning.
+% 
+Fully automated agents should be able to find symbols in an unknown
+environment from its sensor input without supervision, i.e. no help from
+human-assigned labels nor predefined reinforcement signals.
+
+Classical Planning is one of the oldest and active branches of AI, but
+it exhibits knowledge acquisition bottleneck.
+% 
+Recently, \latentplanner \cite{Asai2018} uses a Deep Neural Network
+called State AutoEncoder (SAE) to obtain the propositional
+representation of the image based puzzle domains without human supervision, and
+conduct classical planning on the propositional symbols discovered.
+
+In this paper, we address a new sub-problem of symbol grounding, namely
+the symbol \emph{stability} problem.  Informally, a propositional symbol
+is \emph{stable} when it takes the same value for the exact same
+observation of the environment. Unstable symbols are harmful for symbolic
+reasoning due to multiple reasons.
+ % 
+We identify that the propositional symbols found by \latentplanner 
+are largely unstable when the hyperparameters are inappropariate.
+% 
+In order to stabilize the symbols, we propose ``Zero-Suppressed SAE''
+(ZSAE), an enhancement of SAE that incorporates ideas of closed-world
+assumption into the neural network optimization.
+ % 
+We empirically show that it robustly finds more stable propositions
+against various hyperparameters and improves the success rate of
+\latentplanner.
 \end{abstract}
+
 
 \section{Introduction}
 
