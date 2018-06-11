@@ -576,22 +576,22 @@ The results in \reftbl{tab:ama1} shows that ZSAE achieves the overall improvemen
 
 \begin{table}[htbp]
 \centering
-\relsize{-1}
-\begin{tabular}{|r|rrr|rrr|}
- & \multicolumn{4}{c|}{SAE} & \multicolumn{4}{c|}{ZSAE ($\alpha=0.2$)} \\ 
-$N=$           & {36}        & {64}        & {100} & {36}        & {64}        & {100}        \\ \hline
+% \relsize{-1}
+\begin{tabular}{r|rrr|rrr}
+ & \multicolumn{3}{c|}{SAE} & \multicolumn{3}{c}{ZSAE ($\alpha=0.2$)} \\ 
+$N=$           & {36}        & {64}        & {100} & {36}        & {64}        & {100}        \\\hline
 Digital        & \textbf{60} & 59          & 49    & \textbf{60} & 59          & 59           \\
 Mandrill       & 58          & 58          & 15    & \textbf{60} & \textbf{60} & \textbf{60}  \\
-Mnist          & \textbf{57} & 25          & 15    & 49          & 50          & \textbf{57}  \\
+MNIST          & \textbf{57} & 25          & 15    & 49          & 50          & \textbf{57}  \\
 Spider         & 0           & \textbf{60} & 56    & 42          & \textbf{60} & \textbf{60}  \\
-Twisted        & \textbf{60} & 58          & 35    & \textbf{60} & \textbf{60} & \textbf{60}  \\
+Twisted        & \textbf{60} & 58          & 35    & \textbf{60} & \textbf{60} & \textbf{60}  \\\hline
 \textbf{Total} & {235}       & {260}       & {170} & {271}       & {289}       & \textbf{296} \\
 \end{tabular}
-\caption{Results using AMA$_1$ (oracular model) for comparing the performance of Z/SAE without effects from AMA performance.
+\caption{Results using AMA$_1$ (oracular method) for comparing the performance of Z/SAE.
+AMA$_1$ is not a learning-based action model acquisition method, therefore SAE implementation does not affect its performance.
 Best results in each domain are highlighted in \textbf{bold}.
-Results indicates that ZSAE is more robust on different hyperparameters and tend to achieve better performance than vanilla SAE,
-while when tuned appropriately SAE may outperform ZSAE because the effect of regularization from zero-suppression can be too strong
-(e.g. MNIST, $N=36$, which is a tuned parameter used in \cite{Asai2018}).
+Results indicates that ZSAE is more robust on different hyperparameters and tend to achieve better performance than vanilla SAE.
+SAE performance is sometimes comparable to ZSAE but only when it is tuned appropriately.
 }
 \label{tab:ama1}
 \end{table}
