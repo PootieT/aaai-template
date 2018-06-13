@@ -830,6 +830,17 @@ a completely new dataset, then finally test the reconstruction accuracy for both
 
 % other regularization
 
+$l_1$ (LASSO) regularization is common in the field of machine learning for improving the
+generalization,
+but has not been explicitly associated with the concept of
+closed-world assumption, nor has been associated with the stability of the symbolic representation.
+
+$l_1$ regularization is usually used in the middle layer of the neural networks,
+but has not been widely used as a regularization method for the latent representation in AutoEncoders.
+
+In a standard term in machine learning, this is just an instance of trading the bias and the variance.
+This might mean something for symbolic reasoning.
+
 While an asymmetric penalty may seem unintuitive, this is a quite common
 strategy particularly in Zero-Suppressed Binary Decision Diagram (ZDD)
 \cite{minato1993zero}, a type of binary decision diagram \cite{bryant1986graph} which
