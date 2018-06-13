@@ -845,12 +845,9 @@ but has not been explicitly associated with the concept of
 closed-world assumption, nor has been associated with the stability of the representation,
 nor in the context of symbol grounding.
 
-$l_1$ regularization is usually used in the middle layer of the neural networks,
-but has not been widely used as a regularization method for the latent representation in AutoEncoders.
-
-Autoencoders with $l_1$ regularization is called sparse autoencoder \cite{}.
-From a practical point of view, as a Deep-Learning practice,
-this is useful for training a wide network that has a larger latent space and smaller average activation.
+Autoencoders with $l_1$ regularization is called sparse autoencoder \cite{ng2011cs294a}.
+As a Deep-Learning practice,
+this is useful for training an overcomplete network that has a larger latent space and smaller average activation.
 The focus of the previous work in this direction aims at improving the testing accuracy.
 Also, previous work uses deterministic neural network that does not have randomness.
 In contrast, the purpose of zero-suppression is to reduce the randomness
