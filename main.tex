@@ -25,73 +25,68 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \begin{abstract}
-% intentionally made different from the 1st-order symbol paper, writing style is also different
-While domain-independent classical planning is an active area of research,
-its applicability to the real-world tasks are limited to those precisely modeled by human.
-Recently, \latentplanner \cite{Asai2018} combined classical planning with deep-learning
-to obtain the symbolic description of the image based domain.
-In this paper, we address a problem in their preliminary implementation of \latentplanner,
-specifically the uninformative / random propositions in the latent / symbolic encoding,
-and provides a remedy for it.
-%
-Those uninformative propositions become true or false depending on the coin flip,
-which means that
-% some of the propositiosn in the latent layer may not carry significant meaning / affect the output.
-% While this is not problematic for encoding/decoding, from search/planning perspective this is a major problem,
-% because this means that 
- a single state can have multiple propositional representations and no longer the
-unique representation amenable for search algorithms.
-% 
-One effective way to suppress this behavior is to have an additional regularization
-for the latent propositions which guides the training so that 
-% toward sparser, disentangled propositional representation,
-unused propositions tends to be 0.
+% % intentionally made different from the 1st-order symbol paper, writing style is also different
+% While domain-independent classical planning is an active area of research,
+% its applicability to the real-world tasks are limited to those precisely modeled by human.
+% Recently, \latentplanner \cite{Asai2018} combined classical planning with deep-learning
+% to obtain the symbolic description of the image based domain.
+% In this paper, we address a problem in their preliminary implementation of \latentplanner,
+% specifically the uninformative / random propositions in the latent / symbolic encoding,
+% and provides a remedy for it.
+% %
+% Those uninformative propositions become true or false depending on the coin flip,
+% which means that
+% % some of the propositiosn in the latent layer may not carry significant meaning / affect the output.
+% % While this is not problematic for encoding/decoding, from search/planning perspective this is a major problem,
+% % because this means that 
+%  a single state can have multiple propositional representations and no longer the
+% unique representation amenable for search algorithms.
+% % 
+% One effective way to suppress this behavior is to have an additional regularization
+% for the latent propositions which guides the training so that 
+% % toward sparser, disentangled propositional representation,
+% unused propositions tends to be 0.
+%  % 
+% We empirically show that this ``Zero-Suppressed SAE''
+% has lower variance encoding (more stable propositions) for each single state
+% and improves the success rate of \latentplanner.
+% % XXX TODO: unknown if it is possible
+% [TODO]
+% Furthermore, we show that this Zero-Suppressed SAE can act like a declarative knowledge base
+% where you incrementally assign new knowledge to unused propositions.
+% We show this by retraining an existing network
+% with a mixture of the existing and new dataset, and demonstrating that
+% it can encode both environments.
+
+Fully automated high-level agents should be able to find symbolic representation
+of an unknown environment without supervision, i.e., no help from
+manually-assigned labels nor predefined reinforcement signals,
+otherwise it exhibits knowledge acquisition bottleneck.
+For instance,
+while Classical Planning is one of the oldest active branches of AI,
+its applicability is limited to the tasks precisely modeled by human.
  % 
-We empirically show that this ``Zero-Suppressed SAE''
-has lower variance encoding (more stable propositions) for each single state
-and improves the success rate of \latentplanner.
-% XXX TODO: unknown if it is possible
-[TODO]
-Furthermore, we show that this Zero-Suppressed SAE can act like a declarative knowledge base
-where you incrementally assign new knowledge to unused propositions.
-We show this by retraining an existing network
-with a mixture of the existing and new dataset, and demonstrating that
-it can encode both environments.
+Meanwhile, \latentplanner \cite{Asai2018} uses a Deep Neural Network
+called State AutoEncoder (SAE) to obtain a propositional
+representation of the image based puzzle domains unsupervised,
+and conducts Classical Planning on the propositional state space discovered,
+partly resolving this bottleneck.
 
-[abstract: second idea]
- % 
-Symbol Grounding problem is one of the key milestones in AI research for
-it seeks to achieve the high-level intelligence beyond reflexive agents
-that efficiently manipulates a compact set of abstract symbols and
-performs tasks that involves intractable problems such
-as Classical Planning.
-% 
-Fully automated agents should be able to find symbols in an unknown
-environment from its sensor input without supervision, i.e. no help from
-human-assigned labels nor predefined reinforcement signals.
-
-Classical Planning is one of the oldest and active branches of AI, but
-it exhibits knowledge acquisition bottleneck.
-% 
-Recently, \latentplanner \cite{Asai2018} uses a Deep Neural Network
-called State AutoEncoder (SAE) to obtain the propositional
-representation of the image based puzzle domains without human supervision, and
-conduct classical planning on the propositional symbols discovered.
-
-In this paper, we address a new sub-problem of symbol grounding, namely
-the symbol \emph{stability} problem.  Informally, a propositional symbol
-is \emph{stable} when it takes the same value for the exact same
-observation of the environment. Unstable symbols are harmful for symbolic
-reasoning due to multiple reasons.
+In this paper, we address a new sub-problem of symbol grounding problem, namely
+the symbol \emph{stability} problem.  Informally, symbols are
+\emph{stable} when they take the same value for the exact same
+observation of the environment, and unstable symbols are harmful for symbolic
+reasoning.
  % 
 We identify that the propositional symbols found by \latentplanner 
-are largely unstable when the hyperparameters are inappropariate.
+are largely unstable with a wrong set of hyperparameters.
 % 
-In order to stabilize the symbols, we propose ``Zero-Suppressed SAE''
-(ZSAE), an enhancement of SAE that incorporates ideas of closed-world
-assumption into the neural network optimization.
+To address this problem, we propose ``Zero-Suppressed SAE''
+(ZSAE), an enhancement of SAE that uses the idea of closed-world
+assumption as a strong prior for neural network optimization 
+and robustly generates a set of stable symbols.
  % 
-We empirically show that it robustly finds more stable propositions
+We empirically show that it finds more stable propositions
 against various hyperparameters and improves the success rate of
 \latentplanner.
 \end{abstract}
@@ -99,69 +94,118 @@ against various hyperparameters and improves the success rate of
 
 \section{Introduction}
 
-Recently, Latplan system \cite{Asai2018} successfully
+% [This second version of introduction is too long]
+
+% Symbol Grounding problem is one of the key milestones in AI research
+% which seeks to achieve high-level intelligence beyond reflex.
+% In Physical Symbol Systems Hypothesis \cite{}, it is believed that
+% an agent with high-level intelligence performs tasks by efficiently manipulating a compact set of abstract symbols.
+% % 
+% Symbolic manipulation consists of mechanical applications of composable rules which allows for
+% development of highly optimized and generalized, domain-independent heuristics (e.g. FF \cite{Hoffmann01}, LMcut \cite{Helmert2009})
+% that can be easily applied to multiple tasks with few or no data,
+% while the current learning-based approaches struggle to improve its multi-task performance and data efficiency \cite{}.
+
+Fully automated high-level agents should be able to find the symbolic
+representation of an unknown environment by itself.  The task of
+finding such a representation purely from observations is called Symbol
+Grounding problem \cite{harnad1990symbol,Steels2008}.
+
+Recently, Latplan system \cite[\refig{fig:overview}]{Asai2018} successfully
 connected a subsymbolic neural network system and a symbolic Classical Planning system
 to solve various visually presented puzzle domains.
 % In contrast to the work by Konidaris et. al. (\citeyear{KonidarisKL14}),
 % Latplan is a straightforward NN built upon a \lsota framework.
-The system generates a set of propositional variables \emph{from nowhere},
-i.e., by unsupervised learning without manual tagging and only from the image inputs.
+The State AutoEncoder (SAE) neural network in \latentplanner
+generates a set of propositional symbols from the training data consisting only of images,
+i.e., by unsupervised learning without manual tagging,
+and provides a bidirectional mapping between images and propositional states of the plan.
 % 
-The system provides a bidirectional mapping between images and propositional states,
-solves the propositional problem using a classical planner Fast Downward \cite{Helmert04},
-then returns a sequence of images that solves the puzzle,
-by decoding the intermediate propositional states back to images.
- 
+The system then solves the propositional planning problem using a classical planner Fast Downward \cite{Helmert04}
+and returns an image sequence that solves the puzzle
+by decoding the intermediate propositional states.
+It also discovers a set of action symbols that distinguish the modes of
+state transitions through AMA$_2$ unsupervised learning process.
+Therefore, the system solves symbol grounding for two kinds of symbols:
+Propositional symbols and action symbols.
+
 However,
 neural networks in general do not have a strong guarantee on the learned results,
-and thus the propositional representations learned by Latplan have several problems.
-% We noticed from the public code of Latplan available on Github that
-First, the propositional symbols generated by Latplan is not always
+and thus the propositional representations learned by Latplan have a problematic behavior.
+The propositional symbols generated by Latplan are not always
 ``stable'', i.e., some propositions may not remain true or false given the same image input
 and rather flip randomly.
-This means that a single image maps to multiple propositional states and the mapping is
-no longer 1-to-1.
-% 
-At the same time, these unstable propositions do not affect the output, therefore they are
-``unused'' and ``uninformative'', i.e.,
-whether the proposition is true or false does not affect the output image decoded from the propositional state.
-In fact, in the appendix section in the Arxiv version of the original paper,
-the authors state that they use the \emph{state augmentation} technique
-which circumvent this problem by sampling states from the same image multiple times.
+These unstable propositions do not affect the output image decoded from the propositional state either.
+Thus they are ``unused'' and ``uninformative'' at the same time.
 
-Second, the system is sensitive to the hyperparameter, and if inappropriate parameter
-is used, planning fails without solution or returns a suboptimal or even wrong solution.
+Unstable symbols are harmful for symbolic reasoning because
+they break the identity assumption built into the reasoning algorithms.
+For instance, in \latentplanner, 
+a single image may map to multiple propositional states due to stochasticity,
+therefore the duplication detection in search algorithms such as \astar \cite{hart1968formal}
+cannot detect that a single real-world state is visited multiple times through
+different symbolic state representations.
+
+This problem arises for any grounding processes that do not explicitly tries to stabilize the
+representation of the environment.
+The first contribution of this paper is the definition of a sub-problem of symbol grounding
+called ``symbol \emph{stability} problem'', which seeks to find a set of stable symbols
+with a nondeterministic grounding procedure.
+
+The second, and more concrete, contribution of this paper is
+the proposal of Zero-Suppressed State AutoEncoder (ZSAE, \refig{zsae-overview}), an enhancement of SAE in \latentplanner
+that has an additional regularization penalty function for the neural network 
+that makes the learned propositions more ``stable''.
+
+ZSAE addresses three issues in the original Latplan.
+The first two issues are directly related to the unstable symbols.
+Unstable symbols affect search algorithms in two ways:
+First, they increases the number of node generations because
+it confuses the duplicate detection mechanism.
+Second, and more important, issue is that they may make the state space graph disconnected because certain edges
+are connected to only one random variant of the symbolic representation of real-world states.
+This makes planning to fail without solution or return a suboptimal or even wrong solution.
+In fact, in the appendix section in the Arxiv version of the original paper,
+the authors stated that they used \emph{state augmentation} technique
+which circumvent this problem by sampling states from the same image multiple times.
+Thirdly, the system is sensitive to the hyperparameter, and with an inappropriate set of parameters
+the propositional symbols are highly unstable.
 Specifically, if we set the number of propositions ($=$ number of nodes in the latent layer) too high, the network
-has an excessive capacity which results in too many unused propositions,
-which makes the state space graph disconnected.
-This happens because some edge is connected to only one variant of
-the possible propositional representations of the image.
+has an excessive capacity which results in too many unused, unstable propositions.
 
 \begin{figure}[htb]
  \centering
  \includegraphics{img/zsae-overview.pdf}
  \caption{
-Conceptual images of Vanilla SAE and Zero-Suppressed SAE (ZSAE) encoding a MNIST 8-puzzle state, with 100 propositions.
+Example of Vanilla SAE and Zero-Suppressed SAE (ZSAE) autoencoding a MNIST 8-puzzle state, with 100 propositions.
 ZSAE obtains a representation that has fewer true bits.}
  \label{zsae-overview}
 \end{figure}
 
-To address these problems,
-we introduce an additional regularization penalty function for the neural network 
-that makes the learned propositions more ``stable''. In the resulting neural network,
-Zero-Suppressed State AutoEncoder (ZSAE, \refig{zsae-overview}), this penalty function
+
+% To address these problems,
+% we introduce an additional regularization penalty function for the neural network 
+% that makes the learned propositions more ``stable''. In the resulting neural network,
+% Zero-Suppressed State AutoEncoder (ZSAE, \refig{zsae-overview}), this penalty function
+% guides the network optimization so that unused propositions tend to 
+% take the value of zero (false) instead of random values,
+% resulting in a more stable representation.
+% The stability can be measured by taking the variance of the representation from the same set of inputs.
+% We also show that a more stable representation results in a higher success rate of classical planning.
+% 
+% Also, with this additional penalty, the number of bits required to represent the same function
+% is minimized and the network becomes less sensitive to the hyperparameters.
+
+In Zero-Suppressed SAE (ZSAE), an additional penalty function
 guides the network optimization so that unused propositions tend to 
 take the value of zero (false) instead of random values,
 resulting in a more stable representation.
-The stability can be measured by taking the variance of the representation from the same set of inputs.
+The stability can be measured by taking the variance of the representation from the input.
 We also show that a more stable representation results in a higher success rate of classical planning.
-
-Also, with this additional penalty, the number of bits required to represent the same function
-is minimized and the network becomes less sensitive to the hyperparameters.
 
 The idea behind ZSAE is similar to the Zero-Suppressed Binary Decision Diagram \cite{minato1993zero},
 which is a variant of Binary Decision Diagram \cite{bryant1986graph} with an alternative node reduction rule:
-Nodes whose 1-edge going to constant 0-node is pruned.
+Nodes whose 1-edge going to constant 0-node are pruned.
 With a similar intent, we show that we can similarly prune some unused neurons
 that has a constant activation of zero
 that were resulted from our additional regularization penalty.
@@ -188,6 +232,7 @@ Each type of symbol requires its own mechanism for grounding.
 For example, the large body of work in the image processing community on recognizing 
 objects (e.g. faces) and their attributes (male, female) in images, or scenes in videos (e.g. cooking)
 can be viewed as corresponding to grounding the object, predicate and action symbols, respectively.
+In this paper, we focus on the grounding process for propositional symbols.
 
 \begin{table}[tbp] 
 \centering
@@ -226,14 +271,14 @@ which are presented in a form of noisy, continuous visual depiction of the envir
  \centering
  \includegraphics[width=\linewidth]{img/planning.pdf}
  \caption{Classical planning in latent space:
-It uses the learned State AutoEncoder (\refig{sae}) to convert pairs of images $(\before,\after)$ to symbolic transitions, from which the AMA component generates an action model.
-It also encodes the initial and goal state images into symbolic initial/goal states.
-A classical planner finds the symbolic solution plan.
+It uses the learned State AutoEncoder (\refig{sae}) to convert pairs of images $(\before,\after)$ to symbolic transitions,
+ from which the Action Model Acquisition (AMA) component generates an action model.
+A classical planner finds the symbolic solution plan for symbolic initial/goal states encoded from images.
 Finally, intermediate states in the plan are decoded back to a human-comprehensible image sequence.}
 \label{fig:overview}
 \end{figure}
 
-\latentplanner takes two inputs.
+\latentplanner (\refig{fig:overview}) takes two inputs.
 The first input is the \emph{transition input} $Tr$, a set of pairs of raw data.
 Each pair $tr_i=(\before_i, \after_i) \in Tr$ represents a transition of the environment before and after some action is executed.
 The second input is the \emph{planning input} $(i, g)$, a pair of raw data, which corresponds to the initial and the goal state of the environment.
@@ -258,9 +303,10 @@ After training the SAE from $\braces{\before_i, \after_i\ldots}$,
 it applies $Encode$ to each $tr_i \in Tr$ and obtain $(Encode(\before_i),$ $Encode(\after_i))=$ $(s_i,t_i)=$ $\overline{tr}_i\in \overline{Tr}$,
 the symbolic representations (latent space vectors) of the transitions.
 
-In Phase 2, an AMA method learns an action model from $\overline{Tr}$ in an unsupervised manner.
+In Phase 2, an Action Model Acquisition (AMA) method learns an action model (e.g. PDDL, successor function) from $\overline{Tr}$ in an unsupervised manner.
 The original paper propose two approaches: AMA$_1$ is an oracular model which directly generates a PDDL without learning,
-and AMA$_2$ is a neural machine learning model that can learn from examples.
+by allowing it to use the whole set of valid transitions as an oracle.
+In contrast, AMA$_2$ is an unsupervised machine learning model that can learn from limited examples.
 
 In Phase 3, a planning problem instance is generated from the planning input $(i,g)$.
 These are converted to symbolic states by the SAE, and the symbolic planner solves the problem.
@@ -353,7 +399,7 @@ Another way is to add a penalty term to the optimization metric of the
 neural network that is minimized by algorithms like Stochastic
 Gradient Descent.
 Common regularization techniques in this category include
-$l_1$ or $l_2$ regularization that penalize the sum / square sum of the
+$l_1$ (LASSO) or $l_2$ regularization that penalize the absolute sum / square sum of the
 activations.
 
 % It is necessary for the mapping to be bidirectional, because the
@@ -364,7 +410,7 @@ activations.
 % \latentplanner also learns the action model using a neural action model acquisition method AMA$_2$,
 % but we omit the details due to space limitation.
 
-\section{Issues in the State Representation in the Vanilla SAE}
+\section{Issues in the State Representation\\ in the Vanilla SAE}
 \label{issues}
 
 The issues in a vanilla SAE is that the class probability could be
@@ -383,7 +429,7 @@ This causes several problems from the symbolic reasoning (classical planning) po
  \label{unstable}
 \end{figure}
 
-First, the algorithms that run on the state space generated based on these propositional vectors
+First, search algorithms that run on the state space generated based on these propositional vectors
 are confused by many variation of the essentially identical real world states.
 It could visit several variations of the same real world state that are encoded into different propositional vectors,
 however the duplicate detection in state space search algorithms (e.g. \astar) treat them as separate states.
@@ -393,7 +439,7 @@ This slows down the search by increasing the number of nodes that can be reachab
 \begin{figure}[htb]
  \centering
  \includegraphics{img/disconnected.pdf}
- \caption{Two random variations of propositional encoding for a single real-world state could make the state space graph disconnected.}
+ \caption{Random variations of propositional encoding for a single real-world state could disconnect the search space.}
  \label{disconnected}
 \end{figure}
 
@@ -404,26 +450,56 @@ other variation of the propositional state that represents the same real-world s
 We note that while some values in the latent layer are random, most of values are not.
 These unused, uninformative bits are generated because the network has too much capacity to 
 model the entire state space, i.e. they appear when we specify the number of proposition $N$ too large.
-If we reduces $N$ while maintaining the reconstruction capability of the SAE, the number of uninformative bits
+If we decrease $N$ while maintaining the reconstruction capability of the SAE, the number of uninformative bits
 reduces.
 On the contrary, if we specify $N$ too small, it lacks the capacity to represent the state space
 and the SAE is no longer able to reconstruct the
 real world image.
-As a result, we face a hyperparameter tuning problem: Too large $N$ causes a disconnected state space graph,
+As a result, we face a hyperparameter tuning problem: Too large $N$ causes a disconnected/bloated state space graph,
 and too small $N$ does not converge on the dataset.
 
-To tackle this problem, we propose Zero-Suppressed State AutoEncoder (ZSAE),
-a SAE with additional regularization mechanism specifically designed for a discrete representation.
+\section{Symbol Stability Problem}
+
+As we have seen, unstable propositional representations are harmful for symbolic reasoning algorithms (e.g. search)
+in various ways.
+The fundamental reason of these harmful effects is that they break the fundamental assumption in a symbol system
+that each symbol uniquely refer to some concept (referent). This assumption is called \emph{identity} assumption \cite{}.
+If a meaning of a symbol changes frequently and in an unexpected manner, the entire symbolic manipulation becomes meaningless
+since the underlying symbols are not grounded / tied to a particular concept, and does not represent the real world.
+
+Thus, a symbol grounding procedure should not only find \emph{some} set of symbols that is sufficient to represent the
+environment, but also find a \emph{stable} symbolic representation that uniquely describe the enviromnent.
+% This stability should be checked 
+
+\begin{defi}
+A \emph{symbolic representation} of an environment is a set of symbols
+that can sufficiently reconstruct the environment.
+\end{defi}
+
+\begin{defi}
+A symbol in a symbolic representation of an environment is \emph{stable}
+when its referent (e.g. truth assignment for propositional symbols) is identical
+for the same observation of the environment that is represented.
+\end{defi}
+
+In a more practical perspective, 
+the impact of unstable symbols on the symbolic reasoning systems is typically exponential to the number of unstable symbols.
+For example, in the case of search algorithms, each unstable symbol doubles the size of the state space (being true or false).
+In a hypothetical Prolog-like logic programming system, each unstable predicate symbol would also double the
+number of unifications.
+
 
 \section{Zero-Suppressed State AutoEncoder (ZSAE) and Entropy-Minimizing State AutoEncoder (ESAE)}
 \label{zsae}
 
+To tackle this problem, we propose Zero-Suppressed State AutoEncoder (ZSAE),
+a SAE with additional regularization mechanism.
 The basic idea for our additional regularization is simple: Just penalize the
 1-bit in the latent layer. Since Gumbel-Softmax is basically a Softmax function,
 and SAE uses 2 categories, this can be seen as adding an
 asymmetric penalty for a particular class label used in the encoding.
 
-The resulting loss function below is similar to the $l_1$ norm typically
+The resulting loss function below is similar to the $l_1$ norm (LASSO) typically
 applied to continuous activation values:
 \begin{align*}
  \brackets{\text{loss}} = & \brackets{\text{\small Reconstruction}} &+ & \brackets{\text{\small Gumbel Softmax}} &+ & \brackets{\text{\small Zero-Suppress}} \\ 
@@ -702,7 +778,8 @@ generates larger number of states compared to ZSAE.
  \centering
  \includegraphics{img/static/gen.pdf}
  \caption{Double-logarithmic plot of the number of states visited by blind search
-for models generated by SAE and ZSAE with $N=64,100$ where the most difference was observed.
+for models generated by SAE and ZSAE with $N=64,100$. $N=36$ is not shown because
+it is a parameter tuned for SAE to have stable propositions, thus the comparison does not make sense.
  Instances are shown only when the solution was found.}
  \label{fig:ama1-visited}
 \end{figure}
