@@ -495,19 +495,20 @@ number of unifications.
 To tackle this problem, we propose Zero-Suppressed State AutoEncoder (ZSAE),
 a SAE with additional regularization mechanism.
 The basic idea for our additional regularization is simple: Just penalize the
-1-bit in the latent layer. Since Gumbel-Softmax is basically a Softmax function,
+1-bit in the latent layer. Since Gumbel-Softmax (GS) is basically a Softmax function,
 and SAE uses 2 categories, this can be seen as adding an
 asymmetric penalty for a particular class label used in the encoding.
 
 The resulting loss function below is similar to the $l_1$ norm (LASSO) typically
 applied to continuous activation values:
 \begin{align*}
- \brackets{\text{loss}} = & \brackets{\text{\small Reconstruction}} &+ & \brackets{\text{\small Gumbel Softmax}} &+ & \brackets{\text{\small Zero-Suppress}} \\ 
- % =                      & D_\text{KL}(r || \tilde{r}) &+ & \text{mean}(q \log Mq)           &+ & \text{mean}(b)              \\
- =                        & \text{BCE}(r,\tilde{r})     &+ & \text{mean}(q \log Mq)           &+ & \text{mean}(b)                  
+ \brackets{\text{loss}} = & \brackets{\text{\small Reconstruction}} &+ & \brackets{\text{\small GS loss}} &+ & \brackets{\text{\small 0-Sup. loss}} \\ 
+ % =                      & D_\text{KL}(r || \tilde{r}) &+ & \text{mean}(q \log Mq)           &+ & \alpha \text{mean}(b)              \\
+ =                        & \text{BCE}(r,\tilde{r})     &+ & \text{mean}(q \log Mq)           &+ & \alpha \text{mean}(b)
 \end{align*}
-where BCE stands for Binary Cross Entropy,
-$M=2$, $q=\text{Softmax}(\log \pi_i)$ and $\log \pi_i$ (i.e. logit) is the input to the Gumbel-Softmax.
+where BCE stands for Binary Cross Entropy loss,
+$M=2$, $q=\text{Softmax}(\log \pi_i)$ and $\log \pi_i$ is the input logit to the Gumbel-Softmax.
+$\alpha$ is a hyperparameter which specifies the magnitude of the zero-suppression.
 Similar to $l_1$ regularization, this achieves a sparser representation in the binary domain.
 One additional advantage of applying $l_1$ norm is that, since the representation is deterministic,
 several neurons are completely deactivated, i.e. always takes the value of zero
