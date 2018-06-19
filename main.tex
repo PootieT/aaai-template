@@ -835,6 +835,19 @@ From \refig{fig:ama2-ad}, we observe the accuracy was improved by the ZSAE.
 
 \section{Related Work}
 
+% GS autotuning
+
+We showed that $l_1$ regularization reduces the variance of the discrete
+representation which resulted from the Gumbel random distribution
+in Gumbel-Softmax reparameterization
+trick.  A line of work that could introduce confusion might be REBAR
+\cite{TuckerMMLS17}, an improvement to Gumbel-Softmax that automatically
+adjusts the temperature parameter $\tau$ instead of using a fixed
+schedule and achieves ``Low-variance, unbiased gradient estimates'',
+meaning that the training is more stable. The variance mentioned in
+REBAR is the variance of the gradient estimates used during training, not the
+resulting representation.
+
 % declarative kb
 
 [declarative kb on NN]
