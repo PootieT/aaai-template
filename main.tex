@@ -798,6 +798,29 @@ From \refig{fig:ama2-ad}, we observe the accuracy was improved by the ZSAE.
 
 \subsection{Pruning Inactive Nodes from ZSAE}
 
+[too obvisous and intuitive?]
+
+We computes the amount of memory reduction possible by the pruning on the nodes
+that has a constant activation of 0. As we saw from \refig{tab:stability},
+Vanilla SAE does not have such propositions (all bits are effective bits).
+% While we did not actually implemented the node pruning,
+
+First, since our network has a fully-connected network between the
+latent layer and the convolutional layer before it, node reduction
+amounts to quadratic weight reduction.  Representing a fully-connected
+network between two layers of $L$ and $N$ nodes requires $(L+1)N$
+weights ($+1$ for the bias).
+In the network we used, $L=1000$. Thus, in the case of ZSAE with $\alpha=0.7, N=1000$
+where it reduces the representation down to only 46 effective bits, weights are reduced by 954954,
+which is huge compared to the convolutional weights (3x3, 16 channels, thus 144 float values).
+We do not show the entire results due to space limitation and also because the results are straightforward.
+
+Second, we considered the inference time by the number of multiplication operations and also by the actual test.
+First, the operations: In the same example above,
+matrix multiplication $y=Wx+b$ (where $W$ is the weights and $b$ the bias) requires $LN$ multiplication and $L+N$ additions.
+Moreover, the Gumbel-Softmax operation requires $N$ softmax calculations, gumbel sampling (two logarithms) and one float division.
+This overall amounts to a linear speed up along the reduction of $N$.
+
 % \section{Declarative Knowledge Base based on ZSAE}
 % 
 % Since the ZSAE achieves a sparse encoding where the unused propositions
