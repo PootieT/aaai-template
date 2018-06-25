@@ -509,6 +509,17 @@ For example, in the case of search algorithms, each unstable symbol doubles the 
 In a hypothetical Prolog-like logic programming system, each unstable predicate symbol would also double the
 number of unifications.
 
+% stability
+
+The stability of the representation obtained by a neural network depends
+on whether the network contains stochasticity.  In recent years,
+an increasing number of neural networks relies on some form of random
+sampling processes.  VAE family of networks
+\cite{kingma2013auto,jang2016categorical,higgins2016beta},
+contains a source of stochasticity in the network. Generative
+Adversarial Networks \cite[GAN]{goodfellow2014generative} also samples
+the latent space to generate the real-world data.
+
 
 \section{Zero-Suppressed State AutoEncoder (ZSAE) and Entropy-Minimizing State AutoEncoder (ESAE)}
 \label{zsae}
