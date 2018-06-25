@@ -380,6 +380,23 @@ near 1 and another one takes the value near 0 (one-hot vector).  A binary
 propositional vector can thus be extracted by taking the first row,
 $\parens{z_{00}\ldots z_{N0}}$.
 
+\subsection{AMA$_1$, an Oracular Action Model Acquisition method}
+
+Action Model Acquisition method AMA$_1$ produces a PDDL/SAS model compatible to
+FastDownward \cite{Helmert04}, but is an oracular model which requires the entire state transitions
+in the environment.
+For each pair of observations $\parens{\before_i, \after_i}$ in the entire set of state transitions allowed in the environment,
+AMA$_1$ uses SAE to encodes it into 
+a symbolic transition $(Encode(\before_i),$ $Encode(\after_i))=$ $(s_i,t_i)$ where $s_i,t_i$ are propositional states.
+Each state (either $s_i,t_i$) is represented as a binary vector $(b_j)_{1\leq j \leq N}$.
+Each symbolic transition is then encoded into a PDDL action 
+using $s_i$ as its preconditions and the difference of $s_i$ and $t_i$ as its effects.
+Each bit $b_j$ is converted into zero-ary predicate \texttt{($b_j$-true)} and \texttt{($b_j$-false)}
+when $b_j=1$ and $0$, respectively.
+For instance, when $b_5$ is 0 in $s_i$ and 1 in $t_i$,
+the preconditions include \texttt{(b5-false)} and
+the effects include \texttt{(and (not (b5-false)) (b5-true))}.
+
 \subsection{Regularization in Neural Network}
 
 \emph{Regularization} is an important and broad concept in machine learning
