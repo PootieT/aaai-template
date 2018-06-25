@@ -58,30 +58,30 @@
 % with a mixture of the existing and new dataset, and demonstrating that
 % it can encode both environments.
 
-Fully automated high-level agents should be able to find symbolic representation
+While Classical Planning is one of the oldest active branches of AI,
+its applicability is limited to the tasks precisely modeled by human.
+Fully automated high-level agents should be instead able to find a symbolic representation
 of an unknown environment without supervision, i.e., no help from
 manually-assigned labels nor predefined reinforcement signals,
 otherwise it exhibits knowledge acquisition bottleneck.
-For instance,
-while Classical Planning is one of the oldest active branches of AI,
-its applicability is limited to the tasks precisely modeled by human.
- % 
-Meanwhile, \latentplanner \cite{Asai2018} uses a Deep Neural Network
+% 
+Meanwhile, \latentplanner \cite{Asai2018} uses a Neural Network
 called State AutoEncoder (SAE) to obtain a propositional
 representation of the image based puzzle domains unsupervised,
-and conducts Classical Planning on the propositional state space discovered,
+and performs Classical Planning on the propositional state space discovered,
 partly resolving this bottleneck.
 
-In this paper, we address a new sub-problem of symbol grounding problem, namely
+In this paper, we propose a new sub-problem of symbol grounding problem (SGP)
+that was not identified until SGP materialized in \latentplanner, namely
 the symbol \emph{stability} problem.  Informally, symbols are
-\emph{stable} when they refer to the same value for the exact same
+\emph{stable} when they refer to the same concept for the exact same
 observation of the environment, and unstable symbols are harmful for symbolic
 reasoning.
  % 
 We identify that the propositional symbols found by \latentplanner 
 are largely unstable with a wrong set of hyperparameters.
 % 
-To address this problem, we propose ``Zero-Suppressed SAE''
+To address this issue, we propose ``Zero-Suppressed SAE''
 (ZSAE), an enhancement of SAE that uses the idea of closed-world
 assumption as a strong prior for neural network optimization 
 and robustly generates a set of stable symbols.
