@@ -506,13 +506,20 @@ for the same observation of the environment that is represented.
 From a practical perspective, 
 the impact of unstable symbols on symbolic reasoning systems is typically exponential to the number of unstable symbols.
 For example, in the case of search algorithms, each unstable symbol doubles the size of the state space (being true or false).
-In a hypothetical Prolog-like logic programming system, each unstable predicate symbol would also double the
-number of unifications.
+% In a hypothetical Prolog-like logic programming system, each unstable predicate symbol would also double the
+% number of unifications.
+
+
 
 % stability
 
 The stability of the representation obtained by a neural network depends
-on whether the network contains stochasticity.  In recent years,
+on whether the network contains stochasticity during runtime.
+% 
+In other words, any stochastic symbol grounding system potentially suffers from 
+the symbol stability problem.
+% 
+In recent years,
 an increasing number of neural networks relies on some form of random
 sampling processes.  VAE family of networks
 \cite{kingma2013auto,jang2016categorical,higgins2016beta},
@@ -520,8 +527,8 @@ contains a source of stochasticity in the network. Generative
 Adversarial Networks \cite[GAN]{goodfellow2014generative} also samples
 the latent space to generate the real-world data.
 
-
-\section{Zero-Suppressed State AutoEncoder (ZSAE) and Entropy-Minimizing State AutoEncoder (ESAE)}
+% \section{Zero-Suppressed State AutoEncoder (ZSAE) and Entropy-Minimizing State AutoEncoder (ESAE)}
+\section{Zero-Suppressed State AutoEncoder (ZSAE)}
 \label{zsae}
 
 To tackle the symbol stability problem in Latplan, we propose Zero-Suppressed State AutoEncoder (ZSAE),
@@ -541,52 +548,32 @@ applied to continuous activation values:
 where BCE stands for Binary Cross Entropy loss,
 $M=2$, $q=\text{Softmax}(\log \pi_i)$ and $\log \pi_i$ is the input logit to the Gumbel-Softmax.
 $\alpha$ is a hyperparameter which specifies the magnitude of the zero-suppression.
-Similar to $l_1$ regularization, this achieves a sparser representation in the binary domain.
-One additional advantage of applying $l_1$ norm is that, since the representation is deterministic,
+Similar to $l_1$ regularization, this achieves a sparser representation in the binary domain where
+ more propositions take the value of 0 (\refig{zsae-overview}).
+
+One additional advantage of applying $l_1$ norm is that, when the representation becomes deterministic,
 several neurons are completely deactivated, i.e. always takes the value of zero
 and can be pruned afterwards to reduce the network size.
 
-An alternative way to reduce the state variance is to reduce the
-\emph{Shannon Entropy} of the state representation.
-Shannon Entropy $H(x)$ of a discrete random variable $x\in \braces{1,\ldots,N}$
-measures the amount of uncertainty of $x$.
-% 
-$H(x)$ is calculated by $\sum_{1\leq i \leq N} -P(x=i)\log P(x=i)$.
-% and when the random variable takes a binary value $b\in\braces{0,1}$,
-% then $H(x)=-p\log p - (1-p) \log (1-p)$ where $p=P(x=1)$.
- 
-One problem with using Shannon Entropy to stabilize symbols is that
-our latent layer has multiple propositional variables
-and thus we should minimize the joint entropy $H(b_1,\ldots b_N)$ of $N$ variables.
-This is a difficult process which involves
-computation of conditional entropies between variables
-or requires extensive sampling of the random variables.
-However, thanks to the fact $H(b_1,\ldots b_N) \leq \sum_{i} H(b_i)$,
-the sum of entropies of individual proposition $b_i$ is the upper bound of the entropy we want to minimize.
-Thus we instead add them to the loss function (equality holds when all propositions are independent):
-% our loss function is as follows:
-\begin{align*}
- \brackets{\text{loss}} =    & \brackets{\text{\small Reconstruction}} &+ & \brackets{\text{\small Gumbel Softmax}} &+ & \sum_{i} H(b_i)& \\
-                        \geq & \brackets{\text{\small Reconstruction}} &+ & \brackets{\text{\small Gumbel Softmax}} &+ & \brackets{\text{\small Entropy}}
-\end{align*}
-In other words, we are applying an approximating assumption that the symbols learned by our system are supposed to represent
-disentangled, mutually independent features.
+A possible interpretation of this approach from the symbolic perspective is that
+this $l_1$ (LASSO) regularization is working as a prior representing \emph{closed-world assumption} \cite[CWA]{reiter1981closed}.
+CWA is an assumption that all propositions take the value \texttt{false}
+when they are unknown to a Knowledge Base (KB) or cannot be proven from it (negation as failure).
+% [wrong!]
+% We could interpret these unknown propositions defaulted to be false as those which are irrelevant
+% to the current task that the agent is solving.
+Being always false, the agent can safely ignore them because
+they do not initiate an additional set of rules in the rule database by satisfying further preconditions.
+Also, the KB enjoys the space reduction for storing facts
+because it does not have to explicitly store the false propositions.
 
-During the training, the entropy of a single propositional variable made by Gumbel-Softmax
- is directly calculated from the input of Gumbel-Softmax.
-Recall that Gumbel-Softmax $z_{ij} = \text{Softmax}_i((\log \pi_{ij} + g_{ij})/\tau)$ for $i\in\braces{0,1}$
-and $j$-th proposition takes a logit $\log \pi_{ij}$ as an input.
-The probability $p_{ij}$ that $z_{ij}$ takes the value 1 is obtained by $\text{Softmax}_i(\log \pi_{ij})$,
-because $\exp (\log \pi_{ij})$ is not normalized.
-We add $\sum_{i\in\braces{0,1}, j\in [1,N]} -p_{ij}\log p_{ij} $ averaged over the batch samples to the loss function.
-
-Note that the entropy term here is rather an estimate of the entropy of
-the whole state space, made from a limited set of observations.
-We assume that the distribution of the input image is sufficiently
-uniform among the entire space allowed in the model (e.g. specific
-puzzle) because the input images are randomly sampled from
-the environment.
-
+In our Zero-Suppressed SAE, nodes that do not affect the output are stabilized to zero
+and can be safely pruned.
+Moreover, we could conceive that there are infinite number of propositions
+that are already pruned from the network and are just invisible, just as all unknown propositions
+are regarded as false and need not be explicitly saved in the Knowledge Base.
+In other words, combining discrete representation and zero-suppression,
+ZSAE embeds closed-world assumption in the network as a model prior.
 
 
 \section{Empirical Evaluation}
@@ -723,66 +710,6 @@ rather than freely consuming the latent space capacity in an entangled represent
 % the desired characteristics in the activation, we observe that the
 % reconstruction loss is still low if you maintain the latent space size
 % large enough.
-
-In contrast, while Entropy-minimizing SAE also minimizes the variance in state representation
-(\reftbl{tab:stability-esae}),
-and also the idea sounds more mathematically grounded,
-its effect was much weaker than that of Zero-Suppressed SAE.
-
-\begin{table}[htbp]
- \relsize{-1}
- \centering
- \setlength{\tabcolsep}{0.45em}
-%  \begin{tabular}{|r|*{1}{*{2}{*{9}{c|}}}}
-%      & \multicolumn{18}{c|}{Max. variance over bits} \\
-% $N=$ & \multicolumn{9}{c|}{100} & \multicolumn{9}{c|}{1000} \\
-% $\alpha=$  & {0}  & {0.2} & {0.5} & {0.7} & {1}  & {1.5} & 2      & 2.5    & 3      & {0}  & {0.2} & {0.5} & {0.7} & {1}  & {1.5} & {2}  & {2.5} & {3}  \\
-% % hanoi\_4 & 0.18 & 0.19  & 0.17  & 0.18  & {}   & 0.18  &        &        &        & 0.18 & 0.19  & 0.20  & 0.17  & {}   & {}    & 0.17 & 0.20  & 0.21 \\
-% MNIST      & 0.21 & 0.19  & 0.20  & 0.20  & 0.19 & 0.19  &        &        &        & 0.21 & 0.21  & 0.22  & 0.22  & 0.21 & 0.21  & 0.21 & 0.21  & 0.20 \\
-% Mandrill   & 0.19 & 0.21  & 0.20  & 0.20  & 0.19 & 0.18  & {0.20} &        &        & 0.21 & 0.21  & 0.20  & 0.20  & 0.20 & 0.21  & 0.20 & 0.21  & 0.22 \\
-% Spider     & 0.15 & 0.19  & 0.20  & 0.19  & 0.19 & 0.18  & {0.19} &        &        & 0.21 & 0.20  & 0.21  & 0.21  & 0.21 & 0.21  & 0.22 & 0.20  & 0.17 \\
-% Digital    & 0.19 & 0.21  & 0.20  & 0.19  & 0.22 & 0.21  & {0.21} & {0.19} & {0.20} & 0.20 & 0.20  & 0.21  & 0.22  & 0.22 & 0.22  & 0.21 & 0.20  & 0.20 \\
-% Twisted    & 0.20 & 0.19  & 0.21  & 0.20  & 0.20 & 0.21  & {0.20} & {0.20} & {0.19} & 0.14 & 0.20  & 0.20  & 0.21  & 0.19 & 0.21  & 0.20 & 0.19  & 0.18 \\
-% \end{tabular}
- \begin{tabular}{|r|*{1}{*{2}{*{3}{c|}}}}
-     & \multicolumn{6}{c|}{Max. variance over bits} \\
-$N=$ & \multicolumn{3}{c|}{100} & \multicolumn{3}{c|}{1000} \\
-$\alpha=$  & 0 (SAE)  & {0.2} & {0.7} & 0 (SAE)  & {0.2} & {0.7} \\
-% hanoi\_4 & 0.18 & 0.19  & 0.18  & 0.18 & 0.19  & 0.17  \\
-MNIST      & 0.21 & 0.19  & 0.20  & 0.21 & 0.21  & 0.22  \\
-Mandrill   & 0.19 & 0.21  & 0.20  & 0.21 & 0.21  & 0.20  \\
-Spider     & 0.15 & 0.19  & 0.19  & 0.21 & 0.20  & 0.21  \\
-Digital    & 0.19 & 0.21  & 0.19  & 0.20 & 0.20  & 0.22  \\
-Twisted    & 0.20 & 0.19  & 0.20  & 0.14 & 0.20  & 0.21  \\
-\end{tabular}
- \caption{Results comparing the stability of Entropy-minimizing SAE over 100 images encoded 100 times.
- $\alpha=0$ represents the vanilla SAE.
- Results were similar for other $\alpha$ we tested ($\alpha=1,2,3$).
- }
-\label{tab:stability-esae}
-\end{table}
-
-
-This is because the gap between the entropy of the entire propositions $H(b_1,\ldots b_N)$ and
-the sum of entropies of each proposition $\sum_{i} H(b_i)$ is large.
-We show this by computing $H(b_1,\ldots b_N)$ and $\sum_{i} H(b_i)$ for the entire state space
-generated by ESAE from the all possible images in the environment (which is not available during training).
-In \refig{fig:entropy}, we see the large gap between two metrics.
-
-\begin{figure}[htb]
- \vspace{1.5in}
- \caption{Comparing the entropy of the state representation in the
-entire state space versus its upper bound. $x$-axis shows $H(b_1,\ldots
-b_N)$ and $y$-axis shows $\sum_{i} H(b_i)$ for five different domains
-with $N=100$.}
- \label{fig:entropy}
-\end{figure}
-
-Results for the effective bits in ESAE were similar to the vanilla SAE, indicating that
-it does not try to find a compact representation.
-
-Since ZSAE were found to be more effective, in the remaining sections of
-this paper we focus on ZSAE.
 
 \subsection{Planner Performance}
 
@@ -963,20 +890,6 @@ for a single data point that we discussed in this paper are orthogonal.
 % that are already pruned from the network and are just invisible.
 % In other words, combining discrete representation and zero-suppression,
 % ZSAE embeds closed-world assumption in the network as a model prior.
-
-\emph{Close-world assumption} \cite{reiter1981closed} is an assumption that all propositions take the false value
-when they are unknown or unproven to a Knowledge Base.
-% [wrong!]
-% We could interpret these unknown propositions defaulted to be false as those which are irrelevant
-% to the current task that the agent is solving.
-Being always false, the agent can safely ignore them because
-they do not initiate an additional set of rules in the rule database by satisfying further preconditions.
-  % 
-Similarly, in our Zero-Suppressed SAE, not only nodes that do not affect the output are stabilized to zero
-and can be safely pruned, but also we could conceive that there are infinite number of propositions
-that are already pruned from the network and are just invisible.
-In other words, combining discrete representation and zero-suppression,
-ZSAE embeds closed-world assumption in the network as a model prior.
 
 % [TODO: more on Binarized NN]
 
