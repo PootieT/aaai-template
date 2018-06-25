@@ -531,20 +531,21 @@ One additional advantage of applying $l_1$ norm is that, since the representatio
 several neurons are completely deactivated, i.e. always takes the value of zero
 and can be pruned afterwards to reduce the network size.
 
-Another possible way to reduce the state variance is to reduce the
+An alternative way to reduce the state variance is to reduce the
 \emph{Shannon Entropy} of the state representation.
 Shannon Entropy $H(x)$ of a discrete random variable $x\in \braces{1,\ldots,N}$
 measures the amount of uncertainty of $x$.
 % 
-$H(x)$ is calculated by $\sum_{1\leq i \leq N} -P(x=i)\log P(x=i)$,
-and when the random variable takes a binary value
-$b\in\braces{0,1}$, $P(x=1)=\text{mean}(b)$ and $P(x=0)=\text{mean}(1-b)$.
-% 
-However, our latent layer has multiple
-propositional variables. 
-We may want to directly reduce the joint entropy
-$H(b_1,\ldots b_N)$ of $N$ variables but this is a cumbersome process which involves
-computation of conditional entropies between variables.
+$H(x)$ is calculated by $\sum_{1\leq i \leq N} -P(x=i)\log P(x=i)$.
+% and when the random variable takes a binary value $b\in\braces{0,1}$,
+% then $H(x)=-p\log p - (1-p) \log (1-p)$ where $p=P(x=1)$.
+ 
+One problem with using Shannon Entropy to stabilize symbols is that
+our latent layer has multiple propositional variables
+and thus we should minimize the joint entropy $H(b_1,\ldots b_N)$ of $N$ variables.
+This is a difficult process which involves
+computation of conditional entropies between variables
+or requires extensive sampling of the random variables.
 However, thanks to the fact $H(b_1,\ldots b_N) \leq \sum_{i} H(b_i)$,
 the sum of entropies of individual proposition $b_i$ is the upper bound of the entropy we want to minimize.
 Thus we instead add them to the loss function (equality holds when all propositions are independent):
@@ -553,10 +554,25 @@ Thus we instead add them to the loss function (equality holds when all propositi
  \brackets{\text{loss}} =    & \brackets{\text{\small Reconstruction}} &+ & \brackets{\text{\small Gumbel Softmax}} &+ & \sum_{i} H(b_i)& \\
                         \geq & \brackets{\text{\small Reconstruction}} &+ & \brackets{\text{\small Gumbel Softmax}} &+ & \brackets{\text{\small Entropy}}
 \end{align*}
-Note that the entropy term here is rather an estimate of the entropy of the whole state space.
-We assume the distribution of the binary propositional states are sufficiently uniform
-because the input images are similarly sampled from the environment.
-In-depth theoretical analysis is the future work.
+In other words, we are applying an approximating assumption that the symbols learned by our system are supposed to represent
+disentangled, mutually independent features.
+
+During the training, the entropy of a single propositional variable made by Gumbel-Softmax
+ is directly calculated from the input of Gumbel-Softmax.
+Recall that Gumbel-Softmax $z_{ij} = \text{Softmax}_i((\log \pi_{ij} + g_{ij})/\tau)$ for $i\in\braces{0,1}$
+and $j$-th proposition takes a logit $\log \pi_{ij}$ as an input.
+The probability $p_{ij}$ that $z_{ij}$ takes the value 1 is obtained by $\text{Softmax}_i(\log \pi_{ij})$,
+because $\exp (\log \pi_{ij})$ is not normalized.
+We add $\sum_{i\in\braces{0,1}, j\in [1,N]} -p_{ij}\log p_{ij} $ averaged over the batch samples to the loss function.
+
+Note that the entropy term here is rather an estimate of the entropy of
+the whole state space, made from a limited set of observations.
+We assume that the distribution of the input image is sufficiently
+uniform among the entire space allowed in the model (e.g. specific
+puzzle) because the input images are randomly sampled from
+the environment.
+
+
 
 \section{Empirical Evaluation}
 \label{evaluation}
