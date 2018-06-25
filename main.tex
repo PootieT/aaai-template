@@ -426,16 +426,18 @@ activations.
 % \latentplanner also learns the action model using a neural action model acquisition method AMA$_2$,
 % but we omit the details due to space limitation.
 
-\section{Issues in the State Representation\\ in the Vanilla SAE}
+\section{Symbol Stability Problem}
+% \section{Issues in the State Representation\\ in the Vanilla SAE}
 \label{issues}
 
-An issue in a vanilla SAE is that the class probability could be
-neutral for class ``true'' and class ``false'', and the resulting value
+SAE in \latentplanner can map a visual observation of the environment to/from a set of propositional values.
+An issue in a vanilla SAE is that the class probability that is used inside its Gumbel-Softmax could be
+neutral for the class ``true'' and the class ``false'', and the resulting value
 of a proposition is random (\refig{unstable}).
-The randomness of the vanilla SAE comes from
-the Gumbel distribution $-\log (-\log (\text{Uniform}(0,1)))$ which includes
+The randomness of the vanilla SAE comes from the way
+Gumbel distribution is sampled, $-\log (-\log (\text{Uniform}(0,1)))$, which includes
 a uniform random distribution.
-This causes several problems from the symbolic reasoning (classical planning) point of view.
+This causes several problems from the classical planning point of view.
 
 \begin{figure}[htb]
  \centering
@@ -476,18 +478,18 @@ real world image.
 As a result, we face a hyperparameter tuning problem: Too large $N$ causes a disconnected/bloated state space graph,
 and too small $N$ does not converge on the dataset.
 
-\section{Symbol Stability Problem}
+% \section{Symbol Stability Problem}
 
-As we have seen, unstable propositional representations are harmful for symbolic reasoning algorithms (e.g. search)
+As we have seen, unstable propositional representations are harmful for symbolic reasoning algorithms (search)
 in various ways.
-More broadly,
-these harmful effects are caused by breaking the fundamental assumption in a symbol system
-that each symbol uniquely refers to some concept (referent). This assumption is called \emph{identity} assumption \cite{}.
-If a meaning of a symbol changes frequently and in an unexpected manner, the entire symbolic manipulation becomes meaningless
-since the underlying symbols are not grounded / tied to a particular concept, and does not represent the real world.
+Fundamentally,
+these harmful effects are caused by breaking a critical feature of a symbol, \emph{designation} \cite{newell1976computer,newell1980physical},
+that each symbol uniquely refers to an entity (referent, concept, meaning).
+If a meaning of a symbol changes frequently and in an unexpected manner, the entire symbolic manipulation is fruitless
+because the underlying symbols are not grounded / tied to a particular concept, and does not represent the real world.
 
 Thus, a symbol grounding procedure should not only find \emph{some} set of symbols that is sufficient to represent the
-environment, but also find a \emph{stable} symbolic representation that uniquely describes the enviromnent.
+environment, but also find a \emph{stable} symbolic representation that uniquely describes the environment.
 % This stability should be checked 
 
 \begin{defi}
