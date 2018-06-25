@@ -905,37 +905,39 @@ resulting representation.
 
 % other regularization
 
-$l_1$ (LASSO) regularization is common in the field of machine learning for improving the
-generalization performance,
-but has not been explicitly associated with the concept of
-closed-world assumption, nor has been associated with the stability of the representation,
-nor in the context of symbol grounding.
+$l_1$ (LASSO) regularization is a standard approach in the field of machine learning for improving the
+generalization performance.
+It is commonly applied to the network \emph{weight}, not activations, thus has been associated with the stability of the representation.
+It has not been explicitly associated with the concept of
+closed-world assumption, nor discussed in the context of symbol grounding.
 
-Autoencoders with $l_1$ regularization is called sparse autoencoder \cite{ng2011cs294a}.
+Autoencoders with $l_1$ regularization applied on the hidden layer
+is called sparse autoencoder \cite{ng2011cs294a}.
 As a Deep-Learning practice,
 this is useful for training an overcomplete network that has a larger latent space and smaller average activation.
-The focus of the previous work in this direction aims at improving the testing accuracy.
-Also, previous work uses deterministic neural network that does not have randomness.
-In contrast, the purpose of zero-suppression is to reduce the randomness
-while maintaining the same testing accuracy.
+The focus of the previous work in this direction aims at improving the testing accuracy and interpretability.
+Also, previous work uses continuous and deterministic neural network that does not have stochasticity.
+In contrast, the purpose of zero-suppression is to reduce the randomness of the representation
+when the network contains stochasticity and the same testing accuracy should be maintained.
 
-As another practical point of view from the data science,
+From another practical point of view from the data science,
 $l_1$ regularization is considered in the context of feature selection for supervised learning,
 where it is important to drop some data columns as unrelated.
 This is a supervised learning setting, and the aim is to improve the classification performance.
 
-In a bio-inspired view, sparce coding is supposed to be natural since
-the neurons can fire less frequently and is energy efficient. [remove?]
+% In a bio-inspired view, sparce coding is supposed to be natural since
+% the neurons can fire less frequently and is energy efficient. [remove?]
 
 In the literature of theoretical analysis of machine learning and generalization,
 regularization in general are regarded as trading the bias and variance.
-For example, $l_1$ regularization biases the representation toward 0 and decreases the variance.
-However, this bias and variance is defined over the dataset, not the single data point \cite{deeplearningbook}.
-Therefore, this variance in the context of machine learning and the variance of the latent representation
-for a single data point that we discussed in this paper are different ideas, while there might be
-a relation between them.
+For example, $l_1$ regularization applied on the hidden layer biases the representation toward 0 and decreases the variance.
+However, this bias and variance are defined over the dataset \cite{deeplearningbook},
+not the single data point as we discussed in this paper.
+% 
+Therefore, the variance in the typical context of machine learning and the variance of the latent representation
+for a single data point that we discussed in this paper are orthogonal.
 
-While an asymmetric penalty may seem unintuitive, this is a quite common
+While an asymmetric penalty may seem unintuitive, this is a common
 strategy particularly in Zero-Suppressed Binary Decision Diagram (ZDD)
 \cite{minato1993zero}, a type of binary decision diagram \cite{bryant1986graph} which
 uses an asymmetric rule for pruning decision nodes, achieving a greater
