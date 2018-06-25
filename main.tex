@@ -74,7 +74,7 @@ partly resolving this bottleneck.
 
 In this paper, we address a new sub-problem of symbol grounding problem, namely
 the symbol \emph{stability} problem.  Informally, symbols are
-\emph{stable} when they take the same value for the exact same
+\emph{stable} when they refer to the same value for the exact same
 observation of the environment, and unstable symbols are harmful for symbolic
 reasoning.
  % 
@@ -304,7 +304,7 @@ it applies $Encode$ to each $tr_i \in Tr$ and obtain $(Encode(\before_i),$ $Enco
 the symbolic representations (latent space vectors) of the transitions.
 
 In Phase 2, an Action Model Acquisition (AMA) method learns an action model (e.g. PDDL, successor function) from $\overline{Tr}$ in an unsupervised manner.
-The original paper propose two approaches: AMA$_1$ is an oracular model which directly generates a PDDL without learning,
+The original paper proposed two approaches: AMA$_1$ is an oracular model which directly generates a PDDL without learning,
 by allowing it to use the whole set of valid transitions as an oracle.
 In contrast, AMA$_2$ is an unsupervised machine learning model that can learn from limited examples.
 
@@ -358,7 +358,7 @@ Assume the output $z$ is a one-hot vector, e.g. if the domain is $D=\braces{a,b,
 The input is a class probability vector $\pi$, e.g. $\brackets{.1,.1,.8}$.
 Gumbel-Max draws samples from $D$ following $\pi$:
 % \[
- $z_i \equiv [ i = \arg \max_j (g_j+\log \pi_j)\ ?\ 1 : 0 ]$
+ $z_i \equiv [ \text{if}\ i\ \text{is} \arg \max_j (g_j+\log \pi_j) \text{then}\ 1\ \text{else}\ 0 ]$
 % \]
 where $g_j$ are i.i.d samples drawn from Gumbel$(0,1)$ \cite{gumbel1954statistical}.
 Gumbel distribution is a random distribution that can be sampled from $-\log (-\log (\text{Uniform}(0,1)))$, where
@@ -430,7 +430,7 @@ activations.
 \section{Issues in the State Representation\\ in the Vanilla SAE}
 \label{issues}
 
-The issues in a vanilla SAE is that the class probability could be
+An issue in a vanilla SAE is that the class probability could be
 neutral for class ``true'' and class ``false'', and the resulting value
 of a proposition is random (\refig{unstable}).
 The randomness of the vanilla SAE comes from
@@ -464,8 +464,10 @@ Secondly, the state space could be disconnected due to such random variations (\
 Some states may be reached only via a single variation of the real world state, and is not connected to the
 other variation of the propositional state that represents the same real-world state.
 
+Thirdly, in order to reduce the stochasticity of the propositions we encounter a hyperparameter tuning problem
+which is costly when we train a large neural network.
 We note that while some values in the latent layer are random, most of values are not.
-These unused, uninformative bits are generated because the network has too much capacity to 
+These unused, uninformative bits are generated because the network has an excessive capacity to 
 model the entire state space, i.e. they appear when we specify the number of proposition $N$ too large.
 If we decrease $N$ while maintaining the reconstruction capability of the SAE, the number of uninformative bits
 reduces.
@@ -479,13 +481,14 @@ and too small $N$ does not converge on the dataset.
 
 As we have seen, unstable propositional representations are harmful for symbolic reasoning algorithms (e.g. search)
 in various ways.
-The fundamental reason of these harmful effects is that they break the fundamental assumption in a symbol system
-that each symbol uniquely refer to some concept (referent). This assumption is called \emph{identity} assumption \cite{}.
+More broadly,
+these harmful effects are caused by breaking the fundamental assumption in a symbol system
+that each symbol uniquely refers to some concept (referent). This assumption is called \emph{identity} assumption \cite{}.
 If a meaning of a symbol changes frequently and in an unexpected manner, the entire symbolic manipulation becomes meaningless
 since the underlying symbols are not grounded / tied to a particular concept, and does not represent the real world.
 
 Thus, a symbol grounding procedure should not only find \emph{some} set of symbols that is sufficient to represent the
-environment, but also find a \emph{stable} symbolic representation that uniquely describe the enviromnent.
+environment, but also find a \emph{stable} symbolic representation that uniquely describes the enviromnent.
 % This stability should be checked 
 
 \begin{defi}
@@ -499,7 +502,7 @@ when its referent (e.g. truth assignment for propositional symbols) is identical
 for the same observation of the environment that is represented.
 \end{defi}
 
-In a more practical perspective, 
+From a practical perspective, 
 the impact of unstable symbols on the symbolic reasoning systems is typically exponential to the number of unstable symbols.
 For example, in the case of search algorithms, each unstable symbol doubles the size of the state space (being true or false).
 In a hypothetical Prolog-like logic programming system, each unstable predicate symbol would also double the
