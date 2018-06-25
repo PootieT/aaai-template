@@ -96,20 +96,19 @@ against various hyperparameters and improves the success rate of
 
 % [This second version of introduction is too long]
 
-% Symbol Grounding problem is one of the key milestones in AI research
-% which seeks to achieve high-level intelligence beyond reflex.
-% In Physical Symbol Systems Hypothesis \cite{}, it is believed that
-% an agent with high-level intelligence performs tasks by efficiently manipulating a compact set of abstract symbols.
-% % 
-% Symbolic manipulation consists of mechanical applications of composable rules which allows for
-% development of highly optimized and generalized, domain-independent heuristics (e.g. FF \cite{Hoffmann01}, LMcut \cite{Helmert2009})
-% that can be easily applied to multiple tasks with few or no data,
-% while the current learning-based approaches struggle to improve its multi-task performance and data efficiency \cite{}.
-
-Fully automated high-level agents should be able to find the symbolic
-representation of an unknown environment by itself.  The task of
-finding such a representation purely from observations is called Symbol
-Grounding problem \cite{harnad1990symbol,Steels2008}.
+Symbol Grounding Problem (SGP) \cite{harnad1990symbol,Steels2008} is one of the key milestones in AI research
+which seeks to achieve high-level intelligence beyond reflex.
+In Physical Symbol Systems Hypothesis \cite{newell2007computer}, it is believed that
+an agent with high-level intelligence performs tasks by efficiently manipulating a compact set of abstract symbols.
+% 
+Symbolic manipulation consists of mechanical applications of composable rules which allows for
+development of highly optimized and generalized, domain-independent heuristics (e.g. FF \cite{Hoffmann01} or LMcut \cite{Helmert2009})
+that can be easily applied to multiple tasks with few or no data,
+while the current learning-based approaches struggle to improve its multi-task performance and data efficiency.
+For example, training AlphaGo \cite{alphago} takes days on a huge cluster of custom-made Tensor Processing Units.
+% 
+To enable such a fully automated high-level symbolic computation in a real-world environment,
+agents should be able to find the symbolic representation of the environment by itself, i.e. solving the Symbol Grounding Problem.
 
 Recently, Latplan system \cite[\refig{fig:overview}]{Asai2018} successfully
 connected a subsymbolic neural network system and a symbolic Classical Planning system
