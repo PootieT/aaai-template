@@ -149,7 +149,7 @@ This problem arises for any grounding processes that do not explicitly tries to 
 representation of the environment.
 The first contribution of this paper is the definition of a sub-problem of symbol grounding
 called ``symbol \emph{stability} problem'', which seeks to find a set of stable symbols
-with a nondeterministic grounding procedure.
+when the grounding procedure is non-deterministic.
 
 The second, and more concrete, contribution of this paper is
 the proposal of Zero-Suppressed State AutoEncoder (ZSAE, \refig{zsae-overview}), an enhancement of SAE in \latentplanner
@@ -164,7 +164,7 @@ it confuses the duplicate detection mechanism.
 Second, and more important, issue is that they may make the state space graph disconnected because certain edges
 are connected to only one random variant of the symbolic representation of real-world states.
 This makes planning to fail without solution or return a suboptimal or even wrong solution.
-In fact, in the appendix section in the Arxiv version of the original paper,
+In fact, in the appendix section in the Arxiv version of the original paper \cite{Asai2018},
 the authors stated that they used \emph{state augmentation} technique
 which circumvent this problem by sampling states from the same image multiple times.
 Thirdly, the system is sensitive to the hyperparameter, and with an inappropriate set of parameters
@@ -256,7 +256,7 @@ Domain  symbols   & \textbf{eight-puzzle}, \textbf{hanoi}                       
 \latentplanner addresses two of the 6 types of symbols listed in \reftbl{tab:type-of-symbols},
 namely propositional and action symbols.
 
-Classical planners such as FF \cite{hoffmann01} or
+Classical planners such as FF \cite{Hoffmann01} or
 FastDownward \cite{Helmert04} takes a PDDL model as an input, which
 specifies the state representation, the initial state, the goal
 condition and the transition rules in the form of first order logic
@@ -399,8 +399,8 @@ the effects include \texttt{(and (not (b5-false)) (b5-true))}.
 \subsection{Regularization in Neural Network}
 
 \emph{Regularization} is an important and broad concept in machine learning
-that limits the representation capacity of the neural network by adding a constraint,
-so that the network better adapt to the underlying characteristics of the dataset.
+that limits the representation capacity of a machine learning model by adding a constraint,
+so that the model better adapt to the underlying characteristics of the dataset.
 Regularization trades the (training) performance with generalization capability (testing performance, robustness to
 unseen data points) in order to suppress overfitting.
 Regularization could be implemented in various ways.
@@ -504,7 +504,7 @@ for the same observation of the environment that is represented.
 \end{defi}
 
 From a practical perspective, 
-the impact of unstable symbols on the symbolic reasoning systems is typically exponential to the number of unstable symbols.
+the impact of unstable symbols on symbolic reasoning systems is typically exponential to the number of unstable symbols.
 For example, in the case of search algorithms, each unstable symbol doubles the size of the state space (being true or false).
 In a hypothetical Prolog-like logic programming system, each unstable predicate symbol would also double the
 number of unifications.
