@@ -823,7 +823,8 @@ Second, we considered the inference time by the number of multiplication operati
 First, the operations: In the same example above,
 matrix multiplication $y=Wx+b$ (where $W$ is the weights and $b$ the bias) requires $LN$ multiplication and $L+N$ additions.
 Moreover, the Gumbel-Softmax operation requires $N$ softmax calculations, gumbel sampling (two logarithms) and one float division.
-This overall amounts to a linear speed up along the reduction of $N$.
+This overall amounts to a linear speed up along the reduction of $N$, 
+since the cost of addition is negligible to the cost of multiplication.
 
 % \section{Declarative Knowledge Base based on ZSAE}
 % 
