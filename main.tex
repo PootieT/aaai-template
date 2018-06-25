@@ -524,7 +524,7 @@ the latent space to generate the real-world data.
 \section{Zero-Suppressed State AutoEncoder (ZSAE) and Entropy-Minimizing State AutoEncoder (ESAE)}
 \label{zsae}
 
-To tackle this problem, we propose Zero-Suppressed State AutoEncoder (ZSAE),
+To tackle the symbol stability problem in Latplan, we propose Zero-Suppressed State AutoEncoder (ZSAE),
 a SAE with additional regularization mechanism.
 The basic idea for our additional regularization is simple: Just penalize the
 1-bit in the latent layer. Since Gumbel-Softmax (GS) is basically a Softmax function,
