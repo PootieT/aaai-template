@@ -996,19 +996,29 @@ are aimed at memory usage and low-level performance while SAE aims at symbolic c
 \section{Conclusion}
 \label{conclusion}
 
-We introduced Zero-Suppressed State AutoEncoder (ZSAE), inspired from
-Zero-Suppressed Decision Diagram, which addresses an issue in the state
-encoding made by \latentplanner, improves its performance, removes the need
-for aggressive hyperparameter tuning.  The ZSAE improves upon the
-regular State AutoEncoder (SAE) proposed by \citeauthor{Asai2018} by
+We introduced Zero-Suppressed State AutoEncoder (ZSAE) which addresses
+the issue of \emph{unstable propositions} in the state encoding made by
+\latentplanner.
+% 
+The ZSAE improves upon the
+regular State AutoEncoder \cite[SAE]{Asai2018} by
 adding an asymmetric penalty similar to $l_1$ regularization to the optimization metric of
 Neural Network, which tries to minimize the number of true propositions
 when encoding a raw state input such as images.
+% 
+ZSAE improves the success rate and the efficiency of planning performed on
+the generated state space, and also removes the need for aggressive
+hyperparameter tuning.
+% 
+Moreover, 
+ZSAE finds several neurons whose activations are constantly zero,
+which can be safely pruned,
+similar to Zero-Suppressed Decision Diagram \cite{minato1993zero}.
 
 As a philosophical, more fundamental contribution,
-we reframed the underlying issue of this problematic behavior
+we reframed the problematic behavior of unstable propositions
 as \emph{Symbol Stability Problem} (SSP), a subproblem of Symbol Grounding Problems (SGP)
-which applies to any symbol grounding processes that contains stochasticity.
+which could potentially be applied to any symbol grounding processes that contain stochasticity.
 % 
 There is an increasing number of use cases of sampling-based, stochastic processes in
 the machine learning literature, notably VAEs and GANs (SAE is a form of VAE),
