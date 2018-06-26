@@ -404,7 +404,7 @@ the effects include \texttt{(and (not (b5-false)) (b5-true))}.
 \subsection{Regularization in Neural Network}
 
 \emph{Regularization} is an important and broad concept in machine learning
-that limits the representation capacity of a machine learning model by adding a constraint,
+that limits the representation capacity of a machine learning model by adding a constraint
 so that the model better adapt to the underlying characteristics of the dataset.
 Regularization trades the (training) performance with generalization capability (testing performance, robustness to
 unseen data points) in order to suppress overfitting.
@@ -420,7 +420,7 @@ Another way is to add a penalty term to the optimization metric of the
 neural network that is minimized by algorithms like Stochastic
 Gradient Descent.
 Common regularization techniques in this category include
-$l_1$ (LASSO) or $l_2$ (ridge) regularization that respectively penalize the absolute sum / square sum of the
+$l_1$ (LASSO) or $l_2$ (ridge) regularization that respectively penalizes the absolute sum / square sum of the
 activations.
 
 % It is necessary for the mapping to be bidirectional, because the
@@ -454,10 +454,10 @@ This causes several problems from the classical planning point of view.
 
 First, search algorithms that run on the state space generated based on these propositional vectors
 are confused by many variations of the essentially identical real world states.
-It could visit several variations of the same real world state that are encoded into different propositional vectors,
-however the duplicate detection in state space search algorithms (e.g. \astar) treat them as separate states.
+It could visit several variations of the same real world state that are encoded into different propositional vectors
+while the duplicate detection in state space search algorithms (e.g. \astar) treat them as separate states.
 % since it completely relies on the atomiticy and deteminisim of the proposition.
-This slows down the search by increasing the number of nodes that is reachable from the initial state.
+This slows down the search by increasing the number of nodes that are reachable from the initial state.
 
 \begin{figure}[htb]
  \centering
@@ -467,15 +467,15 @@ This slows down the search by increasing the number of nodes that is reachable f
 \end{figure}
 
 Secondly, the state space could be disconnected due to such random variations (\refig{disconnected}).
-Some states may be reached only via a single variation of the real world state, and is not connected to the
+Some states may be reached only via a single variation of the real world state and is not connected to the
 other variation of the propositional state that represents the same real-world state.
 In fact, in the appendix section in the Arxiv version of the original paper \cite{Asai2018},
 the authors stated that they used \emph{state augmentation} technique
-which circumvent this problem by sampling states from the same image multiple times.
+which circumvents this problem by sampling states from the same image multiple times.
 
-Thirdly, in order to reduce the stochasticity of the propositions we encounter a hyperparameter tuning problem
+Thirdly, in order to reduce the stochasticity of the propositions, we encounter a hyperparameter tuning problem
 which is costly when we train a large neural network.
-We note that while some values in the latent layer are random, most of values are not.
+We note that while some propositions in the latent layer are random, most propositions are not.
 These unused, uninformative bits are generated because the network has an excessive capacity to 
 model the entire state space, i.e. they appear when we specify the number of proposition $N$ too large.
 If we decrease $N$ while maintaining the reconstruction capability of the SAE, the number of uninformative bits
@@ -488,7 +488,7 @@ and too small $N$ does not converge on the dataset.
 
 % \section{Symbol Stability Problem}
 
-As we have seen, unstable propositional representations are harmful for symbolic reasoning algorithms (search)
+As we have seen, unstable propositional representations are harmful to symbolic reasoning algorithms (search)
 in various ways.
 Fundamentally,
 these harmful effects are caused by breaking a critical feature of symbols, \emph{designation} \cite{newell1976computer,newell1980physical},
@@ -503,7 +503,7 @@ because the underlying symbols are not grounded / tied to any particular concept
 
 
 Thus, a symbol grounding procedure should not only find \emph{some} set of symbols that is sufficient to represent the
-environment, but also find a \emph{stable} symbolic representation that uniquely describes the environment.
+environment but also find a \emph{stable} symbolic representation that uniquely describes the environment.
 % This stability should be checked 
 
 \begin{defi}
@@ -546,7 +546,7 @@ the latent space to generate the real-world data.
 \label{zsae}
 
 To tackle the symbol stability problem in Latplan, we propose Zero-Suppressed State AutoEncoder (ZSAE),
-a SAE with a additional regularization mechanism which is simple but efficient.
+a SAE with an additional regularization mechanism which is simple but efficient.
 The basic idea for our additional regularization is to penalize the
 true propositions in the latent layer so that no propositions unnecessarily flip to true at random,
 while preserving the propositions that are absolutely necessary for representing the reconstruction accuracy.
@@ -570,7 +570,7 @@ Similar to $l_1$ regularization, this achieves a sparser representation in the b
 
 One additional advantage of ZSAE is that, since the representation becomes deterministic,
 several neurons are completely deactivated, i.e. always takes the value of zero
-and can be pruned afterwards to reduce the network size.
+and can be pruned afterward to reduce the network size.
 
 A possible interpretation of this approach from the symbolic perspective is that
 this regularization is working as a prior corresponding to \emph{closed-world assumption} \cite[CWA]{reiter1981closed}.
@@ -586,7 +586,7 @@ because it does not have to explicitly store the false propositions.
 
 In our Zero-Suppressed SAE, nodes that do not affect the output are stabilized to zero
 and can be safely pruned.
-Moreover, we could conceive that there are infinite number of propositions
+Moreover, we could conceive that there is infinite number of propositions
 that are already pruned from the network and are just invisible, just as false propositions
 can be pruned from a Knowledge Base.
 In other words, combining the discrete representation and zero-suppression,
@@ -621,8 +621,8 @@ This demonstrates that \latentplanner is not limited to domains with highly loca
 showing that \latentplanner is not limited to handling rectangular ``objects''/regions.
 
 Each domain has 60 problem instances each generated by a random walk from
-the goal state. 60 instances consists of 30 instances each generated by a 7-steps random walk
-and another 30 by 14 steps. 30 instances consists of 10 instances whose images are corrupted by Gaussian noise,
+the goal state. 60 instances consist of 30 instances each generated by a 7-steps random walk
+and another 30 by 14 steps. 30 instances consist of 10 instances whose images are corrupted by Gaussian noise,
 10 with salt/pepper noise and another 10 with no noise.
 
 % There are three versions of 8-puzzles (MNIST, Mandrill, Spider).
@@ -778,18 +778,21 @@ We tested both Action Model Acquisition (AMA) methods AMA$_1$ and AMA$_2$ propos
 
 We first tested AMA$_1$, an oracular, idealistic AMA that does not incorporate machine learning,
 and instead generates the entire propositional state transitions from the entire image transitions.
-The purpose we test an impractical AMA$_1$ methods is
+The purpose we test an impractical AMA$_1$ method is
 to separate the effect of a better state representation achieved by ZSAE
-and that of the learning procedure in AMA$_2$ that learns the state transitions and action rules.
+and that of the learning procedure in AMA$_2$ that learns the state transitions and the action rules.
+As a classical planner, we used FastDownward \cite{Helmert04} with blind heuristics in order to
+remove the effects of the heuristic functions.
 
-We generated the symbolic transition models from the entire image transitions for 10 times,
-then used each model for solving 60 problem instances, then measured the statistics of the number of problems solved over 10 trials.
-The results in \reftbl{tab:ama1} shows that ZSAE achieves the overall improvement in terms of success ratio.
-ZSAE is more robust against the size of the latent space.
+We repeated the process of generating a symbolic transition model from the entire image transitions 10 times,
+solved the 60 problem instances using each model,
+then measured the statistics of the number of problems solved over the 10 models.
+The results in \reftbl{tab:ama1} shows that ZSAE achieves the overall improvement in terms of success rate.
+ZSAE is more robust against the different sizes of the latent space.
 Moreover, the variance of the number of solved instances is quite high in SAE.
 % 
 Further analyses showed that
-in some models (out of 10 trials), the planner always fails to find a solution because
+in X models (out of 10 trials), the planner always fails to find a solution because
 the state space graph was completely disconnected.
 % 
 Even if we remove those pathological cases of SAE (third column), its average success is still
@@ -817,11 +820,11 @@ SAE performance is sometimes comparable to ZSAE but only when it is tuned approp
 \label{tab:ama1}
 \end{table}
 
-Another harmful effect of unstable propositions is
+Another harmful effect of the unstable propositions is
 their effect on the duplicate detection mechanism of search algorithms.
-To demonstrate that this effect is also suppressed by ZSAE,
-we measured the number of node generation
-on models generated by Vanilla SAE and ZSAE and successfully solved by
+To demonstrate that this effect is also reduced by ZSAE,
+we measured the number of node generations
+on the models resulted from Vanilla SAE and ZSAE and successfully solved by
 the planner (\refig{fig:ama1-visited}).
 % ???
 % Since the planner uses a blind search and the problem is unit-cost, all nodes under the solution depth are generated
