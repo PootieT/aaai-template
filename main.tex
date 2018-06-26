@@ -420,7 +420,7 @@ Another way is to add a penalty term to the optimization metric of the
 neural network that is minimized by algorithms like Stochastic
 Gradient Descent.
 Common regularization techniques in this category include
-$l_1$ (LASSO) or $l_2$ regularization that penalize the absolute sum / square sum of the
+$l_1$ (LASSO) or $l_2$ (ridge) regularization that respectively penalize the absolute sum / square sum of the
 activations.
 
 % It is necessary for the mapping to be bidirectional, because the
@@ -437,7 +437,7 @@ activations.
 
 SAE in \latentplanner can map a visual observation of the environment to/from a set of propositional values.
 An issue in a vanilla SAE is that the class probability that is used inside its Gumbel-Softmax could be
-neutral for the class ``true'' and the class ``false'', and the resulting value
+neutral for the class ``true'' and the class ``false'' at some neuron, and the resulting value
 of a proposition is random (\refig{unstable}).
 The randomness of the vanilla SAE comes from the way
 Gumbel distribution is sampled, $-\log (-\log (\text{Uniform}(0,1)))$, which includes
@@ -453,11 +453,11 @@ This causes several problems from the classical planning point of view.
 \end{figure}
 
 First, search algorithms that run on the state space generated based on these propositional vectors
-are confused by many variation of the essentially identical real world states.
+are confused by many variations of the essentially identical real world states.
 It could visit several variations of the same real world state that are encoded into different propositional vectors,
 however the duplicate detection in state space search algorithms (e.g. \astar) treat them as separate states.
 % since it completely relies on the atomiticy and deteminisim of the proposition.
-This slows down the search by increasing the number of nodes that can be reachable from the initial state.
+This slows down the search by increasing the number of nodes that is reachable from the initial state.
 
 \begin{figure}[htb]
  \centering
@@ -491,14 +491,16 @@ and too small $N$ does not converge on the dataset.
 As we have seen, unstable propositional representations are harmful for symbolic reasoning algorithms (search)
 in various ways.
 Fundamentally,
-these harmful effects are caused by breaking a critical feature of a symbol, \emph{designation} \cite{newell1976computer,newell1980physical},
-that each symbol uniquely refers to an entity (referent, concept, meaning).
+these harmful effects are caused by breaking a critical feature of symbols, \emph{designation} \cite{newell1976computer,newell1980physical},
+that each symbol uniquely refers to an entity (referent, concept, meaning),
+ which, in our case, is the truthfulness of a statement.
 If a meaning of a symbol changes frequently and in an unexpected manner, the entire symbolic manipulation is fruitless
-because the underlying symbols are not grounded / tied to a particular concept, and does not represent the real world.
+because the underlying symbols are not grounded / tied to any particular concept, and does not represent the real world.
 
 [more intuitive example?]
 % A famous 
 % Colorless green ideas sleep furiously
+
 
 Thus, a symbol grounding procedure should not only find \emph{some} set of symbols that is sufficient to represent the
 environment, but also find a \emph{stable} symbolic representation that uniquely describes the environment.
