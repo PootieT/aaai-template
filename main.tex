@@ -116,13 +116,13 @@ to solve various visually presented puzzle domains.
 % In contrast to the work by Konidaris et. al. (\citeyear{KonidarisKL14}),
 % Latplan is a straightforward NN built upon a \lsota framework.
 The State AutoEncoder (SAE) neural network in \latentplanner
-generates a set of propositional symbols from the training data consisting only of images,
+generates a set of propositional symbols from the training data consisting \emph{only of images},
 i.e., by unsupervised learning without manual tagging,
-and provides a bidirectional mapping between images and propositional states of the plan.
+and provides a bidirectional mapping between images and propositional states.
 % 
 The system then solves the propositional planning problem using a classical planner Fast Downward \cite{Helmert04}
 and returns an image sequence that solves the puzzle
-by decoding the intermediate propositional states.
+by decoding the intermediate propositional states of the plan.
 It also discovers a set of action symbols that distinguish the modes of
 state transitions through AMA$_2$ unsupervised learning process.
 Therefore, the system solves symbol grounding for two kinds of symbols:
@@ -168,9 +168,9 @@ it confuses the duplicate detection mechanism.
 Second, and more important, issue is that they may make the state space graph disconnected because certain edges
 are connected to only one random variant of the symbolic representation of real-world states.
 This makes planning to fail without solution or return a suboptimal or even wrong solution.
-In fact, in the appendix section in the Arxiv version of the original paper \cite{Asai2018},
-the authors stated that they used \emph{state augmentation} technique
-which circumvent this problem by sampling states from the same image multiple times.
+% In fact, in the appendix section in the Arxiv version of the original paper \cite{Asai2018},
+% the authors stated that they used \emph{state augmentation} technique
+% which circumvent this problem by sampling states from the same image multiple times.
 Thirdly, the system is sensitive to the hyperparameter, and with an inappropriate set of parameters
 the propositional symbols are highly unstable.
 Specifically, if we set the number of propositions ($=$ number of nodes in the latent layer) too high, the network
@@ -468,6 +468,9 @@ This slows down the search by increasing the number of nodes that can be reachab
 Secondly, the state space could be disconnected due to such random variations (\refig{disconnected}).
 Some states may be reached only via a single variation of the real world state, and is not connected to the
 other variation of the propositional state that represents the same real-world state.
+In fact, in the appendix section in the Arxiv version of the original paper \cite{Asai2018},
+the authors stated that they used \emph{state augmentation} technique
+which circumvent this problem by sampling states from the same image multiple times.
 
 Thirdly, in order to reduce the stochasticity of the propositions we encounter a hyperparameter tuning problem
 which is costly when we train a large neural network.
@@ -808,8 +811,8 @@ From \refig{fig:ama2-ad}, we observe the accuracy was improved by the ZSAE.
 
 [too obvisous and intuitive?]
 
-We computes the amount of memory reduction possible by the pruning on the nodes
-that has a constant activation of 0. As we saw from \refig{tab:stability},
+We compute the amount of memory reduction possible by the pruning on the nodes
+that has a constant activation of 0. As we saw from \reftbl{tab:stability},
 Vanilla SAE does not have such propositions (all bits are effective bits).
 % While we did not actually implemented the node pruning,
 
