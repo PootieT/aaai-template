@@ -759,7 +759,7 @@ We next measured the average percentage of propositions that turned true.
 Finally, \reftbl{tab:stability} (right columns) shows that the number of effective bits,
 i.e. the number of propositions that \emph{ever} turned true, is low in ZSAE.
 In MNIST, the numbers are comparable between ZSAEs with $(N,\alpha)=(100,0.7)$ and $(1000,0.7)$.
-This shows that the network can sometimes find an encoding of almost the same size
+This shows that the network is able to find an encoding of almost the same size
 regardless of the size of the latent layer (upper bound of the size of
 propositions). The additional
 penalty encourages the network to find the more compact representation,
@@ -790,6 +790,9 @@ Moreover, the variance of the number of solved instances is quite high in SAE.
 Further analyses showed that
 in some models (out of 10 trials), the planner always fails to find a solution because
 the state space graph was completely disconnected.
+% 
+Even if we remove those pathological cases of SAE (third column), its average success is still
+lower than ZSAE.
 
 \begin{table}[htbp]
 \centering
