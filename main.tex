@@ -951,14 +951,23 @@ are aimed at memory usage and low-level performance while SAE aims at symbolic c
 We introduced Zero-Suppressed State AutoEncoder (ZSAE), inspired from
 Zero-Suppressed Decision Diagram, which addresses an issue in the state
 encoding made by \latentplanner, improves its performance, removes the need
-for aggressive hyperparameter tuning as well as achieves a
-neural-symbolic declarative knowledge base.  The ZSAE improves upon the
+for aggressive hyperparameter tuning.  The ZSAE improves upon the
 regular State AutoEncoder (SAE) proposed by \citeauthor{Asai2018} by
 adding an asymmetric penalty similar to $l_1$ regularization to the optimization metric of
 Neural Network, which tries to minimize the number of true propositions
 when encoding a raw state input such as images.
 
+As a philosophical, more fundamental contribution,
+we reframed the underlying issue of this problematic behavior
+as \emph{Symbol Stability Problem} (SSP), a subproblem of Symbol Grounding Problems (SGP)
+which applies to any symbol grounding processes that contains stochasticity.
+% 
+There is an increasing number of use cases of sampling-based, stochastic processes in
+the machine learning literature, notably VAEs and GANs (SAE is a form of VAE),
+which will be highly affected by SSP when applied to solve SGPs.
+
 % ?
-A promising direction for future work is to build a first-order logical
-representation of the input domain building upon \latentplanner system.
+A promising direction for future work is to 
+find an adaptive, online tuning method for $\alpha$, the hyperparameter for
+zero-suppression ($l_1$) regularization.
 
