@@ -161,18 +161,17 @@ the proposal of Zero-Suppressed State AutoEncoder (ZSAE, \refig{zsae-overview}),
 that has an additional regularization penalty function for the neural network 
 that makes the learned propositions more ``stable''.
 
-ZSAE addresses three issues in the original Latplan.
-The first two issues are directly related to the unstable symbols.
-Unstable symbols affect search algorithms in two ways:
-First, they increases the number of node generations because
-it confuses the duplicate detection mechanism.
+ZSAE addresses three issues caused by the unstable propositional symbols of Latplan.
+% The first two issues are directly related to the unstable symbols.
+% Unstable symbols affect search algorithms in two ways:
+First, they increases the number of node generations because it confuses the duplicate detection mechanism.
 Second, and more important, issue is that they may make the state space graph disconnected because certain edges
 are connected to only one random variant of the symbolic representation of real-world states.
-This makes planning to fail without solution or return a suboptimal or even wrong solution.
+This makes planning to fail without solution or return a suboptimal solution.
 % In fact, in the appendix section in the Arxiv version of the original paper \cite{Asai2018},
 % the authors stated that they used \emph{state augmentation} technique
 % which circumvent this problem by sampling states from the same image multiple times.
-Thirdly, the system is sensitive to the hyperparameter, and with an inappropriate set of parameters
+Thirdly, the system is sensitive to the hyperparameters, and with an inappropriate set of parameters
 the propositional symbols are highly unstable.
 Specifically, if we set the number of propositions ($=$ number of nodes in the latent layer) too high, the network
 has an excessive capacity which results in too many unused, unstable propositions.
@@ -203,11 +202,11 @@ ZSAE obtains a representation that has fewer true bits.}
 In Zero-Suppressed SAE (ZSAE), an additional penalty function
 guides the network optimization so that unused propositions tend to 
 take the value of zero (false) instead of random values,
-resulting in a more stable representation, measured by the variance of the representation from the same input.
+resulting in a more stable representation, measured by the variance of the representation of the same input.
 The stable representation results in a higher success rate of classical planning.
 
 The idea behind ZSAE is similar to the Zero-Suppressed Binary Decision Diagram \cite{minato1993zero},
-which is a variant of Binary Decision Diagram \cite{bryant1986graph} with an alternative node reduction rule:
+a variant of Binary Decision Diagram \cite{bryant1986graph} with an alternative node reduction rule:
 Nodes whose 1-edge going to constant 0-node are pruned.
 With a similar intent, we show that we can prune some unused neurons
 that has a constant activation of zero that was found by ZSAE.
