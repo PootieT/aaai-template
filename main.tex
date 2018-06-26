@@ -595,6 +595,8 @@ ZSAE embeds closed-world assumption in the network as a model prior.
 
 We tested the vanilla SAE and the Zero-suppressed SAE across 5 different
 image domains depicting 8-puzzles or Lights Out puzzle game \cite{lightsout}.
+Experiments were performed on a compute cluster with Xeon Ivy Bridge
+processors and Tesla K40 GPUs.  Each training takes about 30 minutes.
 
 \textbf{MNIST 8-puzzle}
 is an image-based version of the 8-puzzle, where tiles contain hand-written digits (0-9) from the  MNIST database \cite{lecun1998gradient}.
@@ -655,6 +657,15 @@ and another 30 by 14 steps. 30 instances consists of 10 instances whose images a
 % in order to remove the grid-like structure in the images.
 % The effect is applied to the center, with strength=3, linear interpolation, 
 % and radius equal to 0.75 times the dimension of the image.
+
+% unnecessary?
+
+Training is performed on 1000 epochs, with an annealing schedule
+$\tau=5e^{- (\log\frac{5}{0.7})\frac{t}{1000}}\in [0.7,5]$.
+On all configurations, $\alpha$ is initially set to 0 during the first 50 epochs and then set to the specified value.
+This is in order to make the network sufficiently trained to
+reconstruct the environment before trying to stabilize the propositions.
+
 \subsection{State Variance}
 
 
@@ -707,6 +718,37 @@ We took the maximum variance over the entire propositions and 100 input images.
 \reftbl{tab:stability} (first columns) shows that the propositions made by Vanilla SAE are highly random,
 while additional regularization in ZSAE suppresses the stochastic behavior
 and achieves a stable propositional representation.
+
+In order to check the behavior during training, 
+we plotted the average and the maximum entropy of the representation over all propositions
+within the batch samples in the validation set.
+% 
+\refig{ZSAE-entropy} shows that, while the overall, average entropy is reduced in both SAE and ZSAE,
+it is lower in ZSAE. 
+Moreover,
+the maximum entropy remains high in the vanilla SAE while it converges to zero in ZSAE, meaning that
+the pure Gumbel-Softmax annealing is insufficient for addressing the symbol stability problem.
+
+\begin{figure}[htbp]
+\centering
+ % \includegraphics[width=0.5\linewidth]{img/static/max-entropy.png}
+ \includegraphics[width=0.49\linewidth]{img/static/val-mean-entropy.png}
+ \includegraphics[width=0.49\linewidth]{img/static/val-max-entropy.png}
+ \caption{
+The mean (left) and the maximum (right) entropy over all bits ($N=100$) and all batch samples
+while training an SAE for MNIST puzzle.
+% (left: training set, right: validation set).
+ % 
+Compared to SAE (green), we observed that ZSAE (gray) converges to
+almost zero entropy ($\leq 10^{-2}$) around epoch 500, meaning that it finds a completely
+stabilized set of symbols.
+% 
+Entropy of the representation is $\sum_{i\in\{0,1\},1\leq j \leq N} -p_{ij}\log p_{ij}$ where
+$p_{ij}$, a probability that $z_{ij}=1$, is computed as $\text{Softmax}_j(\log \pi_{ij})$,
+the softmax of the un-normalized logit $\log \pi_{ij}$ used in GS.}
+\label{ZSAE-entropy}
+\end{figure}
+
 
 We next measured the average percentage of propositions that turned true.
 \reftbl{tab:stability} (middle columns) shows that the ratio significantly drops due to the Zero-suppression penalty.
