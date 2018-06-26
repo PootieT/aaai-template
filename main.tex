@@ -780,7 +780,16 @@ and instead generates the entire propositional state transitions from the entire
 The purpose we test an impractical AMA$_1$ methods is
 to separate the effect of a better state representation achieved by ZSAE
 and that of the learning procedure in AMA$_2$ that learns the state transitions and action rules.
+
+We generated the symbolic transition models from the entire image transitions for 10 times,
+then used each model for solving 60 problem instances, then measured the statistics of the number of problems solved over 10 trials.
 The results in \reftbl{tab:ama1} shows that ZSAE achieves the overall improvement in terms of success ratio.
+ZSAE is more robust against the size of the latent space.
+Moreover, the variance of the number of solved instances is quite high in SAE.
+% 
+Further analyses showed that
+in some models (out of 10 trials), the planner always fails to find a solution because
+the state space graph was completely disconnected.
 
 \begin{table}[htbp]
 \centering
