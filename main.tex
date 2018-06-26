@@ -567,29 +567,29 @@ $\alpha$ is a hyperparameter which specifies the magnitude of the zero-suppressi
 Similar to $l_1$ regularization, this achieves a sparser representation in the binary domain where
  more propositions take the value of 0 (\refig{zsae-overview}).
 
-One additional advantage of applying $l_1$ norm is that, when the representation becomes deterministic,
+One additional advantage of ZSAE is that, since the representation becomes deterministic,
 several neurons are completely deactivated, i.e. always takes the value of zero
 and can be pruned afterwards to reduce the network size.
 
 A possible interpretation of this approach from the symbolic perspective is that
-this $l_1$ (LASSO) regularization is working as a prior representing \emph{closed-world assumption} \cite[CWA]{reiter1981closed}.
+this regularization is working as a prior corresponding to \emph{closed-world assumption} \cite[CWA]{reiter1981closed}.
 CWA is an assumption that all propositions take the value \texttt{false}
 when they are unknown to a Knowledge Base (KB) or cannot be proven from it (negation as failure).
 % [wrong!]
 % We could interpret these unknown propositions defaulted to be false as those which are irrelevant
 % to the current task that the agent is solving.
 Being always false, the agent can safely ignore them because
-they do not initiate an additional set of rules in the rule database by satisfying further preconditions.
+they do not trigger an additional set of rules in the rule database by satisfying their preconditions.
 Also, the KB enjoys the space reduction for storing facts
 because it does not have to explicitly store the false propositions.
 
 In our Zero-Suppressed SAE, nodes that do not affect the output are stabilized to zero
 and can be safely pruned.
 Moreover, we could conceive that there are infinite number of propositions
-that are already pruned from the network and are just invisible, just as all unknown propositions
-are regarded as false and need not be explicitly saved in the Knowledge Base.
-In other words, combining discrete representation and zero-suppression,
-ZSAE embeds closed-world assumption in the network as a model prior.
+that are already pruned from the network and are just invisible, just as false propositions
+can be pruned from a Knowledge Base.
+In other words, combining the discrete representation and zero-suppression,
+ZSAE embeds CWA in the network as a model prior.
 
 
 \section{Empirical Evaluation}
