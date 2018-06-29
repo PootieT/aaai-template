@@ -638,7 +638,7 @@ In fact, there is no reason that the loss should be identical to the Gumbel-Soft
 \section{Zero-Suppressed State AutoEncoder (ZSAE)}
 \label{zsae}
 
-To tackle the symbol stability problem in Latplan, we propose Zero-Suppressed State AutoEncoder (ZSAE),
+To further tackle the symbol stability problem in Latplan, we propose Zero-Suppressed State AutoEncoder (ZSAE),
 a SAE with an additional regularization mechanism which is simple but efficient.
 The basic idea for our additional regularization is to penalize the
 true propositions in the latent layer so that no propositions unnecessarily flip to true at random,
@@ -660,6 +660,11 @@ $M=2$, $q=\text{Softmax}(\log \pi_i)$ and $\log \pi_i$ is the un-normalized inpu
 $\alpha$ is a hyperparameter which specifies the magnitude of the zero-suppression.
 Similar to $l_1$ regularization, this achieves a sparser representation in the binary domain where
  more propositions take the value of 0 (\refig{zsae-overview}).
+
+This new regularization can be interpreted as follows.
+Recall that, in the standard SAE, the $P_a(z_{ij}=1)=q_i\frac{1}{M}$ for any $j$, i.e. fair to any $j$.
+Since zero-suppression penalizes the true bits ($z_{i0}=1$), it changes this fairness: The larger the $\alpha$,
+the less $P_a(z_{i0}=1)$. This changes the target distribution of the KL-divergence.
 
 One additional advantage of ZSAE is that, since the representation becomes deterministic,
 several neurons are completely deactivated, i.e. always takes the value of zero
