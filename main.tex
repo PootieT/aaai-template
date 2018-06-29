@@ -542,6 +542,98 @@ contains a source of stochasticity in the network. Generative
 Adversarial Networks \cite[GAN]{goodfellow2014generative} also samples
 the latent space to generate the real-world data.
 
+\section{Analyzing State AutoEncoder}
+\label{sae}
+
+To obtain the deeper understanding of the mechanism that generates the
+unstable symbols in Latplan and to reproduce their experiments, we
+analyzed the source code of Latplan published on Github.
+% 
+Surprisingly, we found that they are using an incorrect loss function for Gumbel-Softmax VAE,
+and \emph{this very mistake} is essential to the success of their experiment
+by \emph{largely suppressing the instability} of the symbols, while not perfectly.
+\footnote{The original authors are not the expert in Machine Learning.}
+
+% % Keep in mind that the reviewers might be symbolic people -- so use the intuitive words as possible.
+% The purpose of Gumbel-Softmax VAE is to obtain a neural network
+% whose latent layer resembles a random categorical distribution
+% with a certain number of categories $M$ ($M=2$ in Latplan).
+ 
+Following Maddison et. al., (\citeyear[Appendix C.1]{MaddisonMT17}),
+let $P_a(D=d)$ be a probability mass function where
+$d$ is a $N$-dimensional one-hot vector of $M$ categories ($N\times M$ matrix),
+$D$ follows a discrete random distribution $\text{Discrete}(a)$ and
+$a$ is a \emph{fixed} matrix of un-normalized probabilities ($a\in \mathbb{R}_+^{N\times M}$).
+$a$ becomes a probability matrix by $\text{Softmax}(a)$ (each row sums up to 1)
+and defines the probability that $d_{ij}$ becomes 1.
+% 
+In Latplan and other reference implementations \cite{ericjanggithub} of Gumbel-Softmax VAE,
+$a$ is assumed to be fair to any $j$,
+i.e. $a$ is a matrix whose values are all $\frac{1}{M}$. (Note that $M=2$ in Latplan.)
+The purpose of training a Gumbel-Softmax VAE is to make the latent distribution $Q(D=Encode(x)\, |\, x)$ similar to $P_a(D)$.
+Note that this $Q$ assumes $Encode(x)$ is a categorical distribution $D$.
+
+% Let $Z$ be the gumbel-softmax approximation of $D$ with some temperature.
+
+To make $Q(D|x)$ similar to $P_a(D)$, the standard approach is to minimize $D_{\text{KL}}(Q||P_a)$,
+the KL divergence of $Q$ from $P_a$.
+In Latplan, it is approximated by $- \sum_{i,j} Q(z_{ij}=1|x) \log\frac{P_a(z_{ij}=1)}{Q(z_{ij}=1|x)}$.
+% = \mathop{\mathbb{E}}_{D\sim Q(d|x)}\brackets{ \log \frac{P_a(D)}{Q(D|x)}}
+\cite[Eq.22 --- However, it lacks negation because it is discussing a maximization objective.]{MaddisonMT17}
+
+In practice, this is computed as follows.
+Recall that Gumbel-Softmax is $z_{ij} = \text{Softmax}((g_{ij}+\log \pi_{ij})/\tau)$,
+where $\log \pi_{ij}$ is an un-normalized logit and is an input of the layer,
+from which the normalized probability can be computed as $q_{ij}=\text{Softmax}_j(\log \pi_{ij})$.
+Also, $P_a(z_{ij}=1)= 1/M$.
+% 
+Therefore, the approximated KL divergence is
+$-\sum_{i,j} q_{ij} \log \frac{1/M}{q_{ij}} = \sum_{i,j} q_{ij} \log q_{ij} + q_{ij} \log M$.
+The second term is a constant because $\sum_j q_{ij} = 1$,
+and thus can be safely ignored from the loss function.
+Therefore, the remaining term is $\sum_{i,j} q_{ij} \log q_{ij}$.
+
+We found that the Latplan code published on Github is actually using the \emph{negative} of this loss,
+i.e. it is \emph{maximizing} the KL divergence instead of minimizing it.
+In fact, it is natural if we think carefully about the nature of Gumbel-Softmax VAE:
+It tries to make the distribution look more similar to a fair random categorical distribution
+that takes 0 or 1 with equal probability, i.e., by minimizing the KL divergence, it is trying to make the
+latent representation \emph{more random}. This is clearly the opposite of the stable symbols we want to achieve.
+Instead, \citeauthor{Asai2018} accidentally inverted the loss, which resulted in
+maximizing the KL divergence and making the representation \emph{less random}.
+
+Next, we show that the \emph{incorrect} version by \citeauthor{Asai2018} 
+actually \emph{guarantees to reduce} the randomness,
+instead of converging to any other random distribution different from $P_a(D)$ by maximizing the KL divergence.
+The reason is that the whole loss function of the network can be transformed as follows:
+\begin{align*} 
+ \brackets{\text{rec loss}}-D_{\text{KL}}(Q||P_a)&                                         \\
+=\brackets{\text{rec loss}}+D_{\text{KL}}(Q||P_a)&- 2 D_{\text{KL}}(Q||P_a)                \\
+=\brackets{\text{\small correct GS VAE loss}}& + 2 \sum_{i,j} (- q_{ij} \log q_{ij})      \\
+=\brackets{\text{\small correct GS VAE loss}}& + 2 \sum_{i} H(b_i)                        \\
+\geq\brackets{\text{\small correct GS VAE loss}}& + 2 H(b_0,b_1\ldots b_N)
+\end{align*}
+where $H(b_i)$ denotes the \emph{shannon entropy} of individual proposition $b_i$ and
+$H(b_0,b_1\ldots b_N)$ is the joint entropy of the latent space.
+It shows that the loss function is an upper bound approximation of the sum of the VAE loss and the joint entropy,
+which assumes that $b_i$ are mutually independent.
+The equality holds when all propositions $b_i$ are independent.
+
+We can interpret this result as follows:
+The \emph{incorrect Gumbel-Softmax VAE loss function}
+was indeed a modification of Gumbel-Softmax VAE with an additional \emph{entropy-based regularization},
+which penalizes the network for learning an unstable representation
+through a loss function and restricts the network to learn a stabler representation.
+
+In the later sections, we empirically show that the \emph{correct} Gumbel-Softmax VAE results in
+a much higher randomness for a single input compared to the original code of Latplan,
+thus the original implementation, i.e., Gumbel-Softmax VAE + Entropy regularization, is superior.
+
+Note that we do not criticize Latplan for its ``incorrect VAE loss'',
+nor that it voids the validity of their evaluation of the system,
+but that in fact the loss formulation is actually the key to achieving the desired behavior.
+In fact, there is no reason that the loss should be identical to the Gumbel-Softmax VAE loss.
+
 % \section{Zero-Suppressed State AutoEncoder (ZSAE) and Entropy-Minimizing State AutoEncoder (ESAE)}
 \section{Zero-Suppressed State AutoEncoder (ZSAE)}
 \label{zsae}
