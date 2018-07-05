@@ -658,15 +658,16 @@ propositional representation.
 To further tackle the symbol stability problem in Latplan,
 we need to reduce the effect of the external stochasticity of the environment
 to the latent, propositional representation, while preserving the reconstruction accuracy
- (traditional machine-learning objective).
+ (\emph{robustness}, traditional machine-learning objective).
 For this purpose, we propose Zero-Suppressed State AutoEncoder (ZSAE),
 a SAE with an additional regularization mechanism which is simple but efficient.
 
 The basic idea for our additional regularization is to penalize the
 true propositions in the latent layer so that no propositions unnecessarily flip to true at random,
-while preserving the propositions that are absolutely necessary for representing the reconstruction accuracy.
-Since Gumbel-Softmax (GS) is basically a Softmax function,
-and SAE uses 2 categories, this can be seen as adding an
+while preserving the propositions that are absolutely necessary for maintaining the reconstruction accuracy.
+% Since Gumbel-Softmax (GS) is basically a Softmax function,
+% and SAE uses 2 categories,
+This can be seen as adding an
 asymmetric penalty for a particular class label (true) used in the encoding.
 
 The resulting loss function below is similar to the $l_1$ norm (LASSO) typically
