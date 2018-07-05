@@ -363,9 +363,9 @@ Assume the output $z$ is a one-hot vector, e.g. if the domain is $D=\braces{a,b,
 The input is a class probability vector $\pi$, e.g. $\brackets{.1,.1,.8}$.
 Gumbel-Max draws samples from $D$ following $\pi$:
 % \[
- $z_i \equiv [ \text{if}\ i\ \text{is} \arg \max_j (g_j+\log \pi_j) \text{then}\ 1\ \text{else}\ 0 ]$
+ $z_i \equiv [ \text{if}\ i\ \text{is} \arg \max_i (g_i+\log \pi_i) \text{then}\ 1\ \text{else}\ 0 ]$
 % \]
-where $g_j$ are i.i.d samples drawn from Gumbel$(0,1)$ \cite{gumbel1954statistical}.
+where $g_i$ are i.i.d samples drawn from Gumbel$(0,1)$ \cite{gumbel1954statistical}.
 Gumbel distribution is a random distribution that can be sampled from $-\log (-\log (\text{Uniform}(0,1)))$, where
 $\text{Uniform}(0,1)$ is a uniform random distribution between 0 and 1.
 Gumbel-Softmax approximates argmax with softmax to make it differentiable:
@@ -634,9 +634,9 @@ The reason is that the whole loss function of the network can be transformed as 
 \geq\brackets{\text{\small correct GS VAE loss}}& + 2 H(b_0,b_1\ldots b_N)
 \end{align*}
 where $H(b_i)$ denotes the \emph{shannon entropy} of individual proposition $b_i$ and
-$H(b_0,b_1\ldots b_N)$ is the joint entropy of the latent space.
-It shows that the loss function is an upper bound approximation of the sum of the VAE loss and the joint entropy,
-which assumes that $b_i$ are mutually independent.
+$H(b_0,b_1\ldots b_N)$ is the joint entropy of the propositions.
+It shows that their loss function is an upper bound approximation of
+the sum of the GS-VAE loss and the entropy (measure of randomness) of the representation.
 The equality holds when all propositions $b_i$ are independent.
 
 We can interpret this result as follows:
@@ -670,26 +670,22 @@ asymmetric penalty for a particular class label (true) used in the encoding.
 The resulting loss function below is similar to the $l_1$ norm (LASSO) typically
 applied to continuous activation values:
 \begin{align*}
- \brackets{\text{loss}} = & \brackets{\text{\small Reconstruction}} &+ & \brackets{\text{\small GS loss}} &+ & \brackets{\text{\small 0-Sup. loss}} \\ 
- % =                      & D_\text{KL}(r || \tilde{r}) &+ & \text{mean}(q \log Mq)           &+ & \alpha \text{mean}(b)              \\
- =                        & \text{BCE}(r,\tilde{r})     &+ & \text{mean}(q \log Mq)           &+ & \alpha \text{mean}(b)
+ \brackets{\text{loss}} = & \brackets{\text{\small vanilla SAE loss}} + \brackets{\text{\small 0-Sup. loss}} \\ 
+ =                        & \brackets{\text{\small vanilla SAE loss}} + \alpha\cdot\text{mean}(b)
 \end{align*}
-where BCE stands for Binary Cross Entropy loss,
-$M=2$, $q=\text{Softmax}(\log \pi_i)$ and $\log \pi_i$ is the un-normalized input logit to Gumbel-Softmax.
-(All remaining notations follow \refsec{background}.)
 $\alpha$ is a hyperparameter which specifies the magnitude of the zero-suppression.
 Similar to $l_1$ regularization, this achieves a sparser representation in the binary domain where
  more propositions take the value of 0 (\refig{zsae-overview}).
 
-This new regularization can be interpreted as follows.
-Recall that, in the standard SAE, the $P_a(z_{ij}=1)=q_i\frac{1}{M}$ for any $j$, i.e. fair to any $j$.
+This alters the $P_a(D)$, the target distribution of GS-VAE.
+Recall that, in GS-VAE, $P_a(z_{ij}=1)=q_i\frac{1}{M}$, i.e. the probability for $z_ij$ to turn to 1 is fair to any $j$.
 Since zero-suppression penalizes the true bits ($z_{i0}=1$), it changes this fairness: The larger the $\alpha$,
 the less $P_a(z_{i0}=1)$. This changes the target distribution of the KL-divergence.
 
-One additional advantage of ZSAE is that, since the representation becomes deterministic,
+One additional advantage of ZSAE is that
 several neurons are completely deactivated, i.e. always takes the value of zero
 and can be pruned afterward to reduce the network size.
-
+% 
 A possible interpretation of this approach from the symbolic perspective is that
 this regularization is working as a prior corresponding to \emph{closed-world assumption} \cite[CWA]{reiter1981closed}.
 CWA is an assumption that all propositions take the value \texttt{false}
@@ -698,15 +694,11 @@ when they are unknown to a Knowledge Base (KB) or cannot be proven from it (nega
 % We could interpret these unknown propositions defaulted to be false as those which are irrelevant
 % to the current task that the agent is solving.
 Being always false, the agent can safely ignore them because
-they do not trigger an additional set of rules in the rule database by satisfying their preconditions.
-Also, the KB enjoys the space reduction for storing facts
-because it does not have to explicitly store the false propositions.
-
-In our Zero-Suppressed SAE, nodes that do not affect the output are stabilized to zero
-and can be safely pruned.
-Moreover, we could conceive that there is infinite number of propositions
-that are already pruned from the network and are just invisible, just as false propositions
-can be pruned from a Knowledge Base.
+they do not trigger an additional set of rules by satisfying their preconditions.
+Also, the KB no longer has to explicitly store the false propositions.
+% 
+Similarly, in ZSAE, we could conceive that there is an infinite number of neurons
+that are already pruned from the network and are just invisible.
 In other words, combining the discrete representation and zero-suppression,
 ZSAE embeds CWA in the network as a model prior.
 
