@@ -742,6 +742,7 @@ We evaluated various SAE implementations across 5 different
 image domains depicting 8-puzzles or Lights Out puzzle game \cite{lightsout}.
 Experiments were performed on a compute cluster with Xeon Ivy Bridge
 processors and Tesla K40 GPUs.  Each training takes at most 30 minutes.
+Network details are in the supplement.
 
 \textbf{MNIST 8-puzzle}
 is an image-based version of the 8-puzzle, where tiles contain hand-written digits (0-9) from the  MNIST database \cite{lecun1998gradient}.
@@ -804,13 +805,12 @@ and another 30 by 14 steps. 30 instances consist of 10 instances whose images ar
 % and radius equal to 0.75 times the dimension of the image.
 
 % unnecessary?
-
-Training is performed on 150 epochs, with an annealing schedule
-$\tau=5e^{- (\log\frac{5}{0.7})\frac{t}{150}}\in [0.7,5]$.
-On all configurations, $\alpha$ is initially set to 0 during the first 50 epochs until set to the specified value.
-This is in order to make the network sufficiently trained to
-reconstruct the environment before trying to stabilize the propositions.
-Further details are in the supplement.
+% Training is performed on 150 epochs, with an annealing schedule
+% $\tau=5e^{- (\log\frac{5}{0.7})\frac{t}{150}}\in [0.7,5]$.
+% On all configurations, $\alpha$ is initially set to 0 during the first 50 epochs until set to the specified value.
+% This is in order to make the network sufficiently trained to
+% reconstruct the environment before trying to stabilize the propositions.
+% Further details are in the supplement.
 
 \subsection{State Variance}
 
