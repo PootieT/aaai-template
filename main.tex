@@ -825,21 +825,18 @@ We evaluated three versions of the SAE:
 
 The first thing we tested is to replace the gumbel-softmax function with a deterministic argmax function
 after the training.
-In all cases,
+In all SAEs,
 this significantly reduced the variance because it makes the network deterministic for a single input.
-This result is rather obvious, therefore we omit it due to space limitation (see supplement).
+The result is rather obvious, therefore we omit it due to space (see supplement).
 In the following experiments, we always replace the activation function with argmax.
 
 We next measured the variance of SAEs in a noisy setting, where
-we applied a Gaussian noise to the image each time before we encode it.
-The result in \reftbl{variance} indicates that
-NG-SAE performs worst, and ZSAE performs best.
-
-
-\reftbl{tab:stability} (first columns) shows that the propositions made by NG-SAE are highly random,
+we applied a new Gaussian noise to the image each time before we encode it.
+\reftbl{tab:stability} (first columns) indicates that
+the propositions made by NG-SAE are highly random,
 while additional entropy regularization in vanilla SAE suppresses the stochastic behavior
 and achieves a stabler propositional representation.
-ZSAE further reduces the variance, as seen by the \emph{maximum} variance across propositions are near zero,
+ZSAE further reduces the variance, as seen by the \emph{maximum} variance across propositions approaching zero,
 which indicates that the noisy observations of a single real world state maps to exactly one propositional state.
 
 \begin{table*}[htbp]
@@ -911,14 +908,16 @@ the softmax of the un-normalized logit $\log \pi_{ij}$ used in GS.}
 
 
 We next measured the average percentage of propositions that turned true.
-\reftbl{tab:stability} (middle columns) shows that the ratio significantly drops due to the Zero-suppression penalty.
+\reftbl{tab:stability} (middle columns) shows that the ratio significantly drops due to the Zero-suppression penalty,
+demonstrating that $P_a(D)$ is altered by the regularization.
 
 Finally, \reftbl{tab:stability} (right columns) shows that the number of effective bits,
-i.e. the number of propositions that \emph{ever} turned true, is low in ZSAE.
+i.e. the number of propositions that \emph{ever} turned true, is low in ZSAE, showing that
+ZSAE obtained a more compressed, compact representation of the input.
 In MNIST, the numbers are comparable between ZSAEs with $(N,\alpha)=(100,0.7)$ and $(1000,0.7)$.
 This shows that the network is able to find an encoding of almost the same size
 regardless of the size of the latent layer (upper bound of the size of
-propositions). The additional
+propositions), removing the need for hyperparameter tuning. The additional
 penalty encourages the network to find the more compact representation,
 rather than freely consuming the latent space capacity in an entangled representation.
 
