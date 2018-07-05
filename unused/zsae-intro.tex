@@ -1,0 +1,42 @@
+
+
+ZSAE addresses three issues caused by the unstable propositional symbols of Latplan.
+% The first two issues are directly related to the unstable symbols.
+% Unstable symbols affect search algorithms in two ways:
+First, they increase the number of node generations because it confuses the duplicate detection mechanism.
+The second, and more important, issue is that they may make the state space graph disconnected because certain edges
+are connected to only one random variant of the symbolic representation of real-world states.
+This makes planning to fail without a solution or return a suboptimal solution.
+% In fact, in the appendix section in the Arxiv version of the original paper \cite{Asai2018},
+% the authors stated that they used \emph{state augmentation} technique
+% which circumvent this problem by sampling states from the same image multiple times.
+Thirdly, the system is sensitive to the hyperparameters, and with an inappropriate set of parameters,
+the propositional symbols are highly unstable.
+Specifically, if we set the number of propositions ($=$ number of nodes in the latent layer) too high, the network
+has an excess capacity which results in too many unused, unstable propositions.
+
+
+
+
+
+
+
+To address these problems,
+we introduce an additional regularization penalty function for the neural network 
+that makes the learned propositions more ``stable''. In the resulting neural network,
+Zero-Suppressed State AutoEncoder (ZSAE, \refig{zsae-overview}), this penalty function
+guides the network optimization so that unused propositions tend to 
+take the value of zero (false) instead of random values,
+resulting in a more stable representation.
+The stability can be measured by taking the variance of the representation from the same set of inputs.
+We also show that a more stable representation results in a higher success rate of classical planning.
+
+Also, with this additional penalty, the number of bits required to represent the same function
+is minimized and the network becomes less sensitive to the hyperparameters.
+
+
+
+
+The idea behind ZSAE is similar to the Zero-Suppressed Binary Decision Diagram \cite{minato1993zero},
+a variant of Binary Decision Diagram \cite{bryant1986graph} with an alternative node reduction rule:
+Nodes whose 1-edge going to constant 0-node are pruned.

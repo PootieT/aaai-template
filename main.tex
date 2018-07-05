@@ -58,30 +58,30 @@
 % with a mixture of the existing and new dataset, and demonstrating that
 % it can encode both environments.
 
-While Classical Planning is one of the oldest active branches of AI,
+While Classical Planning is an active branch of AI,
 its applicability is limited to the tasks precisely modeled by humans.
 Fully automated high-level agents should be instead able to find a symbolic representation
-of an unknown environment without supervision, i.e., no help from
-manually-assigned labels nor predefined reinforcement signals,
+of an unknown environment without supervision,
+% i.e., no help from
+% manually-assigned labels nor predefined reinforcement signals,
 otherwise it exhibits knowledge acquisition bottleneck.
 % 
 Meanwhile, \latentplanner \cite{Asai2018} uses a Neural Network
-called State AutoEncoder (SAE) to obtain a propositional
-representation of the image based puzzle domains unsupervised,
-and performs Classical Planning on the propositional state space discovered,
+called State AutoEncoder (SAE) to obtain the propositional
+representation of the image based puzzle domains with unsupervised learning,
+then generates a propositional state space and performs Classical Planning,
 partly resolving this bottleneck.
 
-In this paper, we propose a new sub-problem of symbol grounding problem (SGP)
-that was not identified until SGP materialized in \latentplanner, namely
-the symbol \emph{stability} problem.  Informally, symbols are
+In this paper,
+we define a new sub-problem of symbol grounding problem (SGP), the symbol \emph{stability} problem (SSP),
+and address SSP in their preliminary implementation of \latentplanner,
+specifically the uninformative / random propositions in the latent / symbolic encoding.
+Informally, symbols are
 \emph{stable} when they refer to the same concept for the exact same
 observation of the environment, and unstable symbols are harmful to symbolic
 reasoning.
- % 
-We identify that the propositional symbols found by \latentplanner 
-are largely unstable with a wrong set of hyperparameters.
 % 
-To address this issue, we propose ``Zero-Suppressed SAE''
+To address SSP, we propose ``Zero-Suppressed SAE''
 (ZSAE), an enhancement of SAE that uses the idea of closed-world
 assumption as a strong prior for neural network optimization 
 and robustly generates a set of stable symbols.
@@ -97,19 +97,21 @@ against various hyperparameters and improves the success rate of
 % [This second version of introduction is too long]
 
 Symbol Grounding Problem (SGP) \cite{harnad1990symbol,Steels2008} is one of the key milestones in AI research
-which seeks to achieve high-level intelligence beyond reflex.
-In Physical Symbol Systems Hypothesis \cite{newell1976computer}, it is believed that
-an agent with high-level intelligence performs tasks by efficiently manipulating a compact set of abstract symbols.
+which seeks to achieve high-level intelligence.
+% In Physical Symbol Systems Hypothesis \cite{newell1976computer}, it is believed that
+% an agent with high-level intelligence performs tasks by efficiently manipulating a compact set of abstract symbols.
 % 
-Symbolic manipulation consists of mechanical applications of composable rules which allows for
-development of highly optimized and generalized, domain-independent heuristics (e.g. FF \cite{Hoffmann01} or LMcut \cite{Helmert2009})
-that can be easily applied to multiple tasks with few or no data,
-while the current learning-based approaches struggle to improve its multi-task performance and data efficiency.
-For example, training AlphaGo \cite{alphago} takes days on a huge cluster of custom-made Tensor Processing Units.
+% Symbolic manipulation
+%  % consists of mechanical applications of composable rules which 
+% allows for
+% development of highly optimized and generalized, domain-independent heuristics (e.g. FF \cite{Hoffmann01} or LMcut \cite{Helmert2009})
+% that can be easily applied to multiple tasks with few or no data,
+% while the current learning-based approaches struggle to improve its multi-task performance and data efficiency.
+% For example, training AlphaGo \cite{alphago} takes days on a huge cluster of custom-made Tensor Processing Units.
+% % 
+% To enable such a fully automated high-level symbolic computation in a real-world environment,
+% agents should be able to find the symbolic representation of the environment by itself, i.e. solving the Symbol Grounding Problem.
 % 
-To enable such a fully automated high-level symbolic computation in a real-world environment,
-agents should be able to find the symbolic representation of the environment by itself, i.e. solving the Symbol Grounding Problem.
-
 Recently, Latplan system \cite[\refig{fig:overview}]{Asai2018} successfully
 connected a subsymbolic neural network system and a symbolic Classical Planning system
 to solve various visually presented puzzle domains.
@@ -150,31 +152,11 @@ therefore the duplication detection in search algorithms such as \astar \cite{ha
 cannot detect that a single real-world state is visited multiple times through
 different symbolic state representations.
 
-This problem arises for any grounding processes that do not explicitly try to stabilize the
-representation of the environment.
+This problem arises for any grounding processes applied to the real world.
 The first contribution of this paper is the identification of a sub-problem of symbol grounding
-called ``symbol \emph{stability} problem'', which seeks to find a set of stable symbols
-when the grounding procedure is non-deterministic.
-
-The second and more concrete contribution of this paper is
-the proposal of Zero-Suppressed State AutoEncoder (ZSAE, \refig{zsae-overview}), an enhancement of SAE in \latentplanner
-that has an additional regularization penalty function for the neural network 
-that makes the learned propositions more ``stable''.
-
-ZSAE addresses three issues caused by the unstable propositional symbols of Latplan.
-% The first two issues are directly related to the unstable symbols.
-% Unstable symbols affect search algorithms in two ways:
-First, they increase the number of node generations because it confuses the duplicate detection mechanism.
-The second, and more important, issue is that they may make the state space graph disconnected because certain edges
-are connected to only one random variant of the symbolic representation of real-world states.
-This makes planning to fail without a solution or return a suboptimal solution.
-% In fact, in the appendix section in the Arxiv version of the original paper \cite{Asai2018},
-% the authors stated that they used \emph{state augmentation} technique
-% which circumvent this problem by sampling states from the same image multiple times.
-Thirdly, the system is sensitive to the hyperparameters, and with an inappropriate set of parameters,
-the propositional symbols are highly unstable.
-Specifically, if we set the number of propositions ($=$ number of nodes in the latent layer) too high, the network
-has an excess capacity which results in too many unused, unstable propositions.
+called ``symbol \emph{stability} problem'' (SSP), which seeks to find a set of stable symbols.
+Stability is orthogonal to \emph{robustness}/\emph{generalization} which discuss accuracy,
+not the internal representation.
 
 \begin{figure}[htb]
  \centering
@@ -185,30 +167,15 @@ ZSAE obtains a representation that has fewer true bits.}
  \label{zsae-overview}
 \end{figure}
 
-
-% To address these problems,
-% we introduce an additional regularization penalty function for the neural network 
-% that makes the learned propositions more ``stable''. In the resulting neural network,
-% Zero-Suppressed State AutoEncoder (ZSAE, \refig{zsae-overview}), this penalty function
-% guides the network optimization so that unused propositions tend to 
-% take the value of zero (false) instead of random values,
-% resulting in a more stable representation.
-% The stability can be measured by taking the variance of the representation from the same set of inputs.
-% We also show that a more stable representation results in a higher success rate of classical planning.
-% 
-% Also, with this additional penalty, the number of bits required to represent the same function
-% is minimized and the network becomes less sensitive to the hyperparameters.
-
-In Zero-Suppressed SAE (ZSAE), an additional penalty function
+The second and more concrete contribution of this paper is
+the proposal of Zero-Suppressed State AutoEncoder (ZSAE, \refig{zsae-overview}).
+ZSAE obtains a more ``stable'' propositions and is less sensitive to hyperparameters.
+In ZSAE, an additional penalty function
 guides the network optimization so that unused propositions tend to 
-take the value of zero (false) instead of random values,
-resulting in a more stable representation, measured by the variance of the representation of the same input.
+take the value of zero (false) instead of random values.
 The stable representation results in a higher success rate of classical planning.
-
-The idea behind ZSAE is similar to the Zero-Suppressed Binary Decision Diagram \cite{minato1993zero},
-a variant of Binary Decision Diagram \cite{bryant1986graph} with an alternative node reduction rule:
-Nodes whose 1-edge going to constant 0-node are pruned.
-With a similar intent, we show that we can prune some unused neurons
+Furthermore,
+we show that we can prune some unused neurons
 that have a constant activation of zero that was found by ZSAE.
 This reduces the memory usage of the neural network.
 
