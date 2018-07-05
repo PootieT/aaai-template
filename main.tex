@@ -492,8 +492,8 @@ As we have seen, unstable propositional representations are harmful to symbolic 
 in various ways.
 Fundamentally,
 these harmful effects are caused by breaking a critical feature of symbols, \emph{designation} \cite{newell1976computer,newell1980physical},
-that each symbol uniquely refers to an entity (referent, concept, meaning),
- which, in our case, is the truthfulness of a statement.
+that each symbol uniquely refers to an entity (referent, concept, meaning).
+The referents of the symbols grounded by SAE are the truthfulness of the propositional statements.
 If a meaning of a symbol changes frequently and in an unexpected manner, the entire symbolic manipulation is fruitless
 because the underlying symbols are not grounded / tied to any particular concept, and does not represent the real world.
 
@@ -507,8 +507,8 @@ environment but also find a \emph{stable} symbolic representation that uniquely 
 % This stability should be checked 
 
 \begin{defi}
-A \emph{symbolic representation} of an environment is a set of symbols
-whose referents can reconstruct the environment with a certain function with a sufficient accuracy.
+A \emph{symbolic representation} of an environment is a set of symbols with referents
+from which a certain function can reconstruct the environment with sufficient accuracy.
 \end{defi}
 
 \begin{defi}
@@ -516,6 +516,11 @@ A symbol in a symbolic representation of an environment is \emph{stable}
 when its referent (e.g. truth assignment for propositional symbols) is identical
 for the same observation of the environment that is represented.
 \end{defi}
+
+Note that the meaning of ``the same observation'' depends on the context,
+and the acceptable divergence within the set of actual data for ``the same observations'' may be either low-level or high-level.
+Low-level divergence includes the noise in the images, while high-level divergence includes any non-essential details,
+such as translation/rotation of objects (as long as they do not affect the nature of the environment).
 
 %% single example is not enough
 % From a practical perspective, 
@@ -529,9 +534,10 @@ for the same observation of the environment that is represented.
 % stability
 
 The stability of the representation obtained by a neural network depends
-on whether the network contains stochasticity during the runtime.
+on the stochasticity of the environment as well as
+the inherent stochasticity of the network during the runtime.
 % 
-In other words, any stochastic symbol grounding system potentially suffers from 
+The latter indicates that any stochastic symbol grounding system potentially suffers from 
 the symbol stability problem.
 % 
 In recent years,
