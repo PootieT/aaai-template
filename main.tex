@@ -73,19 +73,18 @@ then generates a propositional state space and performs Classical Planning,
 partly resolving this bottleneck.
 
 In this paper,
-we define a new sub-problem of symbol grounding problem (SGP), the symbol \emph{stability} problem (SSP),
-and address SSP in their preliminary implementation of \latentplanner,
-specifically the uninformative / random propositions in the latent / symbolic encoding.
+we define a new sub-problem of symbol grounding problem (SGP), the symbol \emph{stability} problem (SSP).
 Informally, symbols are
 \emph{stable} when they refer to the same concept for the exact same
-observation of the environment, and unstable symbols are harmful to symbolic
+observation of the environment, and unstable symbols are harmful for symbolic
 reasoning.
-% 
-To address SSP, we propose ``Zero-Suppressed SAE''
+We then address SSP in \latentplanner,
+specifically the uninformative / random propositions in the latent / symbolic encoding.
+We propose ``Zero-Suppressed SAE''
 (ZSAE), an enhancement of SAE that uses the idea of closed-world
-assumption as a strong prior for neural network optimization 
+assumption as a prior for neural network optimization 
 and robustly generates a set of stable symbols.
- % 
+% 
 We empirically show that it finds more stable propositions
 against various hyperparameters and improves the success rate of
 \latentplanner.
