@@ -518,7 +518,7 @@ when its referent (e.g. truth assignment for propositional symbols) is identical
 for the same observation of the environment that is represented.
 \end{defi}
 
-Note that the meaning of ``the same observation'' depends on the context,
+The meaning of ``the same observation'' depends on the context,
 and the acceptable divergence within the set of actual data for ``the same observations'' may be either low-level or high-level.
 Low-level divergence includes the noise in the images,
 while high-level divergence may include any task-specific inessential details.
@@ -532,7 +532,10 @@ the actual locations of the stacks would be irrelevant to the task.
 % % In a hypothetical Prolog-like logic programming system, each unstable predicate symbol would also double the
 % % number of unifications.
 
-
+The stability of the representation and the \emph{robustness} against noisy data,
+as is commonly listed as a virtue of the neural network, are orthogonal ideas.
+This is because the latter cares solely about the accuracy for the training/validation data,
+and while the former is a statement about the quality of the internal activation values of the network.
 
 % stability
 
