@@ -676,15 +676,16 @@ A possible interpretation of this approach from the symbolic perspective is that
 this regularization is working as a prior corresponding to \emph{closed-world assumption} \cite[CWA]{reiter1981closed}.
 CWA is an assumption that all propositions take the value \texttt{false}
 when they are unknown to a Knowledge Base (KB) or cannot be proven from it (negation as failure).
-% [wrong!]
-% We could interpret these unknown propositions defaulted to be false as those which are irrelevant
-% to the current task that the agent is solving.
-Being always false, the agent can safely ignore them because
-they do not trigger an additional set of rules by satisfying their preconditions.
-Also, the KB no longer has to explicitly store the false propositions.
+% % [wrong!]
+% % We could interpret these unknown propositions defaulted to be false as those which are irrelevant
+% % to the current task that the agent is solving.
+% Being always false, the agent can safely ignore them because
+% they do not trigger an additional set of rules by satisfying their preconditions.
+% Also, the KB no longer has to explicitly store the false propositions.
+The KB no longer has to explicitly store the false propositions.
 % 
-Similarly, in ZSAE, we could conceive that there is an infinite number of neurons
-that are already pruned from the network and are just invisible.
+% Similarly, in ZSAE, we could conceive that there is an infinite number of neurons
+% that are already pruned from the network and are just invisible.
 In other words, combining the discrete representation and zero-suppression,
 ZSAE embeds CWA in the network as a model prior.
 
