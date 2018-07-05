@@ -1,0 +1,104 @@
+\section{Related Work}
+
+GS autotuning
+
+We showed that $l_1$ regularization reduces the variance of the discrete
+representation which resulted from the Gumbel random distribution
+in Gumbel-Softmax reparameterization
+trick.  A line of work that could introduce confusion might be REBAR
+\cite{TuckerMMLS17}, an improvement to Gumbel-Softmax that automatically
+adjusts the temperature parameter $\tau$ instead of using a fixed
+schedule and achieves ``low-variance, unbiased gradient estimates'',
+meaning that the training is more stable. The variance mentioned in
+REBAR is the variance of the gradient estimates used during training, not the
+resulting representation.
+
+declarative kb
+
+neural TM
+
+other regularization
+
+$l_1$ (LASSO) regularization is a standard approach in 
+machine learning for improving the generalization performance.
+In contrast, the aim of penalizing the number of true bits in ZSAE
+ (which is similar to using $l_1$ norm)
+is to improve the stability of the representation, not to improve the accuracy.
+
+$l_1$ (LASSO) regularization is a standard approach in the field of machine learning for improving the
+generalization performance.
+It is commonly applied to the network \emph{weight}, not activations,
+thus has not been associated with the stability of the representation.
+It has not been explicitly associated with the concept of
+closed-world assumption, nor discussed in the context of symbol grounding.
+
+Autoencoders with $l_1$ regularization applied on the hidden layer
+is called sparse autoencoder \cite{ng2011cs294a}.
+As a Deep-Learning practice,
+this is useful for training an overcomplete network that has a larger latent space and smaller average activation.
+The focus of the previous work in this direction aims at improving the testing accuracy and interpretability.
+Also, previous work uses continuous and deterministic NN that does not have stochasticity.
+In contrast, the purpose of zero-suppression is to reduce the randomness of the representation
+when the network contains stochasticity and the same testing accuracy should be maintained.
+
+From another practical point of view from the data science,
+$l_1$ regularization is considered in the context of feature selection for supervised learning,
+where it is important to drop some data columns as unrelated.
+This is a supervised learning setting, and the aim is to improve the classification performance.
+
+In a bio-inspired view, sparce coding is supposed to be natural since
+the neurons can fire less frequently and is energy efficient. [remove?]
+
+In the literature of theoretical analysis of machine learning and generalization,
+regularization in general are regarded as trading the bias and variance.
+For example, $l_1$ regularization applied on the hidden layer biases the representation toward 0 and decreases the variance.
+However, this bias and variance are defined over the dataset \cite{deeplearningbook},
+not for the single data point (a state of the environment) as we discussed in this paper.
+% 
+Therefore, the variance in the typical context of machine learning and the variance of the latent representation
+for a single data point that we discussed in this paper are orthogonal.
+
+While an asymmetric penalty may seem unintuitive, this is a common
+strategy particularly in Zero-Suppressed Binary Decision Diagram (ZDD)
+\cite{minato1993zero}, a type of binary decision diagram \cite{bryant1986graph} which
+uses an asymmetric rule for pruning decision nodes, achieving a greater
+performance over BDD in representing a sparse, ``almost zero'' binary dataset.
+
+ZDDs can efficiently represent a set of subsets e.g. $\braces{\braces{a,c},\braces{b,c}}$.
+The reduction rule of ZDDs can prune the nodes for items that never appear in the subsets.
+For instance, an item $d$ does not belong to any of the subsets shown above, therefore $d$ does not have
+a corresponding decision node in the diagram.
+While potentially there could be an infinite number of items in the environment, they are 
+all irrelevant to the above set and therefore pruned from the diagram.
+
+Another, rather non-intuitive topic related to the sparser binary representation
+is the connection to \emph{close-world assumption} \cite{reiter1981closed}, which assumes all unknown
+propositions to be false.
+% 
+We could interpret these unknown propositions defaulted to be false as those which are irrelevant
+to the current task that the agent is solving.
+Being always false, the agent can safely ignore them because
+they do not initiate an additional set of rules in the rule database by satisfying further preconditions.
+
+% 
+Similarly, in our Zero-Suppressed SAE, not only nodes that do not affect the output are stabilized to zero
+and can be safely pruned, but also we could conceive that there are infinite number of propositions
+that are already pruned from the network and are just invisible.
+In other words, combining discrete representation and zero-suppression,
+ZSAE embeds closed-world assumption in the network as a model prior.
+
+[TODO: more on Binarized NN]
+
+Binarized NNs \cite{courbariaux2015binaryconnect,HubaraCSEB16,rastegari2016xnor}
+ are implementation methods of NNs designed for
+memory-limited embedded applications or FPGAs. They constrain the weights and/or activation
+values to $\braces{-1,+1}$ and perform the forward/backward processes of NN using
+efficient binary operations such as XNOR and popcount.
+To our knowledge, there is no $l_1$-based regularization successfully
+applied to binarized networks, while the use of Dropouts, Batch Normalization, 
+or noisy weights \cite{HubaraCSEB16} are common.
+Also note that activations in SAE are binarized only in the latent layer,
+and they are not binarized from the beginning of training
+ as in the case of binarized networks, and that weights are not binarized at all.
+The purpose of implementing a binary representation is also different, where BNNs
+are aimed at memory usage and low-level performance while SAE aims at symbolic computation.

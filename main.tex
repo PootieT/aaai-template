@@ -994,7 +994,7 @@ it is a parameter tuned for SAE to have stable propositions, thus the comparison
 
 \subsection{Pruning Inactive Nodes from ZSAE}
 
-[too obvious and intuitive?]
+% [too obvious and intuitive?]
 
 We compute the amount of memory reduction possible by the pruning on the nodes
 that has a constant activation of 0. As we saw from \reftbl{tab:stability},
@@ -1020,117 +1020,6 @@ We do not show the entire results due to space limitation and also because the r
 % This overall amounts to a linear speed up along the reduction of $N$, 
 % since the cost of addition is negligible to the cost of multiplication.
 
-% \section{Declarative Knowledge Base based on ZSAE}
-% 
-% Since the ZSAE achieves a sparse encoding where the unused propositions
-% tend to become false, the network has a large amount of unused weights
-% which, if retrained properly, could be used for storing additional
-% information that is provided afterwards, making the entire network looks
-% like a declarative knowledge base where you can incrementally store
-% new knowledge.
-% 
-% We verify this hypothesis by first training a ZSAE with some dataset, retraining the same ZSAE with
-% a completely new dataset, then finally test the reconstruction accuracy for both dataset.
-
-\section{Related Work}
-
-% GS autotuning
-
-We showed that $l_1$ regularization reduces the variance of the discrete
-representation which resulted from the Gumbel random distribution
-in Gumbel-Softmax reparameterization
-trick.  A line of work that could introduce confusion might be REBAR
-\cite{TuckerMMLS17}, an improvement to Gumbel-Softmax that automatically
-adjusts the temperature parameter $\tau$ instead of using a fixed
-schedule and achieves ``low-variance, unbiased gradient estimates'',
-meaning that the training is more stable. The variance mentioned in
-REBAR is the variance of the gradient estimates used during training, not the
-resulting representation.
-
-% declarative kb
-
-% neural TM
-
-% other regularization
-
-$l_1$ (LASSO) regularization is a standard approach in the field of machine learning for improving the
-generalization performance.
-It is commonly applied to the network \emph{weight}, not activations,
-thus has not been associated with the stability of the representation.
-It has not been explicitly associated with the concept of
-closed-world assumption, nor discussed in the context of symbol grounding.
-
-Autoencoders with $l_1$ regularization applied on the hidden layer
-is called sparse autoencoder \cite{ng2011cs294a}.
-As a Deep-Learning practice,
-this is useful for training an overcomplete network that has a larger latent space and smaller average activation.
-The focus of the previous work in this direction aims at improving the testing accuracy and interpretability.
-Also, previous work uses continuous and deterministic NN that does not have stochasticity.
-In contrast, the purpose of zero-suppression is to reduce the randomness of the representation
-when the network contains stochasticity and the same testing accuracy should be maintained.
-
-From another practical point of view from the data science,
-$l_1$ regularization is considered in the context of feature selection for supervised learning,
-where it is important to drop some data columns as unrelated.
-This is a supervised learning setting, and the aim is to improve the classification performance.
-
-% In a bio-inspired view, sparce coding is supposed to be natural since
-% the neurons can fire less frequently and is energy efficient. [remove?]
-
-In the literature of theoretical analysis of machine learning and generalization,
-regularization in general are regarded as trading the bias and variance.
-For example, $l_1$ regularization applied on the hidden layer biases the representation toward 0 and decreases the variance.
-However, this bias and variance are defined over the dataset \cite{deeplearningbook},
-not for the single data point (a state of the environment) as we discussed in this paper.
-% 
-Therefore, the variance in the typical context of machine learning and the variance of the latent representation
-for a single data point that we discussed in this paper are orthogonal.
-
-% While an asymmetric penalty may seem unintuitive, this is a common
-% strategy particularly in Zero-Suppressed Binary Decision Diagram (ZDD)
-% \cite{minato1993zero}, a type of binary decision diagram \cite{bryant1986graph} which
-% uses an asymmetric rule for pruning decision nodes, achieving a greater
-% performance over BDD in representing a sparse, ``almost zero'' binary dataset.
-
-% ZDDs can efficiently represent a set of subsets e.g. $\braces{\braces{a,c},\braces{b,c}}$.
-% The reduction rule of ZDDs can prune the nodes for items that never appear in the subsets.
-% For instance, an item $d$ does not belong to any of the subsets shown above, therefore $d$ does not have
-% a corresponding decision node in the diagram.
-% While potentially there could be an infinite number of items in the environment, they are 
-% all irrelevant to the above set and therefore pruned from the diagram.
-
-% Another, rather non-intuitive topic related to the sparser binary representation
-% is the connection to \emph{close-world assumption} \cite{reiter1981closed}, which assumes all unknown
-% propositions to be false.
-% % 
-% We could interpret these unknown propositions defaulted to be false as those which are irrelevant
-% to the current task that the agent is solving.
-% Being always false, the agent can safely ignore them because
-% they do not initiate an additional set of rules in the rule database by satisfying further preconditions.
-% 
-% % 
-% Similarly, in our Zero-Suppressed SAE, not only nodes that do not affect the output are stabilized to zero
-% and can be safely pruned, but also we could conceive that there are infinite number of propositions
-% that are already pruned from the network and are just invisible.
-% In other words, combining discrete representation and zero-suppression,
-% ZSAE embeds closed-world assumption in the network as a model prior.
-
-% [TODO: more on Binarized NN]
-
-Binarized NNs \cite{courbariaux2015binaryconnect,HubaraCSEB16,rastegari2016xnor}
- are implementation methods of NNs designed for
-memory-limited embedded applications or FPGAs. They constrain the weights and/or activation
-values to $\braces{-1,+1}$ and perform the forward/backward processes of NN using
-efficient binary operations such as XNOR and popcount.
-To our knowledge, there is no $l_1$-based regularization successfully
-applied to binarized networks, while the use of Dropouts, Batch Normalization, 
-or noisy weights \cite{HubaraCSEB16} are common.
-Also note that activations in SAE are binarized only in the latent layer,
-and they are not binarized from the beginning of training
- as in the case of binarized networks, and that weights are not binarized at all.
-The purpose of implementing a binary representation is also different, where BNNs
-are aimed at memory usage and low-level performance while SAE aims at symbolic computation.
-
 \section{Conclusion}
 \label{conclusion}
 
@@ -1139,9 +1028,9 @@ the issue of \emph{unstable propositions} in the state encoding made by
 \latentplanner.
 % 
 The ZSAE improves upon the
-regular State AutoEncoder \cite[SAE]{Asai2018} by
-adding an asymmetric penalty similar to $l_1$ regularization to the optimization metric of
-NN, which tries to minimize the number of true propositions
+vanilla State AutoEncoder \cite[SAE]{Asai2018} by
+adding an additional penalty to the optimization metric of
+the NN, which tries to minimize the number of true propositions
 when encoding a raw state input such as images.
 % 
 ZSAE improves the success rate and the efficiency of planning performed on
@@ -1149,21 +1038,22 @@ the generated state space, and also removes the need for aggressive
 hyperparameter tuning.
 % 
 Moreover, 
-ZSAE finds several neurons whose activations are constantly zero,
-which can be safely pruned,
-similar to Zero-Suppressed Decision Diagram \cite{minato1993zero}.
+ZSAE finds several neurons whose activations are constantly zero
+and can be safely pruned.
+% similar to Zero-Suppressed Decision Diagram \cite{minato1993zero}.
 
-As a philosophical, more fundamental contribution,
+As a philosophical contribution,
 we reframed the problematic behavior of unstable propositions
-as \emph{Symbol Stability Problem} (SSP), a subproblem of Symbol Grounding Problems (SGP)
-which could potentially be applied to any symbol grounding processes that contain stochasticity.
+as \emph{Symbol Stability Problem} (SSP), a subproblem of Symbol Grounding Problem (SGP).
+SSP applies to any processes that solve SGP.
 % 
-There is an increasing number of use cases of sampling-based, stochastic processes in
-the machine learning literature, notably VAEs and GANs (SAE is a form of VAE),
-which will be highly affected by SSP when applied to solve SGPs.
+We identified two sources of the stochasticity which introduces unstable propositions,
+the external stochasticity in the observations and the inherent stochasticity of the network.
+There is an increasing use of sampling-based, stochastic processes in
+the machine learning literature, notably VAEs and GANs,
+which will be highly affected by SSP.
 
 % ?
-A promising direction for future work is to 
-find an adaptive, online tuning method for $\alpha$, the hyperparameter for
-zero-suppression ($l_1$) regularization.
-
+An interesting avenue for future work is to 
+find an online, adaptive tuning method for $\alpha$, the hyperparameter for
+zero-suppression regularization.
