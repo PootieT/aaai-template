@@ -197,34 +197,16 @@ We finally conclude the paper with related work and future remark (\refsec{concl
 from huge, noisy, continuous, unstructured inputs
 to a set of compact, % clean
 discrete, identifiable (structured) entities, i.e., symbols \cite{Asai2018}.
-For example, PDDL has six kinds of symbols: Objects, predicates, propositions, actions, problems and domains (\reftbl{tab:type-of-symbols}).
+For example, PDDL has six kinds of symbols: Objects, predicates, propositions, actions, problems and domains.
 Each type of symbol requires its own mechanism for grounding.
 For example, the large body of work in the image processing community on recognizing 
 objects (e.g. faces) and their attributes (male, female) in images, or scenes in videos (e.g. cooking)
 can be viewed as corresponding to grounding the object, predicate and action symbols, respectively.
 In this paper, we focus on the grounding process for propositional symbols.
 
-\begin{table}[tbp] 
-\centering
-\relsize{-1}
-\begin{tabular}{ll}
-Types of symbols & \\
-\hline
-Object symbols    & \textbf{panel7, x\(_{\text{0}}\), y\(_{\text{0}}\)} \ldots{}               \\
-Predicate symbols & (\textbf{empty} ?x ?y) (\textbf{up} ?y\(_{\text{0}}\) ?y\(_{\text{1}}\))   \\
-Propositions      & \textbf{empty\(_{\text{5}}\)} = (empty x\(_{\text{2}}\) y\(_{\text{1}}\)) (6th application) \\
-Action symbols    & (\textbf{slide-up} panel\(_{\text{7}}\) x\(_{\text{0}}\) y\(_{\text{1}}\)) \\
-Problem symbols   & \textbf{eight-puzzle-instance1504}, etc.                                   \\
-Domain  symbols   & \textbf{eight-puzzle}, \textbf{hanoi}                                      \\
-\hline
-\end{tabular}
-\caption{6 types of symbols in a PDDL definition.}
-\label{tab:type-of-symbols}
-\end{table}
-
 \textbf{\latentplanner} \cite{Asai2018} is a framework for
 \emph{domain-independent image-based classical planning}.
-\latentplanner addresses two of the 6 types of symbols listed in \reftbl{tab:type-of-symbols},
+\latentplanner addresses two of the 6 types of symbols, % listed in \reftbl{tab:type-of-symbols},
 namely propositional and action symbols.
 
 Classical planners such as FF \cite{Hoffmann01} or
