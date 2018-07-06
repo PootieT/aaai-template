@@ -798,26 +798,28 @@ ZSAE further reduces the variance, as seen by the \emph{maximum} variance across
 which indicates that the noisy observations of a single real world state maps to exactly one propositional state.
 
 \begin{table*}[htbp]
- \relsize{-1}
+ \relsize{-1.5}
  \centering
  \setlength{\tabcolsep}{0.45em}
- \begin{tabular}{|r|*{6}{c|}*{2}{*{4}{c|}}}
+ \begin{tabular}{|r|*{6}{c|}*{2}{*{4}{c|}}c|}
      & \multicolumn{6}{c|}{Max. variance over bits (with noisy images)}
      & \multicolumn{4}{c|}{True ratio}
      & \multicolumn{4}{c|}{Effective bits}
      % & \multicolumn{6}{c|}{Mean Square Error}
+& Min.
   \\
 $N=$ & \multicolumn{3}{c|}{100} & \multicolumn{3}{c|}{1000}
      & \multicolumn{2}{c|}{100} & \multicolumn{2}{c|}{1000}
      & \multicolumn{2}{c|}{100} & \multicolumn{2}{c|}{1000}
      % & \multicolumn{3}{c|}{100} & \multicolumn{3}{c|}{1000}
+  & Enc.
   \\
-domain    & NG-SAE   & SAE      & ZSAE              & NG-SAE   & SAE      & ZSAE              & SAE  & ZSAE & SAE  & ZSAE & SAE & ZSAE & SAE  & ZSAE \\ 
-MNIST     & 8.49E-02 & 8.60E-03 & \textbf{4.50E-07} & 5.32E-02 & 2.25E-04 & \textbf{7.82E-06} & 0.50 & 0.10 & 0.50 & 0.02 & 100 & 51   & 1000 & 68  \\ 
-Mandrill  & 1.19E-03 & 8.30E-04 & \textbf{0}        & 4.26E-04 & 2.51E-04 & \textbf{2.89E-08} & 0.50 & 0.12 & 0.50 & 0.09 & 100 & 46   & 1000 & 182 \\ 
-Spider    & 8.53E-04 & 4.91E-04 & \textbf{2.90E-06} & 2.32E-04 & 4.26E-04 & \textbf{4.19E-04} & 0.50 & 0.14 & 0.50 & 0.11 & 100 & 49   & 1000 & 200 \\ 
-LightsOut & 9.01E-03 & 2.01E-04 & \textbf{7.92E-07} & 8.13E-03 & 1.42E-04 & \textbf{1.43E-07} & 0.50 & 0.08 & 0.50 & 0.03 & 100 & 16   & 1000 & 66  \\ 
-Twisted   & 1.07E-02 & 7.15E-04 & \textbf{5.89E-07} & 1.02E-02 & 4.52E-04 & \textbf{4.40E-05} & 0.50 & 0.08 & 0.50 & 0.02 & 100 & 16   & 1000 & 49  \\ 
+domain    & NG-SAE   & SAE      & ZSAE              & NG-SAE   & SAE      & ZSAE              & SAE  & ZSAE & SAE  & ZSAE & SAE & ZSAE & SAE  & ZSAE & length \\ 
+MNIST     & 8.49E-02 & 8.60E-03 & \textbf{4.50E-07} & 5.32E-02 & 2.25E-04 & \textbf{7.82E-06} & 0.50 & 0.10 & 0.50 & 0.02 & 100 & 51   & 1000 & 68   & 18.4 \\ 
+Mandrill  & 1.19E-03 & 8.30E-04 & \textbf{0}        & 4.26E-04 & 2.51E-04 & \textbf{2.89E-08} & 0.50 & 0.12 & 0.50 & 0.09 & 100 & 46   & 1000 & 182  & 18.4 \\ 
+Spider    & 8.53E-04 & 4.91E-04 & \textbf{2.90E-06} & 2.32E-04 & 4.26E-04 & \textbf{4.19E-04} & 0.50 & 0.14 & 0.50 & 0.11 & 100 & 49   & 1000 & 200  & 18.4 \\ 
+LightsOut & 9.01E-03 & 2.01E-04 & \textbf{7.92E-07} & 8.13E-03 & 1.42E-04 & \textbf{1.43E-07} & 0.50 & 0.08 & 0.50 & 0.03 & 100 & 16   & 1000 & 66   & 16\\ 
+Twisted   & 1.07E-02 & 7.15E-04 & \textbf{5.89E-07} & 1.02E-02 & 4.52E-04 & \textbf{4.40E-05} & 0.50 & 0.08 & 0.50 & 0.02 & 100 & 16   & 1000 & 49   & 16\\ 
 \end{tabular}
  \caption{Results comparing the characteristics of NG-SAE, vanilla SAE and ZSAE ($\alpha=0.7$),
  over 100 randomly generated images encoded 100 times (with gaussian noise added each time).
