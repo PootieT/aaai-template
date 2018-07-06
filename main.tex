@@ -927,7 +927,7 @@ SAE performance is sometimes comparable to ZSAE but only when it is tuned approp
 
 % [too obvious and intuitive?]
 
-We compute the amount of memory reduction possible by the pruning on the nodes
+We discuss the amount of memory reduction possible by the pruning on the nodes
 that has a constant activation of 0. As we saw from \reftbl{tab:stability},
 vanilla SAE does not have such propositions (all bits are effective bits).
 % While we did not actually implemented the node pruning,
@@ -937,10 +937,10 @@ latent layer and the convolutional layer before it, node reduction
 amounts to linear weight reduction.  Representing a fully-connected
 network between two layers of $L$ and $N$ nodes requires $(L+1)N$
 weights ($+1$ for the bias).
-In the network we used, $L=1000$. Thus, in the case of ZSAE with $\alpha=0.7, N=1000$
-where it reduces the representation down to only 46 effective bits, weights are reduced by 954954,
-which is huge compared to the convolutional weights (3x3, 16 channels, thus 144 float values).
-This also applies to the decoding layers.
+In the network we used, $L=1000$. Thus, in the case of ZSAE with $N=1000$ applied to MNIST puzzles,
+where it reduces the representation down to 68 effective bits, weights are reduced by 932932.
+This number is huge compared to the convolutional weights (3x3, 16 channels, thus 144 float values each) in the upper layers.
+% The saved hdf5 files for the network also reduced from 14MB to XMB.
 We do not show the entire results due to space limitation and also because the results are straightforward.
 
 % [wrong! convolutions are more expensive]
