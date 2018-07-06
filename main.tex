@@ -371,13 +371,19 @@ activations.
 \label{issues}
 
 SAE in \latentplanner can map a visual observation of the environment to/from a set of propositional values.
-An issue in a vanilla SAE is that the class probability that is used inside its Gumbel-Softmax could be
+An issue in a vanilla SAE is that the class probability $\pi$ that is used inside its Gumbel-Softmax could be
 neutral for the class ``true'' and the class ``false'' at some neuron, and the resulting value
 of a proposition is random (\refig{unstable}).
-The randomness of the vanilla SAE comes from the way
-Gumbel distribution is sampled, $-\log (-\log (\text{Uniform}(0,1)))$, which includes
-a uniform random distribution.
-This causes several problems from the classical planning point of view.
+The source of stochasticity is twofold.
+First, it comes from the way Gumbel distribution is sampled, $-\log (-\log (\text{Uniform}(0,1)))$,
+which includes a uniform random distribution.
+Thus, the propositional representation may change even for the exactly same inputs.
+Second, the ``same'' input image may be corrupted by a random noise (stochastic observations).
+When the class probabilities are neutral,
+such a tiny variation in the input image may cause the activation to go across the decision boundary for each neuron,
+causing the bit flips.
+This stochastic behavior of the propositional representation
+causes several serious problems from the classical planning point of view.
 
 \begin{figure}[htb]
  \centering
