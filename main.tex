@@ -581,11 +581,11 @@ actually \emph{guarantees to reduce} the randomness,
 instead of converging to any other random distribution different from $P_a(D)$.
 This can be shown as follows:
 \begin{align*} 
- \brackets{\text{rec loss}}-D_{\text{KL}}(Q||P_a)&                                         \\
-=\brackets{\text{rec loss}}+D_{\text{KL}}(Q||P_a)&- 2 D_{\text{KL}}(Q||P_a)                \\
-=\brackets{\text{\small correct GS VAE loss}}& + 2 \sum_{i,j} (- q_{ij} \log q_{ij})      \\
-=\brackets{\text{\small correct GS VAE loss}}& + 2 \sum_{i} H(b_i)                        \\
-\geq\brackets{\text{\small correct GS VAE loss}}& + 2 H(b_0,b_1\ldots b_N)
+ \brackets{\text{rec loss}}-D_{\text{KL}}(Q||P_a) &                                   \\
+=\brackets{\text{rec loss}}+D_{\text{KL}}(Q||P_a) &- 2 D_{\text{KL}}(Q||P_a)          \\
+=\brackets{\text{\small correct GS VAE loss}}     & + 2 \sum_{i,j} (- q_{ij} \log q_{ij}) \\
+=\brackets{\text{\small correct GS VAE loss}}     & + 2 \sum_{i} H(b_i)                   \\
+\geq\brackets{\text{\small correct GS VAE loss}}  & + 2 H(b_0,b_1\ldots b_N)
 \end{align*}
 where $H(b_i)$ denotes the \emph{shannon entropy} of individual proposition $b_i$ and
 $H(b_0,b_1\ldots b_N)$ is the joint entropy of the propositions.
@@ -802,9 +802,9 @@ which indicates that the noisy observations of a single real world state maps to
  \centering
  \setlength{\tabcolsep}{0.45em}
  \begin{tabular}{|r|*{6}{c|}*{2}{*{4}{c|}}c|}
-     & \multicolumn{6}{c|}{Max. variance over bits (with noisy images)}
-     & \multicolumn{4}{c|}{True ratio}
-     & \multicolumn{4}{c|}{Effective bits}
+       & \multicolumn{6}{c|}{Max. variance over bits (with noisy images)}
+       & \multicolumn{4}{c|}{True ratio}
+       & \multicolumn{4}{c|}{Effective bits}
      % & \multicolumn{6}{c|}{Mean Square Error}
 & Min.
   \\
