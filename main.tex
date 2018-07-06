@@ -396,7 +396,7 @@ causes several serious problems from the classical planning point of view.
 First, search algorithms that run on the state space generated based on these propositional vectors
 are confused by many variations of the essentially identical real world states.
 It could visit several variations of the same real world state that are encoded into different propositional vectors
-while the duplicate detection in state space search algorithms (e.g. \astar) treat them as separate states.
+because the duplicate detection in state space search algorithms (e.g. \astar) believes that they are separate.
 % since it completely relies on the atomiticy and deteminisim of the proposition.
 This slows down the search by increasing the number of nodes that are reachable from the initial state.
 
@@ -418,12 +418,11 @@ Thirdly, in order to reduce the stochasticity of the propositions, we encounter 
 which is costly when we train a large NN.
 We note that while some propositions in the latent layer are random, most propositions are not.
 These unused, uninformative bits are generated because the network has an excessive capacity to 
-model the entire state space, i.e. they appear when we specify the number of proposition $N$ too large.
+model the entire state space, i.e. they appear when we specify the number of propositions $N$ too large.
 If we decrease $N$ while maintaining the reconstruction capability of the SAE, the number of uninformative bits
 reduces.
-On the contrary, if we specify $N$ too small, it lacks the capacity to represent the state space
-and the SAE is no longer able to reconstruct the
-real world image.
+On the other hand, if we specify $N$ too small, it lacks the capacity to represent the state space
+and the SAE is no longer able to reconstruct the real world image.
 As a result, we face a hyperparameter tuning problem: Too large $N$ causes a disconnected/bloated state space graph,
 and too small $N$ does not converge on the dataset.
 
@@ -443,19 +442,20 @@ because the underlying symbols are not grounded / tied to any particular concept
 % Colorless green ideas sleep furiously
 
 
-Thus, a symbol grounding procedure should not only find \emph{some} set of symbols that is sufficient to represent the
-environment but also find a \emph{stable} symbolic representation that uniquely describes the environment.
+Thus, a symbol grounding procedure not only has to find \emph{some} set of symbols that can represent the
+environment but also to find a \emph{stable} symbolic representation that uniquely describes the environment,
+i.e., to solve the \emph{Symbol Stability Problem}.
 % This stability should be checked 
 
 \begin{defi}
 A \emph{symbolic representation} of an environment is a set of symbols with referents
-from which a certain function can reconstruct the environment with sufficient accuracy.
+from which the environment can be reconstructed with sufficient accuracy.
 \end{defi}
 
 \begin{defi}
-A symbol in a symbolic representation of an environment is \emph{stable}
-when its referent (e.g. truth assignment for propositional symbols) is identical
-for the same observation of the environment that is represented.
+A symbolic representation is \emph{stable} when its referents are identical
+ %  (e.g. truth assignment for propositional symbols)
+for the same environment, under some definition of equivalence relation between environments.
 \end{defi}
 
 %% wanted to include, but not during the submission
@@ -550,7 +550,7 @@ from which the normalized probability can be computed as $q_{ij}=\text{Softmax}_
 Also, $P_a(z_{ij}=1)= 1/M$.
 % 
 Therefore, the approximated KL divergence is
-$-\sum_{i,j} q_{ij} \log \frac{1/M}{q_{ij}} = \sum_{i,j} q_{ij} \log q_{ij} + q_{ij} \log M = \sum_{i,j} q_{ij} \log q_{ij} + \text{Const}$,
+$-\sum_{i,j} q_{ij} \log \frac{1/M}{q_{ij}} = \sum_{i,j} q_{ij} (\log q_{ij} +\log M) = \sum_{i,j} q_{ij} \log q_{ij} + \text{Const.}$\,,
 where the constant can be ignored.
 % The second term is a constant because $\sum_j q_{ij} = 1$,
 % and thus can be safely ignored from the loss function.
@@ -558,14 +558,16 @@ where the constant can be ignored.
 
 \subsection{Incorrect Loss Function Helped Latplan}
 
-We found that the Latplan code published on Github is actually using the \emph{negation} of this loss,
-i.e. it is \emph{maximizing} the KL divergence instead of minimizing it (as is expected in GS-VAE).
-In fact, minimizing the KL divergence and finding a stable representation are opposite.
+We found that the loss computation in the Latplan code have the \emph{wrong sign} on the KL divergence,
+i.e. it is \emph{maximizing} the KL divergence instead of minimizing it.
+Despite that, the system works perfectly.
+% 
+The reason is that minimizing the KL divergence and finding a stable representation are in fact opposite.
 Consider the nature of GS-VAE:
 It tries to make the distribution look more similar to a fair random categorical distribution $P_a(D)$
-that takes 0 or 1 with equal probability, i.e., \emph{more random}.
-This is clearly the opposite of the stable symbols we pursue.
-Instead, \citeauthor{Asai2018} accidentally negated the loss, which resulted in
+that takes 0 or 1 with equal probability, i.e., \emph{as random as possible}.
+% This is clearly the opposite of the stable symbols we pursue.
+Instead, they accidentally negated the loss, which resulted in
 maximizing the KL divergence and making the representation \emph{less random}.
 
 We further show that their \emph{negated} KL loss function
@@ -595,9 +597,9 @@ In the later sections, we empirically show that the \emph{correct} GS-VAE result
 a much higher randomness for a single input compared to the original code of Latplan,
 thus the original implementation, i.e., GS-VAE + Entropy regularization, is superior.
 % 
-\emph{It is not our intention to criticize Latplan for its ``incorrect VAE loss'',
-nor the validity of their claims.
-Out claim is that their loss implementation is the key to achieving the desired behavior.}
+\emph{It is not our intention to blame Latplan for its ``incorrect VAE loss'',
+nor to criticize their claims.
+Out claim is that their loss implementation was the key to achieving the desired behavior.}
 % In fact, there is no reason that the loss should be identical to the GS-VAE loss.
 
 \subsection{Stochasticity during Run-Time}
@@ -608,13 +610,13 @@ After the training is finished, we replace the gumbel-softmax activation with
 a pure argmax,
 $z_{ij} = [ \text{if}\ j\ \text{is} \arg \max_j (\log \pi_{ij})\ \text{then}\ 1\ \text{else}\ 0 ]$.
 This improves the stability of the symbols, as we later show in the experiments.
-
-Above two techniques do not reduce the stochasticity originated from the noisy input,
-but only to the inherent stochasticity of the network.
-Recall that $Q(D|x)$ is a conditional distribution defined for a single, \emph{fixed} input $x$.
 % 
-For instance, the propositional representation may be altered by a small
-Gaussian noise applied to the input.
+This technique does not reduce the stochasticity originated from the noisy input,
+but only to the inherent stochasticity of the network.
+% Recall that $Q(D|x)$ is a conditional distribution defined for a single, \emph{fixed} input $x$.
+% % 
+% For instance, the propositional representation may be altered by a small
+% Gaussian noise applied to the input.
 
 % \section{Zero-Suppressed State AutoEncoder (ZSAE) and Entropy-Minimizing State AutoEncoder (ESAE)}
 \section{Zero-Suppressed State AutoEncoder}
@@ -628,13 +630,14 @@ Gaussian noise applied to the input.
 % Gaussian noise to the same image, may result in a different
 % propositional representation.
 
-To further tackle the symbol stability problem in Latplan,
-we need to reduce the effect of the external stochasticity of the environment
-to the latent, propositional representation, while preserving the reconstruction accuracy
- (\emph{robust performance}).
-We address it by Zero-Suppressed State AutoEncoder (ZSAE),
+To further address the symbol stability problem in Latplan,
+% we need to reduce the effect of the external stochasticity of the environment
+% to the latent, propositional representation, while preserving the reconstruction accuracy
+%  (\emph{robust performance}).
+% We address it by Zero-Suppressed State AutoEncoder (ZSAE),
+we propose Zero-Suppressed State AutoEncoder (ZSAE),
 a SAE with an additional regularization.
-
+% 
 Its basic idea is to penalize the
 true propositions in the latent layer so that no propositions unnecessarily flip to true at random,
 while preserving the propositions that are absolutely necessary for maintaining the reconstruction accuracy.
@@ -645,7 +648,6 @@ while preserving the propositions that are absolutely necessary for maintaining 
 % 
 The resulting loss function below is similar to the $l_1$ norm (LASSO) typically
 applied to continuous activations:
-
 \begin{align*}
  \brackets{\text{loss}} = & \brackets{\text{\small vanilla SAE loss}} + \brackets{\text{\small 0-Sup. loss}} \\ 
  =                        & \brackets{\text{\small vanilla SAE loss}} + \alpha\cdot\text{mean}(b)
@@ -655,7 +657,7 @@ $\alpha$ is a hyperparameter which specifies the magnitude of the zero-suppressi
 %  more propositions take the value of 0 (\refig{zsae-overview}).
 % 
 This alters the $P_a(D)$, the target distribution of GS-VAE.
-Recall that, in GS-VAE, $P_a(z_{ij}=1)=q_i\frac{1}{M}$, i.e. the probability for $z_ij$ to turn to 1 is fair to any $j$.
+Recall that, in GS-VAE, $P_a(z_{ij}=1)=\frac{1}{M}$, i.e. the probability for $z_{ij}$ to turn to 1 is fair to any $j$.
 Since zero-suppression penalizes the true bits ($z_{i0}=1$), it changes this fairness: The larger the $\alpha$,
 the less $P_a(z_{i0}=1)$,
 thus the more propositions take the value of 0 (\refig{zsae-overview}).
@@ -665,9 +667,11 @@ One additional advantage of ZSAE is that
 several neurons are completely deactivated, i.e. always takes the value of zero
 and can be pruned afterward to reduce the network size.
 % 
-A possible interpretation of this approach from the symbolic perspective is that
-this regularization is working as a prior corresponding to \emph{closed-world assumption} \cite[CWA]{reiter1981closed}.
-CWA assumes that all propositions are \texttt{false}
+A possible interpretation of this approach 
+% from the symbolic perspective
+is that
+this regularization is working as a prior corresponding to \emph{closed-world assumption} \cite[CWA]{reiter1981closed},
+which assumes that all propositions are \texttt{false}
 when they are unknown to a Knowledge Base (KB) or cannot be proven from it (negation as failure).
 % % [wrong!]
 % % We could interpret these unknown propositions defaulted to be false as those which are irrelevant
