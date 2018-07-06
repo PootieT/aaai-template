@@ -777,8 +777,8 @@ across 100 encoding trials of the same image.
 We then took the maximum and the mean of the variances over the entire propositions.
 
 We evaluated three versions of the SAE:
-(1) Vanilla SAE, as described in the original paper of Latplan \cite{Asai2018} and the Github source code,
-(2) NG-SAE, an SAE trained with a correct GS-VAE loss function as discussed in \refsec{analysis}, and
+(1) NG-SAE, an SAE trained with a correct GS-VAE loss function as discussed in \refsec{analysis}, and
+(2) Vanilla SAE, as described in the original paper of Latplan \cite{Asai2018} and the Github source code,
 (3) Zero-Suppressed SAE (ZSAE).
 
 The first thing we tested is to replace the gumbel-softmax function with a deterministic argmax function
@@ -832,10 +832,13 @@ demonstrating that $P_a(D)$ is altered by the regularization.
 Finally, \reftbl{tab:stability} (right columns) shows that the number of effective bits,
 i.e. the number of propositions that \emph{ever} change their values, is low in ZSAE, showing that
 ZSAE obtained a more compressed, compact representation of the input.
-In MNIST, the numbers are comparable between ZSAEs with $(N,\alpha)=(100,0.7)$ and $(1000,0.7)$.
+In MNIST, the numbers are comparable between ZSAEs with $(N,\alpha)=100$ and $1000$.
 This shows that the network is able to find an encoding of almost the same size
 regardless of the size of the latent layer (upper bound of the size of
-propositions), removing the need for hyperparameter tuning. The additional
+propositions), removing the need for hyperparameter tuning.
+In LightsOut and Twisted, ZSAE even finds the 16bit representation for the 4x4 light grids,
+i.e. the optimally compressed representation.
+The additional
 penalty encourages the network to find the more compact representation,
 rather than freely consuming the latent space capacity in an entangled representation.
 
