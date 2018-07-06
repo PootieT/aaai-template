@@ -806,13 +806,13 @@ which indicates that the noisy observations of a single real world state maps to
        & \multicolumn{4}{c|}{True ratio}
        & \multicolumn{4}{c|}{Effective bits}
      % & \multicolumn{6}{c|}{Mean Square Error}
-& Min.
+       & Optimal
   \\
 $N=$ & \multicolumn{3}{c|}{100} & \multicolumn{3}{c|}{1000}
      & \multicolumn{2}{c|}{100} & \multicolumn{2}{c|}{1000}
      & \multicolumn{2}{c|}{100} & \multicolumn{2}{c|}{1000}
      % & \multicolumn{3}{c|}{100} & \multicolumn{3}{c|}{1000}
-  & Enc.
+  & Encoding
   \\
 domain    & NG-SAE   & SAE      & ZSAE              & NG-SAE   & SAE      & ZSAE              & SAE  & ZSAE & SAE  & ZSAE & SAE & ZSAE        & SAE  & ZSAE & length      \\ 
 MNIST     & 8.49E-02 & 8.60E-03 & \textbf{4.50E-07} & 5.32E-02 & 2.25E-04 & \textbf{7.82E-06} & 0.50 & 0.10 & 0.50 & 0.02 & 100 & 51          & 1000 & 68   & 18.4        \\ 
@@ -823,7 +823,7 @@ Twisted   & 1.07E-02 & 7.15E-04 & \textbf{5.89E-07} & 1.02E-02 & 4.52E-04 & \tex
 \end{tabular}
  \caption{Results comparing the characteristics of NG-SAE, vanilla SAE and ZSAE ($\alpha=0.7$),
  over 100 randomly generated images encoded 100 times (with gaussian noise added each time).
- In LightsOut and Twisted, ZSAE($N=100$) finds a representation as large as the theoretical minimum encoding length of the input search space.
+ In LightsOut and Twisted, ZSAE($N=100$) finds a representation as large as the theoretical optimal encoding length of the input search space.
  }
 \label{tab:stability}
 \end{table*}
