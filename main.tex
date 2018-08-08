@@ -917,19 +917,13 @@ SAE performance is sometimes comparable to ZSAE but only when it is tuned approp
 \label{tab:ama1}
 \end{table}
 
-% Next, we show the performance when AMA$_2$ is used
-% (\reftbl{tab:ama2}). Networks in AMA$_2$ (AAE/AD/SD) are trained with the same hyperparameter 
-% used in the original paper \cite{Asai2018}.
-% Similar results were obtained; ZSAE consistently improves the success ratio.
-% 
+Next, we compare the planning performance if SAE/ZSAE with AMA$_2$ (\reftbl{tab:ama2}).
+Networks in AMA$_2$ (AAE/AD/SD) are trained with the same hyperparameter 
+used in the original paper \cite{Asai2018}.
+Similar results were obtained; ZSAE consistently improves the success ratio.
+
 % \begin{table}[htb]
 %  \vspace{1.5in}
-% \caption{Results using AMA$_2$ unsupervised learning method for Action Model Acquisition.
-% Best results in each domain are highlighted in \textbf{bold}.
-% Results indicates that [TODO] ZSAE is more robust on different hyperparameters and tend to achieve better performance than vanilla SAE.
-% SAE performance is sometimes comparable to ZSAE but only when it is tuned appropriately.
-% }
-%  \label{tab:ama2}
 % \end{table}
 % 
 % To identify the reason of the improvement, we measured the State / Action Discriminator accuracy in those domains.
@@ -940,6 +934,34 @@ SAE performance is sometimes comparable to ZSAE but only when it is tuned approp
 %  \caption{State Discriminator / Action Discriminator accuracy between ZSAE and SAE.}
 %  \label{fig:ama2-ad}
 % \end{figure}
+
+\begin{table}[htbp]
+\relsize{-2}
+\centering
+\setlength{\tabcolsep}{0.2em}
+\begin{tabular}{|l|*{3}{r}|*{3}{r}|*{3}{r}|*{3}{r}|*{3}{r}|*{3}{r}|}
+ & \multicolumn{6}{c|}{Gaussian} & \multicolumn{6}{c|}{Salt/Pepper} & \multicolumn{6}{c|}{No Noise}                                                                                    \\
+ & \multicolumn{3}{c|}{SAE}     & \multicolumn{3}{c|}{ZSAE}      & \multicolumn{3}{c|}{SAE} & \multicolumn{3}{c|}{ZSAE} & \multicolumn{3}{c|}{SAE} & \multicolumn{3}{c|}{ZSAE} \\
+ % 
+$N=$ & {36} & {64} & {100} & {36} & {64} & {100} & {36} & {64} & {100} & {36} & {64} & {100} & {36} & {64} & {100} & {36} & {64} & {100} \\
+\hline
+MNIST     & 8           & 8  & 4  & \textbf{20} & 14          & 10 & 18          & 6           & 0           & \textbf{20} & 9           & 17          & 18          & 13          & 5           & \textbf{20} & 19          & 18          \\
+Mandrill  & \textbf{13} & 10 & 3  & 4           & \textbf{13} & 12 & 18          & 13          & 6           & 18          & \textbf{19} & \textbf{19} & 18          & 13          & 10          & 18          & 19          & \textbf{20} \\
+Spider    & 13          & 11 & 17 & 17          & \textbf{18} & 16 & 17          & 10          & 15          & 18          & \textbf{20} & 18          & 17          & 14          & 15          & 17          & \textbf{20} & 18          \\
+LightsOut & 10          & 0  & 0  & \textbf{20} & \textbf{20} & 12 & \textbf{20} & \textbf{20} & \textbf{20} & \textbf{20} & \textbf{20} & 18          & \textbf{20} & 19          & \textbf{20} & \textbf{20} & \textbf{20} & 18          \\
+Twisted   & 3           & 0  & 0  & 10          & \textbf{16} & 12 & 19          & 17          & \textbf{20} & \textbf{20} & \textbf{20} & 15          & \textbf{20} & \textbf{20} & \textbf{20} & \textbf{20} & \textbf{20} & 15          \\
+\hline
+\textbf{Total} & {47} & {29} & {24}  & {71} & \textbf{81} & {62}  & {92} & {66} & {61}  & \textbf{96} & {88} & {87}  & {93} & {79} & {70}  & {95} & \textbf{98} & {89}  \\
+\hline
+\end{tabular}
+\caption{
+Results using AMA$_2$ unsupervised learning method for Action Model Acquisition.
+Best results in each domain are highlighted in \textbf{bold}.
+Results indicates that ZSAE is more robust on different hyperparameters and tend to achieve better performance than vanilla SAE.
+SAE performance is sometimes comparable to ZSAE but only when it is tuned appropriately (e.g. $N=36$).
+}
+ \label{tab:ama2}
+\end{table}
 
 \subsection{Pruning Inactive Nodes from ZSAE}
 
