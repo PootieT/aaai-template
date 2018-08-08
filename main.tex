@@ -71,23 +71,18 @@ called State AutoEncoder (SAE) to obtain the propositional
 representation of the image based puzzle domains with unsupervised learning,
 then generates a propositional state space and performs Classical Planning,
 partly resolving this bottleneck.
-
-In this paper,
-we define a new sub-problem of symbol grounding problem (SGP), the symbol \emph{stability} problem (SSP).
-Informally, symbols are
-\emph{stable} when they refer to the same concept for the exact same
-observation of the environment, and unstable symbols are harmful for symbolic
-reasoning.
-We then address SSP in \latentplanner,
-specifically the uninformative / random propositions in the latent / symbolic encoding.
-We propose ``Zero-Suppressed SAE''
-(ZSAE), an enhancement of SAE that uses the idea of closed-world
-assumption as a prior for NN optimization 
-and robustly generates a set of stable symbols.
 % 
-We empirically show that it finds more stable propositions
-against various hyperparameters and improves the success rate of
-\latentplanner.
+In this paper,
+we define a new sub-problem of symbol grounding problem (SGP) called the symbol \emph{stability} problem (SSP).
+Informally, symbols are
+\emph{stable} when their referents do not change against small perturbation in the environment,
+and unstable symbols are harmful for symbolic reasoning.
+We analyze the SSP in \latentplanner, specifically the unstable propositional variables,
+and propose ``Zero-Suppressed SAE'' (ZSAE), an enhancement of SAE that uses the idea of closed-world
+assumption as a prior for NN optimization and improves the stability of the propositional variables.
+% 
+We empirically show that it finds more stable propositions as well as more compact representations
+against various hyperparameters and improves the success rate of \latentplanner.
 \end{abstract}
 
 
