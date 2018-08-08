@@ -669,6 +669,17 @@ thus the more propositions take the value of 0 (\refig{zsae-overview}).
 One additional advantage of ZSAE is that
 several neurons are completely deactivated, i.e. always takes the value of zero
 and can be pruned afterward to reduce the network size.
+If the propositional layer is connected to the next layer of $k$ neurons
+by a nonlinear function $h_k=\sigma\parens{\sum_{ij} W_{ijk}z_{ij}+B_k}$
+with weights $W_{ijk}$ and biases $B_k$,
+we can prune $i$-th propositional variable, assuming that $z_{i0}=0, z_{i1}=1$ always holds,
+by adding $W_{i1k}$ to $B_k$ and removing the appropriate index $i$ from $W_{ijk}$.
+
+Unlike traditional NN compression methods \cite{cheng2017survey}, this pruning does not suffer from
+accuracy degradation because the activations are discrete and therefore does not require additional retraining.
+In the continuous cases, even small activations could be amplified by the weights and significantly affect the
+later pipelines of the neural networks.
+
 % 
 A possible interpretation of this approach 
 % from the symbolic perspective
