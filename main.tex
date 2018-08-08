@@ -882,8 +882,8 @@ As a classical planner, we used FastDownward \cite{Helmert04} with blind heurist
 remove the effects of the heuristic functions.
 
 The results in \reftbl{tab:ama1} shows that ZSAE achieves the overall improvement in terms of success rate.
-ZSAE is more robust against the different sizes of the latent space.
-Moreover, the variance of the number of solved instances is quite high in SAE.
+ZSAE is more robust against the different size $N$ of the latent space.
+% Moreover, the variance of the number of solved instances is quite high in SAE.
 % 
 Further analyses showed that
 in X models (out of 10 trials), the planner always fails to find a solution because
@@ -894,7 +894,7 @@ lower than ZSAE.
 
 \begin{table}[htbp]
 \centering
-% \relsize{-1}
+\relsize{-1}
 \begin{tabular}{r|rrr|rrr}
  & \multicolumn{3}{c|}{SAE mean$\pm$(std)} & \multicolumn{3}{c}{ZSAE mean$\pm$(std)} \\ 
 $N=$           & {36}        & {64}        & {100} & {36}        & {64}        & {100}        \\\hline
