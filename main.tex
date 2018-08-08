@@ -896,7 +896,7 @@ lower than ZSAE.
 \centering
 \relsize{-1}
 \begin{tabular}{r|rrr|rrr}
- & \multicolumn{3}{c|}{SAE mean$\pm$(std)} & \multicolumn{3}{c}{ZSAE mean$\pm$(std)} \\ 
+ & \multicolumn{3}{c|}{SAE} & \multicolumn{3}{c}{ZSAE} \\ 
 $N=$           & {36}        & {64}        & {100} & {36}        & {64}        & {100}        \\\hline
 MNIST          & \textbf{57} & 25          & 15    & 49          & 50          & \textbf{57}  \\
 Mandrill       & 58          & 58          & 15    & \textbf{60} & \textbf{60} & \textbf{60}  \\
@@ -905,22 +905,20 @@ LightsOut      & \textbf{60} & 59          & 49    & \textbf{60} & 59          &
 Twisted        & \textbf{60} & 58          & 35    & \textbf{60} & \textbf{60} & \textbf{60}  \\\hline
 \textbf{Total} & {235}       & {260}       & {170} & {271}       & {289}       & \textbf{296} \\
 \end{tabular}
-\caption{Results using AMA$_1$ (oracular method) for comparing the performance of Z/SAE.
-The numbers are the average / standard deviation of the numbers of instances successfully solved
- over 10 symbolic models for each domain encoded by the same SAE (encoding may be stochastic) and converted by AMA$_1$.
-AMA$_1$ is not a learning-based action model acquisition method, therefore SAE implementation does not affect its performance.
-ZSAE uses $\alpha=0.7$, however for some configurations (marked by $*$), the network did not converge due to high regularization, in which case we used $\alpha=0.2$.
+\caption{
+The numbers of instances successfully solved by Latplan using AMA$_1$ (oracular method)
+for comparing the performance of Z/SAE.
 Best results in each domain are highlighted in \textbf{bold}.
-Results indicates that ZSAE is more robust on different latent space size and tend to achieve better performance than vanilla SAE.
+Results indicates that ZSAE is more robust on different latent space size and tend to solve more problems than vanilla SAE.
 SAE performance is sometimes comparable to ZSAE but only when it is tuned appropriately.
 }
 \label{tab:ama1}
 \end{table}
 
-Next, we compare the planning performance if SAE/ZSAE with AMA$_2$ (\reftbl{tab:ama2}).
+Next, we compare the planning performance of Z/SAE with AMA$_2$ (\reftbl{tab:ama2}).
 Networks in AMA$_2$ (AAE/AD/SD) are trained with the same hyperparameter 
 used in the original paper \cite{Asai2018}.
-Similar results were obtained; ZSAE consistently improves the success ratio.
+Similar results were obtained; ZSAE consistently improves the success ratio over the vanilla SAE.
 
 % \begin{table}[htb]
 %  \vspace{1.5in}
