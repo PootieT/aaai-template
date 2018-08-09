@@ -894,19 +894,38 @@ Even if we remove those pathological cases of SAE (third column), its average su
 lower than ZSAE.
 
 \begin{table}[htbp]
+\relsize{-2}
 \centering
-\relsize{-1}
-\begin{tabular}{r|rrr|rrr}
- & \multicolumn{3}{c|}{SAE} & \multicolumn{3}{c}{ZSAE} \\ 
-$N=$           & {36}        & {64}        & {100} & {36}        & {64}        & {100}        \\\hline
-MNIST          & \textbf{57} & 25          & 15    & 49          & 50          & \textbf{57}  \\
-Mandrill       & 58          & 58          & 15    & \textbf{60} & \textbf{60} & \textbf{60}  \\
-Spider         & 0           & \textbf{60} & 56    & 42          & \textbf{60} & \textbf{60}  \\
-LightsOut      & \textbf{60} & 59          & 49    & \textbf{60} & 59          & 59           \\
-Twisted        & \textbf{60} & 58          & 35    & \textbf{60} & \textbf{60} & \textbf{60}  \\\hline
-\textbf{Total} & {235}       & {260}       & {170} & {271}       & {289}       & \textbf{296} \\
+\setlength{\tabcolsep}{0.2em}
+\begin{tabular}{|l|*{3}{r}|*{3}{r}|*{3}{r}|*{3}{r}|*{3}{r}|*{3}{r}|}
+ & \multicolumn{6}{c|}{Gaussian} & \multicolumn{6}{c|}{Salt/Pepper} & \multicolumn{6}{c|}{No Noise}                                                                                    \\
+ & \multicolumn{3}{c|}{SAE}     & \multicolumn{3}{c|}{ZSAE}      & \multicolumn{3}{c|}{SAE} & \multicolumn{3}{c|}{ZSAE} & \multicolumn{3}{c|}{SAE} & \multicolumn{3}{c|}{ZSAE} \\
+ % 
+$N=$ & {36} & {64} & {100} & {36} & {64} & {100} & {36} & {64} & {100} & {36} & {64} & {100} & {36} & {64} & {100} & {36} & {64} & {100} \\
+\hline
+MNIST     & 8           & 8  & 4  & \textbf{20} & 14          & 10 & 18          & 6           & 0           & \textbf{20} & 9           & 17          & 18          & 13          & 5           & \textbf{20} & 19          & 18          \\
+Mandrill  & \textbf{13} & 10 & 3  & 4           & \textbf{13} & 12 & 18          & 13          & 6           & 18          & \textbf{19} & \textbf{19} & 18          & 13          & 10          & 18          & 19          & \textbf{20} \\
+Spider    & 13          & 11 & 17 & 17          & \textbf{18} & 16 & 17          & 10          & 15          & 18          & \textbf{20} & 18          & 17          & 14          & 15          & 17          & \textbf{20} & 18          \\
+LightsOut & 10          & 0  & 0  & \textbf{20} & \textbf{20} & 12 & \textbf{20} & \textbf{20} & \textbf{20} & \textbf{20} & \textbf{20} & 18          & \textbf{20} & 19          & \textbf{20} & \textbf{20} & \textbf{20} & 18          \\
+Twisted   & 3           & 0  & 0  & 10          & \textbf{16} & 12 & 19          & 17          & \textbf{20} & \textbf{20} & \textbf{20} & 15          & \textbf{20} & \textbf{20} & \textbf{20} & \textbf{20} & \textbf{20} & 15          \\
+\hline
+\textbf{Total} & {47} & {29} & {24}  & {71} & \textbf{81} & {62}  & {92} & {66} & {61}  & \textbf{96} & {88} & {87}  & {93} & {79} & {70}  & {95} & \textbf{98} & {89}  \\
+\hline
 \end{tabular}
+% \centering
+% \relsize{-1}
+% \begin{tabular}{r|rrr|rrr}
+%  & \multicolumn{3}{c|}{SAE} & \multicolumn{3}{c}{ZSAE} \\ 
+% $N=$           & {36}        & {64}        & {100} & {36}        & {64}        & {100}        \\\hline
+% MNIST          & \textbf{57} & 25          & 15    & 49          & 50          & \textbf{57}  \\
+% Mandrill       & 58          & 58          & 15    & \textbf{60} & \textbf{60} & \textbf{60}  \\
+% Spider         & 0           & \textbf{60} & 56    & 42          & \textbf{60} & \textbf{60}  \\
+% LightsOut      & \textbf{60} & 59          & 49    & \textbf{60} & 59          & 59           \\
+% Twisted        & \textbf{60} & 58          & 35    & \textbf{60} & \textbf{60} & \textbf{60}  \\\hline
+% \textbf{Total} & {235}       & {260}       & {170} & {271}       & {289}       & \textbf{296} \\
+% \end{tabular}
 \caption{
+[tentative results]
 The numbers of instances successfully solved by Latplan using AMA$_1$ (oracular method)
 for comparing the performance of Z/SAE.
 Best results in each domain are highlighted in \textbf{bold}.
