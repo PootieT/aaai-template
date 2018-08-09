@@ -455,7 +455,7 @@ from which the environment can be reconstructed with a sufficient accuracy.
 \begin{defi}
 A symbolic representation is \emph{stable} when its referents are identical
  %  (e.g. truth assignment for propositional symbols)
-for the same environment, under some equivalence relation (e.g. invariance, robustness).
+for the same environment, under some equivalence relation (e.g. invariance, noise threshold).
 \end{defi}
 
 %% wanted to include, but not during the submission
@@ -989,7 +989,7 @@ SAE performance is sometimes comparable to ZSAE but only when it is tuned approp
 % [too obvious and intuitive?]
 
 We discuss the amount of memory reduction possible by the pruning on the nodes
-that has a constant activation of 0. As we saw from \reftbl{tab:stability},
+that have constant activations of 0. As we saw from \reftbl{tab:stability},
 vanilla SAEs do not have such propositions (all bits are effective bits).
 % While we did not actually implemented the node pruning,
 
@@ -1036,7 +1036,7 @@ find an online, adaptive tuning method for $\alpha$, the hyperparameter for
 zero-suppression regularization.
 
 As a meta-level contribution,
-we reframed the problematic behavior of unstable propositions
+we generalized the problematic behavior of unstable propositions
 as \emph{Symbol Stability Problem} (SSP), a subproblem of Symbol Grounding Problem (SGP).
 % 
 We identified two sources of the stochasticity which introduces instability,
