@@ -892,43 +892,47 @@ and that of the learning procedure in AMA$_2$ that learns the state transitions 
 As a classical planner, we used FastDownward \cite{Helmert04} with blind heuristics in order to
 remove the effects of the heuristic functions.
 
-The results in \reftbl{tab:ama1} shows that ZSAE achieves the overall improvement in terms of success rate.
-ZSAE is more robust against the different size $N$ of the latent space.
-% Moreover, the variance of the number of solved instances is quite high in SAE.
+The results in \reftbl{tab:ama1} shows that ZSAE achieves the robust success rate on $N=36,64,100$,
+while SAE achieves a good performance only in a single parameter $N=36$.
 % 
-Further analyses showed that
-in X models (out of 10 trials), the planner always fails to find a solution because
-the state space graph was completely disconnected.
-% 
-Even if we remove those pathological cases of SAE (third column), its average success is still
-lower than ZSAE.
+Due to the small size of the state space compared to the usual classical planning benchmark domains,
+search is done in a fraction of seconds, which means the failure is due to graph disconnectedness.
+ZSAE tends to fail in $N=36$ in LightsOut and Twisted because it has a slightly higher reconstruction error
+against the input with noise.
+(SAE: $2.7\times 10^{-14}$, $2.7\times 10^{-5}$ for LightsOut and Twisted, while
+ZSAE: $9.1\times 10^{-3}$, $5.7\times 10^{-3}$.
+All cases measured by Mean Square Errors.)
+In other words, it is better to combine ZSAE with a slightly overcapacity network,
+since ZSAE then automatically compresses the representation.
+If the network size is already optimally tuned for vanilla SAE (i.e. $N=36$),
+the additional regularization may trade accuracy for stability.
 
 \begin{table}[tbp]
 \relsize{-2}
 \centering
-\setlength{\tabcolsep}{0.2em}
+\setlength{\tabcolsep}{0.15em}
 \begin{tabular}{|l|*{3}{r}|*{3}{r}|*{3}{r}|*{3}{r}|*{3}{r}|*{3}{r}|}
  & \multicolumn{6}{c|}{Gaussian} & \multicolumn{6}{c|}{Salt/Pepper} & \multicolumn{6}{c|}{No Noise}                                                                                    \\
  & \multicolumn{3}{c|}{SAE}     & \multicolumn{3}{c|}{ZSAE}      & \multicolumn{3}{c|}{SAE} & \multicolumn{3}{c|}{ZSAE} & \multicolumn{3}{c|}{SAE} & \multicolumn{3}{c|}{ZSAE} \\
  % 
 $N=$ & {36} & {64} & {100} & {36} & {64} & {100} & {36} & {64} & {100} & {36} & {64} & {100} & {36} & {64} & {100} & {36} & {64} & {100} \\
 \hline
-MNIST     & 20 & 15 & 5  & 19 & 20 & 10 & 20 & 13 & 0  & 20 & 20 & 20 & 20 & 20 & 20 & 20 & 20 & 20 \\
-Mandrill  & 20 & 17 & 15 & 20 & 20 & 20 & 20 & 18 & 17 & 20 & 20 & 20 & 20 & 20 & 20 & 20 & 20 & 20 \\
-Spider    & 20 & 18 & 19 & 20 & 20 & 20 & 20 & 20 & 19 & 20 & 20 & 20 & 20 & 20 & 20 & 20 & 20 & 20 \\
-LightsOut & 20 & 17 & 19 & 11 & 17 & 20 & 20 & 18 & 19 & 11 & 18 & 20 & 20 & 20 & 20 & 20 & 20 & 20 \\
-Twisted   & 20 & 10 & 6  & 12 & 20 & 18 & 20 & 15 & 10 & 16 & 20 & 19 & 20 & 20 & 20 & 20 & 20 & 20 \\
+MNIST     & \tb{20} & 15 & 5  & 19 & \tb{20} & \tb{10} & 20     & 13 & 0  & 20 & \tb{20} & \tb{20} & 20 & 20 & 20 & 20 & 20 & 20     \\
+Mandrill  & 20     & 17 & 15 & 20 & \tb{20} & \tb{20} & 20     & 18 & 17 & 20 & \tb{20} & \tb{20} & 20 & 20 & 20 & 20 & 20 & 20         \\
+Spider    & 20     & 18 & 19 & 20 & \tb{20} & \tb{20} & 20     & 20 & 19 & 20 & 20     & \tb{20} & 20 & 20 & 20 & 20 & 20 & 20             \\
+LightsOut & \tb{20} & 17 & 19 & 11 & 17     & \tb{20} & \tb{20} & 18 & 19 & 11 & 18     & \tb{20} & 20 & 20 & 20 & 20 & 20 & 20         \\
+Twisted   & \tb{20} & 10 & 6  & 12 & \tb{20} & \tb{18} & \tb{20} & 15 & 10 & 16 & \tb{20} & \tb{19} & 20 & 20 & 20 & 20 & 20 & 20 \\
 \hline
-\textbf{Total} & {100} & {77} & {64} & {82} & {97} & {88} & {100} & {84} & {65} & {87} & {98} & {99} & {100} & {100} & {100} & {100} & {100} & {100} \\
+\textbf{Total} & \tb{100} & 77 & 64 & 82 & \tb{97} & \tb{88} & \tb{100} & 84 & 65 & 87 & \tb{98} & \tb{99} & 100 & 100 & 100 & 100 & 100 & 100 \\
 \hline
 \end{tabular}
 \caption{
-[tentative results]
 The numbers of instances successfully solved by Latplan using AMA$_1$ (oracular method)
 for comparing the performance of Z/SAE.
-Best results in each domain are highlighted in \textbf{bold}.
-Results indicates that ZSAEs are more robust on different latent space size and tend to solve more problems than vanilla SAEs.
-SAE performance is better only when it is tuned to the best $N=36$.
+Best results among the same configuration of ZSAE/SAE are highlighted in \tb{bold}.
+SAEs degrade performance as surplus capacity produces more unstable propositions,
+and is better than ZSAE only when tuned to $N=36$.
+ZSAEs are robust on different $N$ and tend to solve more problems than vanilla SAEs.
 }
 \label{tab:ama1}
 \end{table}
