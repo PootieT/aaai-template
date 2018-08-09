@@ -227,7 +227,7 @@ entirely from the image-based observation of the environment with deep NNs.
 The system was shown to solve various puzzle domains, such as 8-puzzles or Tower of Hanoi,
 which are presented in a form of noisy, continuous visual depiction of the environment.
 
-\begin{figure}[htb]
+\begin{figure}[tb]
  \centering
  \includegraphics[width=\linewidth]{img/planning.pdf}
  \caption{Classical planning in latent space:
@@ -277,7 +277,7 @@ However, in the final step, \latentplanner obtain a step-by-step visualization o
 by $Decode$'ing the latent bit vectors for each intermediate state.
 This necessitates the bidirectionality of the mapping between the input and the propositional states.
 
-\begin{figure}[htb]
+\begin{figure}[tb]
  \includegraphics[width=\linewidth]{img/train-state-ae.pdf}
  \caption{Step 1:
 Train the State AutoEncoder by
@@ -389,7 +389,7 @@ When the class probabilities are neutral,
 such a tiny variation in the input image may cause the activation to go across the decision boundary for each neuron,
 causing the bit flips.
 
-\begin{figure}[htb]
+\begin{figure}[tb]
  \centering
  \includegraphics{img/unstable.pdf}
  \caption{Propositions found by SAEs may contain uninformative bits
@@ -408,7 +408,7 @@ and the duplicate detection in the search algorithm (e.g. \astar) falsely believ
 % since it completely relies on the atomiticy and deteminisim of the proposition.
 This slows down the search by increasing the number of nodes that are reachable from the initial state.
 
-\begin{figure}[htb]
+\begin{figure}[tb]
  \centering
  \includegraphics{img/disconnected.pdf}
  \caption{Random variations of propositional encoding for a single real-world state could disconnect the search space.}
@@ -822,7 +822,7 @@ which is rarely affected by the external perturbation.
 % 
 Due to the poor performance of NG-SAE, we do not study it any further in the later sections.
 
-\begin{table*}[htbp]
+\begin{table*}[tbp]
  \relsize{-1.5}
  \centering
  \setlength{\tabcolsep}{0.45em}
@@ -903,7 +903,7 @@ the state space graph was completely disconnected.
 Even if we remove those pathological cases of SAE (third column), its average success is still
 lower than ZSAE.
 
-\begin{table}[htbp]
+\begin{table}[tbp]
 \relsize{-2}
 \centering
 \setlength{\tabcolsep}{0.2em}
