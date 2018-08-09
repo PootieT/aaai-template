@@ -57,7 +57,6 @@
 % We show this by retraining an existing network
 % with a mixture of the existing and new dataset, and demonstrating that
 % it can encode both environments.
-
 While Classical Planning is an active branch of AI,
 its applicability is limited to the tasks precisely modeled by humans.
 Fully automated high-level agents should be instead able to find a symbolic representation
@@ -73,11 +72,12 @@ then generates a propositional state space and performs Classical Planning,
 partly resolving this bottleneck.
 % 
 In this paper,
-we define a new sub-problem of symbol grounding problem (SGP) called the symbol \emph{stability} problem (SSP).
+we identify the problematic behavior of SAE-produced propositions 
+as a new sub-problem of symbol grounding problem (SGP) called the symbol \emph{stability} problem (SSP).
 Informally, symbols are
 \emph{stable} when their referents do not change against small perturbation in the environment,
 and unstable symbols are harmful for symbolic reasoning.
-We analyze the SSP in \latentplanner, specifically the unstable propositional variables,
+We analyze the SSP in SAE
 and propose ``Zero-Suppressed SAE'' (ZSAE), an enhancement of SAE that uses the idea of closed-world
 assumption as a prior for NN optimization and improves the stability of the propositional variables.
 % 
