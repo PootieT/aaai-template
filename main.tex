@@ -911,19 +911,50 @@ the additional regularization may trade accuracy for stability.
 \relsize{-2}
 \centering
 \setlength{\tabcolsep}{0.15em}
-\begin{tabular}{|l|*{3}{r}|*{3}{r}|*{3}{r}|*{3}{r}|*{3}{r}|*{3}{r}|}
- & \multicolumn{6}{c|}{Gaussian} & \multicolumn{6}{c|}{Salt/Pepper} & \multicolumn{6}{c|}{No Noise}                                                                                    \\
- & \multicolumn{3}{c|}{SAE}     & \multicolumn{3}{c|}{ZSAE}      & \multicolumn{3}{c|}{SAE} & \multicolumn{3}{c|}{ZSAE} & \multicolumn{3}{c|}{SAE} & \multicolumn{3}{c|}{ZSAE} \\
+\begin{tabular}{|l|*{6}{*{3}{r}|}}
+% \begin{tabular}{|l|*{10}{*{3}{r}|}}
+ % & \multicolumn{6}{c|}{Gaussian ($\sigma=0.3$)}
+ & \multicolumn{6}{c|}{Gaussian ($\sigma=0.6$)}
+ % & \multicolumn{6}{c|}{Salt/Pepper ($p=0.06$)}
+ & \multicolumn{6}{c|}{Salt/Pepper ($p=0.12$)}
+ & \multicolumn{6}{c|}{No Noise}
+ \\
+ % & \multicolumn{3}{c|}{SAE} & \multicolumn{3}{c|}{ZSAE}
+ & \multicolumn{3}{c|}{SAE} & \multicolumn{3}{c|}{ZSAE}
+ % & \multicolumn{3}{c|}{SAE} & \multicolumn{3}{c|}{ZSAE}
+ & \multicolumn{3}{c|}{SAE} & \multicolumn{3}{c|}{ZSAE}
+ & \multicolumn{3}{c|}{SAE} & \multicolumn{3}{c|}{ZSAE}
+ \\
  % 
-$N=$ & {36} & {64} & {100} & {36} & {64} & {100} & {36} & {64} & {100} & {36} & {64} & {100} & {36} & {64} & {100} & {36} & {64} & {100} \\
+$N=$
+ % & {36} & {64} & {100}  & {36} & {64} & {100} 
+ & {36} & {64} & {100}  & {36} & {64} & {100} 
+ % & {36} & {64} & {100}  & {36} & {64} & {100} 
+ & {36} & {64} & {100}  & {36} & {64} & {100} 
+ & {36} & {64} & {100}  & {36} & {64} & {100} 
+ \\
 \hline
-MNIST     & \tb{20} & 15 & 5  & 19 & \tb{20} & \tb{10} & 20     & 13 & 0  & 20 & \tb{20} & \tb{20} & 20 & 20 & 20 & 20 & 20 & 20     \\
-Mandrill  & 20     & 17 & 15 & 20 & \tb{20} & \tb{20} & 20     & 18 & 17 & 20 & \tb{20} & \tb{20} & 20 & 20 & 20 & 20 & 20 & 20         \\
-Spider    & 20     & 18 & 19 & 20 & \tb{20} & \tb{20} & 20     & 20 & 19 & 20 & 20     & \tb{20} & 20 & 20 & 20 & 20 & 20 & 20             \\
-LightsOut & \tb{20} & 17 & 19 & 11 & 17     & \tb{20} & \tb{20} & 18 & 19 & 11 & 18     & \tb{20} & 20 & 20 & 20 & 20 & 20 & 20         \\
-Twisted   & \tb{20} & 10 & 6  & 12 & \tb{20} & \tb{18} & \tb{20} & 15 & 10 & 16 & \tb{20} & \tb{19} & 20 & 20 & 20 & 20 & 20 & 20 \\
-\hline
-\textbf{Total} & \tb{100} & 77 & 64 & 82 & \tb{97} & \tb{88} & \tb{100} & 84 & 65 & 87 & \tb{98} & \tb{99} & 100 & 100 & 100 & 100 & 100 & 100 \\
+%% both results
+% MNIST          & \tb{20}  & 15 & 5  & 19 & \tb{20} & \tb{10} & 0      & 0 & 0      & \tb{17} & 0       & 0       & 20       & 13 & 0  & 20 & \tb{20} & \tb{20} & 17      & 5  & 0  & \tb{20} & \tb{10} & \tb{17} & 20  & 20  & 20  & 20  & 20  & 20  \\
+% Mandrill       & 20       & 17 & 15 & 20 & \tb{20} & \tb{20} & \tb{4} & 3 & 0      & 0       & \tb{6}  & \tb{5}  & 20       & 18 & 17 & 20 & \tb{20} & \tb{20} & 16      & 17 & 8  & \tb{20} & \tb{20} & \tb{20} & 20  & 20  & 20  & 20  & 20  & 20  \\
+% Spider         & 20       & 18 & 19 & 20 & \tb{20} & \tb{20} & 8      & 3 & \tb{6} & \tb{12} & 3       & 5       & 20       & 20 & 19 & 20 & 20      & \tb{20} & 20      & 7  & 16 & 20      & \tb{20} & \tb{20} & 20  & 20  & 20  & 20  & 20  & 20  \\
+% LightsOut      & \tb{20}  & 17 & 19 & 11 & 17      & \tb{20} & 1      & 0 & 0      & \tb{10} & \tb{19} & \tb{20} & \tb{20}  & 18 & 19 & 11 & 18      & \tb{20} & \tb{20} & 13 & 18 & 12      & \tb{19} & \tb{20} & 20  & 20  & 20  & 20  & 20  & 20  \\
+% Twisted        & \tb{20}  & 10 & 6  & 12 & \tb{20} & \tb{18} & 1      & 0 & 0      & \tb{4}  & \tb{20} & \tb{3}  & \tb{20}  & 15 & 10 & 16 & \tb{20} & \tb{19} & \tb{17} & 12 & 6  & 12      & \tb{20} & \tb{17} & 20  & 20  & 20  & 20  & 20  & 20  \\ \hline
+% \textbf{Total} & \tb{100} & 77 & 64 & 82 & \tb{97} & \tb{88} & 14     & 6 & 6      & \tb{43} & \tb{48} & \tb{33} & \tb{100} & 84 & 65 & 87 & \tb{98} & \tb{99} & \tb{90} & 54 & 48 & 84      & \tb{89} & \tb{94} & 100 & 100 & 100 & 100 & 100 & 100 \\
+%% low-noise results
+% MNIST          & \tb{20}  & 15 & 5  & 19 & \tb{20} & \tb{10} & 20       & 13 & 0  & 20 & \tb{20} & \tb{20} & 20  & 20  & 20  & 20  & 20  & 20  \\
+% Mandrill       & 20       & 17 & 15 & 20 & \tb{20} & \tb{20} & 20       & 18 & 17 & 20 & \tb{20} & \tb{20} & 20  & 20  & 20  & 20  & 20  & 20  \\
+% Spider         & 20       & 18 & 19 & 20 & \tb{20} & \tb{20} & 20       & 20 & 19 & 20 & 20      & \tb{20} & 20  & 20  & 20  & 20  & 20  & 20  \\
+% LightsOut      & \tb{20}  & 17 & 19 & 11 & 17      & \tb{20} & \tb{20}  & 18 & 19 & 11 & 18      & \tb{20} & 20  & 20  & 20  & 20  & 20  & 20  \\
+% Twisted        & \tb{20}  & 10 & 6  & 12 & \tb{20} & \tb{18} & \tb{20}  & 15 & 10 & 16 & \tb{20} & \tb{19} & 20  & 20  & 20  & 20  & 20  & 20  \\ \hline
+% \textbf{Total} & \tb{100} & 77 & 64 & 82 & \tb{97} & \tb{88} & \tb{100} & 84 & 65 & 87 & \tb{98} & \tb{99} & 100 & 100 & 100 & 100 & 100 & 100 \\
+%% high-noise results
+MNIST          & 0      & 0 & 0      & \tb{17} & 0       & 0       & 17      & 5  & 0  & \tb{20} & \tb{10} & \tb{17} & 20  & 20  & 20  & 20  & 20  & 20  \\
+Mandrill       & \tb{4} & 3 & 0      & 0       & \tb{6}  & \tb{5}  & 16      & 17 & 8  & \tb{20} & \tb{20} & \tb{20} & 20  & 20  & 20  & 20  & 20  & 20  \\
+Spider         & 8      & 3 & \tb{6} & \tb{12} & 3       & 5       & 20      & 7  & 16 & 20      & \tb{20} & \tb{20} & 20  & 20  & 20  & 20  & 20  & 20  \\
+LightsOut      & 1      & 0 & 0      & \tb{10} & \tb{19} & \tb{20} & \tb{20} & 13 & 18 & 12      & \tb{19} & \tb{20} & 20  & 20  & 20  & 20  & 20  & 20  \\
+Twisted        & 1      & 0 & 0      & \tb{4}  & \tb{20} & \tb{3}  & \tb{17} & 12 & 6  & 12      & \tb{20} & \tb{17} & 20  & 20  & 20  & 20  & 20  & 20  \\ \hline
+\textbf{Total} & 14     & 6 & 6      & \tb{43} & \tb{48} & \tb{33} & \tb{90} & 54 & 48 & 84      & \tb{89} & \tb{94} & 100 & 100 & 100 & 100 & 100 & 100 \\
 \hline
 \end{tabular}
 \caption{
@@ -962,9 +993,15 @@ zero-suppression makes the latent representation more stable against the externa
 \relsize{-2}
 \centering
 \setlength{\tabcolsep}{0.2em}
-\begin{tabular}{|l|*{3}{r}|*{3}{r}|*{3}{r}|*{3}{r}|*{3}{r}|*{3}{r}|}
- & \multicolumn{6}{c|}{Gaussian} & \multicolumn{6}{c|}{Salt/Pepper} & \multicolumn{6}{c|}{No Noise}                                                                                    \\
- & \multicolumn{3}{c|}{SAE}     & \multicolumn{3}{c|}{ZSAE}      & \multicolumn{3}{c|}{SAE} & \multicolumn{3}{c|}{ZSAE} & \multicolumn{3}{c|}{SAE} & \multicolumn{3}{c|}{ZSAE} \\
+\begin{tabular}{|l|*{6}{*{3}{r}|}}
+ & \multicolumn{6}{c|}{Gaussian ($\sigma=0.6$)}
+ & \multicolumn{6}{c|}{Salt/Pepper ($p=0.12$)}
+ & \multicolumn{6}{c|}{No Noise}
+ \\
+ & \multicolumn{3}{c|}{SAE} & \multicolumn{3}{c|}{ZSAE}
+ & \multicolumn{3}{c|}{SAE} & \multicolumn{3}{c|}{ZSAE}
+ & \multicolumn{3}{c|}{SAE} & \multicolumn{3}{c|}{ZSAE}
+ \\
  % 
 $N=$ & {36} & {64} & {100} & {36} & {64} & {100} & {36} & {64} & {100} & {36} & {64} & {100} & {36} & {64} & {100} & {36} & {64} & {100} \\
 \hline
