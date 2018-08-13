@@ -1,4 +1,3 @@
-
 .SECONDEXPANSION:
 
 .PRECIOUS: %.png %.pdf
@@ -17,7 +16,7 @@ all: $(shell find . -name "*.svg" | sed -e "s/svg/xbb/g") $(shell find . -name "
 	ebb -x $<
 
 %.pdf : %.svg
-	inkscape -f $< -A $*.pdf -d 150
+	inkscape -f $(CURDIR)/$< -A $(CURDIR)/$*.pdf -d 150
 # %.png : %.svg
 # 	inkscape -f $< -e $*.png -d 150
 #	convert $< $*.png
