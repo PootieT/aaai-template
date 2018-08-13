@@ -1050,8 +1050,8 @@ such as \emph{ellipse detectors} for tic-tac-toe board data
 which immediately obtains propositions \cite{BarbuNS10}.
 \citeauthor{Kaiser12} (\citeyear{Kaiser12}) similarly assumes grids and pieces
 to obtain the relational structures in the board image.
-These scenarios typically assume a perfect environment with few interference,
-therefore did not address the stability of the symbols.
+These scenarios typically assume a perfect environment in a room with few noisy interference in the sensory data,
+therefore do not have to address the stability of the symbols.
 
 The fact that all of these AMA methods require the (near) symbolic inputs indicates
 that \emph{their utility will be greatly increased by a stable symbol grounding method} we proposed in this paper.
@@ -1125,26 +1125,24 @@ nor a  simulator (DQN), nor predetermined action symbols (``hands'', control lev
 % Finally, RL lacks the completeness/optimality guaranteed by classical planning, which is mandatory for critical applications.
 Extending \latentplanner to symbolic POMDP planning is an interesting avenue for future work.
 
-\begin{comment}
- An Autoencoder is a nonlinear generalization of Principal Component Analysis
- \cite{bourlard1988auto}.
- Therefore, our approach is somewhat similar to an approach that uses PCA
- to run RL in the continuous latent space of the configuration space of a high-DOF
- robot \cite{luck2014latent}.
- Since the latent representation is more compact than the original configuration space of a robot, they can run reinforcement learning more efficiently.
-\end{comment}
+%  An Autoencoder is a nonlinear generalization of Principal Component Analysis
+%  \cite{bourlard1988auto}.
+%  Therefore, our approach is somewhat similar to an approach that uses PCA
+%  to run RL in the continuous latent space of the configuration space of a high-DOF
+%  robot \cite{luck2014latent}.
+%  Since the latent representation is more compact than the original configuration space of a robot, they can run reinforcement learning more efficiently.
 
 % PAIR community (Plan/Activitity/Intent Recognition) work. -- peripherally related
 
-A significant difference between \latentplanner and learning from observation (LfO) in the robotics literature \cite{ArgallCVB09} is that
-\latentplanner is trained based on individual transitions
-while LfO work is largely based on the longer sequence of transitions (e.g. videos)
-and should identify the start/end of actions (\emph{action segmentation}).
-% 
-Action segmentation would not be an issue in 
-an implementation of autonomous \latentplanner-based agent
-because it has the full control over its low-level actuators and
-initiates/terminates its own action for the data collection.
+% A significant difference between \latentplanner and learning from observation (LfO) in the robotics literature \cite{ArgallCVB09} is that
+% \latentplanner is trained based on individual transitions
+% while LfO work is largely based on the longer sequence of transitions (e.g. videos)
+% and should identify the start/end of actions (\emph{action segmentation}).
+% % 
+% Action segmentation would not be an issue in 
+% an implementation of autonomous \latentplanner-based agent
+% because it has the full control over its low-level actuators and
+% initiates/terminates its own action for the data collection.
 
 
 
