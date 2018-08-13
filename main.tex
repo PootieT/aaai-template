@@ -73,7 +73,7 @@ partly resolving this bottleneck.
 % 
 In this paper,
 we identify the problematic behavior of SAE-produced propositions 
-as a new sub-problem of symbol grounding problem (SGP) called the symbol \emph{stability} problem (SSP).
+as a new sub-problem of symbol grounding problem called the symbol \emph{stability} problem (SSP).
 Informally, symbols are
 \emph{stable} when their referents do not change against small perturbation in the environment,
 and unstable symbols are harmful for symbolic reasoning.
@@ -90,7 +90,7 @@ against various hyperparameters and improves the success rate of \latentplanner.
 
 % [This second version of introduction is too long]
 
-Symbol Grounding Problem (SGP) \cite{harnad1990symbol,Steels2008} is one of the key milestones in AI research
+Symbol grounding problem \cite{harnad1990symbol,Steels2008} is one of the key milestones in AI research
 which seeks to achieve high-level intelligence.
 % In Physical Symbol Systems Hypothesis \cite{newell1976computer}, it is believed that
 % an agent with high-level intelligence performs tasks by efficiently manipulating a compact set of abstract symbols.
@@ -104,7 +104,7 @@ which seeks to achieve high-level intelligence.
 % For example, training AlphaGo \cite{alphago} takes days on a huge cluster of custom-made Tensor Processing Units.
 % % 
 % To enable such a fully automated high-level symbolic computation in a real-world environment,
-% agents should be able to find the symbolic representation of the environment by itself, i.e. solving the Symbol Grounding Problem.
+% agents should be able to find the symbolic representation of the environment by itself, i.e. solving the symbol grounding problem.
 % 
 Recently, Latplan system \cite[\refig{fig:overview}]{Asai2018} successfully
 connected a subsymbolic neural network system and a symbolic Classical Planning system
@@ -120,7 +120,7 @@ and returns an image sequence that solves the puzzle
 by decoding the intermediate propositional states of the plan.
 It also discovers a set of action symbols that distinguish the modes of
 state transitions through AMA$_2$ unsupervised learning process.
-Therefore, the system solves SGP for two kinds of symbols:
+Therefore, the system grounds two kinds of symbols:
 Propositional symbols and action symbols.
 % 
 The system opens a promising direction for applying a variety of symbolic methods to the real world.
@@ -166,7 +166,7 @@ ZSAE obtains a compact representation that has fewer true bits.}
 \end{figure}
 
 % This problem arises for any grounding processes applied to the real world.
-The first contribution of this paper is the identification of a sub-problem of SGP
+The first contribution of this paper is the identification of a sub-problem of symbol grounding
 called ``symbol \emph{stability} problem'' (SSP), which seeks to find a set of symbols
 whose values/referents are stable.
 Stability is orthogonal to the \emph{performance/accuracy} of NNs:
@@ -201,7 +201,7 @@ We finally conclude the paper with related work and future remark (\refsec{concl
 \section{Preliminaries}
 \label{background}
 
-\textbf{Symbol Grounding} is an unsupervised process of establishing a mapping
+\textbf{Symbol grounding} is an unsupervised process of establishing a mapping
 from huge, noisy, continuous, unstructured inputs
 to a set of compact, % clean
 discrete, identifiable (structured) entities, i.e., symbols \cite{Asai2018}.
@@ -1072,7 +1072,7 @@ zero-suppression regularization.
 
 As a meta-level contribution,
 we generalized the problematic behavior of unstable propositions
-as \emph{Symbol Stability Problem} (SSP), a subproblem of Symbol Grounding Problem (SGP).
+as \emph{Symbol Stability Problem} (SSP), a subproblem of symbol grounding.
 % 
 We identified two sources of the stochasticity which introduces instability,
 namely
@@ -1080,7 +1080,7 @@ the inherent stochasticity of the network and
 the external stochasticity in the observations.
 % 
 This indicates that
-SSP applies to any SGP processes because most real-world inputs are noisy,
+SSP applies to any symbol grounding processes because most real-world inputs are noisy,
 and especially to those using the sampling-based, stochastic processes
 which are gaining popularity in the literature, notably VAEs and GANs.
 
