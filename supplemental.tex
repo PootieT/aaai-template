@@ -24,6 +24,7 @@
 \setlength{\pdfpageheight}{11in}
 \pagestyle{empty}
 \frenchspacing
+\setcounter{secnumdepth}{2}
 % \setlength{\floatsep}{1mm}
 % \setlength{\textfloatsep}{1mm}
 % \setlength{\abovecaptionskip}{1mm}
@@ -34,17 +35,243 @@
 % \setlength{\tabcolsep}{0.1em}
 
 \nocopyright
-\author{Submision 1537}
-\title{Improving Greedy Best-First Search by Removing Unintended Search Bias}
+\author{Supplemental materials for Submision XXX}
+\title{Don't Cry Wolf! : Towards Stable Symbol Grounding\\ with Zero-Suppressed State AutoEncoder}
 \begin{document}
-\onecolumn
-\makeatletter
-\@maketitle
-\makeatother
+\maketitle
+
+\section{Supplemental Experiments}
 
 
-\begin{landscape}
-aaa
-\end{landscape}
+
+\section{Supplemental Backgrounds}
+
+\subsection{AMA$_1$, an Oracular Action Model Acquisition method}
+
+Action Model Acquisition method AMA$_1$ produces a PDDL/SAS model compatible to
+FastDownward \cite{Helmert04}, but is an oracular model which requires the entire state transitions
+in the environment.
+For each pair of observations $\parens{\before_i, \after_i}$ in the entire set of state transitions allowed in the environment,
+AMA$_1$ uses SAE to encodes it into 
+a symbolic transition $(Encode(\before_i),$ $Encode(\after_i))=$ $(s_i,t_i)$ where $s_i,t_i$ are propositional states.
+Each state (either $s_i,t_i$) is represented as a binary vector $(b_j)_{1\leq j \leq N}$.
+Each symbolic transition is then encoded into a PDDL action 
+using $s_i$ as its preconditions and the difference of $s_i$ and $t_i$ as its effects.
+Each bit $b_j$ is converted into zero-ary predicate \texttt{($b_j$-true)} and \texttt{($b_j$-false)}
+when $b_j=1$ and $0$, respectively.
+For instance, when $b_5$ is 0 in $s_i$ and 1 in $t_i$,
+the preconditions include \texttt{(b5-false)} and
+the effects include \texttt{(and (not (b5-false)) (b5-true))}.
+
+\subsection{AMA$_2$: Action Symbol Grounding}
+\label{sec:ama2-overview}
+
+\latentplanner + AMA$_1$ shows that (1) the SAE can robustly learn image
+$\leftrightarrow$ propositional vector mappings from examples, and that
+(2) if all valid image-image transitions (i.e., the entire state space)
+is given, \latentplanner can correctly generate optimal plans.  However,
+AMA$_1$ is clearly not practical due to the requirement that it uses the
+entire state space as input, and lacks the ability to learn/generalize
+an action model from a small subset of valid action transitions (image
+pairs).  In this section we describe AMA$_2$ \cite{Asai2018}, a neural
+architecture which jointly grounds the action symbols and acquires the
+action model from the subset of examples, in an unsupervised manner.
+AMA$_2$ is approximating AMA$_1$ by learning from examples.
+
+Acquiring a descriptive action model (e.g., PDDL) from a set of unlabeled propositional state transitions consists of three steps.
+% 
+(Step 1) Identify the ``types'' of transitions, where each ``type'' is an identifiable, \emph{action symbol}.
+For example, a  hand-coded ``slide-up-8-at-1-2'' in 8-puzzle is an example of action symbols, but note that an AMA system should ground anonymous symbols without human-provided labels.
+% 
+While they are not lifted/parameterized, they still provide abstraction. For example, the same ``slide-up-8-at-1-2'' action, which slides the tile 8 at position $(x,y)=(1,2)$ upward, applies to many states (each state being a permutation of tiles 1-7).
+% 
+(Step 2) Identify the preconditions and the effects of each action and store the information in an action model.
+(Step 3) Represent the model in a modeling language (e.g., PDDL).
+
+Addressing this entire process is a daunting task. 
+Existing AMA methods typically handle only Steps 2 and 3, skipping Step 1.
+Without step 1, however, an agent lacks the ability to learn in an unknown environment where it does not know \emph{what is even possible}.
+Note that even if the agent has the full knowledge of its low-level actuator capabilities, it does not know its own high-level capabilities e.g. sliding a tile.
+Note that AMA$_1$ handles only Step 3, as providing all valid transitions is equivalent to skipping Step 1/2.
+
+On the other hand, search on a state space graph in an unknown environment is \textit{feasible} even if Step 3 is missing.
+PDDL provides two elements, a \emph{successor function} and its \emph{description}.
+While ideally both are available, the description is not the \emph{essential} requirement.
+The description may increase the explainability of the system in a language such as PDDL,
+but such explainability may be lost anyway when the propositional symbols are identified by SAE, as the meanings of such propositions are unclear to humans.
+The description is also useful for constructing the heuristic functions, but
+the recent success of simulator-based planning \cite{frances2017purely}
+shows that, in some application, efficient search is possible without action descriptions.
+ 
+AMA$_2$ thus focuses on Steps 1 and 2.
+It grounds the action symbols (Step 1) and finds a successor function that can be used for forward state space search (Step 2), but maintains its implicit representation.
+% 
+AMA$_2$ comprises two networks: an \emph{Action Autoencoder} (AAE) and an \emph{Action Discriminator} (AD). The AAE jointly learns the action symbols and the action effects, and provides the ability to enumerate the candidates of the successors of a given state. The AD learns which transitions are valid, i.e. preconditions. Using the enumeration \& filtering approach, the AAE and the AD provides a successor function that returns a list of valid successors of the current state. Both networks are trained unsupervised, and operate in the symbolic latent space, i.e. both the input and output are SAE-generated bitvectors. This keeps the network small and easy to train.
+
+
+\subsubsection{Action Autoencoder}
+
+Consider a simple, linear search space with no branches.
+In this case, grounding the action symbol is not necessary and
+% (there is only a single action) --- this may be inaccurate. eat, sleep, eat, sleep... linear, but two actions.
+the AMA task reduces to predicting the next state $t$ from the current state $s$.
+% Assuming that NN can learn arbitrary functions, % 
+A NN $a'$ could be trained for a successor function $a(s)=t$, minimizing the loss $|t-a'(s)|$.
+This applies to much of the work on scene prediction from videos such as \cite{srivastava2015unsupervised}. % in this context "much"=="a lot", and safer than while "most" (>= "majority") when making broad but ambiguous claims like this.
+
+%% invalid statement
+% This scenario also applies to the reinforcement learning setting, as the only task of RL is to learn the single best next state that the agent should reach in the next step. Typically, an RL system knows how many actions are available, e.g. the number of buttons, or the low-level actuation for each motor.
+
+However, when the current state has multiple successors, as in planning problems, such a network cannot be applied.
+One might consider training a separate NN for each action, but
+(1) it is unknown how many types of transitions are available,
+(2) the number of transitions depends on the current state, and
+(3) it does not know which transition belongs to which action.
+Although a single NN could learn a multi-modal distribution,
+it lacks the ability to \emph{enumerate} the successors,
+a crucial requirement for a search algorithm.
+
+\begin{figure}[tbp]
+ \centering
+ \includegraphics[width=\linewidth]{img/aae/aae.pdf}
+ \caption{Action Autoencoder.}
+ \label{fig:aae}
+\end{figure}
+
+To solve this, we propose an Action Autoencoder (AAE, \refig{fig:aae}). % made it more clear that the AAE is your idea, not something that's already known
+The key idea of AAE is to reformulate the transitions as $apply(a,s)=t$, which lifts the action symbol and makes it trainable,
+and to realize that $s$ is the \emph{background information} of the state transition function.
+The AAE has $s,t$ as inputs and reconstructs $t$ as $\tilde{t}$ whose error $|t-\tilde{t}|$ is minimized.
+The main difference from a typical AE is:
+(1) The latent layer is a Gumbel-Softmax one-hot vector indicating the \textbf{action label} $a$. %added bf to make this def noticeable so that nobody gets confused and thinks that an action label is a human-assigned label
+(2) Every layer is concatenated with $s$.
+The latter conditions the entire network by $s$,
+which makes the 128 action labels (7bit) represent only the \emph{conditional information} (difference) necessary to ``reconstruct $t$ \emph{given} $s$'',
+unlike typical AEs which encode the \emph{entire} information of the input.
+% In a typical AE, the \emph{entire} information of the input is maintained in the latent space because it can restore the original input.
+% %ensuring that the information is not lost during the network flow. % "information not lost" too strong; "network flow" is a term strongly associated with combinatorial optimization
+% In contrast, in our AAE, 128 action labels (7bit) represent only the \emph{conditional information} (difference) of $t$ \emph{given} $s$, as $s$ is necessary to reconstruct $t$ from $a$.
+% AE learns the identity function $x=\textit{Id}(x)$, but AAE learns the \emph{conditional} identity function $t=\textit{Id}(t,s)$.
+% Thus, in order to reconstruct the successor state $\tilde{t}$, it requires both the latent layer (action label) $a$ as well as the before-state $s$ acting as a conditional prior.
+% 
+% The before-state is only fed to the network and is not learned; 
+% This means that the differences in the valid transitions can be effectively compressed into the 7-bits represented by the action labels.
+As a result, the AAE learns the bidirectional mapping between $t$ and $a$, both conditioned by $s$:
+\begin{itemize}
+\setlength{\itemsep}{-0.3em}
+ \item $Action(t,s)=a$ returns the action label from $t$.
+ \item $Apply(a,s)=\tilde{t}$ applies $a$ to $s$ and returns a successor $\tilde{t}$. 
+\end{itemize}
+
+The number of labels serves as the upper bound on  the number of action symbols learned by the network.
+Too few labels make AAE reconstruction loss fail to converge to zero.
+After training, some labels may not be mapped to by any of the example transitions.
+In the later phases of \latentplanner, these unused labels are ignored.
+Since we obtain a limited number of action labels,
+we can enumerate the candidates of the successor states of the given current state in constant time.
+Without AAE, all $2^N$ states would be enumerated as the potential successors, which is clearly impractical.
+
+\subsubsection{Action Discriminator}
+
+An AAE identifies the number of actions and learns the effects of actions, but does not address the applicability (preconditions) of actions.
+Preconditions are necessary to avoid invalid moves (e.g. swapping 3 tiles at once) or invalid states (e.g. having duplicated tiles), as shown in \refig{fig:aae-mixed}.
+% 
+Thus we need an \textit{Action Discriminator} (AD, \refig{fig:ad}) which learns the 0/1 mapping for each transition indicating whether it is valid, i.e., the ``preconditions''. This is a standard binary classification function which takes $s,t$ as inputs and returns a probability that $(s,t)$ is valid.
+
+\begin{figure}[tbp]
+ \centering
+ \includegraphics[width=0.8\linewidth]{img/aae/aae_mixed_states.pdf}
+\caption{The successors of a state $s$ (bottom-right),
+  generated by applying all 98 actions identified by the AAE.
+ A valid successor is marked by the red border.}
+ \label{fig:aae-mixed}
+\end{figure}
+
+\begin{figure}[tbp]
+ \centering
+ \includegraphics[width=0.5\linewidth]{img/aae/ad.pdf}
+ \caption{Action Discriminator.}
+ \label{fig:ad}
+\end{figure}
+
+One technical problem in training the AD is that explicit \emph{invalid} transitions are unavailable.
+This is not just a matter of insufficient data, but rather a fundamental constraint in an image-based system operating in the physical environment: Invalid transitions which violate the laws of physics (e.g. teleportation) are \emph{never} observed (because they never happens).
+We then might consider ``imagining/generating'' the negative examples, as humans do in a thought experiment, but it is also impossible due to the lack of specification of \emph{what} is invalid.
+
+To overcome this issue, we use the PU-Learning framework \cite{elkan2008learning}, which can learn a positive/negative classifier from the positive and \emph{mixed} examples that may contain both positive and negative examples.
+% 
+We used $\overline{Tr}$ as the positive examples (they are all valid).
+The mixed, i.e. possibly invalid, examples are generated by
+applying each action $a$ (except unused ones) on each before-state $s$ in $\overline{Tr}$, and
+removing the known positive examples from the generated pairs $(s,\tilde{t})$.
+
+\subsubsection{PU-learning}
+\label{sec:pu-learning}
+
+The implementation of PU-learning follows \cite{elkan2008learning}.
+Given a positive ($p$) and a mixed ($m$) dataset,
+ $p$ and $m$ are first arbitrarily divided into a training set ($p_1$ and $m_1$)
+and validation set ($p_2$ and $m_2$).
+% 
+Next a binary classifier for $p_1$ (true) and $m_1$ (false) is trained.
+As a result, we obtain a positive/mixed classifier $d_1(x)$ which is a function which returns a probability
+that a data $x$ belongs to $p_1$.
+% 
+After the training has finished,
+the positive examples in the validation set ($p_2$) are classified, and
+the  probability of $p_2$ belonging to $p_1$ are averaged to obtain a scalar $c = average(d_1(p_2))$.
+% 
+As the final step, the true positive/negative classifier $d_2(x)$,
+which is a function which returns a probability that a data $x$ is positive,
+is defined as $d_2(x) = c \cdot d_1(x)$. 
+
+\subsubsection{State Discriminator}
+
+As a performance improvement, we also trained a State Discriminator (SD) which is a binary classifier for a single state $s$ and detects the invalid states, e.g. states with duplicated tiles in 8-puzzles. Again, we use PU-learning. Positive examples are the before/after states in $\overline{Tr}$ (all valid). Mixed examples are generated from the random bit vectors $\rho$ (may be invalid):
+Many of the images $Decode$'ed from $\rho$ are blurry and do not represent autoencodable, meaningful real-world images.
+However, when they are repeatedly encoded/decoded (\refig{fig:random-bit}), they converge to the clear, autoencodable invalid states because of the denoising AE \cite{vincent2008extracting}, and we used the results as the mixed examples.
+If $Decode(\rho)$ results in a blurry image,
+this ``blur'' is recognized as a noise and reduced in each autoencoding step,
+finally resulting in a clean, reconstructable invalid image.
+We use the SD to prune some mixed action examples for the AD training so that they contain only the valid successors.
+This improves the AD accuracy significantly.
+
+\begin{figure}[tbp]
+ \centering
+ \includegraphics[width=0.5\linewidth]{img/aae/random-convergence.pdf}
+ \caption{
+(top, left) Random bit vector $\rho$,
+(bottom, left) $Decode(\rho)$,
+(top, middle)  $Encode(Decode(\rho))=\rho_2$,
+(bottom, middle) $Decode(\rho_2)$,
+(top, right)  $Encode(Decode(\rho_2))=\rho_3$,
+(bottom, right) $Decode(\rho_3)$.
+As more autoencoding is performed, images become less blurry,
+ although they are still invalid (two 1-tiles).
+}
+\label{fig:random-bit}
+\end{figure}
+
+
+
+
+
+
+% \onecolumn
+% \makeatletter
+% \@maketitle
+% \makeatother
+% 
+% 
+% 
+% \begin{landscape}
+% aaa
+% \end{landscape}
+
+\fontsize{9.5pt}{10.5pt}
+\selectfont
+ 
+\bibliography{journals,confs}
+\bibliographystyle{aaai}
 
 \end{document}
