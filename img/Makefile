@@ -5,7 +5,7 @@
 
 .PHONY:	clean all
 
-all: $(shell find -name "*.svg" | sed -e "s/svg/xbb/g") $(shell find -name "*.png" | sed -e "s/png/xbb/g") $(shell find -name "*.jpg" | sed -e "s/jpg/xbb/g")
+all: $(shell find . -name "*.svg" | sed -e "s/svg/xbb/g") $(shell find . -name "*.png" | sed -e "s/png/xbb/g") $(shell find . -name "*.jpg" | sed -e "s/jpg/xbb/g")
 
 %.xbb : %.jpg Makefile
 	ebb -x $<
@@ -24,5 +24,5 @@ all: $(shell find -name "*.svg" | sed -e "s/svg/xbb/g") $(shell find -name "*.pn
 #	if you want to use imagemagick, comment out 'inkscape...' and use 'convert...'
 
 clean:
-	-find -name "*.xbb" -delete
+	-find . -name "*.xbb" -delete
 	-rm *.png *.pdf
