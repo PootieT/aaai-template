@@ -828,13 +828,13 @@ Due to the poor performance of NG-SAE, we do not study it any further in the lat
  \setlength{\tabcolsep}{0.45em}
  \begin{tabular}{|r|*{6}{c|}*{2}{*{4}{c|}}c|}
        & \multicolumn{6}{c|}{Mean variance over bits (with noisy images)}
-       & \multicolumn{4}{c|}{True ratio}
+       % & \multicolumn{4}{c|}{True ratio}
        & \multicolumn{4}{c|}{Effective bits}
-     % & \multicolumn{6}{c|}{Mean Square Error}
+       % & \multicolumn{6}{c|}{Mean Square Error}
        & Optimal
   \\
 $N=$ & \multicolumn{3}{c|}{100} & \multicolumn{3}{c|}{1000}
-     & \multicolumn{2}{c|}{100} & \multicolumn{2}{c|}{1000}
+     % & \multicolumn{2}{c|}{100} & \multicolumn{2}{c|}{1000}
      & \multicolumn{2}{c|}{100} & \multicolumn{2}{c|}{1000}
      % & \multicolumn{3}{c|}{100} & \multicolumn{3}{c|}{1000}
   & Encoding
@@ -853,9 +853,6 @@ Twisted   & 1.07E-02 & 7.15E-04 & \textbf{5.89E-07} & 1.02E-02 & 4.52E-04 & \tex
 \label{tab:stability}
 \end{table*}
 
-We next measured the average percentage of propositions that turned true.
-\reftbl{tab:stability} (middle columns) shows that the ratio significantly drops due to the Zero-suppression penalty,
-demonstrating that $P_a(D)$ is altered by the regularization.
 
 Finally, \reftbl{tab:stability} (right columns) shows that the number of effective bits,
 i.e. the number of propositions that \emph{ever} change their values, is low in ZSAE, showing that
