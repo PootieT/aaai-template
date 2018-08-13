@@ -5,7 +5,7 @@
 
 .PHONY:	clean all
 
-all: $(shell find -name "*.svg" -o -name "*.png" -o -name "*.jpg" | sed -e "s/\(png\|jpg\|svg\)/xbb/g")
+all: $(shell find -name "*.svg" | sed -e "s/svg/xbb/g") $(shell find -name "*.png" | sed -e "s/png/xbb/g") $(shell find -name "*.jpg" | sed -e "s/jpg/xbb/g")
 
 %.xbb : %.jpg Makefile
 	ebb -x $<
