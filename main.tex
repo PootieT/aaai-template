@@ -399,8 +399,8 @@ and insufficient $N$ makes the network hard to train.
 
 % \section{Symbol Stability Problem}
 
-As we have seen, unstable propositional representations are harmful to symbolic reasoning algorithms (search)
-in various ways.
+% As we have seen, unstable propositional representations are harmful to symbolic reasoning algorithms (search)
+% in various ways.
 Fundamentally,
 these harmful effects are caused by breaking a critical feature of symbols, \emph{designation} \cite{newell1976computer,newell1980physical},
 that each symbol uniquely refers to an entity (referent, concept, meaning).
@@ -413,8 +413,9 @@ because the underlying symbols are not grounded / tied to any particular concept
 % Colorless green ideas sleep furiously
 
 
-Thus, a symbol grounding procedure not only has to find \emph{some} set of symbols that can represent the
-environment but also to find a \emph{stable} symbolic representation that uniquely describes the environment.
+Thus, for a symbol grounding procedure to produce a set of symbols for symbolic reasoning,
+it is insufficient to find a set of symbols that can represent the environment;
+It should find a \emph{stable} symbolic representation that uniquely describes the environment.
 % i.e., to solve the \emph{Symbol Stability Problem}.
 % This stability should be checked 
 
@@ -456,10 +457,10 @@ while they still exhibit instability.
 
 The stability of the representation obtained by a NN depends
 on
-its inherent stochasticity during the runtime (as opposed to the training time) as well as
+the inherent stochasticity of the NN during the runtime (as opposed to the training time) as well as
 the stochasticity of the environment.
 % 
-These observations indicate that any symbol grounding systems potentially suffer from 
+These observations indicate that \emph{any} symbol grounding systems potentially suffer from 
 the symbol stability problem.
 % 
 As for the stochasticity of the environment,
