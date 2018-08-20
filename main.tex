@@ -584,15 +584,16 @@ while preserving the propositions that are absolutely necessary for maintaining 
 % asymmetric penalty for a particular class label (true) used in the encoding.
 % 
 The resulting loss function below is 
-% similar to the $l_1$ norm (LASSO) typically applied to continuous activations, however it is 
 \emph{asymmetric} to a particular label $z_n=1$:
 \begin{align*}
  \brackets{\text{loss}} = & \brackets{\text{\small vanilla SAE loss}} + \brackets{\text{\small 0-Sup. loss}} \\ 
  =                        & \brackets{\text{\small vanilla SAE loss}} + \alpha \sum_n q(z_n = 1\mid x_i)
 \end{align*}
 where $\alpha$ is a hyperparameter specifying the magnitude of zero-suppression.
-% Similar to $l_1$ regularization, this achieves a sparser representation in the binary domain where
-%  more propositions take the value of 0 (\refig{zsae-overview}).
+This is similar to the regularization by $l_1$ norm (LASSO) typically applied to continuous activations
+in a sense that it tries to minimize the sum of activations.
+Similar to $l_1$ regularization, this achieves a sparser representation in the binary domain where
+more propositions take the value of 0 (\refig{zsae-overview}).
  
 %% This paragraph is unnecessary
 % This technique alters $p_a(z)$, the target distribution of GS-VAE.
@@ -612,7 +613,7 @@ and can be pruned afterward to reduce the network size.
 If the propositional layer is connected to the next layer of $k$ neurons
 by a nonlinear function $h_k=\sigma\parens{\sum_{ij} W_{ijk}z_{ij}+B_k}$
 with weights $W_{ijk}$ and biases $B_k$,
-we can prune $i$-th propositional variable, assuming that $z_{i0}=0, z_{i1}=1$ always holds,
+we can prune $i$-th propositional variable, assuming that $z_{i}=0$ always holds,
 by adding $W_{i1k}$ to $B_k$ and removing the appropriate index $i$ from $W_{ijk}$.
 
 Unlike traditional NN compression methods \cite{cheng2017survey}, this pruning does not suffer from
