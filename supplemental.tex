@@ -148,7 +148,43 @@ We measured the average percentage of propositions that turned true on ZSAE/SAE.
 \reftbl{tab:trueratio} shows that the ratio significantly drops due to the Zero-suppression penalty,
 demonstrating that $p_a(b)$ (\refsec{analysis}) is altered by the regularization.
 
+\clearpage
+\section{Plan Execution Examples}
 
+\begin{figure}[h]
+ \centering
+ (1)
+ \includegraphics[width=0.9\linewidth]{img/mnist-plan-new.pdf}
+ (2)
+ \includegraphics[width=0.9\linewidth]{img/mandrill-plan-new.pdf}
+ (3)
+ \includegraphics[width=0.9\linewidth]{img/spider-plan-new.pdf}
+ (4)
+ \includegraphics[width=0.9\linewidth]{img/lightsout_new4x4.pdf}
+ (5)
+ \includegraphics[width=0.9\linewidth]{img/lightsout_twisted_new4x4.pdf}
+ \caption{
+(1-3)
+Output of \latentplanner + AMA$_1$ solving the MNIST/Mandrill/Spider 8-puzzle instance
+with the longest (31 steps) optimal plan (Reinefeld 1993).
+This shows that \latentplanner finds an optimal solution
+given a correct model by AMA$_1$ and an admissible search algorithm.
+\latentplanner has no notion of ``slide'' or ``tiles'',
+making MNIST, Mandrill and Spider entirely distinct domains.
+SAEs are trained from scratch without knowledge transfer.
+(4-5) Output of solving 4x4 LightsOut and Twisted LightsOut.
+The blurs in the goal states are simply the noise that was normalized and enhanced by the plotting library.
+}
+ \label{fig:mnist}
+\end{figure}
+
+% \begin{figure}[h]
+%  \includegraphics[width=\linewidth]{img/hanoi4-new.pdf}
+%  \caption{
+% (1) Output of solving ToH with 4 disks.
+% }
+%  \label{fig:mnist2}
+% \end{figure}
 
 \section{Supplemental Backgrounds}
 
