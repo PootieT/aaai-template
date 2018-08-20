@@ -500,7 +500,7 @@ In principle\footnote{In reality, $q(z\mid x)$ is approximated by a Gumbel-softm
 \begin{align}
 \label{vae-obj} \sum_{i=1}^I \mathbb{E}_{q(z\mid x_i)}\left[-\log p(x_i\mid z)\right] + D_{\mathrm{KL}}(q(z\mid x_i) \parallel p_a(z)),
 \end{align}
-where $p_a(z) = \prod_{n=1}^N p_a(z_n) = \prod_{n=1}^N \mathrm{Bern}(0.5)$ is an $N$-dimensional Bernoulli distribution with uniform probabilities.
+where $p_a(z) = \prod_{n=1}^N p_a(z_n) = \prod_{n=1}^N \mathrm{Bern}(0.5)$ is an $N$-dimensional Bernoulli distribution with uniform probabilities, and $i$ is the index for each data sample.
 The first term in Eq.~\eqref{vae-obj} is the reconstruction loss, which measures the quality of reconstructed data points,
 and the second one, making the encoder $q(z\mid x)$ closer to $p_a(z)$, regularizes the encoder.
 The second term is further computed as,
