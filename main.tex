@@ -788,7 +788,13 @@ rather than freely consuming the latent space capacity in an entangled represent
 % reconstruction loss is still low if you maintain the latent space size
 % large enough.
 
-Finally, we tested the sensitivity of ZSAE on its new hyperparameter $\alpha$.
+\begin{table}[htb]
+ \vspace{1.5in}
+ \caption{Sensitivity of ZSAE to the hyperparameter $\alpha$ compared to the sensitivity of SAE to the hyperparameter $N$.}
+ \label{sensitivity}
+\end{table}
+
+Finally, we tested the sensitivity of ZSAE on its new hyperparameter $\alpha$ (\reftbl{sensitivity}).
 We compared the results between $\alpha=0.2,0.5,0.7$ and observed that they do not have
 significantly different results:
 They have similar reconstruction loss (MSE), similarly reduces the
