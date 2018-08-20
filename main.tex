@@ -389,14 +389,13 @@ which is costly when we train a large NN.
 % 
 The neurons that behave randomly for the same or perturbed input do not affect the output,
 i.e., they are unused and uninformative.
-They appear because the network has an excessive capacity to 
-model the entire state space, i.e. they appear when we specify the number of propositions $N$ too large,
-thus the straightforward way to reduce its number is to reduce $N$.
-% If we decrease $N$ while maintaining the reconstruction capability of the SAE, the number of uninformative bits reduces.
+Unused neurons appear because the network has an excessive capacity to 
+model the entire state space, i.e. they are surplus neurons.
+Therefore, a straightforward way to reduce those neurons is to reduce the size of latent space $N$.
 On the other hand, if we specify $N$ too small, it lacks the capacity to represent the state space
 and the SAE is no longer able to reconstruct the real world image.
-As a result, we face a hyperparameter tuning problem: Too large $N$ causes a disconnected/bloated state space graph,
-and the network with too small $N$ is hard to train.
+As a result, we face a hyperparameter tuning problem: Surplus $N$ causes an unstable representation,
+and insufficient $N$ makes the network hard to train.
 
 % \section{Symbol Stability Problem}
 
