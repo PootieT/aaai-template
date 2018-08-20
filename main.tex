@@ -325,28 +325,6 @@ that approximates the Bernoulli distribution, %, resulting in a $N\times 2$ matr
 and therefore, the latent representation can be regarded as $N$ binary propositional variables.
 
 
-\if0
-\subsection{Regularization in Neural Networks}
-
-\emph{Regularization} is an important and broad concept in machine learning
-that limits the representation capacity of a machine learning model by adding a constraint
-so that the model better adapt to the underlying characteristics of the dataset.
-% Regularization trades the training performance with generalization capability (testing performance, robustness to
-% unseen data points) in order to suppress overfitting.
-Regularization could be implemented in various ways.
-
-One way is to designing the network topology for a particular data,
-such as Convolutional Networks for images
-or Recurrent Networks for sequential data, or
-Dropout \cite{srivastava2014dropout}, that randomly drops some neurons so
-that each pattern is more strongly associated with a fewer set of nodes.
-
-Another way is to add a penalty term to the optimization metric of the
-NNs that is minimized by the optimization algorithms such as Stochastic Gradient Descent.
-Common regularization techniques in this category include
-$l_1$ (LASSO) or $l_2$ (ridge) regularization that respectively penalizes the absolute / square sum of the
-activations or weights.
-\fi
 % It is necessary for the mapping to be bidirectional, because the
 % propositional variables are machine-generated symbols, and also the
 % resulting plan (returned as a sequence of propositional states) should
@@ -574,12 +552,10 @@ Our claim is that their loss implementation was the key to achieving the desired
 Another observation we made from the source code is that we can
 disable the runtime stochasticity of the network.
 After the training is finished, we replace the gumbel-softmax activation with
-a pure argmax,
-$z_{ij} = [ \text{if}\ j\ \text{is} \arg \max_j (\log \pi_{ij})\ \text{then}\ 1\ \text{else}\ 0 ]$.
-This improves the stability of the symbols, as we later show in the experiments.
+a pure argmax of class probabilities (details in the supplement).
 % 
-This technique does not reduce the stochasticity originated from the noisy input,
-but only to the inherent stochasticity of the network.
+This technique reduces the inherent stochasticity of the network
+but does not reduce the stochasticity originated from the noisy input.
 % Recall that $Q(D|x)$ is a conditional distribution defined for a single, \emph{fixed} input $x$.
 % % 
 % For instance, the propositional representation may be altered by a small
@@ -1186,3 +1162,7 @@ $z_i = \text{Softmax}((g_i+\log \pi_i)/\tau)$.
 % \]
 ``Temperature'' $\tau$ controls the magnitude of approximation, which is annealed to 0 by a certain schedule.
 The output of GS converges to a discrete one-hot vector when $\tau\approx 0$.
+
+
+% argmax
+$z_{ij} = [ \text{if}\ j\ \text{is} \arg \max_j (\log \pi_{ij})\ \text{then}\ 1\ \text{else}\ 0 ]$.

@@ -1,0 +1,20 @@
+\subsection{Regularization in Neural Networks}
+
+\emph{Regularization} is an important and broad concept in machine learning
+that limits the representation capacity of a machine learning model by adding a constraint
+so that the model better adapt to the underlying characteristics of the dataset.
+% Regularization trades the training performance with generalization capability (testing performance, robustness to
+% unseen data points) in order to suppress overfitting.
+Regularization could be implemented in various ways.
+
+One way is to designing the network topology for a particular data,
+such as Convolutional Networks for images
+or Recurrent Networks for sequential data, or
+Dropout \cite{srivastava2014dropout}, that randomly drops some neurons so
+that each pattern is more strongly associated with a fewer set of nodes.
+
+Another way is to add a penalty term to the optimization metric of the
+NNs that is minimized by the optimization algorithms such as Stochastic Gradient Descent.
+Common regularization techniques in this category include
+$l_1$ (LASSO) or $l_2$ (ridge) regularization that respectively penalizes the absolute / square sum of the
+activations or weights.
