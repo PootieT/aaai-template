@@ -494,21 +494,21 @@ by \emph{largely suppressing the instability} of the propositions.
 % whose latent layer resembles a random categorical distribution
 % with a certain number of categories $M$ ($M=2$ in Latplan).
 
-Let $q(z \mid x)$ and $p(x \mid z)$ be the encoder and the decoder of GS-VAE, respectively,
-where $x$ corresponds to a visual observation of the environment, and $z\in\{0,1\}^N$ corresponds to its latent representation.
-In principle\footnote{In reality, $q(z\mid x)$ is approximated by a Gumbel-softmax distribution in order to apply the reparameterization trick. For more mathematically rigorous discussion, please refer to Appendix.}, GS-VAE is trained by minimizing the following objective function with respect to $p(x \mid z)$ and $q(z\mid x)$:
+Let $q(b \mid x)$ and $p(x \mid b)$ be the encoder and the decoder of GS-VAE, respectively,
+where $x$ corresponds to a visual observation of the environment, and $b\in\{0,1\}^N$ corresponds to its latent representation.
+In principle\footnote{In reality, $q(b\mid x)$ is approximated by a Gumbel-softmax distribution in order to apply the reparameterization trick. For more mathematically rigorous discussion, please refer to Appendix.}, GS-VAE is trained by minimizing the following objective function with respect to $p(x \mid b)$ and $q(b\mid x)$:
 \begin{align}
-\label{vae-obj} \sum_{i=1}^I \mathbb{E}_{q(z\mid x_i)}\left[-\log p(x_i\mid z)\right] + D_{\mathrm{KL}}(q(z\mid x_i) \parallel p_a(z)),
+\label{vae-obj} \sum_{i=1}^I \mathbb{E}_{q(b\mid x_i)}\left[-\log p(x_i\mid b)\right] + D_{\mathrm{KL}}(q(b\mid x_i) \parallel p_a(b)),
 \end{align}
-where $p_a(z) = \prod_{n=1}^N p_a(z_n) = \prod_{n=1}^N \mathrm{Bern}(0.5)$ is an $N$-dimensional Bernoulli distribution with uniform probabilities, and $i$ is the index for each data sample.
+where $p_a(b) = \prod_{n=1}^N p_a(b_n) = \prod_{n=1}^N \mathrm{Bern}(0.5)$ is an $N$-dimensional Bernoulli distribution with uniform probabilities, and $i$ is the index for each data sample.
 The first term in Eq.~\eqref{vae-obj} is the reconstruction loss, which measures the quality of the reconstructed data points,
-and the second term regularizes the encoder by making the encoder $q(z\mid x)$ closer to $p_a(z)$.
+and the second term regularizes the encoder by making the encoder $q(b\mid x)$ closer to $p_a(b)$.
 The second term is further computed as,
 \begin{align*}
- &D_{\mathrm{KL}}(q(z\mid x_i) \parallel p_a(z)) \\
-= & - \sum_{n=1}^N \sum_{k\in\{0,1\}}q(z_{n}=k \mid x_i) \log\frac{p_a(z_{n}=k)}{q(z_{n}=k \mid x_i)}\\
-=& - \sum_{n=1}^N \sum_{k\in\{0,1\}}q(z_{n}=k \mid x_i) \left(\log \frac{1}{2} - \log{q(z_{n}=k \mid x_i)}\right)\\
-=& - \sum_{n=1}^N H(q(z_n\mid x_i)) + \mathrm{const.} = -H(q(z \mid x_i)) + \mathrm{const.},
+ &D_{\mathrm{KL}}(q(b\mid x_i) \parallel p_a(b)) \\
+= & - \sum_{n=1}^N \sum_{k\in\{0,1\}}q(b_{n}=k \mid x_i) \log\frac{p_a(b_{n}=k)}{q(b_{n}=k \mid x_i)}\\
+=& - \sum_{n=1}^N \sum_{k\in\{0,1\}}q(b_{n}=k \mid x_i) \left(\log \frac{1}{2} - \log{q(b_{n}=k \mid x_i)}\right)\\
+=& - \sum_{n=1}^N H(q(b_n\mid x_i)) + \mathrm{const.} = -H(q(b \mid x_i)) + \mathrm{const.},
 \end{align*}
 where $H(q)$ is the entropy of $q$.
 
@@ -520,7 +520,7 @@ Despite that, the system works without problem.
 % 
 The reason is that minimizing the KL divergence and finding a stable representation are in fact opposite.
 Consider the nature of GS-VAE:
-It tries to make the distribution look more similar to a fair random categorical distribution $p_a(z)$
+It tries to make the distribution look more similar to a fair random categorical distribution $p_a(b)$
 that takes 0 or 1 with equal probability, i.e., \emph{as random as possible}.
 % This is clearly the opposite of the stable symbols we pursue.
 Instead, they accidentally negated the loss, which resulted in
@@ -528,12 +528,12 @@ maximizing the KL divergence and making the representation \emph{less random}.
 
 We further show that their \emph{negated} KL loss function
 actually \emph{guarantees to reduce} the randomness,
-instead of converging to any other random distribution different from $p_a(z)$.
+instead of converging to any other random distribution different from $p_a(b)$.
 This can be shown as follows:
 \begin{align} 
 \nonumber  &\brackets{\text{rec loss}}-D_{\text{KL}}(q||p_a)                                    \\
 \nonumber =&\brackets{\text{rec loss}}+D_{\text{KL}}(q||p_a) - 2 D_{\text{KL}}(q||p_a)          \\
-\label{loss+ent} =&\brackets{\text{\small correct GS VAE loss}}      + 2 H(q(z \mid x_i)).
+\label{loss+ent} =&\brackets{\text{\small correct GS VAE loss}}      + 2 H(q(b \mid x_i)).
 \end{align}
 Since the entropy measures randomness of random variables,
 the extra entropy term in Eq.~\eqref{loss+ent} penalizes the unstable representation.
@@ -584,38 +584,34 @@ while preserving the propositions that are absolutely necessary for maintaining 
 % asymmetric penalty for a particular class label (true) used in the encoding.
 % 
 The resulting loss function below is 
-\emph{asymmetric} to a particular label $z_n=1$:
+\emph{asymmetric} to a particular label $b_n=1$:
 \begin{align*}
  \brackets{\text{loss}} = & \brackets{\text{\small vanilla SAE loss}} + \brackets{\text{\small 0-Sup. loss}} \\ 
- =                        & \brackets{\text{\small vanilla SAE loss}} + \alpha \sum_n q(z_n = 1\mid x_i)
+ =                        & \brackets{\text{\small vanilla SAE loss}} + \alpha \sum_n b_n
 \end{align*}
 where $\alpha$ is a hyperparameter specifying the magnitude of zero-suppression.
 This is similar to the regularization by $l_1$ norm (LASSO) typically applied to continuous activations
 in a sense that it tries to minimize the sum of activations.
 Similar to $l_1$ regularization, this achieves a sparser representation in the binary domain where
 more propositions take the value of 0 (\refig{zsae-overview}).
- 
+(Implementation method in the supplement, \refsec{zsae-implementation}.)
+
 %% This paragraph is unnecessary
-% This technique alters $p_a(z)$, the target distribution of GS-VAE.
-% Recall that, in GS-VAE, $p_a(z_n) = \mathrm{Bern}(0.5)$,
-% i.e. the probability for $z_n$ to turn to 1 is a fair coin toss.
-% Since zero-suppression penalizes the true bits ($z_n=1$), it changes this fairness: The larger the $\alpha$,
-% the less $p_a(z_n=1)$,
+% This technique alters $p_a(b)$, the target distribution of GS-VAE.
+% Recall that, in GS-VAE, $p_a(b_n) = \mathrm{Bern}(0.5)$,
+% i.e. the probability for $b_n$ to turn to 1 is a fair coin toss.
+% Since zero-suppression penalizes the true bits ($b_n=1$), it changes this fairness: The larger the $\alpha$,
+% the less $p_a(b_n=1)$,
 % thus the more propositions take 0 (\refig{zsae-overview}).
 % This changes the target distribution of the KL-divergence.
 
 % % Maybe add this in the camera-ready
-% Note that this generalizes to a categorical case by penalizing all non-zero values: $\bars{q(z_n \not= 0\mid x_i)}$
+% Note that this generalizes to a categorical case by penalizing all non-zero values: $\bars{q(b_n \not= 0\mid x_i)}$
 
 One additional advantage of ZSAE is that
 several neurons are completely deactivated, i.e. always takes the value of zero
 and can be pruned afterward to reduce the network size.
-If the propositional layer is connected to the next layer of $k$ neurons
-by a nonlinear function $h_k=\sigma\parens{\sum_{ij} W_{ijk}z_{ij}+B_k}$
-with weights $W_{ijk}$ and biases $B_k$,
-we can prune $i$-th propositional variable, assuming that $z_{i}=0$ always holds,
-by adding $W_{i1k}$ to $B_k$ and removing the appropriate index $i$ from $W_{ijk}$.
-
+(See supplement \refsec{pruning-implementation} for implementation details.)
 Unlike traditional NN compression methods \cite{cheng2017survey}, this pruning does not suffer from
 accuracy degradation because the activations are discrete and therefore does not require additional retraining.
 In the continuous cases, even small activations could be amplified by the weights and significantly affect the
