@@ -294,54 +294,36 @@ the latent values approach either 0 or 1.}
 \subsection{SAE as a Variational AutoEncoder using Gumbel-Softmax}
 
 The key concept of the SAE in \latentplanner is the use of Gumbel-Softmax \cite{jang2016categorical}
-reparameterization trick in the latent activation of Variational AutoEncoder.
+reparameterization trick in the latent activation of variational autoencoder~(VAE).
 This allows SAE to obtain the
 discretized binary representation, and \latentplanner uses this
 discrete vector as the state representation for classical planning.
+Below, we briefly review the literature.
 
-An AutoEncoder (AE) is a type of feed-forward NN that learns
-an identity function whose output matches the input \cite{hinton2006reducing}.
-AEs are trained by backpropagation (BP) to minimize the reconstruction loss,
-the distance between the input and the output such as Euclidean distance or binary cross entropy (BCE).
+An autoencoder~(AE)~\cite{hinton2006reducing} is a feed-forward NN that consists a pair of encoder and decoder networks, both of which are modeled by continuous functions.
+AEs are trained so that the encoder maps a data point~(e.g., an image) into the low-dimensional latent space, and the decoder pulls the latent representation of the input back to the original data point.
+Technically, they are trained by backpropagation so as to minimize the reconstruction loss, the distance between the input and the output measured by Euclidean distance or binary cross entropy (BCE).
+Since the encoder is modeled by a continuous function, its latent representation is also continous, which makes it difficult to integrate AEs with propositional reasoners.
+\if0
 Since it is trained solely by the raw input data, it is a unsupervised learning method that do not require the human-assigned labels.
 Its intermediate layer (typically smaller than the input) has a compressed, \emph{latent representation} of the input.
 % AEs are commonly used for pretraining a NN.
 NNs, including AEs, typically have continuous activations and integrating them with propositional reasoners is not straightforward.
+\fi
 
-A Variational AutoEncoder (VAE) \cite{kingma2013auto} is a type of AE that forces the \emph{latent layer} (the most compressed layer in the AE) to follow a certain distribution (e.g., Gaussian).
+A variational autoencoder~(VAE)~\cite{kingma2013auto} is a probabilistic vairant of AEs, where both encoder and decoders are modeled by probabilistic distributions.
+By modeling the encoder by a Gumbel-Softmax distribution~\cite{jang2016categorical}, which approximates a discrete distribution, we are able to obtain a discrete latent representation of data.
+VAEs are trained by backpropagation with the help of the reparameterization trick, which allows us to differentiate random variables.
+
+% that forces the \emph{latent layer} (the most compressed layer in the AE) to follow a certain distribution (e.g., Gaussian).
 % While initially proposed for enforcing Gaussian distributions, VAEs have been used to enforce arbitrary types of distribution (notably by Generative Adversarial Network \cite{goodfellow2014generative,makhzani2015adversarial}). 
-Since the random distribution is not differentiable (BP is not applicable), VAEs use \emph{reparameterization tricks}, which decompose the target distribution into a differentiable and a purely random distribution (the latter does not require the gradient).
-For example, the Gaussian $N(\sigma,\mu)$ is decomposed to $\mu+\sigma N(1,0)$, where $\mu,\sigma$ are learned.
-In addition to the reconstruction loss, VAE should also minimize the variational loss (the difference between the learned and the target distributions) measured by, e.g.,  KL divergence.
 
-Gumbel-Softmax (GS) is a reparametrization trick \cite{jang2016categorical} for categorical distribution.
-It continuously approximates Gumbel-Max \cite{maddison2014sampling}, a method for drawing categorical samples.
-Assume the output $z$ is a one-hot vector, e.g. if the domain is $D=\braces{a,b,c}$, $\brackets{0,1,0}$ represents ``b''.
-The input is a class probability vector $\pi$, e.g. $\brackets{.1,.1,.8}$.
-Gumbel-Max draws samples from $D$ following $\pi$:
-% \[
- $z_i \equiv [ \text{if}\ i\ \text{is} \arg \max_i (g_i+\log \pi_i) \text{then}\ 1\ \text{else}\ 0 ]$
-% \]
-where $g_i$ are i.i.d samples drawn from
- $\text{Gumbel}(0,1) =-\log (-\log u)$ \cite{gumbel1954statistical}, where
-$u$ is a uniform random distribution between 0 and 1.
-Gumbel-Softmax approximates argmax with softmax to make it differentiable:
-% \[
-$z_i = \text{Softmax}((g_i+\log \pi_i)/\tau)$.
-% \]
-``Temperature'' $\tau$ controls the magnitude of approximation, which is annealed to 0 by a certain schedule.
-The output of GS converges to a discrete one-hot vector when $\tau\approx 0$.
+In vanilla SAEs \cite{Asai2018}, the output layer of the encoder consists of $N$ units of Gumbel-Softmax
+that approximates the Bernoulli distribution, %, resulting in a $N\times 2$ matrix,
+and therefore, the latent representation can be regarded as $N$ binary propositional variables.
 
-In vanilla SAEs \cite{Asai2018}, there are $N$ units of Gumbel-Softmax
-for $M=2$ categories in the latent layer, resulting in a $N\times 2$ matrix,
-where $N$ specifies the number of propositional variables in the latent
-state representation. The latent layer can be written as
-$z_{ij}$ where $1\leq i \leq N$ and $j\in \braces{0,1}$.  When the
-temperature $\tau$ is low, one of $z_{i0}$ or $z_{i1}$ takes the value
-near 1 and another one takes the value near 0 (one-hot vector).  A binary
-propositional vector $b$ can thus be extracted by taking the first row, i.e.,
-$b=\parens{b_1\ldots b_N}=\parens{z_{10}\ldots z_{N0}}$.
 
+\if0
 \subsection{Regularization in Neural Networks}
 
 \emph{Regularization} is an important and broad concept in machine learning
@@ -362,7 +344,7 @@ NNs that is minimized by the optimization algorithms such as Stochastic Gradient
 Common regularization techniques in this category include
 $l_1$ (LASSO) or $l_2$ (ridge) regularization that respectively penalizes the absolute / square sum of the
 activations or weights.
-
+\fi
 % It is necessary for the mapping to be bidirectional, because the
 % propositional variables are machine-generated symbols, and also the
 % resulting plan (returned as a sequence of propositional states) should
@@ -380,8 +362,8 @@ An issue in vanilla SAEs is that the class probability $\pi$ that is used inside
 neutral for the class ``true'' and the class ``false'' at some neuron,
 causing the value of the neuron to change frequently (\refig{unstable}).
 The source of stochasticity is twofold.
-Firstly, it comes from the way Gumbel distribution is sampled, $-\log (-\log u)$,
-which includes a uniform random distribution.
+Firstly, the encoder is a probabilistic distribution, rather than a deterministic function.
+%which includes a uniform random distribution.
 This causes the propositions to change values even for the exact same inputs.
 Secondly, the input image may be corrupted by a noise (stochastic observations)
 while humans regard them as the ``same'' image.
@@ -516,7 +498,7 @@ rely on sampling processes.
 % and Generative Adversarial Networks \cite[GAN]{goodfellow2014generative}.
 % Latplan \cite{Asai2018} uses VAE and Causal InfoGAN \cite{kurutach2018learning} uses InfoGAN.
 
-\section{Analyzing State AutoEncoder}
+\section{Analyzing State Autoencoder}
 \label{analysis}
 
 To obtain a deeper understanding of the mechanism that generates
@@ -531,43 +513,24 @@ by \emph{largely suppressing the instability} of the propositions.
 % The purpose of GS-VAE is to obtain a NN
 % whose latent layer resembles a random categorical distribution
 % with a certain number of categories $M$ ($M=2$ in Latplan).
- 
-Following Maddison et. al., (\citeyear[Appendix C.1]{MaddisonMT17}),
-let $P_a(D=d)$ be a probability mass function where
-$d$ is a $N$-dimensional one-hot vector of $M$ categories ($N\times M$ matrix),
-$D$ follows a discrete random distribution $\text{Discrete}(a)$ and
-$a$ is a \emph{fixed} matrix of probabilities ($a\in {[0,1]}^{N\times M}$)
-that $d_{ij}$ becomes 1.
-% 
-In Latplan and other reference implementations \cite{ericjanggithub} of GS-VAE,
-$a$ is assumed to be fair to any $j$,
-i.e. $a$ is a matrix whose values are all $\frac{1}{M}$. (Note that $M=2$ in Latplan.)
-The loss function of GS-VAE makes the latent distribution $Q(D=Encode(x)\, |\, x)$ closer to $P_a(D)$.
-% Note that this $Q$ assumes $Encode(x)$ is a categorical distribution $D$.
-Note that, contrary to the assumption in Latplan,
-$Q(D|x)$ is a \emph{distribution} defined for an input $x$,
-thus it naturally assumes that the encoded result $Encode(x)$ is stochastic.
 
-% Let $Z$ be the gumbel-softmax approximation of $D$ with some temperature.
-
-To make $Q(D|x)$ closer to $P_a(D)$, the standard approach is to minimize $D_{\text{KL}}(Q||P_a)$,
-the KL divergence of $Q$ from $P_a$.
-In Latplan, $D_{\text{KL}}(Q||P_a)$ is approximated by
- $- \sum_{i,j} Q(z_{ij}=1|x) \log\frac{P_a(z_{ij}=1)}{Q(z_{ij}=1|x)}$.
-% = \mathop{\mathbb{E}}_{D\sim Q(d|x)}\brackets{ \log \frac{P_a(D)}{Q(D|x)}}
-\cite[A negated version of Eq.22, which is a maximization objective.]{MaddisonMT17}
-
-This approximation is computed as follows.
-Recall that Gumbel-Softmax is $z_{ij} = \text{Softmax}((g_{ij}+\log \pi_{ij})/\tau)$,
-where $\log \pi_{ij}$ is an un-normalized logit and is an input to the layer.
-Thus the normalized probability $q_{ij}=Q(z_{ij}=1|x)$ can be computed as $\text{Softmax}_j(\log \pi_{ij})$.
-Also, $P_a(z_{ij}=1)= 1/M$.
-% 
-Therefore, the approximated KL divergence is
-$-\sum_{i,j} q_{ij} \log \frac{1/M}{q_{ij}} = \sum_{i,j} q_{ij} (\log q_{ij} +\log M) = \sum_{i,j} q_{ij} \log q_{ij} + (\text{Constant, ignored})$.
-% The second term is a constant because $\sum_j q_{ij} = 1$,
-% and thus can be safely ignored from the loss function.
-% Therefore, the remaining term is $\sum_{i,j} q_{ij} \log q_{ij}$.
+Let $q(z \mid x)$ and $p(x \mid z)$ be the encoder and the decoder of GS-VAE, respectively,
+where $x$ corresponds to a visual observation of the environment, and $z\in\{0,1\}^N$ corresponds to its latent representation.
+In principle\footnote{In reality, $q(z\mid x)$ is approximated by a Gumbel-softmax distribution in order to apply the reparameterization trick. For more mathematically rigorous discussion, please refer to Appendix.}, GS-VAE is trained by minimizing the following objective function with respect to $p(x \mid z)$ and $q(z\mid x)$:
+\begin{align}
+\label{vae-obj} \sum_{i=1}^I \mathbb{E}_{q(z\mid x_i)}\left[-\log p(x_i\mid z)\right] + D_{\mathrm{KL}}(q(z\mid x_i) \parallel p_a(z)),
+\end{align}
+where $p_a(z) = \prod_{n=1}^N p_a(z_n) = \prod_{n=1}^N \mathrm{Bern}(0.5)$ is an $N$-dimensional Bernoulli distribution with uniform probabilities.
+The first term in Eq.~\eqref{vae-obj} is the reconstruction loss, which measures the quality of reconstructed data points,
+and the second one, making the encoder $q(z\mid x)$ closer to $p_a(z)$, regularizes the encoder.
+The second term is further computed as,
+\begin{align*}
+ &D_{\mathrm{KL}}(q(z\mid x_i) \parallel p_a(z)) \\
+= & - \sum_{n=1}^N \sum_{k\in\{0,1\}}q(z_{n}=k \mid x_i) \log\frac{p_a(z_{n}=k)}{q(z_{n}=k \mid x_i)}\\
+=& - \sum_{n=1}^N \sum_{k\in\{0,1\}}q(z_{n}=k \mid x_i) \left(\log \frac{1}{2} - \log{q(z_{n}=k \mid x_i)}\right)\\
+=& - \sum_{n=1}^N H(q(z_n\mid x_i)) + \mathrm{const.} = -H(q(z \mid x_i)) + \mathrm{const.},
+\end{align*}
+where $H(q)$ is the entropy of $q$.
 
 \subsection{Incorrect Loss Function Helped Latplan}
 
@@ -585,26 +548,15 @@ maximizing the KL divergence and making the representation \emph{less random}.
 
 We further show that their \emph{negated} KL loss function
 actually \emph{guarantees to reduce} the randomness,
-instead of converging to any other random distribution different from $P_a(D)$.
+instead of converging to any other random distribution different from $p_a(z)$.
 This can be shown as follows:
-\begin{align*} 
- \brackets{\text{rec loss}}-D_{\text{KL}}(Q||P_a) &                                   \\
-=\brackets{\text{rec loss}}+D_{\text{KL}}(Q||P_a) &- 2 D_{\text{KL}}(Q||P_a)          \\
-=\brackets{\text{\small correct GS VAE loss}}     & + 2 \sum_{i,j} (- q_{ij} \log q_{ij}) \\
-=\brackets{\text{\small correct GS VAE loss}}     & + 2 \sum_{i} H(b_i)                   \\
-\geq\brackets{\text{\small correct GS VAE loss}}  & + 2 H(b_0,b_1\ldots b_N)
-\end{align*}
-where $H(b_i)$ denotes the \emph{shannon entropy} of individual proposition $b_i$ and
-$H(b_0,b_1\ldots b_N)$ is the joint entropy of the propositions.
-It shows that their loss function is an upper bound approximation of
-the sum of the GS-VAE loss and the entropy (measure of randomness) of the representation.
-The equality holds when all propositions $b_i$ are independent.
-% 
-In other words,
-the \emph{incorrect GS-VAE loss function}
-was indeed a modification of GS-VAE with an additional \emph{entropy-based regularization},
-which penalizes the network for learning an unstable representation
-through a loss function and restricts the network to learn a stabler representation.
+\begin{align} 
+\nonumber  &\brackets{\text{rec loss}}-D_{\text{KL}}(q||p_a)                                    \\
+\nonumber =&\brackets{\text{rec loss}}+D_{\text{KL}}(q||p_a) - 2 D_{\text{KL}}(q||p_a)          \\
+\label{loss+ent} =&\brackets{\text{\small correct GS VAE loss}}      + 2 H(q(z \mid x_i)).
+\end{align}
+Since the entropy measures randomness of random variables,
+the extra entropy term in Eq.~\eqref{loss+ent} penalizes the unstable representation.
 
 In the later sections, we empirically show that the \emph{correct} GS-VAE results in
 a much higher randomness for a single input compared to the original code of Latplan,
@@ -1233,3 +1185,27 @@ SSP applies to any symbol grounding processes because most real-world inputs are
 and especially to those using the sampling-based, stochastic processes
 which are gaining popularity in the literature, notably VAEs and GANs.
 
+
+\appendix
+\section{Gumbel-softmax *********** cut-and-paste from preliminaries}
+Since the random distribution is not differentiable (BP is not applicable), VAEs use \emph{reparameterization tricks}, which decompose the target distribution into a differentiable and a purely random distribution (the latter does not require the gradient).
+For example, the Gaussian $N(\sigma,\mu)$ is decomposed to $\mu+\sigma N(1,0)$, where $\mu,\sigma$ are learned.
+In addition to the reconstruction loss, VAE should also minimize the variational loss (the difference between the learned and the target distributions) measured by, e.g.,  KL divergence.
+
+Gumbel-Softmax (GS) is a reparametrization trick \cite{jang2016categorical} for categorical distribution.
+It continuously approximates Gumbel-Max \cite{maddison2014sampling}, a method for drawing categorical samples.
+Assume the output $z$ is a one-hot vector, e.g. if the domain is $D=\braces{a,b,c}$, $\brackets{0,1,0}$ represents ``b''.
+The input is a class probability vector $\pi$, e.g. $\brackets{.1,.1,.8}$.
+Gumbel-Max draws samples from $D$ following $\pi$:
+% \[
+ $z_i \equiv [ \text{if}\ i\ \text{is} \arg \max_i (g_i+\log \pi_i) \text{then}\ 1\ \text{else}\ 0 ]$
+% \]
+where $g_i$ are i.i.d samples drawn from
+ $\text{Gumbel}(0,1) =-\log (-\log u)$ \cite{gumbel1954statistical}, where
+$u$ is a uniform random distribution between 0 and 1.
+Gumbel-Softmax approximates argmax with softmax to make it differentiable:
+% \[
+$z_i = \text{Softmax}((g_i+\log \pi_i)/\tau)$.
+% \]
+``Temperature'' $\tau$ controls the magnitude of approximation, which is annealed to 0 by a certain schedule.
+The output of GS converges to a discrete one-hot vector when $\tau\approx 0$.
