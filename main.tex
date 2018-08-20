@@ -933,8 +933,8 @@ vanilla SAEs do not have such propositions (all bits are effective bits).
 % While we did not actually implemented the node pruning,
 
 First, since our network has a fully-connected network between the
-latent layer and the convolutional layer before it, node reduction
-amounts to linear weight reduction.  Representing a fully-connected
+latent layer and the convolutional layer before it, the node reduction
+amounts to a linear weight reduction.  Representing a fully-connected
 network between two layers of $L$ and $N$ nodes requires $(L+1)N$
 weights ($+1$ for the bias).
 In the network we used, $L=1000$. Thus, in the case of ZSAE with $N=1000$ applied to MNIST puzzles,
