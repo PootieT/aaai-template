@@ -592,13 +592,18 @@ applied to continuous activations, however it is \emph{asymmetric} to a particul
 where $\alpha$ is a hyperparameter specifying the magnitude of zero-suppression.
 % Similar to $l_1$ regularization, this achieves a sparser representation in the binary domain where
 %  more propositions take the value of 0 (\refig{zsae-overview}).
-% 
-This alters the $P_a(D)$, the target distribution of GS-VAE.
-Recall that, in GS-VAE, $P_a(z_{ij}=1)=\frac{1}{M}$, i.e. the probability for $z_{ij}$ to turn to 1 is fair to any $j$.
-Since zero-suppression penalizes the true bits ($z_{i0}=1$), it changes this fairness: The larger the $\alpha$,
-the less $P_a(z_{i0}=1)$,
-thus the more propositions take the value of 0 (\refig{zsae-overview}).
+ 
+%% This paragraph is unnecessary
+% This technique alters $p_a(z)$, the target distribution of GS-VAE.
+% Recall that, in GS-VAE, $p_a(z_n) = \mathrm{Bern}(0.5)$,
+% i.e. the probability for $z_n$ to turn to 1 is a fair coin toss.
+% Since zero-suppression penalizes the true bits ($z_n=1$), it changes this fairness: The larger the $\alpha$,
+% the less $p_a(z_n=1)$,
+% thus the more propositions take 0 (\refig{zsae-overview}).
 % This changes the target distribution of the KL-divergence.
+
+% % Maybe add this in the camera-ready
+% Note that this generalizes to a categorical case by penalizing all non-zero values: $\bars{q(z_n \not= 0\mid x_i)}$
 
 One additional advantage of ZSAE is that
 several neurons are completely deactivated, i.e. always takes the value of zero
