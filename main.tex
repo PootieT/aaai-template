@@ -78,8 +78,10 @@ Informally, symbols are
 \emph{stable} when their referents do not change against small perturbation in the environment,
 and unstable symbols are harmful for symbolic reasoning.
 We analyze the SSP in SAE
-and propose ``Zero-Suppressed SAE'' (ZSAE), an enhancement of SAE that uses the idea of closed-world
-assumption as a prior for NN optimization and improves the stability of the propositional variables.
+and propose ``Zero-Suppressed SAE'' (ZSAE), an enhancement of SAE that
+%% Add this back in the camera-ready version
+% uses the idea of closed-world assumption as a prior for NN optimization and
+improves the stability of the propositional variables.
 % 
 We empirically show that it finds more stable propositions as well as more compact representations
 against various hyperparameters and improves the success rate of \latentplanner.
@@ -641,29 +643,6 @@ Unlike traditional NN compression methods \cite{cheng2017survey}, this pruning d
 accuracy degradation because the activations are discrete and therefore does not require additional retraining.
 In the continuous cases, even small activations could be amplified by the weights and significantly affect the
 later pipelines of the neural networks.
-
-% 
-A possible interpretation of this approach 
-% from the symbolic perspective
-is that
-this regularization is working as a prior corresponding to \emph{closed-world assumption} \cite[CWA]{reiter1981closed},
-which assumes that all propositions are \texttt{false}
-when they are unknown to a Knowledge Base (KB) or cannot be proven from it (negation as failure).
-% % [wrong!]
-% % We could interpret these unknown propositions defaulted to be false as those which are irrelevant
-% % to the current task that the agent is solving.
-% Being always false, the agent can safely ignore them because
-% they do not trigger an additional set of rules by satisfying their preconditions.
-% Also, the KB no longer has to explicitly store the false propositions.
-With CWA, KBs no longer have to explicitly store the false propositions,
-similar to the ZSAE which can prune the constant-0 nodes.
-% 
-% Similarly, in ZSAE, we could conceive that there is an infinite number of neurons
-% that are already pruned from the network and are just invisible.
-In other words,
-% combining the discrete representation and zero-suppression,
-ZSAE embeds CWA as a model prior.
-
 
 \section{Empirical Evaluation}
 \label{evaluation}
