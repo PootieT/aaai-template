@@ -313,8 +313,8 @@ Its intermediate layer (typically smaller than the input) has a compressed, \emp
 NNs, including AEs, typically have continuous activations and integrating them with propositional reasoners is not straightforward.
 \fi
 
-A variational autoencoder~(VAE)~\cite{kingma2013auto} is a probabilistic vairant of AEs, where both encoder and decoders are modeled by probabilistic distributions.
-By modeling the encoder by a Gumbel-Softmax distribution~\cite{jang2016categorical}, which approximates a discrete distribution, we are able to obtain a discrete latent representation of data.
+A variational autoencoder (VAE) \cite{kingma2013auto} is a probabilistic variant of AEs, whose encoder and the decoder are modeled by probabilistic distributions.
+When the probabilistic distribution is a Gumbel-Softmax distribution \cite{jang2016categorical}, which approximates a discrete distribution, the VAE obtains a discrete latent representation of the data.
 VAEs are trained by backpropagation with the help of the reparameterization trick, which allows us to differentiate random variables.
 
 % that forces the \emph{latent layer} (the most compressed layer in the AE) to follow a certain distribution (e.g., Gaussian).
