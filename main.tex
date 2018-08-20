@@ -715,7 +715,7 @@ The result is rather obvious, therefore we omit it due to space (see supplement)
 In the following experiments, we always replace the activation function with argmax during testing.
 
 We next measured the variance of SAEs in a noisy setting, where
-we perturbed the input image by Gaussian Noise for each trial.
+we perturbed the input image by Gaussian Noise for each of 100 trials of the same image.
 \reftbl{tab:stability} (first columns) indicates that
 the propositions made by NG-SAE are highly random,
 while the entropy regularization in the vanilla SAE suppresses the stochastic behavior to some extent.
@@ -724,7 +724,7 @@ which is rarely affected by the external perturbation.
 % , as seen by the \emph{maximum} variance across propositions approaching zero,
 % which indicates that the noisy observations of a single real world state maps to exactly one propositional state.
 % 
-Due to the poor performance of NG-SAE, we do not study it any further in the later sections.
+Due to the poor performance of NG-SAE, we do not study it any further in the later experiments.
 
 \begin{table*}[tbp]
  \relsize{-1.5}
