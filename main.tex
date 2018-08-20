@@ -358,8 +358,8 @@ activations or weights.
 \label{issues}
 
 SAE in \latentplanner can map a visual observation of the environment to/from a set of propositional values.
-An issue in vanilla SAEs is that the class probability $\pi$ that is used inside its Gumbel-Softmax could be
-neutral for the class ``true'' and the class ``false'' at some neuron,
+An issue in vanilla SAEs is that the class probability for the class ``true'' and the class ``false''
+that is used inside its Gumbel-Softmax could be neutral at some neuron,
 causing the value of the neuron to change frequently (\refig{unstable}).
 The source of stochasticity is twofold.
 Firstly, the encoder is a probabilistic distribution, rather than a deterministic function.
