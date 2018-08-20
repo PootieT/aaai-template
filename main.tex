@@ -540,7 +540,7 @@ Despite that, the system works without problem.
 % 
 The reason is that minimizing the KL divergence and finding a stable representation are in fact opposite.
 Consider the nature of GS-VAE:
-It tries to make the distribution look more similar to a fair random categorical distribution $P_a(D)$
+It tries to make the distribution look more similar to a fair random categorical distribution $p_a(z)$
 that takes 0 or 1 with equal probability, i.e., \emph{as random as possible}.
 % This is clearly the opposite of the stable symbols we pursue.
 Instead, they accidentally negated the loss, which resulted in
