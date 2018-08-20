@@ -102,12 +102,19 @@ Thus we sum them up instead.
 \subsection{Pruning the Zero-Suppressed Network Node}
 \label{pruning-implementation}
 
-Assume the propositional layer is connected to the next layer of $l$ neurons
-by a nonlinear function $h_l=\sigma\parens{\sum_{nk} W_{nkl}z_{nk}+B_l}$
-with weights $W_{nkl}$ and biases $B_l$,
-we can prune $i$-th propositional variable, assuming that $z_{i0}=1,z_{i1}=0$ always holds,
-by adding $W_{n1l}$ to $B_l$ and removing the appropriate index $i$ from $W_{nkl}$.
-
+Assume the propositional layer $z_{nk}$ is connected to the next layer of $L$ neurons
+by a fully-connected network $h_l=\sigma\parens{\sum_{nk} W_{nkl}z_{nk}+B_l}$
+with weights $W_{nkl}$ and biases $B_l$.
+When we assume that $z_{n0}=1,z_{n1}=0$ always holds ($b_n=0$ for all inputs),
+we can prune the index $n$
+by adding $W_{n0l}$ to $B_l$ and removing $W_{nkl}$ for $\forall k\in\braces{0,1}$, $\forall l \in [1..L]$,
+which removes $2L$ float values for each zero-suppressed bit $b_n$.
+Therefore, if we remove $\Delta N$ bits from the latent space, it removes $2L\Delta N$ float values from the network.
+ 
+We can similarly prune the weights $W'$ from the previous layer of $M$ neurons.
+When $W'=(W'_{mnk})$ and bias $B'=(B'_{nk})$ ($m\in[1..M], n\in[1..N], k\in \braces{0,1}$),
+we remove $2(M+1)$ for each zero-suppressed bit $b_n$.
+Therefore, if we remove $\Delta N$ bits from the latent space, it removes $2(M+1)\Delta N$ float values from the network.
 
 \section{Supplemental Experiments}
 
