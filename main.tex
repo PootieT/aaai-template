@@ -733,22 +733,23 @@ Due to the poor performance of NG-SAE, we do not study it any further in the lat
  \begin{tabular}{|r|*{6}{c|}*{2}{*{4}{c|}}c|}
        & \multicolumn{6}{c|}{Mean variance over bits (with noisy images)}
        % & \multicolumn{4}{c|}{True ratio}
+       & \multicolumn{4}{c|}{Mean Square Error}
        & \multicolumn{4}{c|}{Effective bits}
-       % & \multicolumn{6}{c|}{Mean Square Error}
        & Optimal
   \\
 $N=$ & \multicolumn{3}{c|}{100} & \multicolumn{3}{c|}{1000}
      % & \multicolumn{2}{c|}{100} & \multicolumn{2}{c|}{1000}
      & \multicolumn{2}{c|}{100} & \multicolumn{2}{c|}{1000}
+     & \multicolumn{2}{c|}{100} & \multicolumn{2}{c|}{1000}
      % & \multicolumn{3}{c|}{100} & \multicolumn{3}{c|}{1000}
   & Encoding
   \\
-domain    & NG-SAE   & SAE      & ZSAE              & NG-SAE   & SAE      & ZSAE              & SAE & ZSAE        & SAE  & ZSAE & Length      \\ 
-MNIST     & 8.49E-02 & 8.60E-03 & \textbf{4.50E-07} & 5.32E-02 & 2.25E-04 & \textbf{7.82E-06} & 100 & 51          & 1000 & 68   & 18.4        \\ 
-Mandrill  & 1.19E-03 & 8.30E-04 & \textbf{0}        & 4.26E-04 & 2.51E-04 & \textbf{2.89E-08} & 100 & 46          & 1000 & 182  & 18.4        \\ 
-Spider    & 8.53E-04 & 4.91E-04 & \textbf{2.90E-06} & 2.32E-04 & 4.26E-04 & \textbf{4.19E-04} & 100 & 49          & 1000 & 200  & 18.4        \\ 
-LightsOut & 9.01E-03 & 2.01E-04 & \textbf{7.92E-07} & 8.13E-03 & 1.42E-04 & \textbf{1.43E-07} & 100 & \textbf{16} & 1000 & 66   & 16 \\ 
-Twisted   & 1.07E-02 & 7.15E-04 & \textbf{5.89E-07} & 1.02E-02 & 4.52E-04 & \textbf{4.40E-05} & 100 & \textbf{16} & 1000 & 49   & 16 \\ 
+domain    & NG-SAE   & SAE      & ZSAE              & NG-SAE   & SAE      & ZSAE              & SAE      & ZSAE    & SAE     & ZSAE    & SAE & ZSAE        & SAE  & ZSAE & Length \\ 
+MNIST     & 8.49E-02 & 8.60E-03 & \textbf{4.50E-07} & 5.32E-02 & 2.25E-04 & \textbf{7.82E-06} & 1.97E-07 &6.07E-07&8.33E-11  &2.51E-08 & 100 & 51          & 1000 & 68   & 18.4   \\ 
+Mandrill  & 1.19E-03 & 8.30E-04 & \textbf{0}        & 4.26E-04 & 2.51E-04 & \textbf{2.89E-08} & 3.00E-04 &2.27E-04&2.18E-04  &2.76E-04 & 100 & 46          & 1000 & 182  & 18.4   \\ 
+Spider    & 8.53E-04 & 4.91E-04 & \textbf{2.90E-06} & 2.32E-04 & 4.26E-04 & \textbf{4.19E-04} & 2.71E-04 &2.43E-04&3.14E-04  &5.21E-04 & 100 & 49          & 1000 & 200  & 18.4   \\ 
+LightsOut & 9.01E-03 & 2.01E-04 & \textbf{7.92E-07} & 8.13E-03 & 1.42E-04 & \textbf{1.43E-07} & 2.81E-14 &1.37E-06&1.57E-14  &2.53E-14 & 100 & \textbf{16} & 1000 & 66   & 16     \\ 
+Twisted   & 1.07E-02 & 7.15E-04 & \textbf{5.89E-07} & 1.02E-02 & 4.52E-04 & \textbf{4.40E-05} & 4.80E-05 &5.36E-05&8.42E-05  &1.49E-04 & 100 & \textbf{16} & 1000 & 49   & 16     \\ 
 \end{tabular}
  \caption{Results comparing the characteristics of NG-SAE, vanilla SAE and ZSAE ($\alpha=0.7$),
  over 100 randomly generated images encoded 100 times (with gaussian noise added each time).
@@ -757,7 +758,13 @@ Twisted   & 1.07E-02 & 7.15E-04 & \textbf{5.89E-07} & 1.02E-02 & 4.52E-04 & \tex
 \label{tab:stability}
 \end{table*}
 
+
 [TODO: reconstruction loss]
+We next tested if the regularization improves the quality of the latent representation
+without affecting the output accuracy. In \reftbl{tab:stability} (second columns)
+we show the average Mean Square Error between the input and the output
+for 100 randomly generated images.
+The results indicate that the zero-suppression does not significantly affect the output accuracy.
 
 [TODO: $\alpha=0.2,0.5$]
 
