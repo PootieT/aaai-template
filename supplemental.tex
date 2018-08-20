@@ -41,6 +41,52 @@
 \begin{document}
 \maketitle
 
+\section{Supplemental Details}
+
+\subsection{Computing Gumbel-Softmax}
+
+% Since the random distribution is not differentiable (BP is not applicable), VAEs use \emph{reparameterization tricks}, which decompose the target distribution into a differentiable and a purely random distribution (the latter does not require the gradient).
+% For example, the Gaussian $N(\sigma,\mu)$ is decomposed to $\mu+\sigma N(1,0)$, where $\mu,\sigma$ are learned.
+% In addition to the reconstruction loss, VAE should also minimize the variational loss (the difference between the learned and the target distributions) measured by, e.g.,  KL divergence.
+
+Gumbel-Softmax (GS) is a reparametrization trick \cite{jang2016categorical} for categorical distribution.
+It continuously approximates Gumbel-Max \cite{maddison2014sampling}, a method for drawing categorical samples.
+Assume the output $z$ is a one-hot vector, e.g. if the domain is $D=\braces{a,b,c}$, $\brackets{0,1,0}$ represents ``b''.
+The input is a class probability vector $\pi$, e.g. $\brackets{.1,.1,.8}$.
+Gumbel-Max draws samples from $D$ following $\pi$:
+% \[
+ $z_i \equiv [ \text{if}\ i\ \text{is} \arg \max_i (g_i+\log \pi_i) \text{then}\ 1\ \text{else}\ 0 ]$
+% \]
+where $g_i$ are i.i.d samples drawn from
+ $\text{Gumbel}(0,1) =-\log (-\log u)$ \cite{gumbel1954statistical}, where
+$u$ is a uniform random distribution between 0 and 1.
+Gumbel-Softmax approximates argmax with softmax to make it differentiable:
+% \[
+$z_i = \text{Softmax}((g_i+\log \pi_i)/\tau)$.
+% \]
+``Temperature'' $\tau$ controls the magnitude of approximation, which is annealed to 0 by a certain schedule.
+The output of GS converges to a discrete one-hot vector when $\tau\approx 0$.
+
+\subsection{Removing Stochasticity from Gumbel-Softmax during Run-Time}
+\label{argmax}
+% Another observation we made from the source code is that we can
+% disable the runtime stochasticity of the network.
+We can disable the runtime stochasticity of the network that contains Gumbel-Softmax.
+After the training is finished, we replace the gumbel-softmax activation with
+a pure argmax of class probabilities:
+\[
+ z_{ij} = [ \text{if}\ j\ \text{is} \arg \max_j (\log \pi_{ij})\ \text{then}\ 1\ \text{else}\ 0 ].
+\]
+% 
+This technique reduces the inherent stochasticity of the network
+but does not reduce the stochasticity originated from the noisy input.
+% Recall that $Q(D|x)$ is a conditional distribution defined for a single, \emph{fixed} input $x$.
+% % 
+% For instance, the propositional representation may be altered by a small
+% Gaussian noise applied to the input.
+
+
+
 \section{Supplemental Experiments}
 
 
