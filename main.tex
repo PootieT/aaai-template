@@ -727,29 +727,29 @@ which is rarely affected by the external perturbation.
 Due to the poor performance of NG-SAE, we do not study it any further in the later experiments.
 
 \begin{table*}[tbp]
- \relsize{-1.5}
+ \relsize{-2}
  \centering
- \setlength{\tabcolsep}{0.45em}
- \begin{tabular}{|r|*{6}{c|}*{2}{*{4}{c|}}c|}
-       & \multicolumn{6}{c|}{Mean variance over bits (with noisy images)}
+ \setlength{\tabcolsep}{0.25em}
+ \begin{tabular}{|r|c|*{6}{c|}*{2}{*{4}{c|}}c|}
+       & \multicolumn{7}{c|}{Mean variance over bits (with noisy images)}
        % & \multicolumn{4}{c|}{True ratio}
-       & \multicolumn{4}{c|}{Mean Square Error}
+       & \multicolumn{4}{c|}{Mean Square Error (MSE)}
        & \multicolumn{4}{c|}{Effective bits}
        & Optimal
   \\
-$N=$ & \multicolumn{3}{c|}{100} & \multicolumn{3}{c|}{1000}
+$N=$ & 36 & \multicolumn{3}{c|}{100} & \multicolumn{3}{c|}{1000}
      % & \multicolumn{2}{c|}{100} & \multicolumn{2}{c|}{1000}
      & \multicolumn{2}{c|}{100} & \multicolumn{2}{c|}{1000}
      & \multicolumn{2}{c|}{100} & \multicolumn{2}{c|}{1000}
      % & \multicolumn{3}{c|}{100} & \multicolumn{3}{c|}{1000}
   & Encoding
   \\
-domain    & NG-SAE   & SAE      & ZSAE              & NG-SAE   & SAE      & ZSAE              & SAE      & ZSAE    & SAE     & ZSAE    & SAE & ZSAE        & SAE  & ZSAE & Length \\ 
-MNIST     & 8.49E-02 & 8.60E-03 & \textbf{4.50E-07} & 5.32E-02 & 2.25E-04 & \textbf{7.82E-06} & 1.97E-07 &6.07E-07&8.33E-11  &2.51E-08 & 100 & 51          & 1000 & 68   & 18.4   \\ 
-Mandrill  & 1.19E-03 & 8.30E-04 & \textbf{0}        & 4.26E-04 & 2.51E-04 & \textbf{2.89E-08} & 3.00E-04 &2.27E-04&2.18E-04  &2.76E-04 & 100 & 46          & 1000 & 182  & 18.4   \\ 
-Spider    & 8.53E-04 & 4.91E-04 & \textbf{2.90E-06} & 2.32E-04 & 4.26E-04 & \textbf{4.19E-04} & 2.71E-04 &2.43E-04&3.14E-04  &5.21E-04 & 100 & 49          & 1000 & 200  & 18.4   \\ 
-LightsOut & 9.01E-03 & 2.01E-04 & \textbf{7.92E-07} & 8.13E-03 & 1.42E-04 & \textbf{1.43E-07} & 2.81E-14 &1.37E-06&1.57E-14  &2.53E-14 & 100 & \textbf{16} & 1000 & 66   & 16     \\ 
-Twisted   & 1.07E-02 & 7.15E-04 & \textbf{5.89E-07} & 1.02E-02 & 4.52E-04 & \textbf{4.40E-05} & 4.80E-05 &5.36E-05&8.42E-05  &1.49E-04 & 100 & \textbf{16} & 1000 & 49   & 16     \\ 
+domain    &SAE     & NG-SAE   & SAE      & ZSAE              & NG-SAE   & SAE      & ZSAE              & SAE      & ZSAE    & SAE     & ZSAE    & SAE & ZSAE        & SAE  & ZSAE & Length \\ 
+MNIST     &1.80E-04& 8.49E-02 & 8.60E-03 & \textbf{4.50E-07} & 5.32E-02 & 2.25E-04 & \textbf{7.82E-06} & 1.97E-07 &6.07E-07&8.33E-11  &2.51E-08 & 100 & 51          & 1000 & 68   & 18.4   \\ 
+Mandrill  &2.93E-04& 1.19E-03 & 8.30E-04 & \textbf{0}        & 4.26E-04 & 2.51E-04 & \textbf{2.89E-08} & 3.00E-04 &2.27E-04&2.18E-04  &2.76E-04 & 100 & 46          & 1000 & 182  & 18.4   \\ 
+Spider    &5.80E-06& 8.53E-04 & 4.91E-04 & \textbf{2.90E-06} & 2.32E-04 & 4.26E-04 & \textbf{4.19E-04} & 2.71E-04 &2.43E-04&3.14E-04  &5.21E-04 & 100 & 49          & 1000 & 200  & 18.4   \\ 
+LightsOut &2.55E-06& 9.01E-03 & 2.01E-04 & \textbf{7.92E-07} & 8.13E-03 & 1.42E-04 & \textbf{1.43E-07} & 2.81E-14 &1.37E-06&1.57E-14  &2.53E-14 & 100 & \textbf{16} & 1000 & 66   & 16     \\ 
+Twisted   &2.15E-05& 1.07E-02 & 7.15E-04 & \textbf{5.89E-07} & 1.02E-02 & 4.52E-04 & \textbf{4.40E-05} & 4.80E-05 &5.36E-05&8.42E-05  &1.49E-04 & 100 & \textbf{16} & 1000 & 49   & 16     \\ 
 \end{tabular}
  \caption{Results comparing the characteristics of NG-SAE, vanilla SAE and ZSAE ($\alpha=0.7$),
  over 100 randomly generated images encoded 100 times (with gaussian noise added each time).
@@ -758,17 +758,13 @@ Twisted   & 1.07E-02 & 7.15E-04 & \textbf{5.89E-07} & 1.02E-02 & 4.52E-04 & \tex
 \label{tab:stability}
 \end{table*}
 
-
-[TODO: reconstruction loss]
 We next tested if the regularization improves the quality of the latent representation
 without affecting the output accuracy. In \reftbl{tab:stability} (second columns)
 we show the average Mean Square Error between the input and the output
 for 100 randomly generated images.
 The results indicate that the zero-suppression does not significantly affect the output accuracy.
 
-[TODO: $\alpha=0.2,0.5$]
-
-Finally, \reftbl{tab:stability} (right columns) shows that the number of effective bits,
+Next, \reftbl{tab:stability} (right columns) shows that the number of effective bits,
 i.e. the number of propositions that \emph{ever} change their values, is low in ZSAE, showing that
 ZSAE obtained a more compressed, compact representation of the input.
 In MNIST, the numbers are comparable between ZSAEs with $N=100,1000$.
@@ -784,6 +780,16 @@ rather than freely consuming the latent space capacity in an entangled represent
 % the desired characteristics in the activation, we observe that the
 % reconstruction loss is still low if you maintain the latent space size
 % large enough.
+
+Finally, we tested the sensitivity of ZSAE on its new hyperparameter $\alpha$.
+We compared the results between $\alpha=0.2,0.5,0.7$ and observed that they do not have
+significantly different results:
+They have similar reconstruction loss (MSE), similarly reduces the
+effective bits, and similarly reduces the representation variance.
+Therefore, we conclude that while ZSAE introduces an additional parameter,
+the selection of $\alpha$ is easy compared to the selection of latent space size $N$.
+We observe this from the fact that for the vanilla SAE with $N=36$, the variance could be
+up to two orders of magnitude smaller than the SAE with $N=100$.
 
 \subsection{Planner Performance}
 
