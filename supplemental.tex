@@ -44,6 +44,7 @@
 \section{Implementation Details}
 
 \subsection{Computing Gumbel-Softmax}
+\label{gumbel-softmax-implementation}
 
 % Since the random distribution is not differentiable (BP is not applicable), VAEs use \emph{reparameterization tricks}, which decompose the target distribution into a differentiable and a purely random distribution (the latter does not require the gradient).
 % For example, the Gaussian $N(\sigma,\mu)$ is decomposed to $\mu+\sigma N(1,0)$, where $\mu,\sigma$ are learned.
@@ -76,7 +77,7 @@ The actual boolean (Bernoulli / propositional) variable is then retrieved by $b_
 
 
 \subsection{Removing Stochasticity from Gumbel-Softmax during Run-Time}
-\label{argmax}
+\label{argmax-implementation}
 % Another observation we made from the source code is that we can
 % disable the runtime stochasticity of the network.
 We can disable the runtime stochasticity of the network that contains Gumbel-Softmax.
@@ -119,8 +120,66 @@ Therefore, if we remove $\Delta N$ bits from the latent space, it removes $2(M+1
 \section{Supplemental Experiments}
 
 
+\subsection{State Variance without Replacing GS with Argmax}
 
+We measured the state variance while keeping the inherent network stochasticity,
+i.e., without the argmax techniques to
+make the network deterministic (\refsec{argmax}, \refsec{argmax-implementation}).
 
+\begin{table}[htbp]
+ \relsize{-1.5}
+ \centering
+ \setlength{\tabcolsep}{0.45em}
+ \begin{tabular}{|r|*{4}{c|}}
+       & \multicolumn{4}{c|}{Mean variance over bits} \\
+$N=$ % & \multicolumn{2}{c|}{36} 
+     % & \multicolumn{2}{c|}{64}
+     & \multicolumn{2}{c|}{100}
+     & \multicolumn{2}{c|}{1000} \\
+  % data for N=36
+% &SAE      &ZSAE     
+% &0.00E+00 &3.44E-03 
+% &4.69E-05 &6.25E-07 
+% &6.25E-07 &2.92E-06 
+% &7.03E-05 &5.30E-03 
+% &6.17E-04 &4.81E-03 
+  % data for N=64
+% &SAE      &ZSAE     
+% &2.20E-04 &1.05E-06 
+% &1.82E-04 &0.00E+00 
+% &8.10E-05 &0.00E+00 
+% &1.50E-03 &5.84E-04 
+% &1.36E-04 &1.00E-04 
+domain   &SAE      &ZSAE     &SAE      &ZSAE     \\ 
+MNIST    &3.92E-04 &0.00E+00 &1.18E-04 &1.33E-08 \\ 
+Mandrill &1.51E-04 &0.00E+00 &6.13E-05 &2.60E-07 \\ 
+Spider   &9.73E-05 &2.25E-07 &4.82E-05 &7.88E-06 \\ 
+LightsOut&7.81E-05 &1.36E-05 &4.23E-04 &7.95E-06 \\ 
+Twisted  &5.51E-04 &2.12E-05 &6.39E-04 &5.47E-03 \\ 
+\end{tabular}
+ \caption{Results comparing the state variance of vanilla SAE and ZSAE ($\alpha=0.7$),
+ over 100 randomly generated images encoded 100 times (no noise is added each time).
+ ZSAE suppresses the state variance, but not to absolute zero.
+ }
+\label{tab:variance-stochastic}
+\end{table}
+
+We randomly generated 100 images with a domain-specific generator for each puzzle domain,
+then encoded each of them with the SAE 100 times.
+We measured the variance of the propositions, i.e. the variance of the latent activations (0 or 1)
+across 100 encoding trials of the same image.
+We then took the mean of the variances over the entire propositions.
+
+The results indicate that ZSAE also suppresses the effect of internal stochasticity.
+We do not include these results to the main paper due to space,
+and also the argmax technique (\refsec{argmax}, \refsec{argmax-implementation})
+completely eliminates the internal stochasticity.
+However, the argmax technique only reduces the inherent stochasticity of the network
+and not the stochasticity originated from the noisy input.
+Therefore, ZSAE is still necessary when the input is noisy (which is the case in almost all real-world scenario),
+as discussed in the main paper.
+
+When we enable the argmax technique, the state variance for noiseless input become 0 for all networks.
 
 \subsection{The percentage of true propositions}
 
@@ -148,7 +207,6 @@ We measured the average percentage of propositions that turned true on ZSAE/SAE.
 \reftbl{tab:trueratio} shows that the ratio significantly drops due to the Zero-suppression penalty,
 demonstrating that $p_a(b)$ (\refsec{analysis}) is altered by the regularization.
 
-\clearpage
 \section{Plan Execution Examples}
 
 \begin{figure}[h]
@@ -178,14 +236,7 @@ The blurs in the goal states are simply the noise that was normalized and enhanc
  \label{fig:mnist}
 \end{figure}
 
-% \begin{figure}[h]
-%  \includegraphics[width=\linewidth]{img/hanoi4-new.pdf}
-%  \caption{
-% (1) Output of solving ToH with 4 disks.
-% }
-%  \label{fig:mnist2}
-% \end{figure}
-
+\clearpage
 \section{Supplemental Backgrounds}
 
 \subsection{AMA$_1$, an Oracular Action Model Acquisition method}
