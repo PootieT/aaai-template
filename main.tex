@@ -1013,19 +1013,27 @@ there are tie-breaking difference and also because some nodes may randomly becom
 
 We discuss the amount of memory reduction possible by the pruning on the nodes
 that have constant activations of 0. As we saw from \reftbl{tab:stability},
-vanilla SAEs do not have such propositions (all bits are effective bits).
+vanilla SAEs do not have such propositions (all bits are effective).
 % While we did not actually implemented the node pruning,
 
-First, since our network has a fully-connected network between the
-latent layer and the convolutional layer before it, the node reduction
-amounts to a linear weight reduction.  Representing a fully-connected
+% First, since our network has a fully-connected network between the
+% latent layer and the convolutional layer before it, the node reduction
+% amounts to a linear weight reduction. 
+Representing a fully-connected
 network between two layers of $L$ and $N$ nodes requires $(L+1)N$
 weights ($+1$ for the bias).
-In the network we used, $L=1000$. Thus, in the case of ZSAE with $N=1000$ applied to MNIST puzzles,
-where it reduces the representation down to 68 effective bits, weights are reduced by 932932.
+In the network we used,
+both the previous and the succeeding layer of the latent propositional layer have 1000 nodes.
+In gumbel-softmax, each proposition corresponds to 2 neurons (details in supplement \refsec{gumbel-softmax-implementation}).
+Thus, in the case of ZSAE with $N=1000$ applied to MNIST puzzles,
+it reduces the representation down to 68 effective bits,
+weights are reduced by $(1000+1)\times (2\cdot 1000 - 2\cdot 68)=1865864$ for the previous layer,
+and $((1000+1)-(68+1))\times 1000 =932000$ for the succeeding layer.
 This number is huge compared to the convolutional weights (3x3, 16 channels, thus 144 float values each) in the upper layers.
+The total number of weights in the network is reduced from 8376278 to 5578414, which is a 33\% reduction.
 % The saved hdf5 files for the network also reduced from 14MB to XMB.
 We do not show the entire results due to space limitation and also because the results are straightforward.
+(See implementation details in supplement \refsec{pruning-implementation}.)
 
 % [wrong! convolutions are more expensive]
 % Second, we considered the inference time by the number of multiplication operations and also by the actual test.
