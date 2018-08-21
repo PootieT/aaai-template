@@ -306,7 +306,7 @@ An autoencoder~(AE)~\cite{hinton2006reducing} is a feed-forward NN that consists
 For example, in Figure~\ref{sae}, the mapping from the leftmost image to the vector in the middle corresponds to the encoder, and the mapping from the middle to the rightmost image corresponds to the decoder.
 AEs are trained so that the encoder maps a data point~(e.g., an image) into a low-dimensional latent space, and the decoder pulls the latent representation of the input back to the original data point.
 Technically, they are trained by backpropagation so as to minimize the reconstruction loss, the distance between the input and the output measured by Euclidean distance or binary cross entropy.
-Since the encoder is modeled by a continuous function, its latent representation is also continous, which makes it difficult to integrate AEs with propositional reasoners.
+Since the encoder is modeled by a continuous function, its latent representation is also continuous, which makes it difficult to integrate AEs with propositional reasoners.
 \if0
 Since it is trained solely by the raw input data, it is a unsupervised learning method that do not require the human-assigned labels.
 Its intermediate layer (typically smaller than the input) has a compressed, \emph{latent representation} of the input.
@@ -761,7 +761,7 @@ LightsOut & 9.01E-03 & 2.01E-04 & \textbf{7.92E-07} & 8.13E-03 & 1.42E-04 & \tex
 Twisted   & 1.07E-02 & 7.15E-04 & \textbf{5.89E-07} & 1.02E-02 & 4.52E-04 & \textbf{4.40E-05} & 4.80E-05 &5.36E-05&8.42E-05  &1.49E-04 &2.73E-05&\uline{5.70E-03}& 100 & \textbf{16} & 1000 & 49   & 16     \\ 
 \end{tabular}
  \caption{Results comparing the characteristics of NG-SAE, vanilla SAE and ZSAE ($\alpha=0.7$),
- over 100 randomly generated images encoded 100 times (with gaussian noise added each time).
+ over 100 randomly generated images encoded 100 times (with Gaussian noise added each time).
  In LightsOut and Twisted, ZSAE($N=100$) finds a representation as large as the theoretical optimal encoding length of the input search space.
  }
 \label{tab:stability}
