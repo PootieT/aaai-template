@@ -207,6 +207,28 @@ We measured the average percentage of propositions that turned true on ZSAE/SAE.
 \reftbl{tab:trueratio} shows that the ratio significantly drops due to the Zero-suppression penalty,
 demonstrating that $p_a(b)$ (\refsec{analysis}) is altered by the regularization.
 
+\subsection{MSE and Effective Bits for different $\alpha$}
+\label{more-sensitivity}
+
+\begin{table}[htbp]
+ \relsize{-1.5}
+ \centering
+ \setlength{\tabcolsep}{0.45em}
+ \begin{tabular}{|r|*{4}{c|}}
+       & \multicolumn{4}{c|}{True ratio} \\
+$N=$ & \multicolumn{2}{c|}{100} & \multicolumn{2}{c|}{1000} \\
+domain    & SAE  & ZSAE & SAE  & ZSAE \\ 
+MNIST     & 0.50 & 0.10 & 0.50 & 0.02 \\ 
+Mandrill  & 0.50 & 0.12 & 0.50 & 0.09 \\ 
+Spider    & 0.50 & 0.14 & 0.50 & 0.11 \\ 
+LightsOut & 0.50 & 0.08 & 0.50 & 0.03 \\ 
+Twisted   & 0.50 & 0.08 & 0.50 & 0.02 \\ 
+\end{tabular}
+ \caption{Sensitivity of ZSAE to the hyperparameter $\alpha$ compared to the sensitivity of SAE to the hyperparameter $N$.}
+\label{tab:more-sensitivity}
+\end{table}
+
+
 \clearpage
 \section{Plan Execution Examples}
 
