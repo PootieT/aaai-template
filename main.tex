@@ -303,8 +303,9 @@ discrete vector as the state representation for classical planning.
 Below, we briefly review the literature.
 
 An autoencoder~(AE)~\cite{hinton2006reducing} is a feed-forward NN that consists a pair of encoder and decoder networks, both of which are modeled by continuous functions.
-AEs are trained so that the encoder maps a data point~(e.g., an image) into the low-dimensional latent space, and the decoder pulls the latent representation of the input back to the original data point.
-Technically, they are trained by backpropagation so as to minimize the reconstruction loss, the distance between the input and the output measured by Euclidean distance or binary cross entropy (BCE).
+For example, in Figure~\ref{sae}, the mapping from the leftmost image to the vector in the middle corresponds to the encoder, and the mapping from the middle to the rightmost image corresponds to the decoder.
+AEs are trained so that the encoder maps a data point~(e.g., an image) into a low-dimensional latent space, and the decoder pulls the latent representation of the input back to the original data point.
+Technically, they are trained by backpropagation so as to minimize the reconstruction loss, the distance between the input and the output measured by Euclidean distance or binary cross entropy.
 Since the encoder is modeled by a continuous function, its latent representation is also continous, which makes it difficult to integrate AEs with propositional reasoners.
 \if0
 Since it is trained solely by the raw input data, it is a unsupervised learning method that do not require the human-assigned labels.
@@ -313,9 +314,11 @@ Its intermediate layer (typically smaller than the input) has a compressed, \emp
 NNs, including AEs, typically have continuous activations and integrating them with propositional reasoners is not straightforward.
 \fi
 
-A variational autoencoder (VAE) \cite{kingma2013auto} is a probabilistic variant of AEs, whose encoder and the decoder are modeled by probabilistic distributions.
-When the probabilistic distribution is a Gumbel-Softmax distribution \cite{jang2016categorical}, which approximates a discrete distribution, the VAE obtains a discrete latent representation of the data.
+A variational autoencoder (VAE) \cite{kingma2013auto} is a probabilistic variant of AEs, whose encoder and decoder are modeled by probabilistic distributions, rather than deterministic functions.
+When the probabilistic distribution of the encoder is a discrete distribution such as the Bernoulli distribution, VAE obtains a discrete latent representation of the data.
 VAEs are trained by backpropagation with the help of the reparameterization trick, which allows us to differentiate random variables.
+Technically, in the discrete case, the encoder's distribution is approximated by its continuous relaxation called Gumbel-Softmax distribution~\cite{jang2016categorical} in order to apply the reparameterization trick.
+This approximation is necessary because the reparameterization trick is only applicable to the continuous cases.
 
 % that forces the \emph{latent layer} (the most compressed layer in the AE) to follow a certain distribution (e.g., Gaussian).
 % While initially proposed for enforcing Gaussian distributions, VAEs have been used to enforce arbitrary types of distribution (notably by Generative Adversarial Network \cite{goodfellow2014generative,makhzani2015adversarial}). 
@@ -488,6 +491,8 @@ analyzed the source code of Latplan published on Github.
 Surprisingly, we found that they are using an incorrect loss function for Gumbel-Softmax VAE (GS-VAE),
 and \emph{this very mistake} is essential to the success of their experiment
 by \emph{largely suppressing the instability} of the propositions.
+In the following, we illustrate our finding using the idealized case where the encoder is the Bernoulli distribution for clarity, although in reality, it is approximated by a Gumbel-softmax distribution.
+For more mathematically rigorous discussion, please refer to the appendix.
 
 % % Keep in mind that the reviewers might be symbolic people -- so use the intuitive words as possible.
 % The purpose of GS-VAE is to obtain a NN
@@ -496,16 +501,17 @@ by \emph{largely suppressing the instability} of the propositions.
 
 Let $q(b \mid x)$ and $p(x \mid b)$ be the encoder and the decoder of GS-VAE, respectively,
 where $x$ corresponds to a visual observation of the environment, and $b\in\{0,1\}^N$ corresponds to its latent representation.
-In principle\footnote{In reality, $q(b\mid x)$ is approximated by a Gumbel-softmax distribution in order to apply the reparameterization trick. For more mathematically rigorous discussion, please refer to Appendix.}, GS-VAE is trained by minimizing the following objective function with respect to $p(x \mid b)$ and $q(b\mid x)$:
+In principle, GS-VAE is trained by minimizing the following objective function with respect to $p(x \mid b)$ and $q(b\mid x)$:
 \begin{align}
-\label{vae-obj} \sum_{i=1}^I \mathbb{E}_{q(b\mid x_i)}\left[-\log p(x_i\mid b)\right] + D_{\mathrm{KL}}(q(b\mid x_i) \parallel p_a(b)),
+\label{vae-obj} \sum_{i=1}^I \mathbb{E}_{q(b\mid x_i)}\left[-\log p(x_i\mid b)\right] + \mathrm{KL}(q(b\mid x_i) \parallel p_a(b)),
 \end{align}
-where $p_a(b) = \prod_{n=1}^N p_a(b_n) = \prod_{n=1}^N \mathrm{Bern}(0.5)$ is an $N$-dimensional Bernoulli distribution with uniform probabilities, and $i$ is the index for each data sample.
+where $p_a(b) = \prod_{n=1}^N p_a(b_n) = \prod_{n=1}^N \mathrm{Bern}(0.5)$ is an $N$-dimensional Bernoulli distribution with uniform probabilities, 
+$i$ is the index for each data point, and $\mathrm{KL}(q || p)$ represents the Kullback-Leibler divergence from $p$ to $q$.
 The first term in Eq.~\eqref{vae-obj} is the reconstruction loss, which measures the quality of the reconstructed data points,
 and the second term regularizes the encoder by making the encoder $q(b\mid x)$ closer to $p_a(b)$.
 The second term is further computed as,
 \begin{align*}
- &D_{\mathrm{KL}}(q(b\mid x_i) \parallel p_a(b)) \\
+ &{\mathrm{KL}}(q(b\mid x_i) \parallel p_a(b)) \\
 = & - \sum_{n=1}^N \sum_{k\in\{0,1\}}q(b_{n}=k \mid x_i) \log\frac{p_a(b_{n}=k)}{q(b_{n}=k \mid x_i)}\\
 =& - \sum_{n=1}^N \sum_{k\in\{0,1\}}q(b_{n}=k \mid x_i) \left(\log \frac{1}{2} - \log{q(b_{n}=k \mid x_i)}\right)\\
 =& - \sum_{n=1}^N H(q(b_n\mid x_i)) + \mathrm{const.} = -H(q(b \mid x_i)) + \mathrm{const.},
@@ -531,8 +537,8 @@ actually \emph{guarantees to reduce} the randomness,
 instead of converging to any other random distribution different from $p_a(b)$.
 This can be shown as follows:
 \begin{align} 
-\nonumber  &\brackets{\text{rec loss}}-D_{\text{KL}}(q||p_a)                                    \\
-\nonumber =&\brackets{\text{rec loss}}+D_{\text{KL}}(q||p_a) - 2 D_{\text{KL}}(q||p_a)          \\
+\nonumber  &\brackets{\text{rec loss}}-{\mathrm{KL}}(q||p_a)                                    \\
+\nonumber =&\brackets{\text{rec loss}}+{\mathrm{KL}}(q||p_a) - 2 {\mathrm{KL}}(q||p_a)          \\
 \label{loss+ent} =&\brackets{\text{\small correct GS VAE loss}}      + 2 H(q(b \mid x_i)).
 \end{align}
 Since the entropy measures randomness of random variables,
@@ -590,12 +596,12 @@ The resulting loss function below is
 \emph{asymmetric} to a particular label $b_n=1$:
 \begin{align*}
  \brackets{\text{loss}} = & \brackets{\text{\small vanilla SAE loss}} + \brackets{\text{\small 0-Sup. loss}} \\ 
- =                        & \brackets{\text{\small vanilla SAE loss}} + \alpha \sum_n b_n
+ =                        & \brackets{\text{\small vanilla SAE loss}} + \alpha \sum_n q(b_n=1 \mid x_i)
 \end{align*}
 where $\alpha$ is a hyperparameter specifying the magnitude of zero-suppression.
-This is similar to the regularization by $l_1$ norm (LASSO) typically applied to continuous activations
+This is similar to the regularization by $\ell_1$ norm (LASSO) typically applied to continuous activations
 in a sense that it tries to minimize the sum of activations.
-Similar to $l_1$ regularization, this achieves a sparser representation in the binary domain where
+Similar to $\ell_1$ regularization, this achieves a sparser representation in the binary domain where
 more propositions take the value of 0 (\refig{zsae-overview}).
 (Implementation method in the supplement, \refsec{zsae-implementation}.)
 
