@@ -767,14 +767,13 @@ Twisted   &2.15E-05& 1.07E-02 & 7.15E-04 & \textbf{5.89E-07} & 1.02E-02 & 4.52E-
 \label{tab:stability}
 \end{table*}
 
-We next tested if the regularization improves the quality of the latent representation
-without affecting the output accuracy. In \reftbl{tab:stability} (second columns)
-we show the average Mean Square Error between the input and the output
+We next tested if the zero-suppression affects the output accuracy.
+In \reftbl{tab:stability} (second columns)
+we show the Mean Square Error between the input and the output
 for 100 randomly generated images.
 The results indicate that the zero-suppression does not significantly affect the output accuracy for $N=100,1000$.
 However, for $N=36$ (a parameter tuned for SAE to have the least variance), the zero-suppression
-harmed the accuracy because the network is already small and the further penalty for the compression
-affected the performance.
+harmed the accuracy because the network is already small and the further compression penalty affected the training.
 In other words, it is better to combine ZSAE with a slightly overcapacity network,
 since ZSAE then automatically compresses the representation.
 % If the network size is already optimally tuned for vanilla SAE (i.e. $N=36$),
@@ -786,7 +785,7 @@ ZSAE obtained a more compressed, compact representation of the input.
 In MNIST, the numbers are comparable between ZSAEs with $N=100,1000$.
 This shows that the network is able to find an encoding of almost the same size
 regardless of the size of the latent layer (upper bound of the size of
-propositions), lessen the need for hyperparameter tuning.
+propositions), reducing the need for hyperparameter tuning.
 In LightsOut and Twisted, ZSAE even finds the 16bit optimal representation for the 4x4 light grids.
 The additional
 penalty encourages the network to find the more compact representation,
