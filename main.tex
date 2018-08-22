@@ -753,12 +753,12 @@ $N=$ & \multicolumn{3}{c|}{100} & \multicolumn{3}{c|}{1000}
      % & \multicolumn{3}{c|}{100} & \multicolumn{3}{c|}{1000}
   & Encoding
   \\
-domain    & NG-SAE   & SAE      & ZSAE              & NG-SAE   & SAE      & ZSAE              & SAE      & ZSAE    & SAE     & ZSAE    & SAE    & ZSAE   & SAE & ZSAE        & SAE  & ZSAE & Length \\ 
-MNIST     & 8.49E-02 & 8.60E-03 & \textbf{4.50E-07} & 5.32E-02 & 2.25E-04 & \textbf{7.82E-06} & 1.97E-07 &6.07E-07&8.33E-11  &2.51E-08 &2.70E-14&\uline{9.12E-03}& 100 & 51          & 1000 & 68   & 18.4   \\ 
-Mandrill  & 1.19E-03 & 8.30E-04 & \textbf{0}        & 4.26E-04 & 2.51E-04 & \textbf{2.89E-08} & 3.00E-04 &2.27E-04&2.18E-04  &2.76E-04 &2.05E-04&{3.20E-04}& 100 & 46          & 1000 & 182  & 18.4   \\ 
-Spider    & 8.53E-04 & 4.91E-04 & \textbf{2.90E-06} & 2.32E-04 & 4.26E-04 & \textbf{4.19E-04} & 2.71E-04 &2.43E-04&3.14E-04  &5.21E-04 &1.42E-09&\uline{2.80E-02}& 100 & 49          & 1000 & 200  & 18.4   \\ 
-LightsOut & 9.01E-03 & 2.01E-04 & \textbf{7.92E-07} & 8.13E-03 & 1.42E-04 & \textbf{1.43E-07} & 2.81E-14 &1.37E-06&1.57E-14  &2.53E-14 &2.92E-04&{2.86E-04}& 100 & \textbf{16} & 1000 & 66   & 16     \\ 
-Twisted   & 1.07E-02 & 7.15E-04 & \textbf{5.89E-07} & 1.02E-02 & 4.52E-04 & \textbf{4.40E-05} & 4.80E-05 &5.36E-05&8.42E-05  &1.49E-04 &2.73E-05&\uline{5.70E-03}& 100 & \textbf{16} & 1000 & 49   & 16     \\ 
+domain    & NG-SAE & SAE    & ZSAE            & NG-SAE & SAE    & ZSAE            & SAE     & ZSAE  & SAE    & ZSAE   & SAE    & ZSAE          & SAE & ZSAE        & SAE  & ZSAE & Length \\ 
+MNIST     & 8.4E-2 & 8.6E-3 & \textbf{3.7E-6} & 5.3E-2 & 2.2E-4 & \textbf{1.1E-7} & 1.9E-7  &2.9E-6 &8.3E-11 &3.2E-10 &2.7E-14 &\uline{9.1E-3} & 100 & 51          & 1000 & 68   & 18.4   \\ 
+Mandrill  & 1.1E-3 & 8.3E-4 & \textbf{3.0E-5} & 4.2E-4 & 2.5E-4 & \textbf{4.5E-8} & 3.0E-4  &2.8E-4 &2.1E-4  &2.3E-4  &2.0E-4  &{3.2E-4}       & 100 & 46          & 1000 & 182  & 18.4   \\ 
+Spider    & 8.5E-4 & 4.9E-4 & \textbf{6.3E-6} & 2.3E-4 & 4.2E-4 & \textbf{7.3E-7} & 2.7E-4  &2.2E-4 &3.1E-4  &2.8E-4  &1.4E-9  &\uline{2.8E-2} & 100 & 49          & 1000 & 200  & 18.4   \\ 
+LightsOut & 9.0E-3 & 2.0E-4 & \textbf{3.9E-6} & 8.1E-3 & 1.4E-4 & \textbf{7.5E-6} & 2.8E-14 &1.2E-5 &1.5E-14 &8.0E-6  &2.9E-4  &{2.8E-4}       & 100 & \textbf{16} & 1000 & 66   & 16     \\ 
+Twisted   & 1.0E-2 & 7.1E-4 & \textbf{5.1E-6} & 1.0E-2 & 4.5E-4 & \textbf{1.6E-7} & 4.8E-5  &5.1E-5 &8.4E-5  &4.5E-5  &2.7E-5  &\uline{5.7E-3} & 100 & \textbf{16} & 1000 & 49   & 16     \\ 
 \end{tabular}
  \caption{Results comparing the characteristics of NG-SAE, vanilla SAE and ZSAE ($\alpha=0.7$),
  over 100 randomly generated images encoded 100 times (with Gaussian noise added each time).
@@ -806,12 +806,12 @@ rather than freely consuming the latent space capacity in an entangled represent
      & \multicolumn{2}{c|}{ZSAE($\alpha=0.7$)} 
      & \multicolumn{3}{c|}{ZSAE($N=100$)}
   \\
-$N=$      &36       & 100      & 1000     & 100 & 1000 & $\alpha=$0.2 & 0.5 & 0.7 \\
-MNIST     &1.80E-04 & 8.60E-03 & 2.25E-04 &     &      &              &     &     \\
-Mandrill  &2.93E-04 & 8.30E-04 & 2.51E-04 &     &      &              &     &     \\
-Spider    &5.80E-06 & 4.91E-04 & 4.26E-04 &     &      &              &     &     \\
-LightsOut &2.55E-06 & 2.01E-04 & 1.42E-04 &     &      &              &     &     \\
-Twisted   &2.15E-05 & 7.15E-04 & 4.52E-04 &     &      &              &     &     \\
+$N=$      &36     & 100    & 1000   & 100    & 1000   & $\alpha=$0.2 & 0.5    & 0.7    \\
+MNIST     &1.8E-4 & 8.6E-3 & 2.2E-4 & 3.7E-6 & 1.1E-7 & 4.5E-7       & 0.0E+0 & 3.7E-6 \\
+Mandrill  &2.9E-4 & 8.3E-4 & 2.5E-4 & 3.0E-5 & 4.5E-8 & 2.3E-6       & 3.4E-6 & 3.0E-5 \\
+Spider    &5.8E-6 & 4.9E-4 & 4.2E-4 & 6.3E-6 & 7.3E-7 & 4.6E-6       & 8.3E-6 & 6.3E-6 \\
+LightsOut &2.5E-6 & 2.0E-4 & 1.4E-4 & 3.9E-6 & 7.5E-6 & 1.1E-4       & 1.5E-5 & 3.9E-6 \\
+Twisted   &2.1E-5 & 7.1E-4 & 4.5E-4 & 5.1E-6 & 1.6E-7 & 8.8E-5       & 4.2E-6 & 5.1E-6 \\
 \end{tabular}
  \caption{Sensitivity of ZSAE to the hyperparameter $\alpha$ compared to the sensitivity of SAE to the hyperparameter $N$.}
  \label{sensitivity}
