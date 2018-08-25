@@ -605,7 +605,10 @@ This is similar to the regularization by $\ell_1$ norm (LASSO) typically applied
 in a sense that it tries to minimize the sum of activations.
 Similar to $\ell_1$ regularization, this achieves a sparser representation in the binary domain where
 more propositions take the value of 0 (\refig{zsae-overview}).
-(Implementation method in the supplement, \refsec{zsae-implementation}.)
+The technical novelty of the method is in its implementation adapted for Gumbel-Softmax output,
+which is a collection of one-hot vectors $z_{nk} (n\in [1..N], k\in \braces{0,1})$
+where $\forall n; z_{n0} + z_{n1} = 1$ and  $b_n = z_{n1}$.
+(Details in the supplement, \refsec{zsae-implementation}.)
 
 %% This paragraph is unnecessary
 % This technique alters $p_a(b)$, the target distribution of GS-VAE.
