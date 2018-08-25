@@ -530,7 +530,7 @@ Despite that, the system works without problem.
 The reason is that minimizing the KL divergence and finding a stable representation are in fact opposite.
 Consider the nature of GS-VAE:
 It tries to make the distribution look more similar to a fair random categorical distribution $p_a(b)$
-that takes 0 or 1 with equal probability, i.e., \emph{as random as possible}.
+that takes 0 or 1 with the equal probability, i.e., \emph{as random as possible}.
 % This is clearly the opposite of the stable symbols we pursue.
 Instead, they accidentally negated the loss, which resulted in
 maximizing the KL divergence and making the representation \emph{less random}.
@@ -544,15 +544,14 @@ This can be shown as follows:
 \nonumber =&\brackets{\text{rec loss}}+{\mathrm{KL}}(q||p_a) - 2 {\mathrm{KL}}(q||p_a)          \\
 \label{loss+ent} =&\brackets{\text{\small correct GS VAE loss}}      + 2 H(q(b \mid x_i)).
 \end{align}
-Since the entropy measures randomness of random variables,
+Since the entropy measures the randomness of the random variables,
 the extra entropy term in Eq.~\eqref{loss+ent} penalizes the unstable representation.
 
 In the later sections, we empirically show that the \emph{correct} GS-VAE results in
 a much higher randomness for noisy inputs compared to the original code of Latplan,
 thus the original implementation, i.e., GS-VAE + Entropy regularization, is superior.
 % 
-\emph{It is not our intention to blame Latplan for its ``incorrect VAE loss'',
-nor to criticize their claims.
+\emph{It is not our intention to criticize Latplan for its ``incorrect VAE loss''.
 Our claim is that their loss implementation was the key to achieving the desired behavior.}
 % In fact, there is no reason that the loss should be identical to the GS-VAE loss.
 
