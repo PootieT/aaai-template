@@ -622,10 +622,10 @@ where $\forall n; z_{n0} + z_{n1} = 1$ and  $b_n = z_{n1}$.
 % % Maybe add this in the camera-ready
 % Note that this generalizes to a categorical case by penalizing all non-zero values: $\bars{q(b_n \not= 0\mid x_i)}$
 
-One additional advantage of ZSAE is that
+One additional advantage of the ZSAE is that
 several neurons are completely deactivated, i.e. they always take the value of zero
 and can be pruned afterward to reduce the network size.
-(See supplement \refsec{pruning-implementation} for implementation details.)
+(Details in the supplement, \refsec{pruning-implementation}.)
 Unlike traditional NN compression methods \cite{cheng2017survey}, this pruning does not suffer from
 accuracy degradation because the activations are discrete and therefore does not require additional retraining.
 In the continuous cases, even small activations could be amplified by the weights and significantly affect the
@@ -636,8 +636,9 @@ later pipelines of the neural networks.
 
 We evaluated various SAE implementations across 5 different
 image domains depicting 8-puzzles or Lights Out puzzle game \cite{lightsout}.
-Experiments were performed on a compute cluster with Xeon Ivy Bridge
-processors and Tesla K40 GPUs.  Each training takes at most 30 minutes.
+% Experiments were performed on a compute cluster with Xeon Ivy Bridge
+% processors and Tesla K40 GPUs.
+Each training takes at most 30 minutes.
 Network details are in the supplement.
 
 \textbf{MNIST 8-puzzle}
@@ -655,10 +656,10 @@ and pressing a light toggles its state as well as the states of its neighbors.
 The goal is all lights Off.
 Unlike previous puzzles, a single operator can flip 5/16 locations at once and
 removes some ``objects'' (lights).
-This demonstrates that \latentplanner is not limited to domains with highly local effects and static objects.
+% This demonstrates that \latentplanner is not limited to domains with highly local effects and static objects.
 \textbf{Twisted LightsOut} distorts the original LightsOut game image by a swirl effect,
 showing that \latentplanner is not limited to handling rectangular ``objects''/regions.
-See supplements for visual examples (\refig{fig:mnist}).
+See supplements for the visual examples (\refig{fig:mnist}).
 
 % There are three versions of 8-puzzles (MNIST, Mandrill, Spider).
 % MNIST 8-puzzle is an image-based versions of the 8-puzzle, where tiles contain
@@ -706,7 +707,7 @@ See supplements for visual examples (\refig{fig:mnist}).
 
 \subsection{State Variance}
 
-We compare the effectiveness of the ZSAE with the vanilla SAE in terms of variance reduction of the state encoding.
+We compare the effectiveness of the ZSAE with the vanilla SAE in terms of the variance of the state encoding.
 We trained several SAEs for each domain with the different latent layer sizes (numbers of propositions) $N$
 and then evaluated the variance.
 In all experiments below,
@@ -723,9 +724,9 @@ We evaluated three versions of the SAE:
 
 The first thing we tested is to replace the gumbel-softmax activation with a deterministic argmax function
 after the training (\refsec{argmax}).
-In all SAEs, this reduced the variance to 0 for a single input.
+In all SAEs, this reduced the variance to 0 for a single input because all networks become deterministic.
 We omit the results because it is rather obvious and due to space
-(see supplement \reftbl{tab:variance-stochastic} for the comparison).
+(see supplement \reftbl{tab:variance-stochastic} for the result without this technique).
 In the following experiments, we always replace the activation function with argmax during testing.
 
 We next measured the variance of SAEs in a noisy setting, where
@@ -733,8 +734,8 @@ we perturbed the input image by Gaussian Noise for each of 100 trials of the sam
 \reftbl{tab:stability} (first columns) indicates that
 the propositions made by NG-SAE are highly random,
 while the entropy regularization in the vanilla SAE suppresses the stochastic behavior to some extent.
-Overall, ZSAE further reduces the variance and achieves the most stable representation,
-which is rarely affected by the external perturbation.
+Overall, ZSAE further reduces the variance and achieves the most stable representation.
+% which is rarely affected by the external perturbation.
 % , as seen by the \emph{maximum} variance across propositions approaching zero,
 % which indicates that the noisy observations of a single real world state maps to exactly one propositional state.
 % 
@@ -777,7 +778,7 @@ In \reftbl{tab:stability} (second columns)
 we show the Mean Square Error between the input and the output
 for 100 randomly generated images.
 The results indicate that the zero-suppression does not significantly affect the output accuracy for $N=100,1000$.
-However, for $N=36$ (a parameter tuned for SAE to have the least variance), the zero-suppression
+However, for $N=36$ (a parameter tuned for vanilla SAEs to have the least variance), the zero-suppression
 harmed the accuracy because the network is already small and the further compression penalty affected the training.
 In other words, it is better to combine ZSAE with a slightly overcapacity network,
 since ZSAE then automatically compresses the representation.
@@ -785,16 +786,16 @@ since ZSAE then automatically compresses the representation.
 % the additional regularization may trade accuracy for stability.
 
 Next, \reftbl{tab:stability} (right columns) shows that the number of effective bits,
-i.e. the number of propositions that \emph{ever} change their values, is low in ZSAE, showing that
+i.e. the number of propositions that \emph{ever} change their values over all states, is low in ZSAE, showing that
 ZSAE obtained a more compressed, compact representation of the input.
-In MNIST, the numbers are comparable between ZSAEs with $N=100,1000$.
-This shows that the network is able to find an encoding of almost the same size
+In MNIST, the numbers are comparable between ZSAEs with $N=100,1000$,
+which shows that the network is able to find an encoding of almost the same size
 regardless of the size of the latent layer (upper bound of the size of
 propositions), reducing the need for hyperparameter tuning.
 In LightsOut and Twisted, ZSAE even finds the 16bit optimal representation for the 4x4 light grids.
-The additional
-penalty encourages the network to find the more compact representation,
-rather than freely consuming the latent space capacity in an entangled representation.
+% The additional
+% penalty encourages the network to find the more compact representation,
+% rather than freely consuming the latent space capacity in an entangled representation.
 
 % Furthermore, while regularization in general tends to trade accuracy and
 % the desired characteristics in the activation, we observe that the
@@ -823,36 +824,39 @@ Twisted   &2.1E-5 & 7.1E-4 & 4.5E-4 & 5.1E-6 & 1.6E-7 & 8.8E-5       & 4.2E-6 & 
 \end{table}
 
 Finally, we tested the sensitivity of ZSAE on its new hyperparameter $\alpha$ (\reftbl{sensitivity}).
-The purpose of this experiment is to show that ZSAE is less sensitive to the choice of both $N$ and $\alpha$,
-while SAE is sensitive to $N$.
+The purpose of this experiment is to show that ZSAEs are less sensitive to the choice of both $N$ and $\alpha$,
+while vanilla SAEs are sensitive to $N$.
 % 
 We compared the state variances under noise
-between SAE and ZSAE with $\alpha=0.2,0.5,0.7$, $N=100,1000$.
-We also added $N=36$ as the best case for SAE.
+between the vanilla SAE and the ZSAE with $\alpha=0.2,0.5,0.7$, $N=100,1000$.
+We also added $N=36$ as the best case for the vanilla SAE.
 % 
-We observed that ZSAE achieves comparable state variance with various $\alpha$ and $N$,
-while SAE is significantly affected by the choice of $N$.
+We observed that the ZSAEs achieve the comparable state variance with various $\alpha$ and $N$,
+while the vanilla SAEs are significantly affected by the choice of $N$.
 For instance,
 the variance for the vanilla SAE with $N=100$ is up to two orders of magnitude larger than that for the SAE with $N=36$.
-The worst case for ZSAE is 1.1E-4 on Twisted with $(N,\alpha)=(100,0.2)$,
-but this is still better than all SAEs.
+In contrast,
+the worst case for the ZSAEs is 1.1E-4 on Twisted with $(N,\alpha)=(100,0.2)$,
+which is still better than the vanilla SAE with the same $N$.
 % 
 They also have similar reconstruction loss (MSE) and the effective bits (supplement \reftbl{tab:more-sensitivity}).
 Therefore, we conclude that while ZSAE introduces an additional parameter,
 the selection of $N$ and $\alpha$ is easy compared to the selection of $N$ in SAE.
-While there are indeed some performance difference,
-this is within the fluctuation that occurs in the different training trials,
-as is case with most machine learning algorithms.
+%%
+%% danger --- this might cause additional experiments for running many trials and compute the mean/variance
+% While there are indeed some performance difference,
+% this is within the fluctuation that occurs in the different training trials,
+% as is case with most machine learning algorithms.
 
 \subsection{Planner Performance}
 
-Next we compared the success ratio of \latentplanner using Z/SAE with various parameters.
-We tested both Action Model Acquisition (AMA) methods AMA$_1$ and AMA$_2$ proposed in \cite{Asai2018}.
-
+Next we compared the success ratio of \latentplanner with various parameters.
+We tested both AMA$_1$ and AMA$_2$ proposed in \cite{Asai2018} as the Action Model Acquisition (AMA) methods.
+% 
 Each domain has 60 problem instances each generated by a random walk from
-the goal state. 60 instances consist of 30 instances each generated by a 7-steps random walk
+the goal state. 60 instances consist of 30 instances generated by 7-steps random walks
 and another 30 by 14 steps. 30 instances consist of 10 instances whose images are corrupted by Gaussian noise,
-10 with salt/pepper noise and another 10 with no noise.
+10 with salt/pepper noise and another 10 without noise.
 
 We first tested AMA$_1$, an oracular, idealistic AMA that does not incorporate machine learning,
 and instead generates the entire propositional state transitions from the entire image transitions.
@@ -937,7 +941,7 @@ ZSAEs are robust on different $N$ and tend to solve more problems than vanilla S
 \end{table}
 
 Next, we compare the planning performance of Z/SAE with AMA$_2$ (\reftbl{tab:ama2}).
-Networks in AMA$_2$ (AAE/AD/SD) are trained with the same hyperparameter 
+Networks in AMA$_2$ (AAE/AD/SD) are trained with the same hyperparameters
 used in the original paper \cite{Asai2018}.
 Similar results were obtained; ZSAEs consistently improve the success ratio over vanilla SAEs.
 
@@ -981,11 +985,11 @@ that they \textbf{confuse the duplicate detection of search algorithms and incre
 % 
 This cannot be measured with AMA$_1$
 because AMA$_1$ creates a PDDL/SAS instance based on the fixed set of
-input images and both SAE/ZSAE are
-deterministic, therefore the resulting search graph contains a single node for a single image.
-This is not the case with AMA$_2$ because unstable successor states
+input images and both SAE/ZSAE are now deterministic (using argmax),
+therefore the resulting search graph contains a single node for a single image.
+This is not the case with AMA$_2$ because the successor states
  % (which might not be included in the training examples)
-are generated by the neural network on the fly.
+are generated by the NNs on the fly.
 % 
 % To demonstrate that this effect is also reduced by ZSAE,
 We measured the number of node expansions (left) and the runtime (right)
