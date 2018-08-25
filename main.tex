@@ -298,16 +298,15 @@ the latent values approach either 0 or 1.}
 \subsection{SAE as a Variational AutoEncoder using Gumbel-Softmax}
 
 The key concept of the SAE in \latentplanner is the use of Gumbel-Softmax \cite{jang2016categorical}
-reparameterization trick in the latent activation of variational autoencoder~(VAE).
-This allows SAE to obtain the
-discretized binary representation, and \latentplanner uses this
+in the latent activation of the variational autoencoder~(VAE).
+This allows the SAE to obtain a discretized binary representation, and \latentplanner uses this
 discrete vector as the state representation for classical planning.
-Below, we briefly review the literature.
+We briefly review the related literature below.
 
-An autoencoder~(AE)~\cite{hinton2006reducing} is a feed-forward NN that consists a pair of encoder and decoder networks, both of which are modeled by continuous functions.
+An autoencoder~(AE)~\cite{hinton2006reducing} is a feed-forward NN that consists of a pair of encoder and decoder networks, both of which are modeled by continuous functions.
 For example, in Figure~\ref{sae}, the mapping from the leftmost image to the vector in the middle corresponds to the encoder, and the mapping from the middle to the rightmost image corresponds to the decoder.
 AEs are trained so that the encoder maps a data point~(e.g., an image) into a low-dimensional latent space, and the decoder pulls the latent representation of the input back to the original data point.
-Technically, they are trained by backpropagation so as to minimize the reconstruction loss, the distance between the input and the output measured by Euclidean distance or binary cross entropy.
+Technically, they are trained by a \emph{backpropagation} algorithm so as to minimize the reconstruction loss, the distance between the input and the output measured by Euclidean distance or binary cross entropy.
 Since the encoder is modeled by a continuous function, its latent representation is also continuous, which makes it difficult to integrate AEs with propositional reasoners.
 \if0
 Since it is trained solely by the raw input data, it is a unsupervised learning method that do not require the human-assigned labels.
@@ -316,11 +315,13 @@ Its intermediate layer (typically smaller than the input) has a compressed, \emp
 NNs, including AEs, typically have continuous activations and integrating them with propositional reasoners is not straightforward.
 \fi
 
-A variational autoencoder (VAE) \cite{kingma2013auto} is a probabilistic variant of AEs, whose encoder and decoder are modeled by probabilistic distributions, rather than deterministic functions.
-When the probabilistic distribution of the encoder is a discrete distribution such as the Bernoulli distribution, VAE obtains a discrete latent representation of the data.
-VAEs are trained by backpropagation with the help of the reparameterization trick, which allows us to differentiate random variables.
-Technically, in the discrete case, the encoder's distribution is approximated by its continuous relaxation called Gumbel-Softmax distribution~\cite{jang2016categorical} in order to apply the reparameterization trick.
-This approximation is necessary because the reparameterization trick is only applicable to the continuous cases.
+A variational autoencoder (VAE) \cite{kingma2013auto} is a probabilistic variant of AEs, whose encoder and decoder are modeled by probabilistic distributions rather than deterministic functions.
+For instance,
+it obtains a discrete latent representation of the data by modeling a probabilistic, discrete distribution such as the Bernoulli distribution with the encoder.
+VAEs are trained by backpropagation with the help of the reparameterization trick, which makes random variables differentiable.
+% Trying to avoid saying ``Gumbel-Softmax is approximating Bernoulli'', since it is in fact approximating Categorical, but we want to avoid mentioning Categorical
+In the discrete case, the target, discrete distribution is approximated by its continuous relaxation called Gumbel-Softmax distribution~\cite{jang2016categorical}.
+% This approximation is necessary because the reparameterization trick is only applicable to the continuous cases.
 
 % that forces the \emph{latent layer} (the most compressed layer in the AE) to follow a certain distribution (e.g., Gaussian).
 % While initially proposed for enforcing Gaussian distributions, VAEs have been used to enforce arbitrary types of distribution (notably by Generative Adversarial Network \cite{goodfellow2014generative,makhzani2015adversarial}). 
