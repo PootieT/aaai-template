@@ -502,13 +502,15 @@ For more mathematically rigorous discussion, please refer to the appendix.
 % whose latent layer resembles a random categorical distribution
 % with a certain number of categories $M$ ($M=2$ in Latplan).
 
-Let $p(b \mid x)$ and $q(x \mid b)$ be the encoder and the decoder of GS-VAE, respectively,
+Let $p(b \mid x)$ and $q(x \mid b)$ be the probabilities that the encoder and the decoder of GS-VAE output the value $b$ and $x$, respectively,
 where $x$ corresponds to a visual observation of the environment, and $b\in\{0,1\}^N$ corresponds to its latent representation.
 In principle, GS-VAE is trained by minimizing the following objective function with respect to $q(x \mid b)$ and $p(b\mid x)$:
 \begin{align}
 \label{vae-obj} \sum_{i=1}^I \mathbb{E}_{p(b\mid x_i)}\left[-\log q(x_i\mid b)\right] + \mathrm{KL}(p(b\mid x_i) \parallel p^\star(b)),
 \end{align}
-where $p^\star(b) = \prod_{n=1}^N p^\star(b_n) = \prod_{n=1}^N \mathrm{Bern}(0.5)$ is an $N$-dimensional Bernoulli distribution with uniform probabilities, 
+where $p^\star(b) = \prod_{n=1}^N p^\star(b_n) = \prod_{n=1}^N \mathrm{Bern}(0.5)$ is the target, $N$-dimensional Bernoulli distribution with uniform probabilities, 
+% emphasize that this Bernoulli is the target distrib, consistent with the notation p*    ^^^^^^ 
+% (``*'' usually means ``goal'' or ``optimal'' also in planning)
 $i$ is the index for each data point, and $\mathrm{KL}(X || Y)$ represents the Kullback-Leibler divergence from $Y$ to $X$.
 The first term in Eq.~\eqref{vae-obj} is the reconstruction loss, which measures the quality of the reconstructed data points,
 and the second term regularizes the encoder by making the encoder $p(b\mid x)$ closer to $p^\star(b)$.
