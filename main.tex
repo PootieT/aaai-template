@@ -397,9 +397,9 @@ The neurons that behave randomly for the same or perturbed input do not affect t
 i.e., they are unused and uninformative.
 Unused neurons appear because the network has an excessive capacity to 
 model the entire state space, i.e. they are surplus neurons.
-Therefore, a straightforward way to reduce those neurons is to reduce the size of latent space $N$.
-On the other hand, if we specify $N$ too small, it lacks the capacity to represent the state space
-and the SAE is no longer able to reconstruct the real world image.
+Therefore, a straightforward way to reduce those neurons is to reduce the size of the latent space $N$.
+On the other hand, if $N$ is too small, it lacks the capacity to represent the state space
+and the SAE no longer learns to reconstruct the real world image.
 As a result, we face a hyperparameter tuning problem: Surplus $N$ causes an unstable representation,
 and insufficient $N$ makes the network hard to train.
 
@@ -409,8 +409,8 @@ and insufficient $N$ makes the network hard to train.
 % in various ways.
 Fundamentally,
 these harmful effects are caused by breaking a critical feature of symbols, \emph{designation} \cite{newell1976computer,newell1980physical},
-that each symbol uniquely refers to an entity (referent, concept, meaning).
-The referents of the symbols grounded by SAE are the truthfulness of the propositional statements.
+that each symbol uniquely refers to an entity (referent, concept, meaning),
+e.g., the referents of the symbols grounded by SAEs are the truthfulness of the propositional statements.
 If a meaning of a symbol changes frequently and in an unexpected manner, the entire symbolic manipulation is fruitless
 because the underlying symbols are not grounded / tied to any particular concept, and does not represent the real world.
 % just as the famous boy in the Aesop's Fables who cried wolf was ignored by the villagers.
@@ -420,8 +420,8 @@ because the underlying symbols are not grounded / tied to any particular concept
 
 
 Thus, for a symbol grounding procedure to produce a set of symbols for symbolic reasoning,
-it is insufficient to find a set of symbols that can represent the environment;
-It should find a \emph{stable} symbolic representation that uniquely describes the environment.
+it is insufficient to find a set of symbols that is \emph{just able to} represent the environment;
+It should find a \emph{stable} symbolic representation that \emph{uniquely} represents the environment.
 % i.e., to solve the \emph{Symbol Stability Problem}.
 % This stability should be checked 
 
@@ -454,7 +454,7 @@ for the same environment, under some equivalence relation (e.g. invariance, nois
 While NNs tend to achieve a robust performance on noisy data,
 \textbf{the \emph{robust performance} and the stability of the representation are orthogonal.}
 This is because the former exclusively deals with the output accuracy,
-while the latter evaluates the quality of the \emph{latent} activations while maintaining the same accuracy.
+while the latter evaluates the quality of the \emph{latent} activations while maintaining the same output accuracy.
 In fact, vanilla SAEs already achieve the almost perfect reconstruction accuracy
 where the input and the output are indiscernable to human eyes,
 while they still exhibit instability.
