@@ -598,7 +598,7 @@ The resulting loss function below is
 \emph{asymmetric} to a particular label $b_n=1$:
 \begin{align*}
  \brackets{\text{loss}} = & \brackets{\text{\small vanilla SAE loss}} + \brackets{\text{\small 0-Sup. loss}} \\ 
- =                        & \brackets{\text{\small vanilla SAE loss}} + \alpha \sum_n q(b_n=1 \mid x_i)
+ =                        & \brackets{\text{\small vanilla SAE loss}} + \alpha \sum_n b_n % q(b_n=1 \mid x_i)
 \end{align*}
 where $\alpha$ is a hyperparameter specifying the magnitude of zero-suppression.
 This is similar to the regularization by $\ell_1$ norm (LASSO) typically applied to continuous activations
