@@ -568,7 +568,7 @@ thus the original implementation, i.e., GS-VAE + Entropy regularization, is supe
 Our claim is that their loss implementation was the key to achieving the desired behavior.}
 % In fact, there is no reason that the loss should be identical to the GS-VAE loss.
 
-\subsubsection{Removing Stochasticity during Run-Time}
+\subsubsection{Removing the Run-Time Stochasticity}
 \label{argmax}
 
 Another observation we made from the source code is that we can
@@ -613,8 +613,9 @@ The resulting loss function below is
 % From ``2019 Formatting Instructions'': For mathematical environments, you may reduce fontsize but not below 6.5 point.
 \relsize{-1}
 \begin{align*}
- \brackets{\text{loss}} = & \brackets{\text{\small vanilla SAE loss}} + \brackets{\text{\small 0-Sup. loss}} \\ 
- =                        & \brackets{\text{\small vanilla SAE loss}} + \alpha \sum_n b_n % q(b_n=1 \mid x_i)
+ % \brackets{\text{loss}} = & \brackets{\text{\small vanilla SAE loss}} + \brackets{\text{\small 0-Sup. loss}} \\ 
+ % =                        & \brackets{\text{\small vanilla SAE loss}} + \alpha \sum_n b_n % q(b_n=1 \mid x_i)
+ \brackets{\text{loss}} = & \brackets{\text{\small vanilla SAE loss}} + \alpha \sum_n b_n % q(b_n=1 \mid x_i)
 \end{align*}
 }
 where $\alpha$ is a hyperparameter specifying the magnitude of zero-suppression.
