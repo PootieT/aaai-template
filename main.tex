@@ -502,7 +502,7 @@ For more mathematically rigorous discussion, please refer to the appendix.
 % whose latent layer resembles a random categorical distribution
 % with a certain number of categories $M$ ($M=2$ in Latplan).
 
-Let $q(b \mid x)$ and $p(x \mid b)$ be the probabilities that the encoder and the decoder of GS-VAE output the value $b$ given $x$ and $x$ given $b$, respectively,
+Let $q(b \mid x)$ and $p(x \mid b)$ be the probabilities that the encoder and the decoder of GS-VAE respectively outputs the value $b$ given $x$ and $x$ given $b$,
 where $x$ corresponds to a visual observation of the environment, and $b\in\{0,1\}^N$ corresponds to its latent representation.
 In principle, GS-VAE is trained by minimizing the following objective function with respect to $p(x \mid b)$ and $q(b\mid x)$:
 \begin{align}
