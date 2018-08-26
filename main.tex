@@ -1006,17 +1006,21 @@ increase the search effort.
  \centering
  \includegraphics[width=0.3\linewidth]{img/static/exp.pdf}
  \includegraphics[width=0.3\linewidth]{img/static/time.pdf}
- \caption{Double-logarithmic plot of the number of states expanded (left) / time spent (right) by
-\astar with goal-count heuristics.
+ \caption{
+Double-logarithmic plot of the number of states expanded (left) / time spent (right) by
+\astar with goal-count heuristics,
+for instances successfully solved by both SAE+AMA$_2$ and ZSAE($\alpha$=0.7+)AMA$_2$, both with $N$=100, all domains.
 In both figures,
-$x$-axis represent SAE+AMA$_2$ and
-$y$-axis represent ZSAE($\alpha$=0.7)+AMA$_2$, both with $N$=100 (all domains).
-Unsolved instances are shown on the borders, indicating planning with vanilla SAE fails more often than with ZSAE.
- % 
+$x$-axis represent the SAE and $y$-axis represent the ZSAE.
+Unsolved instances are shown on the borders.
+% , indicating planning with vanilla SAE fails more often than with ZSAE.
+% 
 We observe that, overall, planning under SAE-generated search space tends to be larger
 than under ZSAE-generated search space.
-While there is a smaller number of opposite cases, it is natural because
-there are tie-breaking difference and also because some nodes may randomly become unreachable (disconnected) in SAE.
+% While there is a smaller number of opposite cases, it is natural because
+Opposite cases are however generated, naturally due to
+the tie-breaking difference and
+the random disconnectedness caused by the SAE.
 }
  \label{fig:ama2-statistics}
 \end{figure}
