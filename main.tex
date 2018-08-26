@@ -950,11 +950,11 @@ Twisted        & 1       & 0  & 0       & \tb{4}  & \tb{20} & \tb{3}  & \tb{17} 
 \textbf{Total} & 14      & 6  & 6       & \tb{43} & \tb{48} & \tb{33} & \tb{90} & 54 & 48      & 84      & \tb{89} & \tb{94} & 100 & 100 & 100     & 100     & 100     & 100 
                & 47      & 29 & 24      & \tb{71} & \tb{81} & \tb{62} & 92      & 66 & 61      & \tb{96} & \tb{88} & \tb{87} & 93  & 79  & 70      & \tb{95} & \tb{98} & \tb{89} \\
 \hline
-%% additional high-noise results (ama1-argmax-highnoise-alpha)
-\multicolumn{4}{|l|}{Total (ZSAE, $\alpha$=0.2)} & \tb{21} & \tb{10} & 2       & & & & 75 & \tb{88} & \tb{68} & & & & 100 & 100 & 99  &
-\multicolumn{3}{|l|}{}                           &         &         &         & & & &    &         &         & & & &     &     &    \\
-\multicolumn{4}{|l|}{Total (ZSAE, $\alpha$=0.5)} & \tb{15} & \tb{33} & \tb{12} & & & & 77 & \tb{94} & \tb{89} & & & & 100 & 100 & 100 &
-\multicolumn{3}{|l|}{}                           &         &         &         & & & &    &         &         & & & &     &     &     \\
+%% additional high-noise results (ama1-argmax-highnoise-alpha + ama2-argmax-highnoise-alpha-retake. Mind that the results are 180-sec capped (which I almost forgot).)
+\multicolumn{4}{|l|}{Total (ZSAE, $\alpha$=0.2)} & \tb{21} & \tb{10} & 2       & & & & 75 & \tb{88} & \tb{68} & & & & 100 & 100     & 99  &
+\multicolumn{3}{|l|}{}                           & 46      & 29      & \tb{33} & & & & 76 & \tb{72} & \tb{71} & & & & 76  & \tb{86} & \tb{81} \\
+\multicolumn{4}{|l|}{Total (ZSAE, $\alpha$=0.5)} & \tb{15} & \tb{33} & \tb{12} & & & & 77 & \tb{94} & \tb{89} & & & & 100 & 100     & 100 &
+\multicolumn{3}{|l|}{}                           & 36      & \tb{41} & \tb{27} & & & & 56 & \tb{81} & \tb{65} & & & & 59  & \tb{92} & \tb{72} \\
 \hline
 \end{tabular}
 \end{adjustbox}
@@ -968,7 +968,7 @@ SAEs degrade performance as the surplus capacity produces more unstable proposit
 and is better than ZSAE only when tuned to $N$=36.
 ZSAEs are robust on different $N$ and tend to solve more problems than the vanilla SAEs.
 (\textbf{Right})
-Results using AMA$_2$ unsupervised learning method for Action Model Acquisition.
+The numbers of instances successfully solved under 180 sec by Latplan using AMA$_2$ unsupervised learning method for Action Model Acquisition.
 % Same highlightation rule as \reftbl{tab:ama1} is applied.
 Results indicates that ZSAE is more robust on different hyperparameters and tend to achieve better performance than vanilla SAE.
 }
