@@ -295,7 +295,7 @@ the latent values approach either 0 or 1.}
  \label{sae}
 \end{figure}
 
-\subsection{SAE as a Variational AutoEncoder using Gumbel-Softmax}
+\subsubsection{SAE as a Variational AutoEncoder using Gumbel-Softmax}
 
 The key concept of the SAE in \latentplanner is the use of Gumbel-Softmax \cite{jang2016categorical}
 in the latent activation of the variational autoencoder~(VAE).
@@ -523,7 +523,7 @@ The second term is computed as
 \end{align*}
 where $H(q)$ is the entropy of $q$.
 
-\subsection{Incorrect Loss Function Helped Latplan}
+\subsubsection{Incorrect Loss Function Helped Latplan}
 
 We found that the loss computation in the Latplan code have the \emph{wrong sign} on the KL divergence,
 i.e. it is \emph{maximizing} the KL divergence instead of minimizing it.
@@ -557,7 +557,7 @@ thus the original implementation, i.e., GS-VAE + Entropy regularization, is supe
 Our claim is that their loss implementation was the key to achieving the desired behavior.}
 % In fact, there is no reason that the loss should be identical to the GS-VAE loss.
 
-\subsection{Removing Stochasticity during Run-Time}
+\subsubsection{Removing Stochasticity during Run-Time}
 \label{argmax}
 
 Another observation we made from the source code is that we can
