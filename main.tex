@@ -760,9 +760,8 @@ Overall, ZSAE further reduces the variance and achieves the most stable represen
 Due to the poor performance of NG-SAE, we do not study it any further in the later experiments.
 
 \begin{table*}[tbp]
- \relsize{-2}
  \centering
- \setlength{\tabcolsep}{0.25em}
+ \begin{adjustbox}{width={\linewidth},keepaspectratio}
  \begin{tabular}{|r|*{17}{c|}}
        & \multicolumn{6}{c|}{Mean variance over bits (with noisy images)}
        % & \multicolumn{4}{c|}{True ratio}
@@ -784,6 +783,7 @@ Spider    & 8.5E-4 & 4.9E-4 & \textbf{6.3E-6} & 2.3E-4 & 4.2E-4 & \textbf{7.3E-7
 LightsOut & 9.0E-3 & 2.0E-4 & \textbf{3.9E-6} & 8.1E-3 & 1.4E-4 & \textbf{7.5E-6} & 2.8E-14 &1.2E-5 &1.5E-14 &8.0E-6  &2.9E-4  &{2.8E-4}       & 100 & \textbf{16} & 1000 & 66   & 16     \\ 
 Twisted   & 1.0E-2 & 7.1E-4 & \textbf{5.1E-6} & 1.0E-2 & 4.5E-4 & \textbf{1.6E-7} & 4.8E-5  &5.1E-5 &8.4E-5  &4.5E-5  &2.7E-5  &\uline{5.7E-3} & 100 & \textbf{16} & 1000 & 49   & 16     \\ 
 \end{tabular}
+\end{adjustbox}
  \caption{Results comparing the characteristics of NG-SAE, vanilla SAE and ZSAE ($\alpha$=0.7),
  over 100 randomly generated images encoded 100 times (with Gaussian noise added each time).
  In LightsOut and Twisted, ZSAE($N$=100) finds a representation as large as the theoretical optimal encoding length of the input search space.
@@ -821,9 +821,8 @@ In LightsOut and Twisted, ZSAE even finds the 16bit optimal representation for t
 % large enough.
 
 \begin{table}[tb]
- \relsize{-2}
  \centering
- \setlength{\tabcolsep}{0.25em}
+ \begin{adjustbox}{width={\linewidth},keepaspectratio}
  \begin{tabular}{|r|*{8}{c|}}
      & \multicolumn{8}{c|}{Mean variance over bits (with noisy images)} \\
      & \multicolumn{3}{c|}{SAE} 
@@ -837,6 +836,7 @@ Spider    &5.8E-6 & 4.9E-4 & 4.2E-4 & 6.3E-6 & 7.3E-7 & 4.6E-6       & 8.3E-6 & 
 LightsOut &2.5E-6 & 2.0E-4 & 1.4E-4 & 3.9E-6 & 7.5E-6 & 1.1E-4       & 1.5E-5 & 3.9E-6 \\
 Twisted   &2.1E-5 & 7.1E-4 & 4.5E-4 & 5.1E-6 & 1.6E-7 & 8.8E-5       & 4.2E-6 & 5.1E-6 \\
 \end{tabular}
+\end{adjustbox}
  \caption{Sensitivity of ZSAE to the hyperparameter $\alpha$ compared to the sensitivity of SAE to the hyperparameter $N$.}
  \label{sensitivity}
 \end{table}
@@ -898,9 +898,8 @@ the initial and the goal states are corrupted by noise, supporting our claim tha
 zero-suppression makes the latent representation more stable against the external perturbation.
 
 \begin{table}[tb]
-\relsize{-2}
 \centering
-\setlength{\tabcolsep}{0.15em}
+\begin{adjustbox}{width={\linewidth},keepaspectratio}
 \begin{tabular}{|l|*{6}{*{3}{r}|}}
 % \begin{tabular}{|l|*{10}{*{3}{r}|}}
  % & \multicolumn{6}{c|}{Gaussian ($\sigma$=0.3)}
@@ -950,6 +949,7 @@ Twisted        & 1      & 0 & 0      & \tb{4}  & \tb{20} & \tb{3}  & \tb{17} & 1
 \multicolumn{4}{|l|}{Total (ZSAE, $\alpha$=0.5)} & \tb{15} & \tb{33} & \tb{12} & & & & 77 & \tb{94} & \tb{89} & & & & 100 & 100 & 100 \\
 \hline
 \end{tabular}
+\end{adjustbox}
 \caption{
 The numbers of instances successfully solved by Latplan using AMA$_1$ (oracular method)
 for comparing the performance of Z/SAE.
@@ -968,9 +968,8 @@ used in the original paper \cite{Asai2018}.
 Overall, ZSAEs improve the success ratio over vanilla SAEs.
 
 \begin{table}[tb]
-\relsize{-2}
 \centering
-\setlength{\tabcolsep}{0.2em}
+\begin{adjustbox}{width={\linewidth},keepaspectratio}
 \begin{tabular}{|l|*{6}{*{3}{r}|}}
  & \multicolumn{6}{c|}{Gaussian ($\sigma$=0.6)}
  & \multicolumn{6}{c|}{Salt/Pepper ($p$=0.12)}
@@ -992,6 +991,7 @@ Twisted   & 3  & 0  & 0  & \tb{10} & \tb{16} & \tb{12} & 19 & 17 & \tb{20} & \tb
 \textbf{Total} & 47 & 29 & 24  & \tb{71} & \tb{81} & \tb{62}  & 92 & 66 & 61  & \tb{96} & \tb{88} & \tb{87}  & 93 & 79 & 70  & \tb{95} & \tb{98} & \tb{89}  \\
 \hline
 \end{tabular}
+\end{adjustbox}
 \caption{
 Results using AMA$_2$ unsupervised learning method for Action Model Acquisition.
 Same highlightation rule as \reftbl{tab:ama1} is applied.
