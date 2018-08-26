@@ -359,9 +359,15 @@ In contrast, humans still regard it as the ``same'' image.
 \begin{figure}[tb]
  \centering
  \includegraphics{img/unstable.pdf}
- \caption{Propositions found by SAEs may contain uninformative bits
- that flip randomly and do not affect the output.}
+ \includegraphics{img/disconnected.pdf}
+ \caption{
+(\textbf{Top}) Propositions found by SAEs may contain uninformative random bits
+ that do not affect the output.
+(\textbf{Bottom})
+ Random variations of propositional encoding could disconnect the search space.
+}
  \label{unstable}
+ \label{disconnected}
 \end{figure}
 
 This stochastic behavior of the propositional representation
@@ -375,13 +381,6 @@ it could be encoded into different propositional vectors
 while the duplicate detection in the search algorithm (e.g. \astar) fails to detect it.
 % since it completely relies on the atomiticy and deteminisim of the proposition.
 This slows down the search by increasing the number of nodes that are reachable from the initial state.
-
-\begin{figure}[tb]
- \centering
- \includegraphics{img/disconnected.pdf}
- \caption{Random variations of propositional encoding for a single real-world state could disconnect the search space.}
- \label{disconnected}
-\end{figure}
 
 Secondly, the state space could be disconnected due to such random variations (\refig{disconnected}).
 Some states may be reached only via a single variation of the real world state and is not connected to the
