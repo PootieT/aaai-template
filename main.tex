@@ -922,22 +922,25 @@ $N=$
 % LightsOut      & \tb{20}  & 17 & 19 & 11 & 17      & \tb{20} & \tb{20}  & 18 & 19 & 11 & 18      & \tb{20} & 20  & 20  & 20  & 20  & 20  & 20  \\
 % Twisted        & \tb{20}  & 10 & 6  & 12 & \tb{20} & \tb{18} & \tb{20}  & 15 & 10 & 16 & \tb{20} & \tb{19} & 20  & 20  & 20  & 20  & 20  & 20  \\ \hline
 % \textbf{Total} & \tb{100} & 77 & 64 & 82 & \tb{97} & \tb{88} & \tb{100} & 84 & 65 & 87 & \tb{98} & \tb{99} & 100 & 100 & 100 & 100 & 100 & 100 \\
-%% high-noise results
+%% high-noise results (ama1-argmax-highnoise)
 MNIST          & 0      & 0 & 0      & \tb{17} & 0       & 0       & 17      & 5  & 0  & \tb{20} & \tb{10} & \tb{17} & 20  & 20  & 20  & 20  & 20  & 20  \\
 Mandrill       & \tb{4} & 3 & 0      & 0       & \tb{6}  & \tb{5}  & 16      & 17 & 8  & \tb{20} & \tb{20} & \tb{20} & 20  & 20  & 20  & 20  & 20  & 20  \\
 Spider         & 8      & 3 & \tb{6} & \tb{12} & 3       & 5       & 20      & 7  & 16 & 20      & \tb{20} & \tb{20} & 20  & 20  & 20  & 20  & 20  & 20  \\
 LightsOut      & 1      & 0 & 0      & \tb{10} & \tb{19} & \tb{20} & \tb{20} & 13 & 18 & 12      & \tb{19} & \tb{20} & 20  & 20  & 20  & 20  & 20  & 20  \\
 Twisted        & 1      & 0 & 0      & \tb{4}  & \tb{20} & \tb{3}  & \tb{17} & 12 & 6  & 12      & \tb{20} & \tb{17} & 20  & 20  & 20  & 20  & 20  & 20  \\ \hline
-\textbf{Total} & 14     & 6 & 6      & \tb{43} & \tb{48} & \tb{33} & \tb{90} & 54 & 48 & 84      & \tb{89} & \tb{94} & 100 & 100 & 100 & 100 & 100 & 100 \\
+\textbf{Total} & 14     & 6 & 6      & \tb{43} & \tb{48} & \tb{33} & \tb{90} & 54 & 48 & 84      & \tb{89} & \tb{94} & 100 & 100 & 100 & 100 & 100 & 100 \\ \hline
+%% additional high-noise results (ama1-argmax-highnoise-alpha)
+\multicolumn{4}{|l|}{Total (ZSAE, $\alpha$=0.2)} & \tb{21} & \tb{10} & 2  & & & & 75 & \tb{88} & \tb{68} & & & & 100 & 100 & 99  \\
+\multicolumn{4}{|l|}{Total (ZSAE, $\alpha$=0.5)} & \tb{15} & \tb{33} & \tb{12} & & & & 77 & \tb{94} & \tb{89} & & & & 100 & 100 & 100 \\
 \hline
 \end{tabular}
 \caption{
 The numbers of instances successfully solved by Latplan using AMA$_1$ (oracular method)
 for comparing the performance of Z/SAE.
 Better results among the same configuration of ZSAE/SAE are highlighted in \tb{bold}.
-SAEs degrade performance as surplus capacity produces more unstable propositions,
+SAEs degrade performance as the surplus capacity produces more unstable propositions,
 and is better than ZSAE only when tuned to $N=36$.
-ZSAEs are robust on different $N$ and tend to solve more problems than vanilla SAEs.
+ZSAEs are robust on different $N$ and tend to solve more problems than the vanilla SAEs.
 }
 \label{tab:ama1}
 \end{table}
