@@ -514,7 +514,7 @@ where $p(b) = \prod_{n=1}^N p(b_n) = \prod_{n=1}^N \mathrm{Bern}(0.5)$ is the ta
 $i$ is the index for each data point, and $\mathrm{KL}(q || p)$ represents the Kullback-Leibler divergence from $p$ to $q$.
 The first term in Eq.~\eqref{vae-obj} is the reconstruction loss, which measures the quality of the reconstructed data points,
 and the second term regularizes the encoder by making the encoder $q(b\mid x)$ closer to $p(b)$.
-The second term is further computed as,
+The second term is computed as
 \begin{align*}
  &{\mathrm{KL}}(q(b\mid x_i) \parallel p(b)) \\
 = & - \sum_{n=1}^N \sum_{k\in\{0,1\}}q(b_{n}=k \mid x_i) \log\frac{p(b_{n}=k)}{q(b_{n}=k \mid x_i)}\\
@@ -872,7 +872,7 @@ The results in \reftbl{tab:ama1} show that ZSAE achieves the robust success rate
 while SAE achieves a good performance only in a single parameter $N=36$.
 % 
 Due to the small size of the state space compared to the usual classical planning benchmark domains,
-search is done in a fraction of seconds, which means \textbf{the failure is due to graph disconnectedness}.
+search is done in a fraction of a second, which means \textbf{the failure is due to graph disconnectedness at the initial/goal nodes}.
 % emphasized for contrasting it against the later node expansion experiments
 ZSAE tends to fail in $N=36$ in LightsOut and Twisted because of the higher reconstruction error
 discussed in the previous subsection.
@@ -945,7 +945,8 @@ ZSAEs are robust on different $N$ and tend to solve more problems than vanilla S
 Next, we compare the planning performance of Z/SAE with AMA$_2$ (\reftbl{tab:ama2}).
 Networks in AMA$_2$ (AAE/AD/SD) are trained with the same hyperparameters
 used in the original paper \cite{Asai2018}.
-Similar results were obtained; ZSAEs consistently improve the success ratio over vanilla SAEs.
+% Similar results were obtained; 
+Overall, ZSAEs improve the success ratio over vanilla SAEs.
 
 \begin{table}[tb]
 \relsize{-2}
