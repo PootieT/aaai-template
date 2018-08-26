@@ -1223,23 +1223,25 @@ therefore do not have to address the stability of the symbols.
 
 We introduced Zero-Suppressed State AutoEncoder (ZSAE) neural network (NN) which addresses
 the issue of \emph{unstable propositions} in the state encoding made by
-\latentplanner \cite{Asai2018} from the noisy image observations.
+\latentplanner \cite{Asai2018}.
+ % from the noisy image observations.
 % 
-The ZSAE improves the vanilla State AutoEncoder (SAE) in Latplan by
+The ZSAE improves the vanilla State AutoEncoder in Latplan by
 adding an additional optimization penalty to the NN,
 which tries to minimize the number of true propositions in the state representations.
 % 
 ZSAE improves the success rate and the efficiency of planning performed on
-the generated state space, and also removes the need for aggressive hyperparameter tuning.
+the generated state space, and
+also removes the need for aggressive hyperparameter tuning.
+% despite introducing an additional hyperparameter $\alpha$.
 % 
 Moreover, 
-ZSAE finds several neurons whose activations are constantly zero
-and can be pruned.
+ZSAE makes it possible to prune some neurons without accuracy degradation
+when their activations are constantly zero, due to discreteness.
 % similar to Zero-Suppressed Decision Diagram \cite{minato1993zero}.
 % ?
-An interesting avenue for future work is to 
-find an online, adaptive tuning method for $\alpha$, the hyperparameter for
-zero-suppression regularization.
+% An interesting avenue for future work is to 
+% find an online, adaptive tuning of $\alpha$, the hyperparameter for the penalty.
 
 As a meta-level contribution,
 we generalized the problematic behavior of unstable propositions
@@ -1248,10 +1250,11 @@ as \emph{Symbol Stability Problem} (SSP), a subproblem of symbol grounding.
 We identified two sources of the stochasticity which introduces instability,
 namely
 the inherent stochasticity of the network and
-the external stochasticity in the observations.
+the external stochasticity from the observations.
 % 
 This indicates that
-SSP applies to any symbol grounding processes because most real-world inputs are noisy,
-and especially to those using the sampling-based, stochastic processes
-which are gaining popularity in the literature, notably VAEs and GANs.
-
+SSP is an important problem that applies to any modern symbol grounding processes because most real-world inputs are noisy,
+and also because the sampling-based, stochastic processes such as VAEs and GANs are gaining popularity in the literature.
+ 
+An interesting avenue for future work is to extend our approach to InfoGAN-based
+approach for finding the discrete representation of the environment \cite{kurutach2018learning}.
