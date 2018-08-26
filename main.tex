@@ -554,7 +554,7 @@ The resulting loss function implemented in Latplan is therefore as follows:
 \begin{align} 
 \nonumber  &\brackets{\text{rec loss}}-{\mathrm{KL}}(q||p)                                    \\
 \nonumber =&\brackets{\text{rec loss}}+{\mathrm{KL}}(q||p) - 2 {\mathrm{KL}}(q||p)          \\
-\label{loss+ent} =&\brackets{\text{\small the correct GS VAE loss}}      + 2 H(q(b \mid x_i)).
+\label{loss+ent} =&\brackets{\text{\small the original GS VAE loss}}      + 2 H(q(b \mid x_i)).
 \end{align}
 }
 Since the entropy measures the randomness of the random variables,
@@ -736,7 +736,7 @@ across 100 encoding trials of the same image.
 We then took the mean of the variances over the entire propositions.
 
 We evaluated three versions of the SAE:
-(1) NG-SAE, an SAE trained with a correct GS-VAE loss function as discussed in \refsec{analysis}, and
+(1) NG-SAE, an SAE trained with a original GS-VAE loss function as discussed in \refsec{analysis}, and
 (2) Vanilla SAE in the original paper of Latplan \cite{Asai2018} and the Github source code,
 (3) Zero-Suppressed SAE (ZSAE).
 
