@@ -500,7 +500,7 @@ For more mathematically rigorous discussion, please refer to the appendix.
 % % Keep in mind that the reviewers might be symbolic people -- so use the intuitive words as possible.
 % The purpose of GS-VAE is to obtain a NN
 % whose latent layer resembles a random categorical distribution
-% with a certain number of categories $M$ ($M=2$ in Latplan).
+% with a certain number of categories $M$ ($M$=2 in Latplan).
 
 Let $q(b \mid x)$ and $p(x \mid b)$ be the probabilities that the encoder and the decoder of GS-VAE respectively outputs the value $b$ given $x$ and $x$ given $b$,
 where $x$ corresponds to a visual observation of the environment, and $b\in\{0,1\}^N$ corresponds to its latent representation.
@@ -597,7 +597,7 @@ while preserving the propositions that are absolutely necessary for maintaining 
 % asymmetric penalty for a particular class label (true) used in the encoding.
 % 
 The resulting loss function below is 
-\emph{asymmetric} to a particular label $b_n=1$:
+\emph{asymmetric} to a particular label $b_n$=1:
 \begin{align*}
  \brackets{\text{loss}} = & \brackets{\text{\small vanilla SAE loss}} + \brackets{\text{\small 0-Sup. loss}} \\ 
  =                        & \brackets{\text{\small vanilla SAE loss}} + \alpha \sum_n b_n % q(b_n=1 \mid x_i)
@@ -616,7 +616,7 @@ where $\forall n; z_{n0} + z_{n1} = 1$ and  $b_n = z_{n1}$.
 % This technique alters $p(b)$, the target distribution of GS-VAE.
 % Recall that, in GS-VAE, $p(b_n) = \mathrm{Bern}(0.5)$,
 % i.e. the probability for $b_n$ to turn to 1 is a fair coin toss.
-% Since zero-suppression penalizes the true bits ($b_n=1$), it changes this fairness: The larger the $\alpha$,
+% Since zero-suppression penalizes the true bits ($b_n$=1), it changes this fairness: The larger the $\alpha$,
 % the less $p(b_n=1)$,
 % thus the more propositions take 0 (\refig{zsae-overview}).
 % This changes the target distribution of the KL-divergence.
@@ -688,7 +688,7 @@ See supplements for the visual examples (\refig{fig:mnist}).
 % and pressing a light toggles its state (On/Off) as well as the state of all of its neighbors.
 % The goal is all lights Off.
 % The image dimension is 36x36 and the size of each button ($+$ button) is 9x9.
-% 4x4 LightsOut has $2^{16}=65536$ states and $16\times 2^{16}=1048576$ transitions.
+% 4x4 LightsOut has $2^{16}$=65536 states and $16\times 2^{16}$=1048576 transitions.
 % Similar to the 8-puzzle instances, we used 20000 transitions.
 % Training:validation ratio 9:1 is maintained (i.e. only 36000 images and 18000 transitions are used for training).
 % 
@@ -768,9 +768,9 @@ Spider    & 8.5E-4 & 4.9E-4 & \textbf{6.3E-6} & 2.3E-4 & 4.2E-4 & \textbf{7.3E-7
 LightsOut & 9.0E-3 & 2.0E-4 & \textbf{3.9E-6} & 8.1E-3 & 1.4E-4 & \textbf{7.5E-6} & 2.8E-14 &1.2E-5 &1.5E-14 &8.0E-6  &2.9E-4  &{2.8E-4}       & 100 & \textbf{16} & 1000 & 66   & 16     \\ 
 Twisted   & 1.0E-2 & 7.1E-4 & \textbf{5.1E-6} & 1.0E-2 & 4.5E-4 & \textbf{1.6E-7} & 4.8E-5  &5.1E-5 &8.4E-5  &4.5E-5  &2.7E-5  &\uline{5.7E-3} & 100 & \textbf{16} & 1000 & 49   & 16     \\ 
 \end{tabular}
- \caption{Results comparing the characteristics of NG-SAE, vanilla SAE and ZSAE ($\alpha=0.7$),
+ \caption{Results comparing the characteristics of NG-SAE, vanilla SAE and ZSAE ($\alpha$=0.7),
  over 100 randomly generated images encoded 100 times (with Gaussian noise added each time).
- In LightsOut and Twisted, ZSAE($N=100$) finds a representation as large as the theoretical optimal encoding length of the input search space.
+ In LightsOut and Twisted, ZSAE($N$=100) finds a representation as large as the theoretical optimal encoding length of the input search space.
  }
 \label{tab:stability}
 \end{table*}
@@ -779,18 +779,18 @@ We next tested if the zero-suppression affects the output accuracy.
 In \reftbl{tab:stability} (second columns)
 we show the Mean Square Error between the input and the output
 for 100 randomly generated images.
-The results indicate that the zero-suppression does not significantly affect the output accuracy for $N=100,1000$.
-However, for $N=36$ (a parameter tuned for vanilla SAEs to have the least variance), the zero-suppression
+The results indicate that the zero-suppression does not significantly affect the output accuracy for $N$=100,1000.
+However, for $N$=36 (a parameter tuned for vanilla SAEs to have the least variance), the zero-suppression
 harmed the accuracy because the network is already small and the further compression penalty affected the training.
 In other words, it is better to combine ZSAE with a slightly overcapacity network,
 since ZSAE then automatically compresses the representation.
-% If the network size is already optimally tuned for vanilla SAE (i.e. $N=36$),
+% If the network size is already optimally tuned for vanilla SAE (i.e. $N$=36),
 % the additional regularization may trade accuracy for stability.
 
 Next, \reftbl{tab:stability} (right columns) shows that the number of effective bits,
 i.e. the number of propositions that \emph{ever} change their values over all states, is low in ZSAE, showing that
 ZSAE obtained a more compressed, compact representation of the input.
-In MNIST, the numbers are comparable between ZSAEs with $N=100,1000$,
+In MNIST, the numbers are comparable between ZSAEs with $N$=100,1000,
 which shows that the network is able to find an encoding of almost the same size
 regardless of the size of the latent layer (upper bound of the size of
 propositions), reducing the need for hyperparameter tuning.
@@ -811,8 +811,8 @@ In LightsOut and Twisted, ZSAE even finds the 16bit optimal representation for t
  \begin{tabular}{|r|*{8}{c|}}
      & \multicolumn{8}{c|}{Mean variance over bits (with noisy images)} \\
      & \multicolumn{3}{c|}{SAE} 
-     & \multicolumn{2}{c|}{ZSAE($\alpha=0.7$)} 
-     & \multicolumn{3}{c|}{ZSAE($N=100$)}
+     & \multicolumn{2}{c|}{ZSAE($\alpha$=0.7)} 
+     & \multicolumn{3}{c|}{ZSAE($N$=100)}
   \\
 $N=$      &36     & 100    & 1000   & 100    & 1000   & $\alpha=$0.2 & 0.5    & 0.7    \\
 MNIST     &1.8E-4 & 8.6E-3 & 2.2E-4 & 3.7E-6 & 1.1E-7 & 4.5E-7       & 0.0E+0 & 3.7E-6 \\
@@ -830,15 +830,15 @@ The purpose of this experiment is to show that ZSAEs are less sensitive to the c
 while vanilla SAEs are sensitive to $N$.
 % 
 We compared the state variances under noise
-between the vanilla SAE and the ZSAE with $\alpha=0.2,0.5,0.7$, $N=100,1000$.
-We also added $N=36$ as the best case for the vanilla SAE.
+between the vanilla SAE and the ZSAE with $\alpha=$0.2,0.5,0.7, $N$=100,1000.
+We also added $N$=36 as the best case for the vanilla SAE.
 % 
 We observed that the ZSAEs achieve the comparable state variance with various $\alpha$ and $N$,
 while the vanilla SAEs are significantly affected by the choice of $N$.
 For instance,
-the variance for the vanilla SAE with $N=100$ is up to two orders of magnitude larger than that for the SAE with $N=36$.
+the variance for the vanilla SAE with $N$=100 is up to two orders of magnitude larger than that for the SAE with $N$=36.
 In contrast,
-the worst case for the ZSAEs is 1.1E-4 on Twisted with $(N,\alpha)=(100,0.2)$,
+the worst case for the ZSAEs is 1.1E-4 on Twisted with $(N,\alpha)$=(100,0.2),
 which is still better than the vanilla SAE with the same $N$.
 % 
 They also have similar reconstruction loss (MSE) and the effective bits (supplement \reftbl{tab:more-sensitivity}).
@@ -868,13 +868,13 @@ and that of the learning procedure in AMA$_2$ that learns the state transitions 
 As a classical planner, we used FastDownward \cite{Helmert04} with blind heuristics in order to
 remove the effects of the heuristic functions.
 
-The results in \reftbl{tab:ama1} show that ZSAE achieves the robust success rate on $N=36,64,100$,
-while SAE achieves a good performance only in a single parameter $N=36$.
+The results in \reftbl{tab:ama1} show that ZSAE achieves the robust success rate on $N$=36,64,100,
+while SAE achieves a good performance only in a single parameter $N$=36.
 % 
 Due to the small size of the state space compared to the usual classical planning benchmark domains,
 search is done in a fraction of a second, which means \textbf{the failure is due to graph disconnectedness at the initial/goal nodes}.
 % emphasized for contrasting it against the later node expansion experiments
-ZSAE tends to fail in $N=36$ in LightsOut and Twisted because of the higher reconstruction error
+ZSAE tends to fail in $N$=36 in LightsOut and Twisted because of the higher reconstruction error
 discussed in the previous subsection.
 % 
 Improvements were mainly observed in the problems where
@@ -887,10 +887,10 @@ zero-suppression makes the latent representation more stable against the externa
 \setlength{\tabcolsep}{0.15em}
 \begin{tabular}{|l|*{6}{*{3}{r}|}}
 % \begin{tabular}{|l|*{10}{*{3}{r}|}}
- % & \multicolumn{6}{c|}{Gaussian ($\sigma=0.3$)}
- & \multicolumn{6}{c|}{Gaussian ($\sigma=0.6$)}
- % & \multicolumn{6}{c|}{Salt/Pepper ($p=0.06$)}
- & \multicolumn{6}{c|}{Salt/Pepper ($p=0.12$)}
+ % & \multicolumn{6}{c|}{Gaussian ($\sigma$=0.3)}
+ & \multicolumn{6}{c|}{Gaussian ($\sigma$=0.6)}
+ % & \multicolumn{6}{c|}{Salt/Pepper ($p$=0.06)}
+ & \multicolumn{6}{c|}{Salt/Pepper ($p$=0.12)}
  & \multicolumn{6}{c|}{No Noise}
  \\
  % & \multicolumn{3}{c|}{SAE} & \multicolumn{3}{c|}{ZSAE}
@@ -939,7 +939,7 @@ The numbers of instances successfully solved by Latplan using AMA$_1$ (oracular 
 for comparing the performance of Z/SAE.
 Better results among the same configuration of ZSAE/SAE are highlighted in \tb{bold}.
 SAEs degrade performance as the surplus capacity produces more unstable propositions,
-and is better than ZSAE only when tuned to $N=36$.
+and is better than ZSAE only when tuned to $N$=36.
 ZSAEs are robust on different $N$ and tend to solve more problems than the vanilla SAEs.
 }
 \label{tab:ama1}
@@ -956,8 +956,8 @@ Overall, ZSAEs improve the success ratio over vanilla SAEs.
 \centering
 \setlength{\tabcolsep}{0.2em}
 \begin{tabular}{|l|*{6}{*{3}{r}|}}
- & \multicolumn{6}{c|}{Gaussian ($\sigma=0.6$)}
- & \multicolumn{6}{c|}{Salt/Pepper ($p=0.12$)}
+ & \multicolumn{6}{c|}{Gaussian ($\sigma$=0.6)}
+ & \multicolumn{6}{c|}{Salt/Pepper ($p$=0.12)}
  & \multicolumn{6}{c|}{No Noise}
  \\
  & \multicolumn{3}{c|}{SAE} & \multicolumn{3}{c|}{ZSAE}
@@ -1015,7 +1015,7 @@ increase the search effort.
 \astar with goal-count heuristics.
 In both figures,
 $x$-axis represent SAE+AMA$_2$ and
-$y$-axis represent ZSAE($\alpha=0.7$)+AMA$_2$, both with $N=100$ (all domains).
+$y$-axis represent ZSAE($\alpha$=0.7)+AMA$_2$, both with $N$=100 (all domains).
 Unsolved instances are shown on the borders, indicating planning with vanilla SAE fails more often than with ZSAE.
  % 
 We observe that, overall, planning under SAE-generated search space tends to be larger
@@ -1045,10 +1045,10 @@ weights ($+1$ for the bias).
 In the network we used,
 both the previous and the succeeding layer of the latent propositional layer have 1000 nodes.
 In gumbel-softmax, each proposition corresponds to 2 neurons (details in supplement \refsec{gumbel-softmax-implementation}).
-Thus, in the case of ZSAE with $N=1000$ applied to MNIST puzzles,
+Thus, in the case of ZSAE with $N$=1000 applied to MNIST puzzles,
 the representation is compressed down to 68 effective bits and
-the weights are reduced by $(1000+1)\times (2\cdot 1000 - 2\cdot 68)=1865864$ for the previous layer,
-and $((2\cdot 1000+1)-(2\cdot 68+1))\times 1000 =1864000$ for the succeeding layer.
+the weights are reduced by $(1000+1)\times (2\cdot 1000 - 2\cdot 68)$=1865864 for the previous layer,
+and $((2\cdot 1000+1)-(2\cdot 68+1))\times 1000 $=1864000 for the succeeding layer.
 This number is huge compared to the convolutional weights (3x3, 16 channels, thus 144 float values each) in the upper layers.
 The total number of weights in the network is reduced from 8376278 to 5578414, which is a 44\% reduction.
 % The saved hdf5 files for the network also reduced from 14MB to XMB.
