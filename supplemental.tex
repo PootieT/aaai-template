@@ -19,6 +19,7 @@
 \renewcommand{\thesection}{S\arabic{section}}
 \renewcommand{\thetable}{S\arabic{table}}
 \renewcommand{\thefigure}{S\arabic{figure}}
+\newcommand{\argmin}{\mathop{\rm argmin}}
 % \usepackage[margin=1cm]{geometry}
 
 \setlength{\pdfpagewidth}{8.5in}
@@ -34,6 +35,7 @@
 % \setlength{\belowdisplayskip}{1mm}
 % \setlength{\arraycolsep}{0.5mm}
 % \setlength{\tabcolsep}{0.1em}
+
 
 \nocopyright
 \author{Supplemental materials for Submision XXX}
@@ -116,6 +118,64 @@ We can similarly prune the weights $W'$ from the previous layer of $M$ neurons.
 When $W'=(W'_{mnk})$ and bias $B'=(B'_{nk})$ ($m\in[1..M], n\in[1..N], k\in \braces{0,1}$),
 we remove $2(M+1)$ for each zero-suppressed bit $b_n$.
 Therefore, if we remove $\Delta N$ bits from the latent space, it removes $2(M+1)\Delta N$ float values from the network.
+
+\section{Gumbel-softmax Variational Autoencoder}
+This section reviews the Gumbel-softmax variational autoencoder~(GS-VAE), and its connection to the entropy regularization.
+
+\subsection{Objective Function of Variational Autoencoder~(VAE)}
+We first derive the learning algorithm of VAE when the latnet representation is a binary vector.
+Assume that we have a data set, $\mathcal{X}=\{x_1,\dots,x_I\}$.
+The first objective of VAE is to obtain a probability distribution that well explains $\mathcal{X}$.
+In other words, letting $\{p(x;\theta) \mid \theta\in\Theta\}$ be a family of parametric probability distributions, we wish to obtain ,
+\begin{align*}
+\theta^\star = \argmin_{\theta\in\Theta} -\sum_{i=1}^I \log p(x_i;\theta). 
+\end{align*}
+
+A key assumption of VAE is that the probability distribution has a latent variable $b\in\{0,1\}^N$, which is not observable.
+Then, $p(x;\theta) = \sum_{b\in\{0,1\}^N}p(x, b;\theta)$ holds.
+We further assume that $p(x, b;\theta) = p(x \mid b;\theta)p(b)$ holds.
+Then, the objective boils down to,
+\begin{align}
+\label{eq:vae-obj} \theta^\star = \argmin_{\theta\in\Theta} -\sum_{i=1}^I \sum_{b_i\in\{0,1\}^N}\log p(x_i, b_i;\theta).
+\end{align}
+
+The encoder-decoder structure appears by variational approximation.
+Let $q(b \mid x;\phi)=\prod_{n=1}^N q(b_n \mid x;\phi_n)$ be a variational distribution.
+Then, a summand of the objective function of Eq.~\eqref{eq:vae-obj} is upperbounded as,
+\begin{align}
+\nonumber &- \sum_{b_i\in\{0,1\}^N}\log p(x_i, b_i;\theta) \\
+\nonumber = &- \sum_{b_i\in\{0,1\}^N} \log \left(\dfrac{p(x_i \mid b_i;\theta) p(b_i)}{q(b_i \mid x_i; \phi)}q(b_i \mid x_i; \phi)\right)\\
+%\label{eq:vae-q-exp}
+\nonumber\leq & - \sum_{b_i\in\{0,1\}^N} q(b_i \mid x_i; \phi)\log \left(\dfrac{p(x_i \mid b_i;\theta) p(b_i)}{q(b_i \mid x_i; \phi)}\right)\\
+\label{eq:vae-obj-final}= & \mathbb{E}_{q(b_i \mid x_i; \phi)}[-\log p(x_i \mid b_i;\theta)] + \mathrm{KL}(q(b_i \mid x_i; \phi) || p(b_i)),
+\end{align}
+resulting in the objective function of VAE~(Eq.~\eqref{eq:vae-obj-final}).
+In the above expression, $q(b \mid x;\phi)$ can be regarded as encoder, and $p(x\mid b;\theta)$ can be regarded as decoder.
+%By further investigating Eq.~\eqref{eq:vae-q-exp}, since $q$ is factorized into $N$ distributions, 
+
+\subsection{Reparametrization Trick}
+When learning model parameters $\theta$ and $\phi$, we usually rely on stochastic gradient descent~(SGD), rather than computing the gradient over all of the data points.
+In the case of VAE, not only the data point $x_i$, but also the latent vector $b_i$ are sampled to compute a per-example loss without taking the expectation over $b_i$.
+The reparameterization trick allows us to apply stochastic approximation to the latent vector.
+Its main idea is to decompose the random variable $b_i$ into a deterministic and parameterized part~(thus, dependent on $\phi$) and a random and not-parameterized part~(thus, independent from $\phi$).
+Such a decomposition yields the following repetitive algorithm:
+\begin{enumerate}
+ \item Sample $x_i$ from $\mathcal{X}$.
+\item Sample $b_i$ from $q(b_i \mid x_i ;\phi)$.
+ \item Compute the gradients of,
+       \begin{align}
+	\label{eq:stochastic-approx}
+	-\log p(x_i \mid b_i;\theta) - \log\left(\frac{p(b_i)}{q(b_i \mid x_i;\phi)}\right),
+       \end{align}
+       with respect to $\theta$ and $\phi$.
+ \item Update $\theta$ and $\phi$ using the gradients.
+\end{enumerate}
+
+\subsection{Gumbel-softmax Variational Autoencoder}
+In the case of binary latent representations, a Gumbel-softmax distribution~(which is also known as a concrete distribution) is used to apply the reparameterization trick.
+A Gumbel-softmax distribution is a continuous relaxation of the Bernoulli distribution, and therefore,
+a random variable following the Gumbel-softmax distribution resides in $[0,1]$, rather than $\{0,1\}$.
+When replacing the binary random variable $b_i\in\{0,1\}^N$ with the continuous random variable $z_i\in[0,1]^N$, we apply the following approximation.
 
 \section{Supplemental Experiments}
 
