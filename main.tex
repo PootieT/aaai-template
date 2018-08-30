@@ -65,11 +65,11 @@ of an unknown environment without supervision,
 % manually-assigned labels nor predefined reinforcement signals,
 otherwise it exhibits the knowledge acquisition bottleneck.
 % 
-Meanwhile, \latentplanner \cite{Asai2018} uses a neural network
+Meanwhile, \latentplanner \cite{Asai2018} partially resolves the bottleneck.
+\latentplanner uses a neural network
 called State AutoEncoder (SAE) to obtain the propositional
-representation of the image based puzzle domains with unsupervised learning,
-then generates a propositional state space and performs classical planning,
-partly resolving the bottleneck.
+representation of the image-based puzzle domains with unsupervised learning,
+then generates a propositional state space and performs classical planning.
 % 
 In this paper,
 we identify the problematic, stochastic behavior of the SAE-produced propositions 
