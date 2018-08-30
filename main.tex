@@ -57,7 +57,7 @@
 % We show this by retraining an existing network
 % with a mixture of the existing and new dataset, and demonstrating that
 % it can encode both environments.
-While Classical Planning has been an active branch of AI,
+While classical planning has been an active branch of AI,
 its applicability is limited to the tasks precisely modeled by humans.
 Fully automated high-level agents should be instead able to find a symbolic representation
 of an unknown environment without supervision,
@@ -65,26 +65,27 @@ of an unknown environment without supervision,
 % manually-assigned labels nor predefined reinforcement signals,
 otherwise it exhibits the knowledge acquisition bottleneck.
 % 
-Meanwhile, \latentplanner \cite{Asai2018} uses a Neural Network (NN)
+Meanwhile, \latentplanner \cite{Asai2018} uses a neural network
 called State AutoEncoder (SAE) to obtain the propositional
 representation of the image based puzzle domains with unsupervised learning,
-then generates a propositional state space and performs Classical Planning,
-partly resolving this bottleneck.
+then generates a propositional state space and performs classical planning,
+partly resolving the bottleneck.
 % 
 In this paper,
-we identify the problematic, stochastic behavior of SAE-produced propositions 
-as a new sub-problem of symbol grounding problem, the symbol \emph{stability} problem (SSP).
+we identify the problematic, stochastic behavior of the SAE-produced propositions 
+as a new sub-problem of symbol grounding problem, the symbol \emph{stability} problem.
 Informally, symbols are
 \emph{stable} when their referents (e.g. propositional values) do not change values against small perturbation of the observation,
 and unstable symbols are harmful for symbolic reasoning.
-We analyze the SSP in SAE
-and propose ``Zero-Suppressed SAE'' (ZSAE), an enhancement of SAE that
+We study the stability of the propositions found by the SAE and 
+propose ``Zero-Suppressed SAE'', an enhancement that stabilizes the propositions.
 %% Add this back in the camera-ready version
 % uses the idea of closed-world assumption as a prior for NN optimization and
-improves the stability of the propositional variables.
 % 
-We empirically show that it finds the more stable propositions as well as the more compact representations
-against various hyperparameters and improves the success rate of \latentplanner.
+We show that
+it finds the more stable propositions and the more compact representations,
+it is robust against various hyperparameters and
+it improves the success rate of \latentplanner.
 \end{abstract}
 
 
@@ -109,7 +110,7 @@ which seeks to achieve high-level intelligence.
 % agents should be able to find the symbolic representation of the environment by itself, i.e. solving the symbol grounding problem.
 % 
 Recently, Latplan system \cite[\refig{fig:overview}]{Asai2018} successfully
-connected a subsymbolic neural network system and a symbolic Classical Planning system
+connected a subsymbolic neural network (NN) system and a symbolic Classical Planning system
 to solve various visually presented puzzle domains.
 % In contrast to the work by Konidaris et. al. (\citeyear{KonidarisKL14}),
 % Latplan is a straightforward NN built upon a \lsota framework.
