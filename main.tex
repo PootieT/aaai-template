@@ -65,9 +65,9 @@ of an unknown environment without supervision,
 % manually-assigned labels nor predefined reinforcement signals,
 otherwise it exhibits the knowledge acquisition bottleneck.
 % 
-Meanwhile, \latentplanner \cite{Asai2018} partially resolves the bottleneck.
-\latentplanner uses a neural network
-called State AutoEncoder (SAE) to obtain the propositional
+Meanwhile, \latentplanner \cite{Asai2018} partially resolves the bottleneck
+with a neural network
+called State AutoEncoder (SAE). SAE obtains the propositional
 representation of the image-based puzzle domains with unsupervised learning,
 then generates a propositional state space and performs classical planning.
 % 
@@ -75,7 +75,7 @@ In this paper,
 we identify the problematic, stochastic behavior of the SAE-produced propositions 
 as a new sub-problem of symbol grounding problem, the symbol \emph{stability} problem.
 Informally, symbols are
-\emph{stable} when their referents (e.g. propositional values) do not change values against small perturbation of the observation,
+\emph{stable} when their referents (e.g. propositional values) do not change against small perturbation of the observation,
 and unstable symbols are harmful for symbolic reasoning.
 We study the stability of the propositions found by the SAE and 
 propose ``Zero-Suppressed SAE'', an enhancement that stabilizes the propositions.
