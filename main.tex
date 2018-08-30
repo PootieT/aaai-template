@@ -57,13 +57,13 @@
 % We show this by retraining an existing network
 % with a mixture of the existing and new dataset, and demonstrating that
 % it can encode both environments.
-While Classical Planning is an active branch of AI,
+While Classical Planning has been an active branch of AI,
 its applicability is limited to the tasks precisely modeled by humans.
 Fully automated high-level agents should be instead able to find a symbolic representation
 of an unknown environment without supervision,
 % i.e., no help from
 % manually-assigned labels nor predefined reinforcement signals,
-otherwise it exhibits knowledge acquisition bottleneck.
+otherwise it exhibits the knowledge acquisition bottleneck.
 % 
 Meanwhile, \latentplanner \cite{Asai2018} uses a Neural Network (NN)
 called State AutoEncoder (SAE) to obtain the propositional
@@ -75,7 +75,7 @@ In this paper,
 we identify the problematic, stochastic behavior of SAE-produced propositions 
 as a new sub-problem of symbol grounding problem, the symbol \emph{stability} problem (SSP).
 Informally, symbols are
-\emph{stable} when their referents (i.e. propositions) do not change values against small perturbation in the environment,
+\emph{stable} when their referents (e.g. propositional values) do not change values against small perturbation of the observation,
 and unstable symbols are harmful for symbolic reasoning.
 We analyze the SSP in SAE
 and propose ``Zero-Suppressed SAE'' (ZSAE), an enhancement of SAE that
