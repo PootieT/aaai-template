@@ -156,13 +156,13 @@ The encoder-decoder structure appears by the variational approximation.
 Let $q(b \mid x;\phi)$ be a variational distribution which approximates $p(b \mid x;\theta)$, the probability of getting $b$ given $x$, which is unknown because $b$ is not observable.
 With $q$, the summand of the objective function of Eq.~\eqref{eq:vae-obj} is upper-bounded as follows:
 \begin{align}
-\nonumber & - \log \left(\sum_{b_i\in\{0,1\}^N} p(x_i \mid b_i;\theta)p(b_i)\right) \\
-\nonumber = & -  \log \left(\sum_{b_i\in\{0,1\}^N}\dfrac{p(x_i \mid b_i;\theta) p(b_i)}{q(b_i \mid x_i; \phi)}q(b_i \mid x_i; \phi)\right)\\
+\nonumber & - \log \left(\sum_{b\in\{0,1\}^N} p(x \mid b;\theta)p(b)\right) \\
+\nonumber = & -  \log \left(\sum_{b\in\{0,1\}^N}\dfrac{p(x \mid b;\theta) p(b)}{q(b \mid x; \phi)}q(b \mid x; \phi)\right)\\
 %\label{eq:vae-q-exp}
-\nonumber\leq & - \sum_{b_i\in\{0,1\}^N} q(b_i \mid x_i; \phi)\log \left(\dfrac{p(x_i \mid b_i;\theta) p(b_i)}{q(b_i \mid x_i; \phi)}\right)\\
-\nonumber =   &   \sum_{b_i\in\{0,1\}^N} q(b_i \mid x_i; \phi) \left(-\log p(x_i \mid b_i;\theta) \right)\\
-\nonumber     & - \sum_{b_i\in\{0,1\}^N} q(b_i \mid x_i; \phi)\log \left(\dfrac{p(b_i)}{q(b_i \mid x_i; \phi)}\right) \\
-\label{eq:vae-obj-final}= & \mathbb{E}_{q(b_i \mid x_i; \phi)}[-\log p(x_i \mid b_i;\theta)] + \mathrm{KL}(q(b_i \mid x_i; \phi) || p(b_i)),
+\nonumber\leq & - \sum_{b\in\{0,1\}^N} q(b \mid x; \phi)\log \left(\dfrac{p(x \mid b;\theta) p(b)}{q(b \mid x; \phi)}\right)\\
+\nonumber =   &   \sum_{b\in\{0,1\}^N} q(b \mid x; \phi) \left(-\log p(x \mid b;\theta) \right)\\
+\nonumber     & - \sum_{b\in\{0,1\}^N} q(b \mid x; \phi)\log \left(\dfrac{p(b)}{q(b \mid x; \phi)}\right) \\
+\label{eq:vae-obj-final}= & \mathbb{E}_{q(b \mid x; \phi)}[-\log p(x \mid b;\theta)] + \mathrm{KL}(q(b \mid x; \phi) || p(b)),
 \end{align}
 resulting in the objective function of VAE~(Eq.~\eqref{eq:vae-obj-final}).
 The inequality is due to Jensen's inequality.
