@@ -20,6 +20,7 @@
 \renewcommand{\thetable}{S\arabic{table}}
 \renewcommand{\thefigure}{S\arabic{figure}}
 \newcommand{\argmin}{\mathop{\rm argmin}}
+\newcommand{\argmax}{\mathop{\rm argmax}}
 % \usepackage[margin=1cm]{geometry}
 
 \setlength{\pdfpagewidth}{8.5in}
@@ -126,30 +127,46 @@ This section reviews the Gumbel-softmax variational autoencoder~(GS-VAE), and it
 We first derive the learning algorithm of VAE when the latnet representation is a binary vector.
 Assume that we have a data set, $\mathcal{X}=\{x_1,\dots,x_I\}$.
 The first objective of VAE is to obtain a probability distribution that well explains $\mathcal{X}$.
-In other words, letting $\{p(x;\theta) \mid \theta\in\Theta\}$ be a family of parametric probability distributions, we wish to obtain ,
+In other words, letting $\{p(x;\theta) \mid \theta\in\Theta\}$ be a family of parametric probability distributions, we wish to obtain,
 \begin{align*}
-\theta^\star = \argmin_{\theta\in\Theta} -\sum_{i=1}^I \log p(x_i;\theta). 
+\theta^\star = \argmax_{\theta\in\Theta} \prod_{i=1}^I p(x_i;\theta)
+\end{align*}
+which maximize the probability that such a dataset is obtained. Since a product is hard to compute, we instead maximize the log-probability, i.e.
+\begin{align*}
+\theta^\star = \argmax_{\theta\in\Theta} \sum_{i=1}^I \log p(x_i;\theta).
+\end{align*}
+as $\log$ preserves the maxima.
+In practice, we instead optimize for the minimization objective, hence we get a equivalent formulation
+\begin{align*}
+\theta^\star = \argmin_{\theta\in\Theta} - \sum_{i=1}^I \log p(x_i;\theta).
 \end{align*}
 
-A key assumption of VAE is that the probability distribution has a latent variable $b\in\{0,1\}^N$, which is not observable.
-Then, $p(x;\theta) = \sum_{b\in\{0,1\}^N}p(x, b;\theta)$ holds.
-We further assume that $p(x, b;\theta) = p(x \mid b;\theta)p(b)$ holds.
-Then, the objective boils down to,
+
+A key assumption we have now is that the probability distribution has a latent variable $b\in\{0,1\}^N$, which is not observable.
+By the basic sum rule of marginal probability,
+$p(x;\theta) = \sum_{b\in\{0,1\}^N}p(x, b;\theta)$ holds, and further,
+by the basic chain rule,
+$p(x, b;\theta) = p(x \mid b;\theta)p(b)$ holds.
+Therefore the objective boils down to,
 \begin{align}
-\label{eq:vae-obj} \theta^\star = \argmin_{\theta\in\Theta} -\sum_{i=1}^I \sum_{b_i\in\{0,1\}^N}\log p(x_i, b_i;\theta).
+\label{eq:vae-obj} \theta^\star = \argmax_{\theta\in\Theta} -\sum_{i=1}^I \sum_{b\in\{0,1\}^N}\log p(x_i \mid b;\theta)p(b).
 \end{align}
 
-The encoder-decoder structure appears by variational approximation.
-Let $q(b \mid x;\phi)=\prod_{n=1}^N q(b_n \mid x;\phi_n)$ be a variational distribution.
-Then, a summand of the objective function of Eq.~\eqref{eq:vae-obj} is upperbounded as,
+The encoder-decoder structure appears by the variational approximation.
+Let $q(b \mid x;\phi)$ be a variational distribution which approximates $p(b \mid x;\theta)$, the probability of getting $b$ given $x$, which is unknown because $b$ is not observable.
+For $q$, we assume each axis $b_n$ in the $N$-dimentional latent variable $b$ are mutually independent, i.e. $q(b \mid x;\phi)=\prod_{n=1}^N q(b_n \mid x;\phi_n)$.
+With these assumptions, a summand of the objective function of Eq.~\eqref{eq:vae-obj} is upper-bounded as follows:
 \begin{align}
-\nonumber &- \sum_{b_i\in\{0,1\}^N}\log p(x_i, b_i;\theta) \\
-\nonumber = &- \sum_{b_i\in\{0,1\}^N} \log \left(\dfrac{p(x_i \mid b_i;\theta) p(b_i)}{q(b_i \mid x_i; \phi)}q(b_i \mid x_i; \phi)\right)\\
+\nonumber & - \sum_{b\in\{0,1\}^N}\log p(x_i \mid b;\theta)p(b) \\
+\nonumber = & - \sum_{b\in\{0,1\}^N} \log \left(\dfrac{p(x_i \mid b;\theta) p(b)}{q(b \mid x_i; \phi)}q(b \mid x_i; \phi)\right)\\
 %\label{eq:vae-q-exp}
-\nonumber\leq & - \sum_{b_i\in\{0,1\}^N} q(b_i \mid x_i; \phi)\log \left(\dfrac{p(x_i \mid b_i;\theta) p(b_i)}{q(b_i \mid x_i; \phi)}\right)\\
-\label{eq:vae-obj-final}= & \mathbb{E}_{q(b_i \mid x_i; \phi)}[-\log p(x_i \mid b_i;\theta)] + \mathrm{KL}(q(b_i \mid x_i; \phi) || p(b_i)),
+\nonumber\leq & - \sum_{b\in\{0,1\}^N} q(b \mid x_i; \phi)\log \left(\dfrac{p(x_i \mid b;\theta) p(b)}{q(b \mid x_i; \phi)}\right)\\
+\nonumber =   &   \sum_{b\in\{0,1\}^N} q(b \mid x_i; \phi) \left(-\log p(x_i \mid b;\theta) \right)\\
+\nonumber     & - \sum_{b\in\{0,1\}^N} q(b \mid x_i; \phi)\log \left(\dfrac{p(b)}{q(b \mid x_i; \phi)}\right) \\
+\label{eq:vae-obj-final}= & \mathbb{E}_{q(b \mid x_i; \phi)}[-\log p(x_i \mid b;\theta)] + \mathrm{KL}(q(b \mid x_i; \phi) || p(b)),
 \end{align}
 resulting in the objective function of VAE~(Eq.~\eqref{eq:vae-obj-final}).
+The third inequality is due to $\log(xy) \geq x \log y$ for $0\leq x \leq 1$.
 In the above expression, $q(b \mid x;\phi)$ can be regarded as encoder, and $p(x\mid b;\theta)$ can be regarded as decoder.
 %By further investigating Eq.~\eqref{eq:vae-q-exp}, since $q$ is factorized into $N$ distributions, 
 
