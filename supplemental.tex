@@ -154,8 +154,7 @@ Therefore the objective boils down to,
 
 The encoder-decoder structure appears by the variational approximation.
 Let $q(b \mid x;\phi)$ be a variational distribution which approximates $p(b \mid x;\theta)$, the probability of getting $b$ given $x$, which is unknown because $b$ is not observable.
-For $q$, we assume each axis $b_n$ in the $N$-dimentional latent variable $b$ are mutually independent, i.e. $q(b \mid x;\phi)=\prod_{n=1}^N q(b_n \mid x;\phi_n)$.
-With these assumptions, a summand of the objective function of Eq.~\eqref{eq:vae-obj} is upper-bounded as follows:
+With $q$, the summand of the objective function of Eq.~\eqref{eq:vae-obj} is upper-bounded as follows:
 \begin{align}
 \nonumber & - \sum_{b\in\{0,1\}^N}\log p(x_i \mid b;\theta)p(b) \\
 \nonumber = & - \sum_{b\in\{0,1\}^N} \log \left(\dfrac{p(x_i \mid b;\theta) p(b)}{q(b \mid x_i; \phi)}q(b \mid x_i; \phi)\right)\\
@@ -169,6 +168,11 @@ resulting in the objective function of VAE~(Eq.~\eqref{eq:vae-obj-final}).
 The third inequality is due to $\log(xy) \geq x \log y$ for $0\leq x \leq 1$.
 In the above expression, $q(b \mid x;\phi)$ can be regarded as encoder, and $p(x\mid b;\theta)$ can be regarded as decoder.
 %By further investigating Eq.~\eqref{eq:vae-q-exp}, since $q$ is factorized into $N$ distributions, 
+
+%% this assumption is not relevant at the moment.
+For $q$, we also assume each axis $b_n$ in the $N$-dimentional latent variable $b$ are mutually independent, i.e. $q(b \mid x;\phi)=\prod_{n=1}^N q(b_n \mid x;\phi_n)$,
+in order to make the later computation easier.
+
 
 \subsection{Reparametrization Trick}
 When learning model parameters $\theta$ and $\phi$, we usually rely on stochastic gradient descent~(SGD), rather than computing the gradient over all of the data points.
