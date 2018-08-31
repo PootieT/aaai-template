@@ -120,6 +120,51 @@ When $W'=(W'_{mnk})$ and bias $B'=(B'_{nk})$ ($m\in[1..M], n\in[1..N], k\in \bra
 we remove $2(M+1)$ for each zero-suppressed bit $b_n$.
 Therefore, if we remove $\Delta N$ bits from the latent space, it removes $2(M+1)\Delta N$ float values from the network.
 
+\subsection{Network Size}
+
+All of the SAE networks used in the evaluation have the same network
+topology for each domain, except the input layer which should fit the size of the input
+images, the zero-suppression coefficient $\alpha$ and the latent layer size $N$.
+They are implemented with TensorFlow and Keras libraries.
+All layers except Gumbel-Softmax in the network are the very basic ones introduced in a standard tutorial.
+
+The network uses convolutional layers in the encoder, and fc layers
+in the decoder (\refig{fig:sae-detail}).
+Input layer has the same dimension as the image size.
+The network was trained by the Adam optimizer \cite{kingma2014adam}.
+In all domains, we used 150 epochs, batch-size 1000 and the learning rate 0.001.
+
+\begin{figure}[htb]
+\centering
+\begin{tabular}{|l|}
+ Input($input$),\\
+ GaussianNoise(0.4),\\
+ conv(3,3,16), tanh, bn, dropout(0.4),\\
+ conv(3,3,16), tanh, bn, dropout(0.4),\\
+ fc(2$N$), reshape($N\times 2$), GumbelSoftmax,\\
+ fc(1000), relu, bn, dropout(0.4),\\
+ fc(1000), relu, bn, dropout(0.4),\\
+ fc($input$), sigmoid.
+\end{tabular}
+\caption{SAE implementation.
+ Here, fc = fully connected layer, conv = convolutional layer, 
+relu = Rectified Linear Unit,
+bn = Batch Normalization, % \cite{ioffe2015batch} ,
+and tensors are reshaped accordingly.}
+\label{fig:sae-detail}
+\end{figure}
+
+% The last layers can be replaced with [fc($input\times 2$), GumbelSoftmax, TakeFirstRow]
+% for better reconstruction when we can assume that the input image is binarized.
+
+In all experiments, 
+the annealing schedule of Gumbel-Softmax is $\tau \leftarrow \max (0.7, \tau_0\exp(-rt))$ where
+ $t$ is the current training epoch, $\tau_0$ is the initial temperature and $r$ is an annealing ratio.
+We chose $\tau_0,r$ so that $\tau = 5.0$ when the training starts and $\tau = 0.7$ when the training finishes.
+The above schedule is similar to the original schedule in  \citeauthor{jang2016categorical} (\citeyear{jang2016categorical}).
+
+
+
 \section{Gumbel-softmax Variational Autoencoder}
 This section reviews the Gumbel-softmax variational autoencoder~(GS-VAE), and its connection to the entropy regularization.
 
