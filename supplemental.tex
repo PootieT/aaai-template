@@ -142,7 +142,7 @@ In practice, we instead optimize for the minimization objective, hence we get a 
 \end{align*}
 
 
-A key assumption we have now is that the probability distribution has a latent variable $b\in\{0,1\}^N$, which is not observable.
+A key assumption we have now is that the probability distribution has a $N$-dimensional latent variable $b=\parens{b^{(n)}}\in\{0,1\}^N$, which is not observable.
 By the basic sum rule of marginal probability,
 $p(x;\theta) = \sum_{b\in\{0,1\}^N}p(x, b;\theta)$ holds, and further,
 by the basic chain rule,
@@ -170,7 +170,7 @@ In the above expression, $q(b \mid x;\phi)$ can be regarded as encoder, and $p(x
 %By further investigating Eq.~\eqref{eq:vae-q-exp}, since $q$ is factorized into $N$ distributions, 
 
 %% this assumption is not relevant at the moment.
-For $q$, we also assume each axis $b_n$ in the $N$-dimentional latent variable $b$ are mutually independent, i.e. $q(b \mid x;\phi)=\prod_{n=1}^N q(b_n \mid x;\phi_n)$,
+For $q$, we also assume each axis $b^{(n)}$ in $b$ are mutually independent, i.e. $q(b \mid x;\phi)=\prod_{n=1}^N q(b^{(n)} \mid x;\phi_n)$,
 in order to make the later computation easier.
 
 
