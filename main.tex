@@ -530,10 +530,11 @@ The second term is computed as
  &{\mathrm{KL}}(q(\mathbf{b}\mid \mathbf{x}) \parallel p(\mathbf{b})) \\
 = & - \sum_{n=1}^N \sum_{k\in\{0,1\}}q(b_{n}=k \mid \mathbf{x}) \log\frac{p(b_{n}=k)}{q(b_{n}=k \mid \mathbf{x})}\\
 =& - \sum_{n=1}^N \sum_{k\in\{0,1\}}q(b_{n}=k \mid \mathbf{x}) \left(\log \frac{1}{2} - \log{q(b_{n}=k \mid \mathbf{x})}\right)\\
-=& - \sum_{n=1}^N H(q(b_n\mid \mathbf{x})) + \mathrm{const.} = -H(q(\mathbf{b} \mid \mathbf{x})) + \mathrm{const.},
+=& - \sum_{n=1}^N H_q(b_n\mid \mathbf{x}) + \mathrm{const.} = -H_q(\mathbf{b} \mid \mathbf{x}) + \mathrm{const.},
 \end{align*}
 }
-where $H(q)$ is the entropy of $q$.
+where $H_q(\mathbf{b}|\mathbf{x})$ is the conditional entropy of $\mathbf{b}$ given $\mathbf{x}$ under $q$.
+We assume every $b_n$ are mutually independent.
 
 \subsubsection{Entropy Regularization in Latplan}
 
@@ -557,7 +558,7 @@ The resulting loss function implemented in Latplan is therefore as follows:
 \begin{align} 
 \nonumber  &\brackets{\text{rec loss}}-{\mathrm{KL}}(q||p)                                    \\
 \nonumber =&\brackets{\text{rec loss}}+{\mathrm{KL}}(q||p) - 2 {\mathrm{KL}}(q||p)          \\
-\label{loss+ent} =&\brackets{\text{\small the original GS VAE loss}}      + 2 H(q(\mathbf{b} \mid \mathbf{x})).
+\label{loss+ent} =&\brackets{\text{\small the original GS VAE loss}}      + 2 H_q(\mathbf{b} \mid \mathbf{x}).
 \end{align}
 }
 Since the entropy measures the randomness of the random variables,
