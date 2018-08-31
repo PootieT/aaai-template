@@ -504,33 +504,33 @@ although in reality, it is approximated by a Gumbel-softmax distribution.
 % whose latent layer resembles a random categorical distribution
 % with a certain number of categories $M$ ($M$=2 in Latplan).
 
-Given a dataset $\mathcal{X}=\{x^{(1)},\dots,x^{(I)}\}$,
-let $q(b \mid x)$ and $p(x \mid b)$ be the probabilities that the encoder and the decoder of GS-VAE respectively outputs the value $b$ given $x$ and $x$ given $b$,
-where $x\in \mathcal{X}$ corresponds to a visual observation of the environment, and $b\in\{0,1\}^N$ corresponds to its latent representation.
-In principle, GS-VAE is trained by minimizing the following objective function with respect to $p(x \mid b)$ and $q(b\mid x)$:
+Given a dataset $\mathcal{X}=\{\mathbf{x}^{(1)},\dots,\mathbf{x}^{(I)}\}$,
+let $q(\mathbf{b} \mid \mathbf{x})$ and $p(\mathbf{x} \mid \mathbf{b})$ be the probabilities that the encoder and the decoder of GS-VAE respectively outputs the value $\mathbf{b}$ given $\mathbf{x}$ and $\mathbf{x}$ given $\mathbf{b}$,
+where $\mathbf{x}\in \mathcal{X}$ corresponds to a visual observation of the environment, and $\mathbf{b}\in\{0,1\}^N$ corresponds to its latent representation.
+In principle, GS-VAE is trained by minimizing the following objective function with respect to $p(\mathbf{x} \mid \mathbf{b})$ and $q(\mathbf{b}\mid \mathbf{x})$:
 {
 % From ``2019 Formatting Instructions'': For mathematical environments, you may reduce fontsize but not below 6.5 point.
 \relsize{-1}
 \begin{align}
-\label{vae-obj} \sum_{x\in \mathcal{X}} \mathbb{E}_{q(b\mid x)}\left[-\log p(x\mid b)\right] + \mathrm{KL}(q(b\mid x) \parallel p(b)),
+\label{vae-obj} \sum_{\mathbf{x}\in \mathcal{X}} \mathbb{E}_{q(\mathbf{b}\mid \mathbf{x})}\left[-\log p(\mathbf{x}\mid \mathbf{b})\right] + \mathrm{KL}(q(\mathbf{b}\mid \mathbf{x}) \parallel p(\mathbf{b})),
 \end{align}
 }
-where $p(b) = \prod_{n=1}^N p(b_n) = \prod_{n=1}^N \mathrm{Bern}(0.5)$ is the target, $N$-dimensional Bernoulli distribution with uniform probabilities
+where $p(\mathbf{b}) = \prod_{n=1}^N p(b_n) = \prod_{n=1}^N \mathrm{Bern}(0.5)$ is the target, $N$-dimensional Bernoulli distribution with uniform probabilities
 % emphasize that this Bernoulli is the target distrib, consistent with the notation p*    ^^^^^^ 
 % (``*'' usually means ``goal'' or ``optimal'' also in planning)
 % $i$ is the index for each data point, 
 and $\mathrm{KL}(q || p)$ represents the Kullback-Leibler divergence from $p$ to $q$.
 The first term in Eq.~\eqref{vae-obj} is the reconstruction loss, which measures the quality of the reconstructed data points,
-and the second term regularizes the encoder by making the encoder $q(b\mid x)$ closer to $p(b)$.
+and the second term regularizes the encoder by making the encoder $q(\mathbf{b}\mid \mathbf{x})$ closer to $p(\mathbf{b})$.
 The second term is computed as
 {
 % From ``2019 Formatting Instructions'': For mathematical environments, you may reduce fontsize but not below 6.5 point.
 \relsize{-1}
 \begin{align*}
- &{\mathrm{KL}}(q(b\mid x) \parallel p(b)) \\
-= & - \sum_{n=1}^N \sum_{k\in\{0,1\}}q(b_{n}=k \mid x) \log\frac{p(b_{n}=k)}{q(b_{n}=k \mid x)}\\
-=& - \sum_{n=1}^N \sum_{k\in\{0,1\}}q(b_{n}=k \mid x) \left(\log \frac{1}{2} - \log{q(b_{n}=k \mid x)}\right)\\
-=& - \sum_{n=1}^N H(q(b_n\mid x)) + \mathrm{const.} = -H(q(b \mid x)) + \mathrm{const.},
+ &{\mathrm{KL}}(q(\mathbf{b}\mid \mathbf{x}) \parallel p(\mathbf{b})) \\
+= & - \sum_{n=1}^N \sum_{k\in\{0,1\}}q(b_{n}=k \mid \mathbf{x}) \log\frac{p(b_{n}=k)}{q(b_{n}=k \mid \mathbf{x})}\\
+=& - \sum_{n=1}^N \sum_{k\in\{0,1\}}q(b_{n}=k \mid \mathbf{x}) \left(\log \frac{1}{2} - \log{q(b_{n}=k \mid \mathbf{x})}\right)\\
+=& - \sum_{n=1}^N H(q(b_n\mid \mathbf{x})) + \mathrm{const.} = -H(q(\mathbf{b} \mid \mathbf{x})) + \mathrm{const.},
 \end{align*}
 }
 where $H(q)$ is the entropy of $q$.
@@ -543,7 +543,7 @@ Despite that, the system works without problem
 because maximizing the KL divergence corresponds to minimizing the entropy of $q$, thus finding a stable representation.
 % 
 This is natural considering the nature of the original GS-VAE:
-The original loss function of the GS-VAE tries to make the latent distribution closer to the fair random Bernoulli distribution $p(b)$
+The original loss function of the GS-VAE tries to make the latent distribution closer to the fair random Bernoulli distribution $p(\mathbf{b})$
 that takes 0 or 1 with the equal probability, i.e., \emph{as random as possible},
 which is in fact opposite from the concept of stability.
 % This is clearly the opposite of the stable symbols we pursue.
@@ -557,7 +557,7 @@ The resulting loss function implemented in Latplan is therefore as follows:
 \begin{align} 
 \nonumber  &\brackets{\text{rec loss}}-{\mathrm{KL}}(q||p)                                    \\
 \nonumber =&\brackets{\text{rec loss}}+{\mathrm{KL}}(q||p) - 2 {\mathrm{KL}}(q||p)          \\
-\label{loss+ent} =&\brackets{\text{\small the original GS VAE loss}}      + 2 H(q(b \mid x)).
+\label{loss+ent} =&\brackets{\text{\small the original GS VAE loss}}      + 2 H(q(\mathbf{b} \mid \mathbf{x})).
 \end{align}
 }
 Since the entropy measures the randomness of the random variables,
@@ -570,10 +570,10 @@ a much higher instability compared to the GS-VAE with the Entropy regularization
 % Our claim is that their loss implementation was the key to achieving the desired behavior.}
 % In fact, there is no reason that the loss should be identical to the GS-VAE loss.
 
-Note that $H(q(b_n\mid x))$
+Note that $H(q(b_n\mid \mathbf{x}))$
 reduce only the inherent stochasticity of the network,
 but not the stochasticity originated from the noisy input,
-because $q(b_n\mid x)$ is defined for the fixed data point $x$.
+because $q(b_n\mid \mathbf{x})$ is defined for the fixed data point $\mathbf{x}$.
 
 \subsubsection{Removing the Run-Time Stochasticity}
 \label{argmax}
@@ -636,7 +636,7 @@ where $\forall n; z_{n0} + z_{n1} = 1$ and  $b_n = z_{n1}$.
 (Details in the supplement, \refsec{zsae-implementation}.)
 
 %% This paragraph is unnecessary
-% This technique alters $p(b)$, the target distribution of GS-VAE.
+% This technique alters $p(\mathbf{b})$, the target distribution of GS-VAE.
 % Recall that, in GS-VAE, $p(b_n) = \mathrm{Bern}(0.5)$,
 % i.e. the probability for $b_n$ to turn to 1 is a fair coin toss.
 % Since zero-suppression penalizes the true bits ($b_n$=1), it changes this fairness: The larger the $\alpha$,
@@ -645,7 +645,7 @@ where $\forall n; z_{n0} + z_{n1} = 1$ and  $b_n = z_{n1}$.
 % This changes the target distribution of the KL-divergence.
 
 % % Maybe add this in the camera-ready
-% Note that this generalizes to a categorical case by penalizing all non-zero values: $\bars{q(b_n \not= 0\mid x)}$
+% Note that this generalizes to a categorical case by penalizing all non-zero values: $\bars{q(b_n \not= 0\mid \mathbf{x})}$
 
 One additional advantage of the ZSAE is that
 several neurons are completely deactivated, i.e. they always take the value of zero
