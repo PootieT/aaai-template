@@ -571,10 +571,10 @@ a much higher instability compared to the GS-VAE with the Entropy regularization
 % Our claim is that their loss implementation was the key to achieving the desired behavior.}
 % In fact, there is no reason that the loss should be identical to the GS-VAE loss.
 
-Note that $H(q(b_n\mid \mathbf{x}))$
-reduce only the inherent stochasticity of the network,
-but not the stochasticity originated from the noisy input,
-because $q(b_n\mid \mathbf{x})$ is defined for the fixed data point $\mathbf{x}$.
+%% stop claiming this
+% Note that reducing $H_q(\mathbf{b}\mid \mathbf{x})$
+% reduces only the inherent stochasticity of the network that emerges for the same input $\mathbf{x}$,
+% but not the stochasticity originated from the noisy input, which is characterized by $H_q(\mathbf{b})$.
 
 \subsubsection{Removing the Run-Time Stochasticity}
 \label{argmax}
