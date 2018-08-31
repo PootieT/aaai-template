@@ -176,13 +176,13 @@ in order to make the later computation easier.
 
 \subsection{Reparametrization Trick}
 When learning model parameters $\theta$ and $\phi$, we usually rely on stochastic gradient descent~(SGD), rather than computing the gradient over all of the data points.
-In the case of VAE, not only the data point $x_i$, but also the latent vector $b_i$ are sampled to compute a per-example loss without taking the expectation over $b_i$.
-The reparameterization trick allows us to apply stochastic approximation to the latent vector.
-Its main idea is to decompose the random variable $b_i$ into a deterministic and parameterized part~(thus, dependent on $\phi$) and a random and not-parameterized part~(thus, independent from $\phi$).
-Such a decomposition yields the following repetitive algorithm:
+In the case of VAE, not only the data point $x_i\in \mathcal{X}$, but also the latent vector $b_i$ is sampled from $b$ (denoted as $b_i\sim b$) in order to compute the per-example loss without taking the expectation over $b \in \braces{0,1}^N$, which is exponentially large.
+The reparameterization trick allows us to apply a stochastic approximation to the latent vector.
+Its main idea is to decompose the random variable $b_i$ into a deterministic and parameterized part~(thus, dependent on $\phi$) and a random and non-parameterized part~(thus, independent from $\phi$).
+Such a decomposition yields a following repetitive algorithm:
 \begin{enumerate}
  \item Sample $x_i$ from $\mathcal{X}$.
-\item Sample $b_i$ from $q(b_i \mid x_i ;\phi)$.
+\item Sample $b_i$ from $b$ using $q(b \mid x_i ;\phi)$. (The sampling methods is not specified here.)
  \item Compute the gradients of,
        \begin{align}
 	\label{eq:stochastic-approx}
