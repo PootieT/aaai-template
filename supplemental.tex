@@ -149,23 +149,23 @@ by the basic chain rule,
 $p(x, b;\theta) = p(x \mid b;\theta)p(b)$ holds.
 Therefore the objective boils down to,
 \begin{align}
-\label{eq:vae-obj} \theta^\star = \argmin_{\theta\in\Theta} -\sum_{i=1}^I \sum_{b\in\{0,1\}^N}\log p(x_i \mid b;\theta)p(b).
+\label{eq:vae-obj} \theta^\star = \argmin_{\theta\in\Theta} -\sum_{i=1}^I \log \left(\sum_{b_i\in\{0,1\}^N}p(x_i \mid b_i;\theta)p(b_i)\right).
 \end{align}
 
 The encoder-decoder structure appears by the variational approximation.
 Let $q(b \mid x;\phi)$ be a variational distribution which approximates $p(b \mid x;\theta)$, the probability of getting $b$ given $x$, which is unknown because $b$ is not observable.
 With $q$, the summand of the objective function of Eq.~\eqref{eq:vae-obj} is upper-bounded as follows:
 \begin{align}
-\nonumber & - \sum_{b\in\{0,1\}^N}\log p(x_i \mid b;\theta)p(b) \\
-\nonumber = & - \sum_{b\in\{0,1\}^N} \log \left(\dfrac{p(x_i \mid b;\theta) p(b)}{q(b \mid x_i; \phi)}q(b \mid x_i; \phi)\right)\\
+\nonumber & - \log \left(\sum_{b_i\in\{0,1\}^N} p(x_i \mid b_i;\theta)p(b_i)\right) \\
+\nonumber = & -  \log \left(\sum_{b_i\in\{0,1\}^N}\dfrac{p(x_i \mid b_i;\theta) p(b_i)}{q(b_i \mid x_i; \phi)}q(b_i \mid x_i; \phi)\right)\\
 %\label{eq:vae-q-exp}
-\nonumber\leq & - \sum_{b\in\{0,1\}^N} q(b \mid x_i; \phi)\log \left(\dfrac{p(x_i \mid b;\theta) p(b)}{q(b \mid x_i; \phi)}\right)\\
-\nonumber =   &   \sum_{b\in\{0,1\}^N} q(b \mid x_i; \phi) \left(-\log p(x_i \mid b;\theta) \right)\\
-\nonumber     & - \sum_{b\in\{0,1\}^N} q(b \mid x_i; \phi)\log \left(\dfrac{p(b)}{q(b \mid x_i; \phi)}\right) \\
-\label{eq:vae-obj-final}= & \mathbb{E}_{q(b \mid x_i; \phi)}[-\log p(x_i \mid b;\theta)] + \mathrm{KL}(q(b \mid x_i; \phi) || p(b)),
+\nonumber\leq & - \sum_{b_i\in\{0,1\}^N} q(b_i \mid x_i; \phi)\log \left(\dfrac{p(x_i \mid b_i;\theta) p(b_i)}{q(b_i \mid x_i; \phi)}\right)\\
+\nonumber =   &   \sum_{b_i\in\{0,1\}^N} q(b_i \mid x_i; \phi) \left(-\log p(x_i \mid b_i;\theta) \right)\\
+\nonumber     & - \sum_{b_i\in\{0,1\}^N} q(b_i \mid x_i; \phi)\log \left(\dfrac{p(b_i)}{q(b_i \mid x_i; \phi)}\right) \\
+\label{eq:vae-obj-final}= & \mathbb{E}_{q(b_i \mid x_i; \phi)}[-\log p(x_i \mid b_i;\theta)] + \mathrm{KL}(q(b_i \mid x_i; \phi) || p(b_i)),
 \end{align}
 resulting in the objective function of VAE~(Eq.~\eqref{eq:vae-obj-final}).
-The third inequality is due to $\log(xy) \geq x \log y$ for $0\leq x \leq 1$.
+The inequality is due to Jensen's inequality.
 In the above expression, $q(b \mid x;\phi)$ can be regarded as encoder, and $p(x\mid b;\theta)$ can be regarded as decoder.
 %By further investigating Eq.~\eqref{eq:vae-q-exp}, since $q$ is factorized into $N$ distributions, 
 
