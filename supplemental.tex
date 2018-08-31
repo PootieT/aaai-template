@@ -55,7 +55,7 @@
 
 Gumbel-Softmax (GS) is a reparametrization trick \cite{jang2016categorical} for categorical distribution.
 It continuously approximates Gumbel-Max \cite{maddison2014sampling}, a method for drawing categorical samples.
-Assume the output $z=(z_i)$ is a one-hot vector, e.g. if the domain is $D=\braces{a,b,c}$, then $z=\parens{0,1,0}$ represents ``b''.
+Assume the output $\mathbf{z}=(z_i)$ is a one-hot vector, e.g. if the domain is $D=\braces{a,b,c}$, then $\mathbf{z}=\parens{0,1,0}$ represents ``b''.
 The input is a class probability vector $\pi$, e.g. $\parens{.1,.1,.8}$.
 Gumbel-Max draws samples from $D$ following $\pi$:
 \[
@@ -72,7 +72,7 @@ z_i = \text{Softmax}((g_i+\log \pi_i)/\tau).
 The output of GS converges to a discrete one-hot vector when $\tau\approx 0$.
 
 In SAEs, we have $N$ gumbel-softmax units of $|D|=2$ categories ($D=\braces{\text{true},\text{false}}$)
-to model an $N$-dimensional Bernoulli/boolean/propositional variable $b=(b_n)$.
+to model an $N$-dimensional Bernoulli/boolean/propositional variable $\mathbf{b}=(b_n)$.
 Thus the latent layer is a matrix $z_{nk}$ rather than a vector, where $1\leq n \leq N$ and $k\in\braces{0,1}$.
 The actual boolean (Bernoulli / propositional) variable is then retrieved by $b_n=z_{n1}$.
 
@@ -125,68 +125,68 @@ This section reviews the Gumbel-softmax variational autoencoder~(GS-VAE), and it
 
 \subsection{Objective Function of Variational Autoencoder~(VAE)}
 We first derive the learning algorithm of VAE when the latnet representation is a binary vector.
-Assume that we have a data set, $\mathcal{X}=\{x^{(1)},\dots,x^{(I)}\}$.
+Assume that we have a data set, $\mathcal{X}=\{\mathbf{x}^{(1)},\dots,\mathbf{x}^{(I)}\}$.
 The first objective of VAE is to obtain a probability distribution that well explains $\mathcal{X}$.
-In other words, letting $\{p(x;\theta) \mid \theta\in\Theta\}$ be a family of parametric probability distributions, we wish to obtain,
+In other words, letting $\{p(\mathbf{x};\theta) \mid \theta\in\Theta\}$ be a family of parametric probability distributions, we wish to obtain,
 \begin{align*}
-\theta^\star = \argmax_{\theta\in\Theta} \prod_{x\in \mathcal{X}} p(x;\theta)
+\theta^\star = \argmax_{\theta\in\Theta} \prod_{\mathbf{x}\in \mathcal{X}} p(\mathbf{x};\theta)
 \end{align*}
 which maximize the probability that such a dataset is obtained. Since a product is hard to compute, we instead maximize the log-probability, i.e.
 \begin{align*}
-\theta^\star = \argmax_{\theta\in\Theta} \sum_{x\in \mathcal{X}} \log p(x;\theta).
+\theta^\star = \argmax_{\theta\in\Theta} \sum_{\mathbf{x}\in \mathcal{X}} \log p(\mathbf{x};\theta).
 \end{align*}
 as $\log$ preserves the maxima.
 In practice, we instead optimize for the minimization objective, hence we get a equivalent formulation
 \begin{align*}
-\theta^\star = \argmin_{\theta\in\Theta} - \sum_{x\in \mathcal{X}} \log p(x;\theta).
+\theta^\star = \argmin_{\theta\in\Theta} - \sum_{\mathbf{x}\in \mathcal{X}} \log p(\mathbf{x};\theta).
 \end{align*}
 
 
-A key assumption we have now is that the probability distribution has a $N$-dimensional latent variable $b=\parens{b_n}\in\{0,1\}^N$, which is not observable.
+A key assumption we have now is that the probability distribution has a $N$-dimensional latent variable $\mathbf{b}=\parens{b_n}\in\{0,1\}^N$, which is not observable.
 By the basic sum rule of marginal probability,
-$p(x;\theta) = \sum_{b\in\{0,1\}^N}p(x, b;\theta)$ holds, and further,
+$p(\mathbf{x};\theta) = \sum_{\mathbf{b}\in\{0,1\}^N}p(\mathbf{x}, \mathbf{b};\theta)$ holds, and further,
 by the basic chain rule,
-$p(x, b;\theta) = p(x \mid b;\theta)p(b)$ holds.
+$p(\mathbf{x}, \mathbf{b};\theta) = p(\mathbf{x} \mid \mathbf{b};\theta)p(\mathbf{b})$ holds.
 Therefore the objective boils down to,
 \begin{align}
-\label{eq:vae-obj} \theta^\star = \argmin_{\theta\in\Theta} -\sum_{x\in \mathcal{X}} \log \left(\sum_{b\in\{0,1\}^N}p(x \mid b;\theta)p(b)\right).
+\label{eq:vae-obj} \theta^\star = \argmin_{\theta\in\Theta} -\sum_{\mathbf{x}\in \mathcal{X}} \log \left(\sum_{\mathbf{b}\in\{0,1\}^N}p(\mathbf{x} \mid \mathbf{b};\theta)p(\mathbf{b})\right).
 \end{align}
 
 The encoder-decoder structure appears by the variational approximation.
-Let $q(b \mid x;\phi)$ be a variational distribution which approximates $p(b \mid x;\theta)$, the probability of getting $b$ given $x$, which is unknown because $b$ is not observable.
+Let $q(\mathbf{b} \mid \mathbf{x};\phi)$ be a variational distribution which approximates $p(\mathbf{b} \mid \mathbf{x};\theta)$, the probability of getting $\mathbf{b}$ given $\mathbf{x}$, which is unknown because $\mathbf{b}$ is not observable.
 With $q$, the summand of the objective function of Eq.~\eqref{eq:vae-obj} is upper-bounded as follows:
 \begin{align}
-\nonumber & - \log \left(\sum_{b\in\{0,1\}^N} p(x \mid b;\theta)p(b)\right) \\
-\nonumber = & -  \log \left(\sum_{b\in\{0,1\}^N}\dfrac{p(x \mid b;\theta) p(b)}{q(b \mid x; \phi)}q(b \mid x; \phi)\right)\\
+\nonumber & - \log \left(\sum_{\mathbf{b}\in\{0,1\}^N} p(\mathbf{x} \mid \mathbf{b};\theta)p(\mathbf{b})\right) \\
+\nonumber = & -  \log \left(\sum_{\mathbf{b}\in\{0,1\}^N}\dfrac{p(\mathbf{x} \mid \mathbf{b};\theta) p(\mathbf{b})}{q(\mathbf{b} \mid \mathbf{x}; \phi)}q(\mathbf{b} \mid \mathbf{x}; \phi)\right)\\
 %\label{eq:vae-q-exp}
-\nonumber\leq & - \sum_{b\in\{0,1\}^N} q(b \mid x; \phi)\log \left(\dfrac{p(x \mid b;\theta) p(b)}{q(b \mid x; \phi)}\right)\\
-\nonumber =   &   \sum_{b\in\{0,1\}^N} q(b \mid x; \phi) \left(-\log p(x \mid b;\theta) \right)\\
-\nonumber     & - \sum_{b\in\{0,1\}^N} q(b \mid x; \phi)\log \left(\dfrac{p(b)}{q(b \mid x; \phi)}\right) \\
-\label{eq:vae-obj-final}= & \mathbb{E}_{q(b \mid x; \phi)}[-\log p(x \mid b;\theta)] + \mathrm{KL}(q(b \mid x; \phi) || p(b)),
+\nonumber\leq & - \sum_{\mathbf{b}\in\{0,1\}^N} q(\mathbf{b} \mid \mathbf{x}; \phi)\log \left(\dfrac{p(\mathbf{x} \mid \mathbf{b};\theta) p(\mathbf{b})}{q(\mathbf{b} \mid \mathbf{x}; \phi)}\right)\\
+\nonumber =   &   \sum_{\mathbf{b}\in\{0,1\}^N} q(\mathbf{b} \mid \mathbf{x}; \phi) \left(-\log p(\mathbf{x} \mid \mathbf{b};\theta) \right)\\
+\nonumber     & - \sum_{\mathbf{b}\in\{0,1\}^N} q(\mathbf{b} \mid \mathbf{x}; \phi)\log \left(\dfrac{p(\mathbf{b})}{q(\mathbf{b} \mid \mathbf{x}; \phi)}\right) \\
+\label{eq:vae-obj-final}= & \mathbb{E}_{q(\mathbf{b} \mid \mathbf{x}; \phi)}[-\log p(\mathbf{x} \mid \mathbf{b};\theta)] + \mathrm{KL}(q(\mathbf{b} \mid \mathbf{x}; \phi) || p(\mathbf{b})),
 \end{align}
 resulting in the objective function of VAE~(Eq.~\eqref{eq:vae-obj-final}).
 The inequality is due to Jensen's inequality.
-In the above expression, $q(b \mid x;\phi)$ can be regarded as the encoder, and $p(x\mid b;\theta)$ can be regarded as the decoder.
+In the above expression, $q(\mathbf{b} \mid \mathbf{x};\phi)$ can be regarded as the encoder, and $p(\mathbf{x}\mid \mathbf{b};\theta)$ can be regarded as the decoder.
 %By further investigating Eq.~\eqref{eq:vae-q-exp}, since $q$ is factorized into $N$ distributions, 
 
 %% this assumption is not relevant at the moment.
-For $q$, we also assume each axis $b_n$ in $b$ are mutually independent, i.e. $q(b \mid x;\phi)=\prod_{n=1}^N q(b_n \mid x;\phi_n)$,
+For $q$, we also assume each axis $b_n$ in $\mathbf{b}$ are mutually independent, i.e. $q(\mathbf{b} \mid \mathbf{x};\phi)=\prod_{n=1}^N q(b_n \mid \mathbf{x};\phi_n)$,
 in order to make the later computation easier.
 
 
 \subsection{Reparametrization Trick}
 When learning model parameters $\theta$ and $\phi$, we usually rely on stochastic gradient descent~(SGD), rather than computing the gradient over all of the data points.
-In the case of VAE, not only the data point $x\in \mathcal{X}$, but also the latent vector $b$ is sampled using $q$ in order to compute the per-example loss without taking the expectation over $b \in \braces{0,1}^N$, which is exponentially large.
+In the case of VAE, not only the data point $\mathbf{x}\in \mathcal{X}$, but also the latent vector $\mathbf{b}$ is sampled using $q$ in order to compute the per-example loss without taking the expectation over $\mathbf{b} \in \braces{0,1}^N$, which is exponentially large.
 The reparameterization trick allows us to apply a stochastic approximation to the latent vector.
-Its main idea is to decompose the random variable $b$ into a deterministic and parameterized part~(thus, dependent on $\phi$) and a random and non-parameterized part~(thus, independent from $\phi$).
+Its main idea is to decompose the random variable $\mathbf{b}$ into a deterministic and parameterized part~(thus, dependent on $\phi$) and a random and non-parameterized part~(thus, independent from $\phi$).
 Such a decomposition yields a following repetitive algorithm:
 \begin{enumerate}
- \item Sample $x$ from $\mathcal{X}$.
-\item Sample $b$ using $q(b \mid x ;\phi)$. (The sampling methods is specified later.)
+ \item Sample $\mathbf{x}$ from $\mathcal{X}$.
+\item Sample $\mathbf{b}$ using $q(\mathbf{b} \mid \mathbf{x} ;\phi)$. (The sampling methods is specified later.)
  \item Compute the gradients of,
        \begin{align}
 	\label{eq:stochastic-approx}
-	-\log p(x \mid b;\theta) - \log\left(\frac{p(b)}{q(b \mid x;\phi)}\right),
+	-\log p(\mathbf{x} \mid \mathbf{b};\theta) - \log\left(\frac{p(\mathbf{b})}{q(\mathbf{b} \mid \mathbf{x};\phi)}\right),
        \end{align}
        with respect to $\theta$ and $\phi$.
  \item Update $\theta$ and $\phi$ using the gradients.
@@ -196,7 +196,7 @@ Such a decomposition yields a following repetitive algorithm:
 In the case of binary latent representations, a Gumbel-softmax distribution~(which is also known as a concrete distribution) is used to apply the reparameterization trick.
 A Gumbel-softmax distribution is a continuous relaxation of the Bernoulli distribution, and therefore,
 a random variable following the Gumbel-softmax distribution resides in $[0,1]$, rather than $\{0,1\}$.
-When replacing the binary random variable $b\in\{0,1\}^N$ with the continuous random variable $z\in[0,1]^N$, we apply the following approximation.
+When replacing the binary random variable $\mathbf{b}\in\{0,1\}^N$ with the continuous random variable $\mathbf{z}\in[0,1]^N$, we apply the following approximation.
 
 \section{Supplemental Experiments}
 
@@ -286,7 +286,7 @@ Twisted   & 0.50 & 0.08 & 0.50 & 0.02 \\
 
 We measured the average percentage of propositions that turned true on ZSAE/SAE.
 \reftbl{tab:trueratio} shows that the ratio significantly drops due to the Zero-suppression penalty,
-demonstrating that $p_a(b)$ (\refsec{analysis}) is altered by the regularization.
+demonstrating that $p_a(\mathbf{b})$ (\refsec{analysis}) is altered by the regularization.
 
 \subsection{MSE and Effective Bits for different $\alpha$}
 \label{more-sensitivity}
