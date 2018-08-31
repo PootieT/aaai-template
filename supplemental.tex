@@ -149,7 +149,7 @@ by the basic chain rule,
 $p(x, b;\theta) = p(x \mid b;\theta)p(b)$ holds.
 Therefore the objective boils down to,
 \begin{align}
-\label{eq:vae-obj} \theta^\star = \argmax_{\theta\in\Theta} -\sum_{i=1}^I \sum_{b\in\{0,1\}^N}\log p(x_i \mid b;\theta)p(b).
+\label{eq:vae-obj} \theta^\star = \argmin_{\theta\in\Theta} -\sum_{i=1}^I \sum_{b\in\{0,1\}^N}\log p(x_i \mid b;\theta)p(b).
 \end{align}
 
 The encoder-decoder structure appears by the variational approximation.
