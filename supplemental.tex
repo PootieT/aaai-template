@@ -15,12 +15,16 @@
 \usepackage{multirow}
 \usepackage{xr}
 \usepackage{pdflscape}
+\usepackage{bm}
 \externaldocument{asai}
 \renewcommand{\thesection}{S\arabic{section}}
 \renewcommand{\thetable}{S\arabic{table}}
 \renewcommand{\thefigure}{S\arabic{figure}}
 \newcommand{\argmin}{\mathop{\rm argmin}}
 \newcommand{\argmax}{\mathop{\rm argmax}}
+\newcommand{\bx}{\mathbf{x}}
+\newcommand{\bz}{\mathbf{z}}
+\newcommand{\bb}{\mathbf{b}}
 % \usepackage[margin=1cm]{geometry}
 
 \setlength{\pdfpagewidth}{8.5in}
@@ -239,9 +243,20 @@ Such a decomposition yields a following repetitive algorithm:
 
 \subsection{Gumbel-softmax Variational Autoencoder}
 In the case of binary latent representations, a Gumbel-softmax distribution~(which is also known as a concrete distribution) is used to apply the reparameterization trick.
-A Gumbel-softmax distribution is a continuous relaxation of the Bernoulli distribution, and therefore,
+The Gumbel-softmax distribution is a continuous relaxation of the Bernoulli distribution, and therefore,
 a random variable following the Gumbel-softmax distribution resides in $[0,1]$, rather than $\{0,1\}$.
-When replacing the binary random variable $\mathbf{b}\in\{0,1\}^N$ with the continuous random variable $\mathbf{z}\in[0,1]^N$, we apply the following approximation.
+The accuracy of approximation is controlled by a temperature parameter $\tau\in(0,\infty)$.
+The lower the temperature is, the closer the Gumbel-softmax distribution is to the Bernoulli distribution.
+In specific, let $\bm{\pi}=\begin{bmatrix}\pi_0 & \pi_1\end{bmatrix}$ be the unnormalized logit parameter of the Gumbel-softmax distribution.
+As $\tau\rightarrow 0$, the Gumbel-softmax distribution becomes the Bernoulli distribution of parameter $\pi_1/(\pi_0 + \pi_1)$.
+Let $q(\bz \mid \bx;\bm{\pi},\tau)$ be the decoder using the Gumbel-softmax distribution.
+
+When replacing the binary random variable $\mathbf{b}\in\{0,1\}^N$ with the continuous random variable $\mathbf{z}\in[0,1]^N$, we apply the following approximations.
+For the decoder, we directly plug-in its continuous relaxation $\bz$ to the decoder to obtain $p(\bx \mid \bz;\theta)$.
+The reconstruction loss term in Eq.~\eqref{eq:vae-obj-final} is approximated by substituting the Gumbel-softmax distribution $q(\bz \mid \bx;\phi,\tau)$ for the Bernoulli distribution $q(\bb \mid \bx;\phi)$.
+The KL term in Eq.~\eqref{eq:vae-obj-final} is approximated by substituting $q(\bz \mid \bx;\bm{\pi},\tau=0)$ for $q(\bb \mid \bx;\phi)$.
+The KL divergence is still well-defined because the Gumbel-softmax distribution now coincides with the Bernoulli distribution.
+Since the KL term is defined over Bernoulli distributions, the same discussion as that made in Section~\ref{analysis} can be applied.
 
 \section{Supplemental Experiments}
 
