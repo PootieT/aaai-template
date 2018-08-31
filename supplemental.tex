@@ -125,31 +125,31 @@ This section reviews the Gumbel-softmax variational autoencoder~(GS-VAE), and it
 
 \subsection{Objective Function of Variational Autoencoder~(VAE)}
 We first derive the learning algorithm of VAE when the latnet representation is a binary vector.
-Assume that we have a data set, $\mathcal{X}=\{x_1,\dots,x_I\}$.
+Assume that we have a data set, $\mathcal{X}=\{x^{(1)},\dots,x^{(I)}\}$.
 The first objective of VAE is to obtain a probability distribution that well explains $\mathcal{X}$.
 In other words, letting $\{p(x;\theta) \mid \theta\in\Theta\}$ be a family of parametric probability distributions, we wish to obtain,
 \begin{align*}
-\theta^\star = \argmax_{\theta\in\Theta} \prod_{i=1}^I p(x_i;\theta)
+\theta^\star = \argmax_{\theta\in\Theta} \prod_{x\in \mathcal{X}} p(x;\theta)
 \end{align*}
 which maximize the probability that such a dataset is obtained. Since a product is hard to compute, we instead maximize the log-probability, i.e.
 \begin{align*}
-\theta^\star = \argmax_{\theta\in\Theta} \sum_{i=1}^I \log p(x_i;\theta).
+\theta^\star = \argmax_{\theta\in\Theta} \sum_{x\in \mathcal{X}} \log p(x;\theta).
 \end{align*}
 as $\log$ preserves the maxima.
 In practice, we instead optimize for the minimization objective, hence we get a equivalent formulation
 \begin{align*}
-\theta^\star = \argmin_{\theta\in\Theta} - \sum_{i=1}^I \log p(x_i;\theta).
+\theta^\star = \argmin_{\theta\in\Theta} - \sum_{x\in \mathcal{X}} \log p(x;\theta).
 \end{align*}
 
 
-A key assumption we have now is that the probability distribution has a $N$-dimensional latent variable $b=\parens{b^{(n)}}\in\{0,1\}^N$, which is not observable.
+A key assumption we have now is that the probability distribution has a $N$-dimensional latent variable $b=\parens{b_n}\in\{0,1\}^N$, which is not observable.
 By the basic sum rule of marginal probability,
 $p(x;\theta) = \sum_{b\in\{0,1\}^N}p(x, b;\theta)$ holds, and further,
 by the basic chain rule,
 $p(x, b;\theta) = p(x \mid b;\theta)p(b)$ holds.
 Therefore the objective boils down to,
 \begin{align}
-\label{eq:vae-obj} \theta^\star = \argmin_{\theta\in\Theta} -\sum_{i=1}^I \log \left(\sum_{b_i\in\{0,1\}^N}p(x_i \mid b_i;\theta)p(b_i)\right).
+\label{eq:vae-obj} \theta^\star = \argmin_{\theta\in\Theta} -\sum_{x\in \mathcal{X}} \log \left(\sum_{b\in\{0,1\}^N}p(x \mid b;\theta)p(b)\right).
 \end{align}
 
 The encoder-decoder structure appears by the variational approximation.
@@ -170,23 +170,23 @@ In the above expression, $q(b \mid x;\phi)$ can be regarded as the encoder, and 
 %By further investigating Eq.~\eqref{eq:vae-q-exp}, since $q$ is factorized into $N$ distributions, 
 
 %% this assumption is not relevant at the moment.
-For $q$, we also assume each axis $b^{(n)}$ in $b$ are mutually independent, i.e. $q(b \mid x;\phi)=\prod_{n=1}^N q(b^{(n)} \mid x;\phi_n)$,
+For $q$, we also assume each axis $b_n$ in $b$ are mutually independent, i.e. $q(b \mid x;\phi)=\prod_{n=1}^N q(b_n \mid x;\phi_n)$,
 in order to make the later computation easier.
 
 
 \subsection{Reparametrization Trick}
 When learning model parameters $\theta$ and $\phi$, we usually rely on stochastic gradient descent~(SGD), rather than computing the gradient over all of the data points.
-In the case of VAE, not only the data point $x_i\in \mathcal{X}$, but also the latent vector $b_i$ is sampled from $b$ (denoted as $b_i\sim b$) in order to compute the per-example loss without taking the expectation over $b \in \braces{0,1}^N$, which is exponentially large.
+In the case of VAE, not only the data point $x\in \mathcal{X}$, but also the latent vector $b$ is sampled using $q$ in order to compute the per-example loss without taking the expectation over $b \in \braces{0,1}^N$, which is exponentially large.
 The reparameterization trick allows us to apply a stochastic approximation to the latent vector.
-Its main idea is to decompose the random variable $b_i$ into a deterministic and parameterized part~(thus, dependent on $\phi$) and a random and non-parameterized part~(thus, independent from $\phi$).
+Its main idea is to decompose the random variable $b$ into a deterministic and parameterized part~(thus, dependent on $\phi$) and a random and non-parameterized part~(thus, independent from $\phi$).
 Such a decomposition yields a following repetitive algorithm:
 \begin{enumerate}
- \item Sample $x_i$ from $\mathcal{X}$.
-\item Sample $b_i$ from $b$ using $q(b \mid x_i ;\phi)$. (The sampling methods is not specified here.)
+ \item Sample $x$ from $\mathcal{X}$.
+\item Sample $b$ using $q(b \mid x ;\phi)$. (The sampling methods is specified later.)
  \item Compute the gradients of,
        \begin{align}
 	\label{eq:stochastic-approx}
-	-\log p(x_i \mid b_i;\theta) - \log\left(\frac{p(b_i)}{q(b_i \mid x_i;\phi)}\right),
+	-\log p(x \mid b;\theta) - \log\left(\frac{p(b)}{q(b \mid x;\phi)}\right),
        \end{align}
        with respect to $\theta$ and $\phi$.
  \item Update $\theta$ and $\phi$ using the gradients.
@@ -196,7 +196,7 @@ Such a decomposition yields a following repetitive algorithm:
 In the case of binary latent representations, a Gumbel-softmax distribution~(which is also known as a concrete distribution) is used to apply the reparameterization trick.
 A Gumbel-softmax distribution is a continuous relaxation of the Bernoulli distribution, and therefore,
 a random variable following the Gumbel-softmax distribution resides in $[0,1]$, rather than $\{0,1\}$.
-When replacing the binary random variable $b_i\in\{0,1\}^N$ with the continuous random variable $z_i\in[0,1]^N$, we apply the following approximation.
+When replacing the binary random variable $b\in\{0,1\}^N$ with the continuous random variable $z\in[0,1]^N$, we apply the following approximation.
 
 \section{Supplemental Experiments}
 
