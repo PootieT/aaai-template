@@ -144,15 +144,29 @@ Since the KL term is defined over Bernoulli distributions, the same discussion a
 \subsection{Computing Gumbel-Softmax}
 \label{gumbel-softmax-implementation}
 
+Given that the theoretical background of Gumbel-softmax fully specified, we now proceed to introduce the
+more down-to-earth implementation details of Gumbel-softmax.
+
 % Since the random distribution is not differentiable (BP is not applicable), VAEs use \emph{reparameterization tricks}, which decompose the target distribution into a differentiable and a purely random distribution (the latter does not require the gradient).
 % For example, the Gaussian $N(\sigma,\mu)$ is decomposed to $\mu+\sigma N(1,0)$, where $\mu,\sigma$ are learned.
 % In addition to the reconstruction loss, VAE should also minimize the variational loss (the difference between the learned and the target distributions) measured by, e.g.,  KL divergence.
 
-Gumbel-Softmax (GS) is a reparametrization trick \cite{jang2016categorical} for categorical distribution.
-It continuously approximates Gumbel-Max \cite{maddison2014sampling}, a method for drawing categorical samples.
-Assume the output $\mathbf{z}=(z_i)$ is a one-hot vector, e.g. if the domain is $D=\braces{a,b,c}$, then $\mathbf{z}=\parens{0,1,0}$ represents ``b''.
-The input is a class probability vector $\pi$, e.g. $\parens{.1,.1,.8}$.
-Gumbel-Max draws samples from $D$ following $\pi$:
+% Gumbel-Softmax (GS) is a reparametrization trick \cite{jang2016categorical} for categorical distribution.
+% It continuously approximates Gumbel-Max \cite{maddison2014sampling}, a method for drawing categorical samples.
+Assume the output $\mathbf{z}=(z_i)$ is a one-hot vector, e.g.,
+% if the domain is $D=\braces{a,b,c}$, then $\mathbf{z}=\parens{0,1,0}$ represents ``b'',
+if the domain is $D=\braces{false,true}$, then $\mathbf{z}=\parens{0,1}$ represents ``true''.
+% The input is a class probability vector $\pi$, e.g. $\parens{.1,.1,.8}$.
+The input is a class probability vector $\pi$, e.g. $\parens{.2,.8}$.
+While in our paper we always use the binary categories
+for we aim to represent the input in a binary vector,
+Gumbel-softmax itself easily extends to more than two classes such as $D=\braces{a,b,c}$
+and therefore, in this section, we describe the general case as in the original paper \cite{jang2016categorical}.
+
+We first describe a related method for drawing a categorical sample from $\pi$, Gumbel-Max technique \cite{maddison2014sampling}.
+It is a generalization
+of the method for drawing a boolean sample from a Bernoulli distribution with parameter $\pi_1/(\pi_0 + \pi_1)$.
+Gumbel-Max draws samples from $D$ with the following function:
 \[
 z_i \equiv [ \text{if}\ i\ \text{is} \arg \max_i (g_i+\log \pi_i) \text{then}\ 1\ \text{else}\ 0 ]
 \]
@@ -164,7 +178,7 @@ Gumbel-Softmax approximates argmax with softmax to make it differentiable:
 z_i = \text{Softmax}((g_i+\log \pi_i)/\tau).
 \]
 ``Temperature'' $\tau$ controls the magnitude of approximation, which is annealed to 0 by a certain schedule.
-The output of GS converges to a discrete one-hot vector when $\tau\approx 0$.
+The output $\mathbf{z}$ converges to a discrete one-hot vector when $\tau\approx 0$.
 
 In SAEs, we have $N$ gumbel-softmax units of $|D|=2$ categories ($D=\braces{\text{true},\text{false}}$)
 to model an $N$-dimensional Bernoulli/boolean/propositional variable $\mathbf{b}=(b_n)$.
