@@ -155,7 +155,7 @@ more down-to-earth implementation details of Gumbel-softmax.
 % It continuously approximates Gumbel-Max \cite{maddison2014sampling}, a method for drawing categorical samples.
 Assume the output $\mathbf{z}=(z_i)$ is a one-hot vector, e.g.,
 % if the domain is $D=\braces{a,b,c}$, then $\mathbf{z}=\parens{0,1,0}$ represents ``b'',
-if the domain is $D=\braces{false,true}$, then $\mathbf{z}=\parens{0,1}$ represents ``true''.
+if the domain is $D=\braces{\text{false},\text{true}}$, then $\mathbf{z}=\parens{0,1}$ represents ``true''.
 % The input is a class probability vector $\pi$, e.g. $\parens{.1,.1,.8}$.
 The input is a class probability vector $\pi$, e.g. $\parens{.2,.8}$.
 While in our paper we always use the binary categories
@@ -180,7 +180,7 @@ z_i = \text{Softmax}((g_i+\log \pi_i)/\tau).
 ``Temperature'' $\tau$ controls the magnitude of approximation, which is annealed to 0 by a certain schedule.
 The output $\mathbf{z}$ converges to a discrete one-hot vector when $\tau\approx 0$.
 
-In SAEs, we have $N$ gumbel-softmax units of $|D|=2$ categories ($D=\braces{\text{true},\text{false}}$)
+In SAEs, we have $N$ gumbel-softmax units of $|D|=2$ categories ($D=\braces{\text{false},\text{true}}$)
 to model an $N$-dimensional Bernoulli/boolean/propositional variable $\mathbf{b}=(b_n)$.
 Thus the latent layer is a matrix $z_{nk}$ rather than a vector, where $1\leq n \leq N$ and $k\in\braces{0,1}$.
 The actual boolean (Bernoulli / propositional) variable is then retrieved by $b_n=z_{n1}$.
