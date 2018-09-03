@@ -512,7 +512,7 @@ In principle, GS-VAE is trained by minimizing the following objective function w
 % From ``2019 Formatting Instructions'': For mathematical environments, you may reduce fontsize but not below 6.5 point.
 \relsize{-1}
 \begin{align}
-\label{vae-obj} \sum_{\mathbf{x}\in \mathcal{X}} \mathbb{E}_{q(\mathbf{b}\mid \mathbf{x})}\left[-\log p(\mathbf{x}\mid \mathbf{b})\right] + \mathrm{KL}(q(\mathbf{b}\mid \mathbf{x}) \parallel p(\mathbf{b})),
+\label{vae-obj} \sum_{\mathbf{x}\in \mathcal{X}} \left(\mathbb{E}_{q(\mathbf{b}\mid \mathbf{x})}\left[-\log p(\mathbf{x}\mid \mathbf{b})\right] + \mathrm{KL}(q(\mathbf{b}\mid \mathbf{x}) \parallel p(\mathbf{b}))\right),
 \end{align}
 }
 where $p(\mathbf{b}) = \prod_{n=1}^N p(b_n) = \prod_{n=1}^N \mathrm{Bern}(0.5)$ is the target, $N$-dimensional Bernoulli distribution with uniform probabilities
@@ -533,7 +533,7 @@ The second term is computed as
 =& - \sum_{n=1}^N H_q(b_n\mid \mathbf{x}) + \mathrm{const.} = -H_q(\mathbf{b} \mid \mathbf{x}) + \mathrm{const.},
 \end{align*}
 }
-where $H_q(\mathbf{b}|\mathbf{x})$ is the conditional entropy of $\mathbf{b}$ given $\mathbf{x}$ under $q$.
+where $H_q(\mathbf{b}|\mathbf{x})$ is the entropy of $\mathbf{b}$ given $\mathbf{x}$ under $q$.
 We assume every $b_n$ are mutually independent.
 
 \subsubsection{Entropy Regularization in Latplan}
