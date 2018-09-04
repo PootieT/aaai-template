@@ -664,10 +664,11 @@ One additional advantage of the ZSAE is that
 several neurons are completely deactivated, i.e. they always take the value of zero
 and can be pruned afterward to reduce the network size.
 (Details in the supplement, \refsec{pruning-implementation}.)
-Unlike traditional NN compression methods \cite{cheng2017survey}, this pruning does not suffer from
-accuracy degradation because the activations are discrete and therefore does not require additional retraining.
+Unlike traditional NN compression methods \cite{cheng2017survey}, it does not suffer from
+accuracy degradation because the activations are discrete and therefore no additional retraining is required.
 In the continuous cases, even the minuscule activations could be amplified by the weights and significantly affect the
 later pipelines of the neural networks.
+The pruning for a discrete representation complements the existing pruning methods for continuous representation.
 
 \section{Empirical Evaluation}
 \label{evaluation}
