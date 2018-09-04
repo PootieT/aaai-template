@@ -605,7 +605,7 @@ To further address the symbol stability problem in Latplan,
 %  (\emph{robust performance}).
 % We address it by Zero-Suppressed State AutoEncoder (ZSAE),
 we propose Zero-Suppressed State AutoEncoder (ZSAE),
-a SAE with an additional regularization.
+a SAE with an additional regularization designed for the discrete representation that we call \emph{zero-suppression}.
 % 
 Its basic idea is to penalize the
 true propositions in the latent layer so that no propositions unnecessarily flip to true at random,
@@ -614,27 +614,39 @@ while preserving the propositions that are absolutely necessary for maintaining 
 % and SAE uses 2 categories,
 % This can be seen as adding an
 % asymmetric penalty for a particular class label (true) used in the encoding.
-% 
+
+The actual implementation of Gumbel-Softmax represents a binary variable $b_n$ as
+a one-hot vector of 2 categories, $z_{nk}, k\in\braces{0,1}$,
+where $z_{n0} + z_{n1} = 1$ and $b_n = z_{n1}$.
+(Details in the supplement, \refsec{zsae-implementation}.)
 The resulting loss is 
-\emph{asymmetric} to a particular label $b_n$=1 where $b_n\in \braces{0,1}$:
-{
+\emph{asymmetric} to a particular label $k=1$ (true):
 % From ``2019 Formatting Instructions'': For mathematical environments, you may reduce fontsize but not below 6.5 point.
-\relsize{-1}
 \begin{align*}
  % \brackets{\text{loss}} = & \brackets{\text{\small vanilla SAE loss}} + \brackets{\text{\small 0-Sup. loss}} \\ 
  % =                        & \brackets{\text{\small vanilla SAE loss}} + \alpha \sum_n b_n % q(b_n=1 \mid x)
- \brackets{\text{loss}} = & \brackets{\text{\small vanilla SAE loss}} + \alpha \sum_n b_n % q(b_n=1 \mid x)
+ \brackets{\text{loss}} = & \brackets{\text{\small vanilla SAE loss}} + \alpha \sum_n \sum_{k\not=0} z_{nk} % q(b_n=1 \mid x)
 \end{align*}
-}
-where $\alpha$ is a hyperparameter specifying the magnitude of zero-suppression.
-This is similar to the regularization by $\ell_1$ norm (LASSO) typically applied to continuous activations
-in a sense that it tries to minimize the sum of activations.
-Similar to $\ell_1$ regularization, this achieves a sparser representation in the binary domain where
-more propositions take the value of 0 (\refig{zsae-overview}).
-The technical novelty of the method is in its implementation adapted for Gumbel-Softmax output,
-which is a collection of one-hot vectors $z_{nk} (n\in [1..N], k\in \braces{0,1})$
-where $\forall n; z_{n0} + z_{n1} = 1$ and  $b_n = z_{n1}$.
-(Details in the supplement, \refsec{zsae-implementation}.)
+where $\alpha$ is the magnitude of regularization.
+
+% Saying ``similarities'': novelty in disguise.
+The proposed method has some similarities to the $\ell_1$ regularization
+applied uniformly to the continuous activations of the neurons or the training weights.
+It achieves a sparse representation where the values become closer to zero,
+while zero-suppression is applied to the discrete values.
+% 
+Moreover, regularization is traditionally applied in order to suppress overfitting and improve the predictive performance
+while our focus is rather on the stability of the representation.
+% Unlike the traditional regularization methods,
+% regularization is applied on the activations rather than the training weights.
+% Unlike the Sparse AutoEncoder \cite{} that uniformly applies $\ell_1$ norm on the hidden continuous activation values,
+% zero-suppression is specifically designed for the categorical representation, resulting in a loss that is assymmetric to the class labels.
+% Gumbel-softmax is able to approximate not only the binary representation but also the multi-valued representation.
+% 
+% The technical novelty of the method is in its implementation adapted for Gumbel-Softmax output,
+% which is a collection of one-hot vectors $z_{nk} (n\in [1..N], k\in \braces{0,1})$
+% where $\forall n; z_{n0} + z_{n1} = 1$ and  $b_n = z_{n1}$.
+% (Details in the supplement, \refsec{zsae-implementation}.)
 
 %% This paragraph is unnecessary
 % This technique alters $p(\mathbf{b})$, the target distribution of GS-VAE.
