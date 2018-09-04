@@ -1234,12 +1234,14 @@ therefore do not have to address the stability of the symbols.
 \section{Conclusion}
 \label{conclusion}
 
-We introduced Zero-Suppressed State AutoEncoder (ZSAE) neural network (NN) which addresses
-the issue of \emph{unstable propositions} in the state encoding made by
-\latentplanner \cite{Asai2018}.
- % from the noisy image observations.
+In this paper, we provided a formal analysis of the State AutoEncoder
+(SAE) neural network (NN) in \latentplanner \cite{Asai2018} to
+understand its success and 
+the issue of its \emph{unstable propositions}.
 % 
-It improves the vanilla State AutoEncoder in Latplan by
+To address the issue,
+we introduced Zero-Suppressed State AutoEncoder (ZSAE) which
+improves the vanilla SAE by
 adding an additional optimization penalty to the NN
 that minimizes the number of true propositions in the representation.
 % 
