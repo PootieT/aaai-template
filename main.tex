@@ -684,20 +684,20 @@ Network details are in the supplement (\refsec{network-implementation}).
 is an image-based version of the 8-puzzle, where tiles contain hand-written digits (0-9) from the  MNIST database \cite{lecun1998gradient}.
 Valid moves in this domain swap the ``0'' tile  with a neighboring tile, i.e., the ``0'' serves as the ``blank'' tile in the classic 8-puzzle. 
 The \textbf{Scrambled Photograph 8-puzzle (Mandrill, Spider)} cuts and scrambles real photographs, similar to the puzzles sold in stores).
-These differ from the MNIST 8-puzzle in that ``tiles'' are \textit{not} cleanly separated by black regions
-(\latentplanner has no built-in notion of square or movable region).
+% These differ from the MNIST 8-puzzle in that ``tiles'' are \textit{not} cleanly separated by black regions
+% (\latentplanner has no built-in notion of square or movable region).
 % In \textbf{Towers of Hanoi (ToH)},
 % we generated the 4 disks instances.
 % 4-disk ToH resulted in a 15-step optimal plan.
-\textbf{LightsOut} is
+\textbf{LightsOut} \cite{lightsout} is
 a game where a grid of lights is in some on/off configuration ($+$: On),
 and pressing a light toggles its state as well as the states of its neighbors.
 The goal is all lights Off.
-Unlike previous puzzles, a single operator can flip 5/16 locations at once and
-removes some ``objects'' (lights).
+% Unlike previous puzzles, a single operator can flip 5/16 locations at once and
+% removes some ``objects'' (lights).
 % This demonstrates that \latentplanner is not limited to domains with highly local effects and static objects.
-\textbf{Twisted LightsOut} distorts the original LightsOut game image by a swirl effect,
-showing that \latentplanner is not limited to handling rectangular ``objects''/regions.
+\textbf{Twisted LightsOut} distorts the original LightsOut game image by a swirl effect.
+% showing that \latentplanner is not limited to handling rectangular ``objects''/regions.
 See supplements for the visual examples (\refig{fig:mnist}).
 
 % There are three versions of 8-puzzles (MNIST, Mandrill, Spider).
