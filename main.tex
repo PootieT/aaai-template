@@ -1257,17 +1257,18 @@ when their activations are constantly zero, due to discreteness.
 % find an online, adaptive tuning of $\alpha$, the hyperparameter for the penalty.
 
 As a meta-level contribution,
-we generalized the problematic behavior of unstable propositions
-as \emph{Symbol Stability Problem} (SSP), a subproblem of symbol grounding.
+we generalized the problematic behavior of the unstable propositions
+into a \emph{Symbol Stability Problem} (SSP), a subproblem of symbol grounding.
 % 
-We identified two sources of the stochasticity which introduces instability,
+We identified the two sources of stochasticity which introduce the instability,
 namely
 the inherent stochasticity of the network and
 the external stochasticity from the observations.
 % 
-This indicates that
-SSP is an important problem that applies to any modern symbol grounding processes because most real-world inputs are noisy,
-and also because the sampling-based, stochastic processes such as VAEs and GANs are gaining popularity in the literature.
+This suggests that
+SSP is an important problem that applies to any modern NN-based symbol grounding process
+that operates on the noisy real-world inputs and
+performs a sampling-based, stochastic process (e.g. VAEs, GANs) that are gaining popularity in the literature.
  
 An interesting avenue for future work is to extend our approach to InfoGAN-based
-approach for finding the discrete representation of the environment \cite{kurutach2018learning}.
+discrete representation of the environment \cite{kurutach2018learning}.
