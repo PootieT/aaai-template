@@ -1,0 +1,179 @@
+
+
+
+* Reviewer #1 (Accept)
+
+** summary
+
+The paper describes an approach to learn mappings from images to
+planning propositional representations and actions. It is based on
+previous work, Latplan, that used the auto-encoding ability of neural
+networks (NN). Due to some design decisions of Latplan and how NNs
+work, the resulting propositional representations could have problems
+related to stability; i.e. the representations generated in two time
+steps could differ due to some stochasticity in the learning
+procedure. Therefore, this paper presents an approach that tries to
+minimize perturbations by using a different optimization criteria than
+the one used in Latplan, as well as some other NN-related
+enhancements.
+
+** scores
+
+2. [Relevance] Is this paper relevant to an AI audience?
+    Likely to be of interest to a large proportion of the community
+3. [Significance] Are the results significant?
+    Significant
+4. [Novelty] Are the problems or approaches novel?
+    Somewhat novel or somewhat incremental
+5. [Soundness] Is the paper technically sound?
+    Technically sound
+6. [Evaluation] Are claims well-supported by theoretical analysis or experimental results?
+    Sufficient
+7. [Clarity] Is the paper well-organized and clearly written?
+    Excellent
+10. [OVERALL SCORE]
+    7 - Accept
+11. [CONFIDENCE]
+    Reviewer is an expert in the area
+
+** detailed
+
+The paper describes a method to automatically learn planning models
+from images. Thus, it is relevant for machine learning, as well as
+planning or even robotics researchers. The paper is very well written
+and can be easily read by people familiar with neural networks and
+automated planning. Even if I am not an expert on NNs, I was able to
+grasp the main ideas within the text and most technical contents
+related to NNs. The paper cannot be considered highly novel, given
+that it is strongly based on the previous work on Latplan, with a
+"minor" improvement.
+
+The experiments have been properly defined and executed, by
+appropriately reporting on the decisions related to some parameters,
+and comparing against two configurations, including Latplan. They
+covered both the learning and the planning aspects, as well.
+
+As a detailed comment, you should explain ARM_2 when it is first
+referenced in the Introduction. And there are several minor English
+issues, such as "finds the more stable propositions and the more" in
+the Abstract, "obtains a more stable propositions" in the
+Introduction, "Classical planners ... takes" in Sec 2.
+
+** questions
+
+When you describe Latplan in Sec 2, given that it does not get as
+input labels for actions, should we assume Latplan generates a
+completely instantiated domain?
+
+You assume b_n to be independent in Sec. 4. It is clear that it
+greatly simplifies the math. But, does it have any implication in the
+results? As far as I understand your work in terms of planning,
+propositions are not usually (or necessarily) independent.
+
+* Reviewer #2 (Accept)
+
+** summary
+
+The authors explore the issue in the State AutoEncoder in LatPlan where the
+latent state representation of an input image is dependent on noise and
+probability. They call the issue Symbol Stability Problem (SSP).
+
+Firstly, they explain what the issue is and discuss its sources and problems.
+
+Secondly, they analyse how the issue was solved in the original paper (Asai and
+Fukunaga 2018) and propose an additional regularization term to further prevent
+the SSP. The AutoEncoder trained with their new loss function is evaluated and
+shows good performance.
+
+** scores
+    2. [Relevance] Is this paper relevant to an AI audience?
+        Relevant to researchers in subareas only
+    3. [Significance] Are the results significant?
+        Moderately significant
+    4. [Novelty] Are the problems or approaches novel?
+        Somewhat novel or somewhat incremental
+    5. [Soundness] Is the paper technically sound?
+        Technically sound
+    6. [Evaluation] Are claims well-supported by theoretical analysis or experimental results?
+        Sufficient
+    7. [Clarity] Is the paper well-organized and clearly written?
+        Good
+    10. [OVERALL SCORE]
+        7 - Accept
+    11. [CONFIDENCE]
+        Reviewer is knowledgeable in the area
+** detailed
+I think, to help the user to model his planning problem or like here to automatically deduce the problem without a user is an important step to apply planning in the real world and a topic where the planning community could do more. An automatically deduced representation of the world which is noisy hinders this, thus, I agree that there is a SSP. By the analysis of the authors it seems the base paper (Asai and Fukunaga 2018) tackles this issue already in a first way and now the authors suggest an additional regularization.
+
+The argumentation in the paper is easy to follow and the mathematics are sound. In the supplementary materials the step applying the Jensen's inequality could require some additional explanations to make it easier and quicker to understand. The experiment and their results look promising. In table 1, middle column about MSE, the authors speak about the orders of magnitude larger MSE for N=36, but for N=100/1000 the same happens in the LightsOut domain (which interestingly was not problematic for N=36). Do you have an explanation for this?
+** questions
+
+In the original SAE the Kullback-Leibler divergence helps stabilizing the latent representation of the state. Your ZSAE uses both the KL divergence and your own regularization. Have you tested/Can you test what the effect of your own regularization alone is?
+The way you have written down your own regularization allows the latent representation to be non binary. What are your thoughts about using non binary predicates (like in SAS+ representation a variable can have multiple values)?
+In Section 6.1 your have written that because of the probabilistic nature of the latent representation you encoded the same image 100 times and took the mean. In my understanding the mean would lead you to have continous values whereas the system later operates on 0 and 1.
+(This would also be a question in LatPlan) In a real world setting without a ground truth to check for, do you have an idea how to select N correctly?
+
+* Reviewer #3
+
+** summary
+        This paper aims to extend the already published work on the Latplan planner
+        (e.g. AAAI-18) by introducing the Zero-suppressed SAE. This is aimed
+        at addressing the 'symbol stability problem'. 
+** scores
+    2. [Relevance] Is this paper relevant to an AI audience?
+        Relevant to researchers in subareas only
+    3. [Significance] Are the results significant?
+        Moderately significant
+    4. [Novelty] Are the problems or approaches novel?
+        Somewhat novel or somewhat incremental
+    5. [Soundness] Is the paper technically sound?
+        Technically sound
+    6. [Evaluation] Are claims well-supported by theoretical analysis or experimental results?
+        Somewhat weak
+    7. [Clarity] Is the paper well-organized and clearly written?
+        Poor
+    10. [OVERALL SCORE]
+        4 - Reject
+    11. [CONFIDENCE]
+        Reviewer is an expert in the area
+
+** detailed
+
+Latplan is a system that joins up a planner and visual representations of
+states in the planning world, by using a state auto-encoder to learn discrete
+encodings of observered states. When examples of state to state transitions are
+given, it can form action descriptions in terms of the encoded
+states. When it outputs states, it can use the autoencoder to regenerate the image
+representated.
+
+From the planning point of view, systems that generate and/or maintain the
+domain model are very important, hence this work is well-motivated.
+There are two stages of this approach - image to propositional encoding,
+and propositional encoding used in examples, to domain model. The
+latter is well covered by knowledge engineering research - the main
+contribution of Latplan is in the former, and in the hooking up of all the
+technology. This paper aims to extend the already published work on the Latplan planner
+(e.g. AAAI-18) by introducuing the Zero-suppressed SAE. This is aimed
+at addressing the 'symbol stability problem'.
+
+The background to the paper and the introduction of the stability problem
+seem to be written well and explained fairly clearly. Section 4 however
+appears to motivate the changes to Latplan by an analysis of its publically
+available code, which strikes me as very odd. Its not clear what this section
+is adding to the paper.
+
+Most importantly, the heart of the paper - details of the ZSAE method - are
+apparently only available in the supplemental material.
+The evaluation I assume (though not explicitly stated) is to show that the
+ZSAE is superior to the SAE. 6.1 attempts this using the 'variance' as a
+metric. This seems logical, but without enugh details of the ZSAE method in the
+paper, it is difficult to judge.
+
+In summary, the overall approach is interesting and worthy of research, but
+this paper seems to make an incremental step which is not fully explained in
+the paper (see section 5), and which does not appear significant enough for a AAAI.
+
+** questions
+
+Please explain the Aims/Objectives of the Empirical Evaluation and the reason for the metrics used.
+I could not find sufficient details of ZSAE - are they is the paper?
