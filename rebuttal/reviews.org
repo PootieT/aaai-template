@@ -103,9 +103,24 @@ shows good performance.
     11. [CONFIDENCE]
         Reviewer is knowledgeable in the area
 ** detailed
-I think, to help the user to model his planning problem or like here to automatically deduce the problem without a user is an important step to apply planning in the real world and a topic where the planning community could do more. An automatically deduced representation of the world which is noisy hinders this, thus, I agree that there is a SSP. By the analysis of the authors it seems the base paper (Asai and Fukunaga 2018) tackles this issue already in a first way and now the authors suggest an additional regularization.
+I think, to help the user to model his planning problem or like here to
+automatically deduce the problem without a user is an important step to apply
+planning in the real world and a topic where the planning community could do
+more. An automatically deduced representation of the world which is noisy
+hinders this, thus, I agree that there is a SSP. By the analysis of the authors
+it seems the base paper (Asai and Fukunaga 2018) tackles this issue already in a
+first way and now the authors suggest an additional regularization.
 
-The argumentation in the paper is easy to follow and the mathematics are sound. In the supplementary materials the step applying the Jensen's inequality could require some additional explanations to make it easier and quicker to understand. The experiment and their results look promising. In table 1, middle column about MSE, the authors speak about the orders of magnitude larger MSE for N=36, but for N=100/1000 the same happens in the LightsOut domain (which interestingly was not problematic for N=36). Do you have an explanation for this?
+The argumentation in the paper is easy to follow and the mathematics are
+sound. In the supplementary materials the step applying the Jensen's inequality
+could require some additional explanations to make it easier and quicker to
+understand. The experiment and their results look promising.
+
+In table 1, middle
+column about MSE, the authors speak about the orders of magnitude larger MSE for
+N=36, but for N=100/1000 the same happens in the LightsOut domain (which
+interestingly was not problematic for N=36). Do you have an explanation
+for this?
 ** questions
 
 In the original SAE the Kullback-Leibler divergence helps stabilizing the latent representation of the state. Your ZSAE uses both the KL divergence and your own regularization. Have you tested/Can you test what the effect of your own regularization alone is?
