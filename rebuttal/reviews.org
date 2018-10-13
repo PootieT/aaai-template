@@ -131,26 +131,28 @@ In Section 6.1 your have written that because of the probabilistic nature of the
 * Reviewer #3
 
 ** summary
-        This paper aims to extend the already published work on the Latplan planner
-        (e.g. AAAI-18) by introducing the Zero-suppressed SAE. This is aimed
-        at addressing the 'symbol stability problem'. 
+
+This paper aims to extend the already published work on the Latplan planner
+(e.g. AAAI-18) by introducing the Zero-suppressed SAE. This is aimed
+at addressing the 'symbol stability problem'. 
+
 ** scores
-    2. [Relevance] Is this paper relevant to an AI audience?
-        Relevant to researchers in subareas only
-    3. [Significance] Are the results significant?
-        Moderately significant
-    4. [Novelty] Are the problems or approaches novel?
-        Somewhat novel or somewhat incremental
-    5. [Soundness] Is the paper technically sound?
-        Technically sound
-    6. [Evaluation] Are claims well-supported by theoretical analysis or experimental results?
-        Somewhat weak
-    7. [Clarity] Is the paper well-organized and clearly written?
-        Poor
-    10. [OVERALL SCORE]
-        4 - Reject
-    11. [CONFIDENCE]
-        Reviewer is an expert in the area
+2. [Relevance] Is this paper relevant to an AI audience?
+    Relevant to researchers in subareas only
+3. [Significance] Are the results significant?
+    Moderately significant
+4. [Novelty] Are the problems or approaches novel?
+    Somewhat novel or somewhat incremental
+5. [Soundness] Is the paper technically sound?
+    Technically sound
+6. [Evaluation] Are claims well-supported by theoretical analysis or experimental results?
+    Somewhat weak
+7. [Clarity] Is the paper well-organized and clearly written?
+    Poor
+10. [OVERALL SCORE]
+    4 - Reject
+11. [CONFIDENCE]
+    Reviewer is an expert in the area
 
 ** detailed
 
@@ -190,5 +192,7 @@ the paper (see section 5), and which does not appear significant enough for a AA
 
 ** questions
 
-Please explain the Aims/Objectives of the Empirical Evaluation and the reason for the metrics used.
+Please explain the Aims/Objectives of the Empirical Evaluation and the reason
+for the metrics used.
+
 I could not find sufficient details of ZSAE - are they is the paper?

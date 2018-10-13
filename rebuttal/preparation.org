@@ -127,3 +127,116 @@ number of effective bits automatically.
 
 In practice, the size of N would be restricted by the hardware limitation (GPU)
 and the time constraint (large network = slow training).
+
+* Reviewer #3 (Reject)
+
+#+begin_quote
+Section 4 however appears to motivate the changes to Latplan by an analysis of
+its publically available code, which strikes me as very odd. Its not clear what
+this section is adding to the paper.
+#+end_quote
+
+#+begin_quote
+In summary, ... this paper seems to make an incremental step which is not fully explained in
+the paper (see section 5), and which does not appear significant enough for a AAAI.
+#+end_quote
+
+As we stated in the Conclusion, the contributions of this paper is threefold:
+ 1. Rigorous formal analysis of the neural network model used in Latplan system.
+ 2. ZSAE.
+ 3. Introduction of SSP.
+Thus section 4 corresponds to the first contribution.
+
+The original Latplan paper did not provide this kind of theoretical analysis of the
+system as we performed in this paper.
+
+# Besides, both authors of the original Latplan paper do not have a deep expertize in
+# machine learning (personal communication with the authors), thus we hope to
+This provide a useful basis that the symbolic planning community can stand upon
+for extending this line of work.
+
+
+
+#+begin_quote
+Most importantly, the heart of the paper - details of the ZSAE method - are
+apparently only available in the supplemental material.
+#+end_quote
+
+#+begin_quote
+I could not find sufficient details of ZSAE - are they is the paper?
+#+end_quote
+
+This paper is self-contained.
+
+The network architecture of ZSAE is identical to that of SAE, as we mentioned:
+"Zero-Suppressed State AutoEncoder (ZSAE), a SAE with an additional regularization".
+The only difference between them is the additional term in the optimization metric,
+which is shown in the formula in section 5.
+To reiterate, it "penalize the true propositions in the latent layer"
+by penalizing \sum_n z_n1 
+for the latent layer z_nk (a matrix), k ∈ {0, 1},
+where the matrix is constrained to z_n0 +z_n1 = 1.
+If z_n1 = 1 (therefore z_n0 = 0), it means that the n-th proposition is true.
+The term is explicitly penalizing them for all propositions.
+We thus provided sufficient information to reproduce the implementation and the experiments.
+
+We pointed to the supplement ("details") only for helping the readers to
+familiarize themselves to the terms and ideas in the machine learning / neural
+network literature,
+as we expected readers from both symbolic and machine-learning sides.
+The "details" are more like extended footnotes.
+In fact, the section S2.3 in the supplement is merely a single paragraph of 3 lines.
+
+The reason we provided a long and comprehensive supplemental material and
+put many notes is to bridge the potential large gap between audiences:
+Symbolic researchers (as one person in our group, who has a symbolic background, states)
+are sometimes not familiar with
+machine learning methods, and machine learning researchers are sometimes not familiar with
+symbolic methods.
+
+#+begin_quote
+The evaluation I assume (though not explicitly stated) is to show that the
+ZSAE is superior to the SAE. 6.1 attempts this using the 'variance' as a
+metric. This seems logical, but without enugh details of the ZSAE method in the
+paper, it is difficult to judge.
+#+end_quote
+
+#+begin_quote
+Please explain the Aims/Objectives of the Empirical Evaluation and the reason
+for the metrics used.
+#+end_quote
+
+In the abstract as well as in the introduction/conclusion,
+we clearly stated that ZSAE improves upon SAE.
+
++ Abstract:     "“Zero-Suppressed SAE”, an enhancement..."
++ Introduction: "ZSAE obtains a more "stable" propositions..."
++ Conclusion:   "...which improves the vanilla SAE".
+
+The aim of sec6.1 is twofold:
+The first one is to show the stability of the obtained propositions as measured by the
+state variance for the same / almost same (purturbated by noise) input image.
+We obtained the propositional vectors of the same / almost same image using the SAE/ZSAE.
+If the variance of the propositional vector is high, it means
+that the network tends to return different state encoding even for the same image observation,
+which is harmful for planning.
+Thus, the ZSAE, which achieves the lower variance, is superior. This is the main claim.
+
+The second aim is to understand the other overall characteristics (the effect of
+zero-suppression penalty on the output accuracy, effective bits) of the ZSAE as
+compared to SAE in order to provide further insight, as well as showing
+additional benefit of using ZSAE (ZSAE is less sensitive to hyperparameters,
+thus it is easier to train a ZSAE than to train a SAE).
+
+
+# maybe describing 6.2 and 6.3 is not necessary.
+# Apparently none of the reviewers are concerned with 6.3, so let's not
+# wake a sleeping dragon.
+# Reviewer 3 only mentions the variance metrics.
+The aim of sec6.2 is to show the success rate of classical planning in the
+propositional state space is higher when they are produced by ZSAE rather than
+SAE.  Also, we addressed the impact of the unstable representation (e.g. graph
+disconnectedness and duplicate detection in section 3) are reduced by
+using ZSAE.
+
+The aim of sec6.3 is a simple demonstration that ZSAE allows 
