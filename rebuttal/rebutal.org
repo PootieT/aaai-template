@@ -4,7 +4,7 @@
 #+EMAIL: 
 #+OPTIONS: ':nil *:t -:t ::t <:t H:3 \n:nil ^:t arch:headline author:nil
 #+OPTIONS: c:nil creator:nil d:(not "LOGBOOK") date:nil e:t email:nil
-#+OPTIONS: f:t inline:t num:t p:nil pri:nil stat:t tags:t tasks:t tex:nil
+#+OPTIONS: f:t inline:t num:t p:nil pri:nil stat:t tags:t tasks:t tex:t
 #+OPTIONS: timestamp:nil toc:nil todo:t |:t
 #+CREATOR: Emacs 24.3.1 (Org mode 8.2.10)
 #+DESCRIPTION:
@@ -31,7 +31,7 @@ as we performed in this paper.
 Thus we provide a useful basis that the symbolic planning community can stand upon
 for extending this line of work.
 
-(Asai 2018) did not mention that their loss function was inverted from
+(Asai 2018) neither mentioned that their loss function was inverted from
 the standard Gumbel-Softmax VAE. Therefore, while their implementation accidentally
 "tackles this issue already", it was not noticed and not published in any materials.
 
@@ -88,17 +88,17 @@ The difference is the additional term in the optimization metric,
 which is shown in the formula in section 5.
 
 It "penalize the true propositions in the latent layer"
-by penalizing \sum_n z_n1 
+by penalizing Σ_n z_n1
 for the latent layer z_nk (a matrix element), k ∈ {0, 1},
 where the matrix is constrained to z_n0 +z_n1 = 1
 (basic characteristics of gumbel-softmax).
 
 We stated the binary variable b_n (used in the formal model in section 4) corresponds to z_n1.
 If z_n1 = 1 (therefore z_n0 = 0), it means that the n-th proposition is true.
-Therefore the term (\sum_n z_n1) is explicitly penalizing true propositions.
+Therefore the term (Σ_n z_n1) is explicitly penalizing true propositions.
 We thus provided sufficient information to reproduce the implementation.
 
-### it would not be useful to refute "though not explicitly stated" part
+# ## it would not be useful to refute "though not explicitly stated" part
 # : The evaluation I assume (though not explicitly stated) is to show that the
 # : ZSAE is superior to the SAE.
 # 
@@ -192,7 +192,7 @@ that takes an action number (e.g. a ∈ [1..128]) and the current state.
 
 To R2:
 
-## already answered
+# # already answered
 # : the base paper (Asai and Fukunaga 2018) tackles this issue already in a
 # : first way and now the authors suggest an additional regularization.
 # 
@@ -227,7 +227,7 @@ We will add the results in the revision if requested. (we are not supposed to do
 
 : your own regularization allows ... SAS+ representation ... ?
 
-It was written so with SAS+ in mind (e.g. if k \in {0,1,2} = a variable with 3 values)
+It was written so with SAS+ in mind (e.g. if k ∈ {0,1,2} = a variable with 3 values)
 as (Asai 2018) also mentions SAS+.
 # The expressivity of the representation is not affected by limiting the domain to
 # binary values (as STRIPS and SAS+ is equivalent).
