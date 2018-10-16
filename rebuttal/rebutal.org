@@ -193,6 +193,13 @@ that takes an action number (e.g. a ∈ [1..128]) and the current state.
 # 
 # (not sure)
 
+# モデル上は、潜在表現bを得るときに各bit独立にガンベル分布からサンプルしてるから独立（ここ以外ランダム性ないですよね？）だけど、最終的に得られる潜在表現はほぼ deterministic だからこの仮定はあんまり本質的ではない、とか
+
+: b_n to be independent .. implication .. ?
+
+This means each b_n is sampled from independent Gumbel-Softmax,
+thus it is not essential.
+
 
 To R2:
 
