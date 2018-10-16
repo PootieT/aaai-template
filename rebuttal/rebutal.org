@@ -21,15 +21,13 @@ In the following we abbreviate Reviewer #X to RX.
 Individual responses come after the overall response.
 
 As we stated in the Conclusion, the contributions of this paper is threefold:
- 1. Rigorous formal analysis of the neural network model used in Latplan system.
+ 1. Rigorous formal analysis of the neural network model used in Latplan.
  2. ZSAE.
  3. Introduction of SSP. (meta-level)
 Thus, section 4 corresponds to the first contribution.
 
-(Asai 2018) did not provide this kind of theoretical analysis 
-as we performed in this paper.
-Thus we provide a useful basis that the symbolic planning community can stand upon
-for extending this line of work.
+(Asai 2018) did not provide this kind of theoretical analysis as we performed in this paper.
+Thus we provide a formal basis that the planning community can use for extending this line of work.
 
 (Asai 2018) neither mentioned that their loss function was inverted from
 the standard Gumbel-Softmax VAE. Therefore, while their implementation accidentally
