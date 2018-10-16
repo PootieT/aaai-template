@@ -89,7 +89,7 @@ To R3:
 
 The network architecture of ZSAE is identical to that of SAE:
 "Zero-Suppressed State AutoEncoder (ZSAE), a SAE with an additional regularization" (p.4-5).
-The difference is the additional term in the optimization metric as specified in section 5.
+The difference is the additional term in the optimization metric fully specified in section 5.
 
 We stated that
 the binary variable b_n (used in the formal model in section 4) corresponds to z_n1,
@@ -97,7 +97,7 @@ for the latent layer z_nk (a matrix element), k ∈ {0, 1},
 where the matrix is constrained to z_n0 +z_n1 = 1
 (basic characteristics of gumbel-softmax).
 If z_n1 = 1 (therefore z_n0 = 0), it means that the n-th proposition is true.
-It "penalize the true propositions in the latent layer" by penalizing Σ_n z_n1.
+Thus penalizing Σ_n z_n1 is to "penalize the true propositions in the latent layer".
 This provides sufficient information to reproduce the implementation,
 but in the revision, we will elaborate more on this.
 
