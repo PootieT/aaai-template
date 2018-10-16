@@ -46,7 +46,8 @@ This paper is self-contained. We provide enough information
 to reproduce the implementation and experiments from the Latplan code available from github.
 Our code will also be released after acceptance.
 
-While we pointed to the supplement as "details" several times,
+While we pointed to the supplement as "details" several times which 
+gave impression that we are hiding details,
 they are attempts to help the readers understand our math, map the math to the implementation, or familiarize themselves
 to the terms and ideas in the machine learning literature, because
 we expected readers from both the symbolic and the machine-learning sides.
@@ -61,7 +62,7 @@ the ZSAE formula (p.5) contains merely a single paragraph of 3 lines.
 : Most importantly, the heart of the paper - details of the ZSAE method - are
 : apparently only available in the supplemental material.
 
-It is therefore clear that the "details" are meant to bridge the large gap between two communities,
+It should be clear that the "details" are meant to bridge the large gap between two communities,
 i.e. subsymbolic machine learning and symbolic classical planning.
 
 
@@ -76,27 +77,33 @@ To R3:
 # Section 4 provides a rigorous formal analysis of the neural network model used in
 # Latplan system, which was not provided in (Asai 2018).
 
-: details of the ZSAE method ... only available in the supplemental material.
+# Most importantly, the heart of the paper - details of the ZSAE method - are
+# apparently only available in the supplemental material.
+# The evaluation I assume (though not explicitly stated) is to show that the
+# ZSAE is superior to the SAE. 6.1 attempts this using the 'variance' as a
+# metric. This seems logical, but without enugh details of the ZSAE method in the
+# paper, it is difficult to judge.
+
+: details of the ZSAE method ...
 
 # : I could not find sufficient details of ZSAE - are they is the paper?
 
 # This paper is self-contained.
 
 The network architecture of ZSAE is identical to that of SAE:
-"Zero-Suppressed State AutoEncoder (ZSAE), a SAE with an additional regularization".
-The difference is the additional term in the optimization metric,
-which is shown in the formula in section 5.
+"Zero-Suppressed State AutoEncoder (ZSAE), a SAE with an additional regularization" (p.4-5).
+The difference is the additional term in the optimization metric as specified in section 5.
 
-It "penalize the true propositions in the latent layer"
-by penalizing Σ_n z_n1
+We stated that
+the binary variable b_n (used in the formal model in section 4) corresponds to z_n1,
 for the latent layer z_nk (a matrix element), k ∈ {0, 1},
 where the matrix is constrained to z_n0 +z_n1 = 1
 (basic characteristics of gumbel-softmax).
-
-We stated the binary variable b_n (used in the formal model in section 4) corresponds to z_n1.
 If z_n1 = 1 (therefore z_n0 = 0), it means that the n-th proposition is true.
-Therefore the term (Σ_n z_n1) is explicitly penalizing true propositions.
-We thus provided sufficient information to reproduce the implementation.
+It "penalize the true propositions in the latent layer" by penalizing Σ_n z_n1.
+This provides sufficient information to reproduce the implementation,
+but in the revision, we will elaborate more on this.
+
 
 # ## it would not be useful to refute "though not explicitly stated" part
 # : The evaluation I assume (though not explicitly stated) is to show that the
@@ -110,20 +117,20 @@ We thus provided sufficient information to reproduce the implementation.
 # + Conclusion:   "...which improves the vanilla SAE".
 
 
-: explain the Aims/Objectives of the Empirical Evaluation and the reason
-: for the metrics used.
+: explain the Aims .. the metrics ..
 
-The aim of sec6.1 is twofold:
+The aim of sec6.1 is threefold:
 
-First, we showed the stability of the obtained propositions as measured by the
-state variance for the same / almost same (noisy) input image.
-We obtained the propositional vectors of the images with the Z/SAE.
-If the variance of the propositional vector is high, it means
+We showed that ZSAE obtains the more stable propositions than the Vanilla SAE does.
+The stability is measured by the
+variance of the propositional values obtained from the same / almost same (noisy) input image using Z/SAE.
+# 
+If the variance is high, it means
 that the network tends to return different encoding for the same image, which is harmful for planning.
 ZSAE achieves the lower variance, thus it is superior.
 
-Second, we provided the other overall characteristics of the ZSAE as
-compared to SAE in order to provide further insights into its success
+Second, we provided the other overall characteristics between ZSAE and SAE
+in order to provide further information and insights into its success
 (e.g. the effect of zero-suppression on the output accuracy, effective bits).
 
 Third, we showed the additional benefits of using ZSAE (e.g. 
@@ -167,7 +174,7 @@ To R1:
 # 
 # not sure what s/he means by "instantiated domain"
 
-: should we assume Latplan generates a completely instantiated domain?
+: ... Latplan generates a completely instantiated domain?
 
 Both AMA1 and AMA2 returns a search space equivalent to a grounded STRIPS problem.
 
