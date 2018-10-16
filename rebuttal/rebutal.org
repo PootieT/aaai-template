@@ -176,7 +176,7 @@ AMA1 returns a PDDL model which contains a grounded action schema for a single s
 
 AMA2 takes an upper bound of the possible number of action labels (e.g. 128).
 State transitions do not contain action labels, but AMA2 automatically groups similar transitions together
-and assign the same label, i.e., finds the action labels by itself.
+and assigns the same label, i.e., finds the action schema by itself.
 AMA2 does not return a PDDL, but a neural network as a black box successor function succ(a,s)
 that takes an action number (e.g. a ∈ [1..128]) and the current state.
 
@@ -209,7 +209,7 @@ To R2:
 : MSE ... explanation for this?
 
 MSE below 1.0e-3 is visually not significant to human (both 2.8e-14, 1.2e-5)
---- only noise-level difference.
+--- only noise-level difference. Therefore this is not problematic.
 
 # : In the original SAE the Kullback-Leibler divergence helps stabilizing the latent
 # : representation of the state. Your ZSAE uses both the KL divergence and your own
