@@ -24,65 +24,68 @@ As we stated in the Conclusion, the contributions of this paper is threefold:
  1. Rigorous formal analysis of the neural network model used in Latplan system.
  2. ZSAE.
  3. Introduction of SSP. (meta-level)
-Thus section 4 corresponds to the first contribution.
+Thus, section 4 corresponds to the first contribution.
 
-The original Latplan paper did not provide this kind of theoretical analysis of the
-system as we performed in this paper.
+(Asai 2018) did not provide this kind of theoretical analysis 
+as we performed in this paper.
+Thus we provide a useful basis that the symbolic planning community can stand upon
+for extending this line of work.
+
+(Asai 2018) did not mention that their loss function was inverted from
+the standard Gumbel-Softmax VAE. Therefore, while their implementation accidentally
+"tackles this issue already", it was not noticed and not published in any materials.
+
+Finally, our finding in Section 4 motivated us to formulate the SSP in the current form.
 
 # Besides, both authors of the original Latplan paper do not have a deep expertize in
 # machine learning (personal communication with the authors), thus we hope to
-This provides a useful basis that the symbolic planning community can stand upon
-for extending this line of work.
 
 
-In the paper, we pointed to the supplement as "details" several times.
-Sometimes the "details" are more like extended footnotes.
-In fact, the section S2.3 in the supplement is merely a single paragraph of 3 lines.
-
-Importantly, these are attempts to help the readers familiarize themselves
-to the terms and ideas in the machine learning / neural network literature, as
-we expected readers from both the symbolic and the machine-learning sides.
-While this paper requires the understanding of both fields,
-space limitation does not allow us to include every details of machine-learning in the paper.
-If machine-learning researchers review this paper, they would also
-have slight difficulty understanding the underlying assumptions of classical planning.
 
 This paper is self-contained. We provide enough information
-to reproduce the implementation and experiments. Codes will also be released
-after acceptance.
+to reproduce the implementation and experiments from the Latplan code available from github.
+Codes will also be released after acceptance.
+
+In the paper, we pointed to the supplement as "details" several times.
+Sometimes the "details" are just extended footnotes.
+In fact, the section S2.3 in the supplement is merely a single paragraph of 3 lines.
+These are attempts to help the readers familiarize themselves
+to the terms and ideas in the machine learning / neural network literature, as
+we expected readers from both the symbolic and the machine-learning sides.
+# While this paper requires the understanding of both fields,
+# space limitation does not allow us to introduce basic concepts.
+# If machine-learning researchers review this paper, they would also
+# have slight difficulty understanding the underlying assumptions of classical planning.
+
 
 To R3:
 
-: Section 4 ... not clear what this section is adding to the paper.
+# : Section 4 ... not clear what this section is adding to the paper.
+# 
+# : In summary, ... this paper seems to make an incremental step which is not fully explained in
+# : the paper (see section 5), and which does not appear significant enough for a AAAI.
+# 
+# Section 4 provides a rigorous formal analysis of the neural network model used in
+# Latplan system, which was not provided in (Asai 2018).
 
-: In summary, ... this paper seems to make an incremental step which is not fully explained in
-: the paper (see section 5), and which does not appear significant enough for a AAAI.
+: details of the ZSAE method ... only available in the supplemental material.
 
-Section 4 provides a rigorous formal analysis of the neural network model used in
-Latplan system, which was not provided in the original Latplan paper.
+# : I could not find sufficient details of ZSAE - are they is the paper?
 
-Also, *TODO*
+# This paper is self-contained.
 
-: Most importantly, the heart of the paper - details of the ZSAE method - are
-: apparently only available in the supplemental material.
-
-: I could not find sufficient details of ZSAE - are they is the paper?
-
-This paper is self-contained.
-
-The network architecture of ZSAE is identical to that of SAE, as we mentioned:
+The network architecture of ZSAE is identical to that of SAE:
 "Zero-Suppressed State AutoEncoder (ZSAE), a SAE with an additional regularization".
-The only difference between them is the additional term in the optimization metric,
+The difference is the additional term in the optimization metric,
 which is shown in the formula in section 5.
 
-To reiterate, it "penalize the true propositions in the latent layer"
+It "penalize the true propositions in the latent layer"
 by penalizing \sum_n z_n1 
-for the latent layer z_nk (an element of a matrix), k ∈ {0, 1},
+for the latent layer z_nk (a matrix element), k ∈ {0, 1},
 where the matrix is constrained to z_n0 +z_n1 = 1
-(this is one of the basic characteristics of gumbel-softmax).
+(basic characteristics of gumbel-softmax).
 
-We stated the binary variable b_n (used in the mathematical model in section 4)
-is equivalent to z_n1.
+We stated the binary variable b_n (used in the formal model in section 4) corresponds to z_n1.
 If z_n1 = 1 (therefore z_n0 = 0), it means that the n-th proposition is true.
 Therefore the term (\sum_n z_n1) is explicitly penalizing true propositions.
 We thus provided sufficient information to reproduce the implementation.
@@ -99,26 +102,24 @@ We thus provided sufficient information to reproduce the implementation.
 # + Conclusion:   "...which improves the vanilla SAE".
 
 
-: Please explain the Aims/Objectives of the Empirical Evaluation and the reason
+: explain the Aims/Objectives of the Empirical Evaluation and the reason
 : for the metrics used.
 
-
 The aim of sec6.1 is twofold:
-The first one is to show the stability of the obtained propositions as measured by the
-state variance for the same / almost same (purturbated by noise) input image.
-We obtained the propositional vectors of the same / almost same image using the SAE/ZSAE.
+
+First, we showed the stability of the obtained propositions as measured by the
+state variance for the same / almost same (noisy) input image.
+We obtained the propositional vectors of the images with the Z/SAE.
 If the variance of the propositional vector is high, it means
-that the network tends to return different state encoding even for the same image observation,
-which is harmful for planning.
-Thus, the ZSAE, which achieves the lower variance, is superior. This is the main claim.
+that the network tends to return different encoding for the same image, which is harmful for planning.
+ZSAE achieves the lower variance, thus it is superior.
 
-The second aim is to understand the other overall characteristics of the ZSAE as
-compared to SAE in order to provide further insights into some concerns and why
-it is successful (e.g. the effect of zero-suppression penalty on the output
-accuracy, effective bits).
+Second, we provided the other overall characteristics of the ZSAE as
+compared to SAE in order to provide further insights into its success
+(e.g. the effect of zero-suppression on the output accuracy, effective bits).
 
-The third aim is to show the additional benefits of using ZSAE (e.g. ZSAE is
-less sensitive to hyperparameters, thus a ZSAE is easier to train than a SAE).
+Third, we showed the additional benefits of using ZSAE (e.g. 
+less sensitive to hyperparameters, thus easier to train than a SAE).
 
 
 # # maybe describing 6.2 and 6.3 is not necessary.
@@ -135,91 +136,113 @@ less sensitive to hyperparameters, thus a ZSAE is easier to train than a SAE).
 
 To R1:
 
-: Due to some design decisions of Latplan and how NNs work, the resulting
-: propositional representations could have problems related to stability
+# : Due to some design decisions of Latplan and how NNs work, the resulting
+# : propositional representations could have problems related to stability
+# 
+# I think his confidence is a bit lower
 
-I think his confidence is a bit lower
-
-: the representations generated in two time steps could differ due to some
-: stochasticity in the learning procedure
-
-"two time steps" -> unsure about what he implies, it is for single time step
-Also, stochasticity prevails after the learning procedure too
-
-
-: As a detailed comment, you should explain ARM_2 when it is first
-: referenced in the Introduction.
-
-yes
-
-: When you describe Latplan in Sec 2, given that it does not get as
-: input labels for actions, should we assume Latplan generates a
-: completely instantiated domain?
-
-not sure what s/he means by "instantiated domain"
-
-yes for AMA1
-
-AMA2 does not return a PDDL, but a black box neural action model.
+# : the representations generated in two time steps could differ due to some
+# : stochasticity in the learning procedure
+# 
+# "two time steps" -> unsure about what he implies, it is for single time step
+# Also, stochasticity prevails after the learning procedure too
 
 
-: You assume b_n to be independent in Sec. 4. It is clear that it
-: greatly simplifies the math. But, does it have any implication in the
-: results? As far as I understand your work in terms of planning,
-: propositions are not usually (or necessarily) independent.
+# : As a detailed comment, you should explain ARM_2 when it is first
+# : referenced in the Introduction.
+# 
+# yes
 
-(not sure)
+# : When you describe Latplan in Sec 2, given that it does not get as
+# : input labels for actions, should we assume Latplan generates a
+# : completely instantiated domain?
+# 
+# not sure what s/he means by "instantiated domain"
+
+: should we assume Latplan generates a completely instantiated domain?
+
+Both AMA1 and AMA2 returns a search space equivalent to a grounded STRIPS problem.
+
+AMA1 returns a PDDL model which contains a grounded action schema for a single state transition
+(the number of schema corresponds to the number of edges in the state space).
+
+AMA2 takes an upper bound of the possible number of action labels (e.g. 128).
+State transitions do not contain action labels, but AMA2 automatically groups similar transitions together
+and assign the same label, i.e., finds the action labels by itself.
+AMA2 does not return a PDDL, but a neural network as a black box successor function succ(a,s)
+that takes an action number (e.g. a ∈ [1..128]) and the current state.
+
+
+
+# : You assume b_n to be independent in Sec. 4. It is clear that it
+# : greatly simplifies the math. But, does it have any implication in the
+# : results? As far as I understand your work in terms of planning,
+# : propositions are not usually (or necessarily) independent.
+# 
+# (not sure)
 
 
 To R2:
 
-: the base paper (Asai and Fukunaga 2018) tackles this issue already in a
-: first way and now the authors suggest an additional regularization.
+## already answered
+# : the base paper (Asai and Fukunaga 2018) tackles this issue already in a
+# : first way and now the authors suggest an additional regularization.
+# 
+# The base paper did not explain the Entropy Regularization, a diversion from
+# the regular Gumbel-Softmax VAE.
+# Thus, the base paper did not address the stability issue, only their implementation did.
 
-The base paper did not explain the Entropy Regularization, a diversion from
-the regular Gumbel-Softmax VAE.
-Thus, the base paper did not address the stability issue, only their implementation did.
+# : In table 1, middle
+# : column about MSE, the authors speak about the orders of magnitude larger MSE for
+# : N=36, but for N=100/1000 the same happens in the LightsOut domain (which
+# : interestingly was not problematic for N=36). Do you have an explanation
+# : for this?
 
-: In table 1, middle
-: column about MSE, the authors speak about the orders of magnitude larger MSE for
-: N=36, but for N=100/1000 the same happens in the LightsOut domain (which
-: interestingly was not problematic for N=36). Do you have an explanation
-: for this?
+: MSE ... explanation for this?
 
-Typically, MSE below 1.0e-3 is visually not significant to human (both 2.8e-14, 1.2e-5).
+MSE below 1.0e-3 is visually not significant to human (both 2.8e-14, 1.2e-5)
+--- only noise-level difference.
 
-: In the original SAE the Kullback-Leibler divergence helps stabilizing the latent
-: representation of the state. Your ZSAE uses both the KL divergence and your own
-: regularization. Have you tested/Can you test what the effect of your own
-: regularization alone is?
+# : In the original SAE the Kullback-Leibler divergence helps stabilizing the latent
+# : representation of the state. Your ZSAE uses both the KL divergence and your own
+# : regularization. Have you tested/Can you test what the effect of your own
+# : regularization alone is?
 
-no... (should we start this experiment)
+: Can you test ... your own regularization alone is?
 
-: The way you have written down your own regularization allows the latent
-: representation to be non binary. What are your thoughts about using non binary
-: predicates (like in SAS+ representation a variable can have multiple values)?
+# no... (should we start this experiment)
+We will add the results in the revision if requested. (we are not supposed to do so here)
 
-It was intentionally written so with SAS+ in mind
-(e.g. if k \in {0,1,2}, it is a variable with 3 values).
-The base paper (Asai 2018) also mentions SAS+.
-The expressivity of the representation is not affected by limiting the domain to
-binary values (as STRIPS and SAS+ is equivalent).
-However, hand-coding the number of possible values for each variable
-would require human effort.
+# : The way you have written down your own regularization allows the latent
+# : representation to be non binary. What are your thoughts about using non binary
+# : predicates (like in SAS+ representation a variable can have multiple values)?
 
-: In Section 6.1 your have written that because of the probabilistic nature of the
-: latent representation you encoded the same image 100 times and took the mean. In
-: my understanding the mean would lead you to have continous values whereas the
-: system later operates on 0 and 1.
+: your own regularization allows ... SAS+ representation ... ?
 
-We encoded the same image 100 times and took the *variance*.
-Then, for the 100 *different* images, we took the mean of the variance.
+It was written so with SAS+ in mind (e.g. if k \in {0,1,2} = a variable with 3 values)
+as (Asai 2018) also mentions SAS+.
+# The expressivity of the representation is not affected by limiting the domain to
+# binary values (as STRIPS and SAS+ is equivalent).
+# However, hand-coding the number of possible values for each variable
+# would require human effort.
 
-Also, the value is just a metric for measuring the stability of the NN in this experiment.
-this value is not used in the later NN pipeline and the system.
 
-: (This would also be a question in LatPlan) In a real world setting without a
-: ground truth to check for, do you have an idea how to select N correctly?
+# : In Section 6.1 your have written that because of the probabilistic nature of the
+# : latent representation you encoded the same image 100 times and took the mean. In
+# : my understanding the mean would lead you to have continous values whereas the
+# : system later operates on 0 and 1.
+: took the mean ... have continous values ...
+
+We encoded the same image 100 times and took the variance of the discrete values.
+We then took the mean of this variance over N bits, over 100 dufferebt images.
+The "mean" operation is purely for the statistical value of the output;
+The network still outputs discrete values.
+This value is not used in the NN pipeline and the system.
+
+# : (This would also be a question in LatPlan) In a real world setting without a
+# : ground truth to check for, do you have an idea how to select N correctly?
+
+: ... how to select N correctly?
 
 After the training, the correctness of the SAE is checked by
 applying the SAE to an unseen set of images (test instances)
@@ -227,15 +250,9 @@ and checking the error between the input and the reconstrcution.
 Since the input (raw observation) is the ground truth by itself,
 we can tell that the NN is not learning if the error is large.
 
-With the vanilla SAE, you have to rely on try-and-errors to find the best N.
-If N is too small, the network cannot represent the world.
-Too large N also causes the stability issues.
-
-With ZSAE, we can set N very large and let the zero-suppression reduce the
-number of effective bits automatically.
-
-In practice, the size of N would be restricted by the hardware limitation (GPU)
-and the time constraint (large network = slow training).
+With the vanilla SAE, you have to rely on try-and-errors to find the best N (p.3, right, "Thirdly...").
+With ZSAE, we can set N very large and let the zero-suppression reduce the number of effective bits automatically.
+In practice, the size of N is restricted by the hardware (GPU) and runtime constraint (large network = slow training).
 
 * local variables                                                  :noexport:
 
