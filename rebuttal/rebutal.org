@@ -41,13 +41,14 @@ motivated us naturally to add a new regularization, Zero-suppression regularizat
 # machine learning (personal communication with the authors), thus we hope to
 
 
+
 This paper is self-contained. We provide enough information
 to reproduce the implementation and experiments from the Latplan code available from github.
 Our code will also be released after acceptance.
 
-While we pointed to the supplement as "details" several times which 
-gave impression that we are hiding details,
-they are attempts to help the readers understand our math, map the math to the implementation, or familiarize themselves
+We pointed to the supplement as "details" several times which 
+might have given impression that we are hiding details.
+They are attempts to help the readers understand our math, map the math to the implementation, or familiarize themselves
 to the terms and ideas in the machine learning literature, because
 we expected readers from both the symbolic and the machine-learning sides.
 # While this paper requires the understanding of both fields,
