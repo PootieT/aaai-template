@@ -258,13 +258,12 @@ This is not part of the network, and the network still outputs discrete values.
 : ... how to select N correctly?
 
 After the training, the correctness of the SAE is checked by
-applying the SAE to an unseen set of images (test instances)
-and checking the error between the input and the reconstrcution.
-Since the input (raw observation) is the ground truth by itself,
+applying it to the test images and checking the reconstruction error.
+Since the input (raw image) is the ground truth by itself,
 we can tell that the NN is not learning if the error is large.
 
-With the vanilla SAE, you have to rely on try-and-errors to find the best N (p.3, right, "Thirdly...").
-With ZSAE, we can set N very large and let the zero-suppression reduce the number of effective bits automatically.
+Vanilla SAE requires try-and-errors to find the best N (p.3, right, "Thirdly...").
+With ZSAE, we can set a large N and let it reduce the number of effective bits automatically.
 In practice, the size of N is restricted by the hardware (GPU) and runtime constraint (large N/network = slow training).
 
 * local variables                                                  :noexport:
