@@ -13,10 +13,6 @@
 #+LANGUAGE: en
 #+SELECT_TAGS: export
 
-# Local Variables:
-# truncate-lines: nil
-# eval: (load-file "publish-and-count-word.el")
-# End:
 
 
 Thank you for the thoughtful reviews.
@@ -274,3 +270,11 @@ number of effective bits automatically.
 
 In practice, the size of N would be restricted by the hardware limitation (GPU)
 and the time constraint (large network = slow training).
+
+* local variables                                                  :noexport:
+
+# Local Variables:
+# truncate-lines: nil
+# eval: (load-file "publish-and-count-word.el")
+# End:
+
