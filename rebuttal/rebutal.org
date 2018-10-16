@@ -20,8 +20,6 @@ All minor issues reported in the reviews will be revised.
 In the following we abbreviate Reviewer #X to RX.
 Individual responses come after the overall response.
 
-* To all reviewers 
-
 As we stated in the Conclusion, the contributions of this paper is threefold:
  1. Rigorous formal analysis of the neural network model used in Latplan system.
  2. ZSAE.
@@ -53,30 +51,22 @@ This paper is self-contained. We provide enough information
 to reproduce the implementation and experiments. Codes will also be released
 after acceptance.
 
-* Reviewer #3
+To R3:
 
-#+begin_quote
-Section 4 ... not clear what this section is adding to the paper.
-#+end_quote
+: Section 4 ... not clear what this section is adding to the paper.
 
-#+begin_quote
-In summary, ... this paper seems to make an incremental step which is not fully explained in
-the paper (see section 5), and which does not appear significant enough for a AAAI.
-#+end_quote
+: In summary, ... this paper seems to make an incremental step which is not fully explained in
+: the paper (see section 5), and which does not appear significant enough for a AAAI.
 
 Section 4 provides a rigorous formal analysis of the neural network model used in
 Latplan system, which was not provided in the original Latplan paper.
 
 Also, *TODO*
 
-#+begin_quote
-Most importantly, the heart of the paper - details of the ZSAE method - are
-apparently only available in the supplemental material.
-#+end_quote
+: Most importantly, the heart of the paper - details of the ZSAE method - are
+: apparently only available in the supplemental material.
 
-#+begin_quote
-I could not find sufficient details of ZSAE - are they is the paper?
-#+end_quote
+: I could not find sufficient details of ZSAE - are they is the paper?
 
 This paper is self-contained.
 
@@ -98,10 +88,8 @@ Therefore the term (\sum_n z_n1) is explicitly penalizing true propositions.
 We thus provided sufficient information to reproduce the implementation.
 
 ### it would not be useful to refute "though not explicitly stated" part
-# #+begin_quote
-# The evaluation I assume (though not explicitly stated) is to show that the
-# ZSAE is superior to the SAE.
-# #+end_quote
+# : The evaluation I assume (though not explicitly stated) is to show that the
+# : ZSAE is superior to the SAE.
 # 
 # In the abstract as well as in the introduction/conclusion,
 # we clearly stated that ZSAE improves upon SAE.
@@ -111,10 +99,8 @@ We thus provided sufficient information to reproduce the implementation.
 # + Conclusion:   "...which improves the vanilla SAE".
 
 
-#+begin_quote
-Please explain the Aims/Objectives of the Empirical Evaluation and the reason
-for the metrics used.
-#+end_quote
+: Please explain the Aims/Objectives of the Empirical Evaluation and the reason
+: for the metrics used.
 
 
 The aim of sec6.1 is twofold:
@@ -147,36 +133,28 @@ less sensitive to hyperparameters, thus a ZSAE is easier to train than a SAE).
 # 
 # The aim of sec6.3 is a simple demonstration that ZSAE allows 
 
-* Reviewer #1 (Accept)
+To R1:
 
-#+begin_quote
-Due to some design decisions of Latplan and how NNs work, the resulting
-propositional representations could have problems related to stability
-#+end_quote
+: Due to some design decisions of Latplan and how NNs work, the resulting
+: propositional representations could have problems related to stability
 
 I think his confidence is a bit lower
 
-#+begin_quote
-the representations generated in two time steps could differ due to some
-stochasticity in the learning procedure
-#+end_quote
+: the representations generated in two time steps could differ due to some
+: stochasticity in the learning procedure
 
 "two time steps" -> unsure about what he implies, it is for single time step
 Also, stochasticity prevails after the learning procedure too
 
 
-#+begin_quote
-As a detailed comment, you should explain ARM_2 when it is first
-referenced in the Introduction.
-#+end_quote
+: As a detailed comment, you should explain ARM_2 when it is first
+: referenced in the Introduction.
 
 yes
 
-#+begin_quote
-When you describe Latplan in Sec 2, given that it does not get as
-input labels for actions, should we assume Latplan generates a
-completely instantiated domain?
-#+end_quote
+: When you describe Latplan in Sec 2, given that it does not get as
+: input labels for actions, should we assume Latplan generates a
+: completely instantiated domain?
 
 not sure what s/he means by "instantiated domain"
 
@@ -185,51 +163,41 @@ yes for AMA1
 AMA2 does not return a PDDL, but a black box neural action model.
 
 
-#+begin_quote
-You assume b_n to be independent in Sec. 4. It is clear that it
-greatly simplifies the math. But, does it have any implication in the
-results? As far as I understand your work in terms of planning,
-propositions are not usually (or necessarily) independent.
-#+end_quote
+: You assume b_n to be independent in Sec. 4. It is clear that it
+: greatly simplifies the math. But, does it have any implication in the
+: results? As far as I understand your work in terms of planning,
+: propositions are not usually (or necessarily) independent.
 
 (not sure)
 
 
-* Reviewer #2 (Accept)
+To R2:
 
-#+begin_quote
-the base paper (Asai and Fukunaga 2018) tackles this issue already in a
-first way and now the authors suggest an additional regularization.
-#+end_quote
+: the base paper (Asai and Fukunaga 2018) tackles this issue already in a
+: first way and now the authors suggest an additional regularization.
 
 The base paper did not explain the Entropy Regularization, a diversion from
 the regular Gumbel-Softmax VAE.
 Thus, the base paper did not address the stability issue, only their implementation did.
 
-#+begin_quote
-In table 1, middle
-column about MSE, the authors speak about the orders of magnitude larger MSE for
-N=36, but for N=100/1000 the same happens in the LightsOut domain (which
-interestingly was not problematic for N=36). Do you have an explanation
-for this?
-#+end_quote
+: In table 1, middle
+: column about MSE, the authors speak about the orders of magnitude larger MSE for
+: N=36, but for N=100/1000 the same happens in the LightsOut domain (which
+: interestingly was not problematic for N=36). Do you have an explanation
+: for this?
 
 Typically, MSE below 1.0e-3 is visually not significant to human (both 2.8e-14, 1.2e-5).
 
-#+begin_quote
-In the original SAE the Kullback-Leibler divergence helps stabilizing the latent
-representation of the state. Your ZSAE uses both the KL divergence and your own
-regularization. Have you tested/Can you test what the effect of your own
-regularization alone is?
-#+end_quote
+: In the original SAE the Kullback-Leibler divergence helps stabilizing the latent
+: representation of the state. Your ZSAE uses both the KL divergence and your own
+: regularization. Have you tested/Can you test what the effect of your own
+: regularization alone is?
 
 no... (should we start this experiment)
 
-#+begin_quote
-The way you have written down your own regularization allows the latent
-representation to be non binary. What are your thoughts about using non binary
-predicates (like in SAS+ representation a variable can have multiple values)?
-#+end_quote
+: The way you have written down your own regularization allows the latent
+: representation to be non binary. What are your thoughts about using non binary
+: predicates (like in SAS+ representation a variable can have multiple values)?
 
 It was intentionally written so with SAS+ in mind
 (e.g. if k \in {0,1,2}, it is a variable with 3 values).
@@ -239,12 +207,10 @@ binary values (as STRIPS and SAS+ is equivalent).
 However, hand-coding the number of possible values for each variable
 would require human effort.
 
-#+begin_quote
-In Section 6.1 your have written that because of the probabilistic nature of the
-latent representation you encoded the same image 100 times and took the mean. In
-my understanding the mean would lead you to have continous values whereas the
-system later operates on 0 and 1.
-#+end_quote
+: In Section 6.1 your have written that because of the probabilistic nature of the
+: latent representation you encoded the same image 100 times and took the mean. In
+: my understanding the mean would lead you to have continous values whereas the
+: system later operates on 0 and 1.
 
 We encoded the same image 100 times and took the *variance*.
 Then, for the 100 *different* images, we took the mean of the variance.
@@ -252,10 +218,8 @@ Then, for the 100 *different* images, we took the mean of the variance.
 Also, the value is just a metric for measuring the stability of the NN in this experiment.
 this value is not used in the later NN pipeline and the system.
 
-#+begin_quote
-(This would also be a question in LatPlan) In a real world setting without a
-ground truth to check for, do you have an idea how to select N correctly?
-#+end_quote
+: (This would also be a question in LatPlan) In a real world setting without a
+: ground truth to check for, do you have an idea how to select N correctly?
 
 After the training, the correctness of the SAE is checked by
 applying the SAE to an unseen set of images (test instances)
