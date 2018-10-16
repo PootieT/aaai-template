@@ -38,12 +38,12 @@ showed that "Regularization on latent variables is the key to solve SSP",
 which naturally led to a new regularization, Zero-suppression.
 We will emphasize this point in the revision.
 
-# Besides, both authors of the original Latplan paper do not have a deep expertize in
+# Besides, both authors of the original Latplan paper do not have a deep expertise in
 # machine learning (personal communication with the authors), thus we hope to
 
 
 Next, this paper is self-contained. We included enough information in the paper
-to reproduce the implementation from the Latplan code available from github.
+to reproduce the implementation from the Latplan code available from Github.
 Our code will also be released after acceptance.
 
 We pointed to the supplement as "details" several times which 
@@ -78,7 +78,7 @@ To R3:
 # apparently only available in the supplemental material.
 # The evaluation I assume (though not explicitly stated) is to show that the
 # ZSAE is superior to the SAE. 6.1 attempts this using the 'variance' as a
-# metric. This seems logical, but without enugh details of the ZSAE method in the
+# metric. This seems logical, but without enough details of the ZSAE method in the
 # paper, it is difficult to judge.
 
 : details of the ZSAE method ...
@@ -243,9 +243,9 @@ as (Asai 2018) also mentions SAS+.
 
 # : In Section 6.1 your have written that because of the probabilistic nature of the
 # : latent representation you encoded the same image 100 times and took the mean. In
-# : my understanding the mean would lead you to have continous values whereas the
+# : my understanding the mean would lead you to have continuous values whereas the
 # : system later operates on 0 and 1.
-: took the mean ... have continous values ...
+: took the mean ... have continuous values ...
 
 We encoded the same image 100 times and took the variance of the discrete values.
 We then took the mean of this variance over N bits, over 100 different images.
