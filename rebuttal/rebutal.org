@@ -33,8 +33,10 @@ Thus we provide a formal basis that the planning community can use for extending
 the standard Gumbel-Softmax. Therefore, while their implementation accidentally
 "tackles this issue already", it was not noticed and not published in any material.
 
-Finally, our finding of "Entropy Regularization" in Section 4
-motivated us naturally to add a new regularization, Zero-suppression regularization.
+Finally, finding of "Entropy Regularization"
+showed that "Regularization on latent variables is the key to solve SSP",
+which naturally lead to a new regularization, Zero-suppression.
+We will emphasize this point in the revision.
 
 # Besides, both authors of the original Latplan paper do not have a deep expertize in
 # machine learning (personal communication with the authors), thus we hope to
