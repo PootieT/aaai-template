@@ -34,7 +34,7 @@ the standard Gumbel-Softmax. Therefore, while their implementation accidentally
 "tackles this issue already", it was not noticed and not published in any material.
 
 Finally, our finding of "Entropy Regularization"
-showed that "Regularization on latent variables is the key to solve SSP",
+introduced the idea that "Regularization on latent variables is the key to solve SSP",
 which naturally led to a new regularization, Zero-suppression.
 We will emphasize this point in the revision.
 
@@ -113,6 +113,9 @@ but in the revision, we will elaborate more on this.
 # + Introduction: "ZSAE obtains a more "stable" propositions..."
 # + Conclusion:   "...which improves the vanilla SAE".
 
+
+# Please explain the Aims/Objectives of the Empirical Evaluation and the reason
+# for the metrics used.
 
 : explain the Aims .. the metrics ..
 
