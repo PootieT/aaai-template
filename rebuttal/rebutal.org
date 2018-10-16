@@ -17,10 +17,10 @@
 
 Thank you for the thoughtful reviews.
 All minor issues reported in the reviews will be revised.
-In the following we abbreviate Reviewer #X to RX.
+In the following, we abbreviate Reviewer #X to RX.
 Individual responses come after the overall response.
 
-As we stated in the Conclusion, the contributions of this paper is threefold:
+As we stated in the Conclusion, the contributions of this paper are threefold:
  1. Rigorous formal analysis of the neural network model used in Latplan.
  2. ZSAE.
  3. Introduction of SSP. (meta-level)
@@ -33,7 +33,7 @@ Thus we provide a formal basis that the planning community can use for extending
 the standard Gumbel-Softmax. Therefore, while their implementation accidentally
 "tackles this issue already", it was not noticed and not published in any material.
 
-Finally, finding of "Entropy Regularization"
+Finally, our finding of "Entropy Regularization"
 showed that "Regularization on latent variables is the key to solve SSP",
 which naturally led to a new regularization, Zero-suppression.
 We will emphasize this point in the revision.
@@ -88,14 +88,14 @@ To R3:
 # This paper is self-contained.
 
 The network architecture of ZSAE is identical to that of SAE:
-"Zero-Suppressed State AutoEncoder (ZSAE), a SAE with an additional regularization" (p.4-5).
+"Zero-Suppressed State AutoEncoder (ZSAE), an SAE with an additional regularization" (p.4-5).
 The difference is the additional term in the optimization metric fully specified in section 5.
 
 We stated that
 the binary variable b_n (used in the formal model in section 4) corresponds to z_n1,
 for the latent layer z_nk (a matrix element), k ∈ {0, 1},
 where the matrix is constrained to z_n0 +z_n1 = 1
-(basic characteristics of gumbel-softmax).
+(basic characteristics of Gumbel-Softmax).
 If z_n1 = 1 (therefore z_n0 = 0), it means that the n-th proposition is true.
 Thus penalizing Σ_n z_n1 is to "penalize the true propositions in the latent layer".
 This provides sufficient information to reproduce the implementation,
@@ -131,7 +131,7 @@ in order to provide further information and insights into its success
 (e.g. the effect of zero-suppression on the output accuracy, effective bits).
 
 Third, we showed the additional benefits of using ZSAE (e.g. 
-less sensitive to hyperparameters, thus easier to train than a SAE).
+less sensitive to hyperparameters, thus easier to train than an SAE).
 
 
 # # maybe describing 6.2 and 6.3 is not necessary.
@@ -262,7 +262,7 @@ applying it to the test images and checking the reconstruction error.
 Since the input (raw image) is the ground truth by itself,
 we can tell that the NN is not learning if the error is large.
 
-Vanilla SAE requires try-and-errors to find the best N (p.3, right, "Thirdly...").
+A vanilla SAE requires try-and-errors to find the best N (p.3, right, "Thirdly...").
 With ZSAE, we can set a large N and let it reduce the number of effective bits automatically.
 In practice, the size of N is restricted by the hardware (GPU) and runtime constraint (large N/network = slow training).
 
