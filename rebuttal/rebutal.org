@@ -30,14 +30,15 @@ Thus, section 4 corresponds to the first contribution.
 Thus we provide a formal basis that the planning community can use for extending this line of work.
 
 (Asai 2018) neither mentioned that their loss function was inverted from
-the standard Gumbel-Softmax VAE. Therefore, while their implementation accidentally
-"tackles this issue already", it was not noticed and not published in any materials.
+the standard Gumbel-Softmax. Therefore, while their implementation accidentally
+"tackles this issue already", it was not noticed and not published in any material.
 
-Finally, our finding in Section 4 motivated us to formulate the SSP in the current form.
+Finally, our finding of "Entropy Regularization" in Section 4
+motivated us naturally to add a new regularization, Zero-suppression regularization.
+
 
 # Besides, both authors of the original Latplan paper do not have a deep expertize in
 # machine learning (personal communication with the authors), thus we hope to
-
 
 
 This paper is self-contained. We provide enough information
