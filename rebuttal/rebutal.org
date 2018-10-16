@@ -219,7 +219,7 @@ MSE below 1.0e-3 is visually not significant to human (both 2.8e-14, 1.2e-5)
 : Can you test ... your own regularization alone is?
 
 # no... (should we start this experiment)
-We will add the results in the revision if requested. (we are not supposed to do so here)
+We will add the results in the revision if requested. (we are not allowed to present new results here)
 
 # : The way you have written down your own regularization allows the latent
 # : representation to be non binary. What are your thoughts about using non binary
@@ -227,7 +227,7 @@ We will add the results in the revision if requested. (we are not supposed to do
 
 : your own regularization allows ... SAS+ representation ... ?
 
-It was written so with SAS+ in mind (e.g. if k ∈ {0,1,2} = a variable with 3 values)
+It was written with SAS+ in mind (e.g. if k ∈ {0,1,2} = a variable with 3 values)
 as (Asai 2018) also mentions SAS+.
 # The expressivity of the representation is not affected by limiting the domain to
 # binary values (as STRIPS and SAS+ is equivalent).
@@ -242,10 +242,9 @@ as (Asai 2018) also mentions SAS+.
 : took the mean ... have continous values ...
 
 We encoded the same image 100 times and took the variance of the discrete values.
-We then took the mean of this variance over N bits, over 100 dufferebt images.
-The "mean" operation is purely for the statistical value of the output;
-The network still outputs discrete values.
-This value is not used in the NN pipeline and the system.
+We then took the mean of this variance over N bits, over 100 different images.
+The "mean" operation is purely for taking the statistics of the output;
+This is not part of the network, and the network still outputs discrete values.
 
 # : (This would also be a question in LatPlan) In a real world setting without a
 # : ground truth to check for, do you have an idea how to select N correctly?
@@ -260,7 +259,7 @@ we can tell that the NN is not learning if the error is large.
 
 With the vanilla SAE, you have to rely on try-and-errors to find the best N (p.3, right, "Thirdly...").
 With ZSAE, we can set N very large and let the zero-suppression reduce the number of effective bits automatically.
-In practice, the size of N is restricted by the hardware (GPU) and runtime constraint (large network = slow training).
+In practice, the size of N is restricted by the hardware (GPU) and runtime constraint (large N/network = slow training).
 
 * local variables                                                  :noexport:
 
