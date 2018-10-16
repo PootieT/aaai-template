@@ -171,8 +171,8 @@ To R1:
 
 Both AMA1 and AMA2 returns a search space equivalent to a grounded STRIPS problem.
 
-AMA1 returns a PDDL model which contains a grounded action schema for a single state transition
-(the number of schema corresponds to the number of edges in the state space).
+AMA1 returns a PDDL model where each (:action...) corresponds to each edge in the state space graph.
+
 
 AMA2 takes an upper bound of the possible number of action labels (e.g. 128).
 State transitions do not contain action labels, but AMA2 automatically groups similar transitions together
