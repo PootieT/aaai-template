@@ -56,16 +56,13 @@ we expected readers from both the symbolic and the machine-learning sides.
 # If machine-learning researchers review this paper, they would also
 # have slight difficulty understanding the underlying assumptions of classical planning.
 Thus sometimes the "details" are just extended footnotes.
-Indeed, contrary to R3's claim below, the supplemental section S2.3 linked just above
+Indeed, the supplemental section S2.3 linked just above
 the ZSAE formula (p.5) contains merely a single paragraph of 3 lines.
-
-: Most importantly, the heart of the paper - details of the ZSAE method - are
-: apparently only available in the supplemental material.
 
 It should be clear that the "details" are meant to bridge the large gap between two communities,
 i.e. subsymbolic machine learning and symbolic classical planning.
 
-
+# In deep learning, it is usual to just give the math and proceed to experiments, expecting the reader to implement the algorithm.
 
 To R3:
 
