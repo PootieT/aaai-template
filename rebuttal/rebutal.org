@@ -36,31 +36,29 @@ the standard Gumbel-Softmax. Therefore, while their implementation accidentally
 Finally, our finding of "Entropy Regularization" in Section 4
 motivated us naturally to add a new regularization, Zero-suppression regularization.
 
-
 # Besides, both authors of the original Latplan paper do not have a deep expertize in
 # machine learning (personal communication with the authors), thus we hope to
 
 
-
-This paper is self-contained. We provide enough information
-to reproduce the implementation and experiments from the Latplan code available from github.
+Next, this paper is self-contained. We included enough information in the paper
+to reproduce the implementation from the Latplan code available from github.
 Our code will also be released after acceptance.
 
 We pointed to the supplement as "details" several times which 
-might have given impression that we are hiding details.
+might have given the impression that it is otherwise.
 They are attempts to help the readers understand our math, map the math to the implementation, or familiarize themselves
-to the terms and ideas in the machine learning literature, because
+to the ideas in the machine learning, because
 we expected readers from both the symbolic and the machine-learning sides.
 # While this paper requires the understanding of both fields,
 # space limitation does not allow us to introduce basic concepts.
 # If machine-learning researchers review this paper, they would also
 # have slight difficulty understanding the underlying assumptions of classical planning.
 Thus sometimes the "details" are just extended footnotes.
-Indeed, the supplemental section S2.3 linked just above
-the ZSAE formula (p.5) contains merely a single paragraph of 3 lines.
+Indeed, the supplemental Sec. S2.3 linked above
+the ZSAE formula (p.5) contains merely a paragraph of 3 lines.
 
-It should be clear that the "details" are meant to bridge the large gap between two communities,
-i.e. subsymbolic machine learning and symbolic classical planning.
+It should be clear that the "details" are meant to bridge the gap between two communities,
+i.e. machine learning and classical planning.
 
 # In deep learning, it is usual to just give the math and proceed to experiments, expecting the reader to implement the algorithm.
 
@@ -126,7 +124,7 @@ If the variance is high, it means
 that the network tends to return different encoding for the same image, which is harmful for planning.
 ZSAE achieves the lower variance, thus it is superior.
 
-Second, we provided the other overall characteristics between ZSAE and SAE
+Second, we compared the other overall characteristics between ZSAE and SAE
 in order to provide further information and insights into its success
 (e.g. the effect of zero-suppression on the output accuracy, effective bits).
 
@@ -159,7 +157,6 @@ To R1:
 # "two time steps" -> unsure about what he implies, it is for single time step
 # Also, stochasticity prevails after the learning procedure too
 
-
 # : As a detailed comment, you should explain ARM_2 when it is first
 # : referenced in the Introduction.
 # 
@@ -177,14 +174,11 @@ Both AMA1 and AMA2 returns a search space equivalent to a grounded STRIPS proble
 
 AMA1 returns a PDDL model where each (:action...) corresponds to each edge in the state space graph.
 
-
 AMA2 takes an upper bound of the possible number of action labels (e.g. 128).
 State transitions do not contain action labels, but AMA2 automatically groups similar transitions together
 and assigns the same label, i.e., finds the action schema by itself.
 AMA2 does not return a PDDL, but a neural network as a black box successor function succ(a,s)
 that takes an action number (e.g. a ∈ [1..128]) and the current state.
-
-
 
 # : You assume b_n to be independent in Sec. 4. It is clear that it
 # : greatly simplifies the math. But, does it have any implication in the
@@ -244,7 +238,6 @@ as (Asai 2018) also mentions SAS+.
 # binary values (as STRIPS and SAS+ is equivalent).
 # However, hand-coding the number of possible values for each variable
 # would require human effort.
-
 
 # : In Section 6.1 your have written that because of the probabilistic nature of the
 # : latent representation you encoded the same image 100 times and took the mean. In
