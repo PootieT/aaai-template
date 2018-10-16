@@ -35,7 +35,7 @@ the standard Gumbel-Softmax. Therefore, while their implementation accidentally
 
 Finally, finding of "Entropy Regularization"
 showed that "Regularization on latent variables is the key to solve SSP",
-which naturally lead to a new regularization, Zero-suppression.
+which naturally led to a new regularization, Zero-suppression.
 We will emphasize this point in the revision.
 
 # Besides, both authors of the original Latplan paper do not have a deep expertize in
