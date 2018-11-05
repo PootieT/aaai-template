@@ -171,18 +171,30 @@ ZSAE obtains a compact representation that uses fewer true bits.
  \label{zsae-overview}
 \end{figure}
 
+The contribution of this paper is threefold.
 % This problem arises for any grounding processes applied to the real world.
 The first contribution of this paper is the identification of a sub-problem of symbol grounding
 called ``symbol \emph{stability} problem'' (SSP), which seeks to find a set of symbols
-whose values/referents are stable.
+whose values/referents stays the same for the same/similar raw inputs.
 Stability is orthogonal to the \emph{performance/accuracy} of NNs:
 NNs are known to robustly predict the correct output, but they do not guarantee
 the quality of the internal representation.
+It is also unrelated to the numerical stability of the training or the reproducibility of the results.
 
-The second and more concrete contribution of this paper is
+The second contribution of this paper is the formal analysis comparing
+the original mathematical model of Gumbel-Softmax
+\cite{jang2016categorical} and the published source code of Latplan
+\cite{Asai2018}. The analysis revealed that Latplan's Gumbel-Softmax has a deviation from
+the original, which was the key to its first success: The slight
+modification acted as an \emph{Entropy Regularization} term for the SAE neural
+network that suppresses the randomness to some extent.  Through a personal
+communication, Latplan's authors were not aware that they made this modification.
+
+The third contribution of this paper is
 the proposal of Zero-Suppressed State AutoEncoder (ZSAE, \refig{zsae-overview}).
-ZSAE obtains a more ``stable'' propositions
-by an additional penalty function which
+Inspired by the fact that the \emph{Entropy Regularization} stabilizes the representation,
+ZSAE further stabilizes the propositions 
+by an additional regularization term which
 guides the network optimization so that unused propositions tend to 
 take the value of zero (false) instead of random values.
 % 
@@ -296,7 +308,7 @@ the latent values approach either 0 or 1.}
  \label{sae}
 \end{figure}
 
-\subsubsection{SAE as a Variational AutoEncoder using Gumbel-Softmax}
+\subsubsection{SAE as a Gumbel-Softmax Variational AutoEncoder}
 
 The key concept of the SAE in \latentplanner is the use of Gumbel-Softmax \cite{jang2016categorical}
 in the latent activation of the variational autoencoder~(VAE).
@@ -318,19 +330,60 @@ NNs, including AEs, typically have continuous activations and integrating them w
 
 A variational autoencoder (VAE) \cite{kingma2013auto} is a probabilistic variant of AEs, whose encoder and decoder are modeled by probabilistic distributions rather than deterministic functions.
 For instance,
-it obtains a discrete latent representation of the data by modeling a probabilistic, discrete distribution such as the Bernoulli distribution with the encoder.
+it obtains a discrete latent representation of the data by modeling the Bernoulli(=binary) random distribution with the encoder.
 VAEs are trained by backpropagation with the help of the reparameterization trick, which makes random variables differentiable.
 % Trying to avoid saying ``Gumbel-Softmax is approximating Bernoulli'', since it is in fact approximating Categorical, but we want to avoid mentioning Categorical
-In the discrete case, the target, discrete distribution is approximated by its continuous relaxation called Gumbel-Softmax distribution~\cite{jang2016categorical}.
+The reparametrization trick for the Bernoulli distribution is Gumbel-Softmax~\cite{jang2016categorical}.
 % This approximation is necessary because the reparameterization trick is only applicable to the continuous cases.
 
 % that forces the \emph{latent layer} (the most compressed layer in the AE) to follow a certain distribution (e.g., Gaussian).
 % While initially proposed for enforcing Gaussian distributions, VAEs have been used to enforce arbitrary types of distribution (notably by Generative Adversarial Network \cite{goodfellow2014generative,makhzani2015adversarial}). 
 
-In the vanilla SAEs \cite{Asai2018}, the output layer of the encoder consists of $N$ units of Gumbel-Softmax
-% that approximates the Bernoulli distribution, %, resulting in a $N\times 2$ matrix,
-and therefore, the latent representation can be regarded as $N$ binary propositional variables.
+A single Gumbel-Softmax unit in the Neural Network is able to model a categorical distribution with $M$ categories
+which includes a Bernoulli distribution ($M=2$) as a special case.
+Latplan uses $M=2$ for simplicity, and it does not affect the expressivity of the representation,
+similar to the relation between SAS+ and the propositional representation.
 
+% Gumbel-Softmax (GS) is a reparametrization trick \cite{jang2016categorical} for categorical distribution.
+% It continuously approximates Gumbel-Max \cite{maddison2014sampling}, a method for drawing categorical samples.
+The output of a single Gumbel-Softmax unit $\mathbf{z}=(z_i)$ $(0\leq i \le M)$ is a one-hot vector representing $M$ categories, e.g.,
+% if the domain is $D=\braces{a,b,c}$, then $\mathbf{z}=\parens{0,1,0}$ represents ``b'',
+when $M=2$ the categories are $\braces{\text{false},\text{true}}$ and $\mathbf{z}=\parens{0,1}$ represents ``true''.
+% The input is a class probability vector $\pi$, e.g. $\parens{.1,.1,.8}$.
+The input of the unit is a class probability vector $\pi$, e.g. $\parens{.2,.8}$.
+% While in our paper we always use the binary categories
+% for we aim to represent the input in a binary vector,
+% Gumbel-softmax itself easily extends to more than two classes such as $D=\braces{a,b,c}$
+% and therefore, in this section, we describe the general case as in the original paper \cite{jang2016categorical}.
+% 
+Gumbel-Softmax is derived from Gumbel-Max technique \cite{maddison2014sampling} for drawing a categorical sample from $\pi$:
+% It is a generalization
+% of the method for drawing a boolean sample from a Bernoulli distribution with parameter $\pi_1/(\pi_0 + \pi_1)$.
+% It draws samples from $D$ with:
+\[
+z_i \equiv [ \text{if}\ i\ \text{is} \arg \max_i (g_i+\log \pi_i) \text{then}\ 1\ \text{else}\ 0 ]
+\]
+where $g_i$ are samples drawn from
+ $\text{Gumbel}(0,1) =-\log (-\log u)$ \cite{gumbel1954statistical}, where
+$u$ is a uniform random sample between 0 and 1. %$0\leq u \leq 1$
+Gumbel-Softmax approximates the argmax with a softmax to make it differentiable:
+\[
+z_i = \text{Softmax}((g_i+\log \pi_i)/\tau).
+\]
+``Temperature'' $\tau$ controls the magnitude of approximation, which is annealed to 0 by a certain schedule.
+The output $\mathbf{z}$ converges to a discrete one-hot vector when $\tau\rightarrow 0$.
+
+SAEs have $N$ Gumbel-Softmax units
+% of $|D|=2$ categories ($D=\braces{\text{false},\text{true}}$)
+to model an $N$-dimensional Bernoulli/boolean/propositional variable $\mathbf{b}=(b_n)$.
+$N$ units produce a matrix $z_{nk}$ where $1\leq n \leq N$ and $k\in\braces{0,1}$ and
+the boolean variables are retrieved by $b_n=z_{n1}$.
+% 
+% In the vanilla SAEs \cite{Asai2018}, the output layer of the encoder consists of $N$ units of Gumbel-Softmax
+% % that approximates the Bernoulli distribution, %, resulting in a $N\times 2$ matrix,
+% and therefore, the latent representation can be regarded as $N$ binary propositional variables.
+% 
+The detailed mathematical background of Gumbel-Softmax VAE is included in the supplement.
 
 % It is necessary for the mapping to be bidirectional, because the
 % propositional variables are machine-generated symbols, and also the
@@ -349,12 +402,12 @@ that is mapped to by the Gumbel-Softmax could be neutral at some neuron,
 causing the value of the neuron to change frequently (\refig{unstable}).
 The source of stochasticity is twofold.
 The first source is the probabilistic distribution modeled by the encoder,
-which causes the propositions to change values even for the exact same inputs.
+which introduces stochasticity and causes the propositions to change values even for the exact same inputs.
 The second source is the stochastic observation of the environment which corrupts the input image.
 When the class probabilities are almost neutral,
 such a tiny variation in the input image may cause the activation to go across the decision boundary for each neuron,
 causing the bit flips.
-In contrast, humans still regard it as the ``same'' image.
+In contrast, humans still regard the corrupted image as the ``same'' image.
 
 \begin{figure}[tb]
  \centering
@@ -407,9 +460,9 @@ and insufficient $N$ makes the network hard to train.
 Fundamentally,
 these harmful effects are caused by breaking a critical feature of symbols, \emph{designation} \cite{newell1976computer,newell1980physical},
 that each symbol uniquely refers to an entity (referent, concept, meaning),
-e.g., the referents of the symbols grounded by SAEs are the truthfulness of the propositional statements.
+e.g., the referents of the symbols grounded by SAEs are the truth assignments.
 If a meaning of a symbol changes frequently and in an unexpected manner, the entire symbolic manipulation is fruitless
-because the underlying symbols are not grounded / tied to any particular concept, and does not represent the real world.
+because the underlying symbols are not tied to any particular concept, and does not represent the real world.
 % just as the famous boy in the Aesop's Fables who cried wolf was ignored by the villagers.
 % [more intuitive example?]
 % A famous 
@@ -453,7 +506,8 @@ While NNs tend to achieve a robust performance on noisy data,
 This is because the former exclusively deals with the output accuracy,
 while the latter evaluates the quality of the \emph{latent} activations while maintaining the same output accuracy.
 In fact, vanilla SAEs already achieve the almost perfect reconstruction accuracy
-where the input and the output are indiscernible to human eyes,
+where the input and the output are indiscernible to human eyes
+(e.g. in \refig{unstable}, the pixel values in the output is different from the input, but we cannot tell the difference),
 while they still exhibit instability.
 
 % stability
@@ -530,13 +584,13 @@ The second term is computed as
 \end{align*}
 }
 where $H_q(\mathbf{b}|\mathbf{x})$ is the entropy of $\mathbf{b}$ given $\mathbf{x}$ under $q$.
-We assume every $b_n$ are mutually independent.
+% We assume every $b_n$ are mutually independent.
 
 \subsubsection{Entropy Regularization in Latplan}
 
 We found that the loss computation in the Latplan code has the \emph{opposite sign} on the KL divergence,
 i.e., it is \emph{maximizing} the KL divergence instead of minimizing it.
-Despite that, the system works
+The system works
 because maximizing the KL divergence corresponds to minimizing the entropy of $q$, thus finding a stable representation.
 % 
 This is natural considering the nature of the original GS-VAE:
@@ -578,11 +632,14 @@ a much higher instability compared to the GS-VAE with the Entropy regularization
 Another observation we made from the source code is that we can
 disable the runtime stochasticity of the network.
 After the training is finished, we replace the Gumbel-softmax activation with
-a pure argmax of class probabilities, which makes the network fully deterministic.
+a pure argmax of class probabilities, which makes the network fully deterministic:
+\[
+ z_{nk} = [ \text{if}\ k\ \text{is} \arg \max_k (\log \pi_{nk})\ \text{then}\ 1\ \text{else}\ 0 ].
+\]
 % 
-This does not reduce the stochasticity originated from the noisy input.
+This technique reduces the inherent stochasticity of the network
+but does not reduce the stochasticity originated from the noisy input.
 
-% \section{Zero-Suppressed State AutoEncoder (ZSAE) and Entropy-Minimizing State AutoEncoder (ESAE)}
 \section{Zero-Suppressed State AutoEncoder}
 \label{zsae}
 
@@ -609,10 +666,10 @@ while preserving the propositions that are absolutely necessary for maintaining 
 % and SAE uses 2 categories,
 % This can be seen as adding an
 % asymmetric penalty for a particular class label (true) used in the encoding.
-
-The actual implementation of Gumbel-Softmax represents a binary variable $b_n$ as
-a one-hot vector of 2 categories, $z_{nk}, k\in\braces{0,1}$,
-where $z_{n0} + z_{n1} = 1$ and $b_n = z_{n1}$.
+% 
+% The actual implementation of Gumbel-Softmax represents a binary variable $b_n$ as
+% a one-hot vector of 2 categories, $z_{nk}, k\in\braces{0,1}$,
+% where $z_{n0} + z_{n1} = 1$ and $b_n = z_{n1}$.
 The resulting loss is 
 \emph{asymmetric} to a particular label $k=1$ (true):
 % From ``2019 Formatting Instructions'': For mathematical environments, you may reduce fontsize but not below 6.5 point.
@@ -622,6 +679,8 @@ The resulting loss is
  \brackets{\text{loss}} = & \brackets{\text{\small vanilla SAE loss}} + \alpha \sum_n \sum_{k\not=0} z_{nk} % q(b_n=1 \mid x)
 \end{align*}
 where $\alpha$ is the magnitude of regularization.
+As can be seen in the formulation, in principle this method could also be used for finding the multi-valued representation
+with $k\geq 2$, but we focus on the binary representation in this paper.
 
 % Saying ``similarities'': novelty in disguise.
 The proposed method has some similarities to the $\ell_1$ regularization
