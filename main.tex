@@ -579,7 +579,6 @@ Another observation we made from the source code is that we can
 disable the runtime stochasticity of the network.
 After the training is finished, we replace the Gumbel-softmax activation with
 a pure argmax of class probabilities, which makes the network fully deterministic.
-(Details in the supplement, \refsec{argmax-implementation}.)
 % 
 This does not reduce the stochasticity originated from the noisy input.
 
@@ -614,7 +613,6 @@ while preserving the propositions that are absolutely necessary for maintaining 
 The actual implementation of Gumbel-Softmax represents a binary variable $b_n$ as
 a one-hot vector of 2 categories, $z_{nk}, k\in\braces{0,1}$,
 where $z_{n0} + z_{n1} = 1$ and $b_n = z_{n1}$.
-(Details in the supplement, \refsec{zsae-implementation}.)
 The resulting loss is 
 \emph{asymmetric} to a particular label $k=1$ (true):
 % From ``2019 Formatting Instructions'': For mathematical environments, you may reduce fontsize but not below 6.5 point.
@@ -659,7 +657,6 @@ while our focus is rather on the stability of the representation.
 One additional advantage of the ZSAE is that
 several neurons are completely deactivated, i.e. they always take the value of zero
 and can be pruned afterward to reduce the network size.
-(Details in the supplement, \refsec{pruning-implementation}.)
 Unlike traditional NN compression methods \cite{cheng2017survey}, it does not suffer from
 accuracy degradation because the activations are discrete and therefore no additional retraining is required.
 In the continuous cases, even the minuscule activations could be amplified by the weights and significantly affect the
@@ -1060,7 +1057,7 @@ network between two layers of $L$ and $N$ nodes requires $(L+1)N$
 weights ($+1$ for the bias).
 In the network we used,
 both the previous and the succeeding layer of the latent propositional layer have 1000 nodes.
-In Gumbel-softmax, each proposition corresponds to 2 neurons (details in supplement \refsec{gumbel-softmax-implementation}).
+In Gumbel-softmax, each proposition corresponds to 2 neurons.
 Thus, in the case of ZSAE with $N$=1000 applied to MNIST puzzles,
 the representation is compressed down to 68 effective bits and
 the weights are reduced by $(1000+1)\times (2\cdot 1000 - 2\cdot 68)$=1865864 for the previous layer,
