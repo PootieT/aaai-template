@@ -651,15 +651,19 @@ but does not reduce the stochasticity originated from the noisy input.
 % Gaussian noise to the same image, may result in a different
 % propositional representation.
 
-To further address the symbol stability problem in Latplan,
+In Latplan, Entropy Regularization was the key to address the symbol stability (see \refsec{evaluation})
+while it was accidentally introduced by the original authors.
+In this context, a natural next step toward obtaining the more stable symbols is to introduce a new regularization
+for the propositional representation.
+% To further address the symbol stability problem in Latplan,
 % we need to reduce the effect of the external stochasticity of the environment
 % to the latent, propositional representation, while preserving the reconstruction accuracy
 %  (\emph{robust performance}).
 % We address it by Zero-Suppressed State AutoEncoder (ZSAE),
-we propose Zero-Suppressed State AutoEncoder (ZSAE),
+We propose Zero-Suppressed State AutoEncoder (ZSAE),
 a SAE with an additional regularization designed for the discrete representation that we call \emph{zero-suppression}.
 % 
-Its basic idea is to penalize the
+Its fundamental idea is to penalize the
 true propositions in the latent layer so that no propositions unnecessarily flip to true at random,
 while preserving the propositions that are absolutely necessary for maintaining the reconstruction accuracy.
 % Since Gumbel-Softmax (GS) is basically a Softmax function,
@@ -679,14 +683,16 @@ The resulting loss is
  \brackets{\text{loss}} = & \brackets{\text{\small vanilla SAE loss}} + \alpha \sum_n \sum_{k\not=0} z_{nk} % q(b_n=1 \mid x)
 \end{align*}
 where $\alpha$ is the magnitude of regularization.
-As can be seen in the formulation, in principle this method could also be used for finding the multi-valued representation
-with $k\geq 2$, but we focus on the binary representation in this paper.
+Readers may notice that this formulation takes a general form
+that also covers the multi-valued representation with $k\geq 2$.
+In principle, this method could also be used for finding SAS+ representation,
+but we focus on the binary representation in this paper.
 
 % Saying ``similarities'': novelty in disguise.
 The proposed method has some similarities to the $\ell_1$ regularization
 applied uniformly to the continuous activations of the neurons or the training weights.
-It achieves a sparse representation where the values become closer to zero,
-while zero-suppression is applied to the discrete values.
+$\ell_1$ regularization achieves a sparse representation where the continuous values become closer to zero,
+while the proposed zero-suppression is applied to the discrete values.
 % 
 Moreover, regularization is traditionally applied in order to suppress overfitting and improve the predictive performance
 while our focus is rather on the stability of the representation.
