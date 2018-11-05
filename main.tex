@@ -253,7 +253,6 @@ While the original paper uses an image-based implementation (``data'' = raw imag
 the type of data is arbitrary as long as it is compatible to NNs.
 
 % Emphasize the type of symbol, as readers are not familier with or haven't deeply thought about symbols
-% \subsection{SAE for Propositional Symbol Grounding}
 
 \latentplanner works in 3 phases.
 In Phase 1, a \emph{State AutoEncoder} (SAE) (\refig{sae}) learns a bidirectional mapping between raw data (subsymbolic representation e.g., images)
@@ -342,7 +341,6 @@ and therefore, the latent representation can be regarded as $N$ binary propositi
 % but we omit the details due to space limitation.
 
 \section{Symbol Stability Problem}
-% \section{Issues in the State Representation\\ in the vanilla SAE}
 \label{issues}
 
 The vanilla SAE in \latentplanner can map a visual observation of the environment to/from a set of propositional values.
@@ -403,8 +401,6 @@ On the other hand, if $N$ is too small, it lacks the capacity to represent the s
 and the SAE no longer learns to reconstruct the real world image.
 As a result, we face a hyperparameter tuning problem: Surplus $N$ causes an unstable representation,
 and insufficient $N$ makes the network hard to train.
-
-% \section{Symbol Stability Problem}
 
 % As we have seen, unstable propositional representations are harmful to symbolic reasoning algorithms (search)
 % in various ways.
@@ -1172,8 +1168,6 @@ therefore do not have to address the stability of the symbols.
 % % and further generalization can be expected from deep learning techniques (e.g. translational/rotational invariance).
 % However, effects/preconditions in AMA$_2$ is implicit in the network, and their approach could be utilized to extract PDDL from AAE/AD (future work).
 
-% \subsection{Learning from Observation}
-
 % Our approach differs from the
 % work on learning from observation (LfO) in the robotics literature \cite{ArgallCVB09} in that:
 % (1) \latentplanner is trained based on image pairs showing before/after images of valid individual actions, while LfO work is largely based on longer sequence of actions (e.g., of videos);
@@ -1183,7 +1177,6 @@ therefore do not have to address the stability of the symbols.
 % These work made relatively strong assumptions about the environment, e.g., that there is a grid-like environment with ``piece''-like objects.
 % In contrast, as shown in \refsec{sec:experiments}, \latentplanner does not make assumptions about the contents of the images.
 
-% % \subsection{Neural-Symbolic Hybrid Approaches}
 % There is a large body of work using NNs to directly solve combinatorial tasks,
 % starting with the well-known TSP solver \cite{hopfield1985neural}.
 % % With respect to state-space search similar to what we consider,
