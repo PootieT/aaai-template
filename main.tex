@@ -817,9 +817,15 @@ See supplements for the visual examples (\refig{fig:mnist}).
 % reconstruct the environment before trying to stabilize the propositions.
 % Further details are in the supplement.
 
-\subsection{State Variance}
+\subsection{The Quality of the Latent Representation}
 
-We compare the effectiveness of the ZSAE with the vanilla SAE in terms of the variance of the state encoding.
+We compare the quality of the latent representation
+produced by the ZSAE and the vanilla SAE.
+
+\subsubsection{State Variance}
+
+The first metric we evaluated is the bit-wise variance of the state encoding for the same/similar input,
+which directly measures the stability of the representation.
 We trained several SAEs for each domain with the different latent layer sizes (numbers of propositions) $N$
 and then evaluated the variance.
 In all experiments below,
@@ -859,23 +865,22 @@ Due to the poor performance of NG-SAE, we do not study it any further in the lat
  \begin{tabular}{|r|*{17}{c|}}
        & \multicolumn{6}{c|}{Mean variance over bits (with noisy images)}
        % & \multicolumn{4}{c|}{True ratio}
+       & \multicolumn{5}{c|}{Effective bits}
        & \multicolumn{6}{c|}{Mean Square Error (MSE)}
-       & \multicolumn{4}{c|}{Effective bits}
-       & Optimal
   \\
 $N=$ & \multicolumn{3}{c|}{100} & \multicolumn{3}{c|}{1000}
      % & \multicolumn{2}{c|}{100} & \multicolumn{2}{c|}{1000}
-     & \multicolumn{2}{c|}{100} & \multicolumn{2}{c|}{1000} & \multicolumn{2}{c|}{36}
      & \multicolumn{2}{c|}{100} & \multicolumn{2}{c|}{1000}
      % & \multicolumn{3}{c|}{100} & \multicolumn{3}{c|}{1000}
-  & Encoding
+     & Optimal
+     & \multicolumn{2}{c|}{100} & \multicolumn{2}{c|}{1000} & \multicolumn{2}{c|}{36}
   \\
-domain    & NG-SAE & SAE    & ZSAE            & NG-SAE & SAE    & ZSAE            & SAE     & ZSAE  & SAE    & ZSAE   & SAE    & ZSAE          & SAE & ZSAE        & SAE  & ZSAE & Length \\ 
-MNIST     & 8.4e-2 & 8.6e-3 & \textbf{3.7e-6} & 5.3e-2 & 2.2e-4 & \textbf{1.1e-7} & $<$1e-4 &$<$1e-4 &$<$1e-4 &$<$1e-4 &$<$1e-4 &\uline{9.1e-3}  & 100 & 51          & 1000 & 68   & 18.4   \\ 
-Mandrill  & 1.1e-3 & 8.3e-4 & \textbf{3.0e-5} & 4.2e-4 & 2.5e-4 & \textbf{4.5e-8} & 3.0e-4  &2.8e-4  &2.1e-4  &2.3e-4  &2.0e-4  &{3.2e-4}        & 100 & 46          & 1000 & 182  & 18.4   \\ 
-Spider    & 8.5e-4 & 4.9e-4 & \textbf{6.3e-6} & 2.3e-4 & 4.2e-4 & \textbf{7.3e-7} & 2.7e-4  &2.2e-4  &3.1e-4  &2.8e-4  &$<$1e-4 &\uline{2.8e-2}  & 100 & 49          & 1000 & 200  & 18.4   \\ 
-LightsOut & 9.0e-3 & 2.0e-4 & \textbf{3.9e-6} & 8.1e-3 & 1.4e-4 & \textbf{7.5e-6} & $<$1e-4 &$<$1e-4 &$<$1e-4 &$<$1e-4 &2.9e-4  &{2.8e-4}        & 100 & \textbf{16} & 1000 & 66   & 16     \\ 
-Twisted   & 1.0e-2 & 7.1e-4 & \textbf{5.1e-6} & 1.0e-2 & 4.5e-4 & \textbf{1.6e-7} & $<$1e-4 &$<$1e-4 &$<$1e-4 &$<$1e-4 &$<$1e-4 &\uline{5.7e-3}  & 100 & \textbf{16} & 1000 & 49   & 16     \\ 
+domain    & NG-SAE & SAE    & ZSAE            & NG-SAE & SAE    & ZSAE            & SAE & ZSAE        & SAE  & ZSAE & Encoding & SAE     & ZSAE   & SAE    & ZSAE   & SAE    & ZSAE           \\ 
+MNIST     & 8.4e-2 & 8.6e-3 & \textbf{3.7e-6} & 5.3e-2 & 2.2e-4 & \textbf{1.1e-7} & 100 & 51          & 1000 & 68   & 18.4     & $<$1e-4 &$<$1e-4 &$<$1e-4 &$<$1e-4 &$<$1e-4 &\uline{9.1e-3}  \\ 
+Mandrill  & 1.1e-3 & 8.3e-4 & \textbf{3.0e-5} & 4.2e-4 & 2.5e-4 & \textbf{4.5e-8} & 100 & 46          & 1000 & 182  & 18.4     & 3.0e-4  &2.8e-4  &2.1e-4  &2.3e-4  &2.0e-4  &{3.2e-4}        \\ 
+Spider    & 8.5e-4 & 4.9e-4 & \textbf{6.3e-6} & 2.3e-4 & 4.2e-4 & \textbf{7.3e-7} & 100 & 49          & 1000 & 200  & 18.4     & 2.7e-4  &2.2e-4  &3.1e-4  &2.8e-4  &$<$1e-4 &\uline{2.8e-2}  \\ 
+L-Out     & 9.0e-3 & 2.0e-4 & \textbf{3.9e-6} & 8.1e-3 & 1.4e-4 & \textbf{7.5e-6} & 100 & \textbf{16} & 1000 & 66   & 16       & $<$1e-4 &$<$1e-4 &$<$1e-4 &$<$1e-4 &2.9e-4  &{2.8e-4}        \\ 
+Twisted   & 1.0e-2 & 7.1e-4 & \textbf{5.1e-6} & 1.0e-2 & 4.5e-4 & \textbf{1.6e-7} & 100 & \textbf{16} & 1000 & 49   & 16       & $<$1e-4 &$<$1e-4 &$<$1e-4 &$<$1e-4 &$<$1e-4 &\uline{5.7e-3}  \\ 
 \end{tabular}
 \end{adjustbox}
  \caption{\textbf{Representation characteristics.}
@@ -888,19 +893,9 @@ Results comparing the NG-SAE, vanilla SAE and ZSAE ($\alpha$=0.7).
 \label{tab:stability}
 \end{table*}
 
-We next tested if the zero-suppression affects the output accuracy.
-In \reftbl{tab:stability} (second columns)
-we show the Mean Square Error between the input and the output
-for 100 randomly generated images.
-The results indicate that the zero-suppression does not significantly affect the output accuracy for $N$=100,1000.
-However, for $N$=36 (a parameter tuned for vanilla SAEs to have the least variance), the zero-suppression
-harmed the accuracy because the network is already small and the further compression penalty affected the training.
-In other words, it is better to combine ZSAE with a overcapacity network,
-since ZSAE then automatically compresses the representation.
-% If the network size is already optimally tuned for vanilla SAE (i.e. $N$=36),
-% the additional regularization may trade accuracy for stability.
+\subsubsection{Effective Size of the Representation}
 
-Next, \reftbl{tab:stability} (right columns) shows that the number of effective bits,
+Next, \reftbl{tab:stability} (middle columns) shows that the number of effective bits,
 i.e. the number of propositions that \emph{ever} change their values over all states, is low in ZSAE, showing that
 ZSAE obtained a more compressed, compact representation of the input.
 In MNIST, the numbers are comparable between ZSAEs with $N$=100,1000,
@@ -917,7 +912,28 @@ In LightsOut and Twisted, ZSAE even finds the 16bit optimal representation for t
 % reconstruction loss is still low if you maintain the latent space size
 % large enough.
 
-\begin{table}[tb]
+\subsection{Output Accuracy}
+
+Regularization in general works by restricting the neural network
+to achieve some desirable property, e.g., most commonly for suppressing the overfitting, but in our case
+for improving the stability. Thus, as a result of the restricted expressive capacity, the output accuracy may be degraded
+when the regularization is too strong.
+
+Thus we next tested if the zero-suppression affects the output accuracy.
+In \reftbl{tab:stability} (right columns)
+we show the Mean Square Error between the input and the output
+for 100 randomly generated images.
+The results indicate that the zero-suppression does not significantly affect the output accuracy for $N$=100,1000.
+However, for $N$=36 (a parameter tuned for vanilla SAEs to have the least variance), the zero-suppression
+harmed the accuracy because the network is already small and the further penalty affected the training.
+In other words, it is better to combine ZSAE with a overcapacity network,
+since ZSAE then automatically compresses the representation.
+% If the network size is already optimally tuned for vanilla SAE (i.e. $N$=36),
+% the additional regularization may trade accuracy for stability.
+
+\subsubsection{Hyperparameter Sensitivity}
+
+\begin{table}[htb]
  \centering
  \begin{adjustbox}{width={\linewidth},keepaspectratio}
  \begin{tabular}{|r|*{8}{c|}}
@@ -930,15 +946,15 @@ $N=$      &36     & 100    & 1000   & 100    & 1000   & $\alpha=$0.2 & 0.5    & 
 MNIST     &1.8e-4 & 8.6e-3 & 2.2e-4 & 3.7e-6 & 1.1e-7 & 4.5e-7       & 0.0e+0 & 3.7e-6 \\
 Mandrill  &2.9e-4 & 8.3e-4 & 2.5e-4 & 3.0e-5 & 4.5e-8 & 2.3e-6       & 3.4e-6 & 3.0e-5 \\
 Spider    &5.8e-6 & 4.9e-4 & 4.2e-4 & 6.3e-6 & 7.3e-7 & 4.6e-6       & 8.3e-6 & 6.3e-6 \\
-LightsOut &2.5e-6 & 2.0e-4 & 1.4e-4 & 3.9e-6 & 7.5e-6 & 1.1e-4       & 1.5e-5 & 3.9e-6 \\
+L-Out     &2.5e-6 & 2.0e-4 & 1.4e-4 & 3.9e-6 & 7.5e-6 & 1.1e-4       & 1.5e-5 & 3.9e-6 \\
 Twisted   &2.1e-5 & 7.1e-4 & 4.5e-4 & 5.1e-6 & 1.6e-7 & 8.8e-5       & 4.2e-6 & 5.1e-6 \\
 \end{tabular}
 \end{adjustbox}
- \caption{Sensitivity of ZSAE to the hyperparameter $\alpha$ compared to the sensitivity of SAE to the hyperparameter $N$.}
+ \caption{Sensitivity of ZSAE to the hyperparameter $\alpha,N$ compared to that of SAE to the hyperparameter $N$.}
  \label{sensitivity}
 \end{table}
 
-Finally, we tested the sensitivity of ZSAE on its new hyperparameter $\alpha$ (\reftbl{sensitivity}).
+We tested the sensitivity of ZSAE on its new hyperparameter $\alpha$ (\reftbl{sensitivity}).
 The purpose of this experiment is to show that ZSAEs are less sensitive to the choice of both $N$ and $\alpha$,
 while vanilla SAEs are sensitive to $N$.
 % 
@@ -1033,7 +1049,7 @@ Mandrill       & \tb{4}  & 3  & 0       & 0       & \tb{6}  & \tb{5}  & 16      
                & \tb{13} & 10 & 3       & 4       & \tb{13} & \tb{12} & 18      & 13 & 6       & 18      & \tb{19} & \tb{19} & 18  & 13  & 10      & 18      & \tb{19} & \tb{20} \\
 Spider         & 8       & 3  & \tb{6}  & \tb{12} & 3       & 5       & 20      & 7  & 16      & 20      & \tb{20} & \tb{20} & 20  & 20  & 20      & 20      & 20      & 20  
                & 13      & 11 & \tb{17} & \tb{17} & \tb{18} & 16      & 17      & 10 & 15      & \tb{18} & \tb{20} & \tb{18} & 17  & 14  & 15      & 17      & \tb{20} & \tb{18} \\
-LightsOut      & 1       & 0  & 0       & \tb{10} & \tb{19} & \tb{20} & \tb{20} & 13 & 18      & 12      & \tb{19} & \tb{20} & 20  & 20  & 20      & 20      & 20      & 20  
+L-Out          & 1       & 0  & 0       & \tb{10} & \tb{19} & \tb{20} & \tb{20} & 13 & 18      & 12      & \tb{19} & \tb{20} & 20  & 20  & 20      & 20      & 20      & 20  
                & 10      & 0  & 0       & \tb{20} & \tb{20} & \tb{12} & 20      & 20 & \tb{20} & 20      & 20      & 18      & 20  & 19  & \tb{20} & 20      & \tb{20} & 18 \\
 Twisted        & 1       & 0  & 0       & \tb{4}  & \tb{20} & \tb{3}  & \tb{17} & 12 & 6       & 12      & \tb{20} & \tb{17} & 20  & 20  & 20      & 20      & 20      & 20  
                & 3       & 0  & 0       & \tb{10} & \tb{16} & \tb{12} & 19      & 17 & \tb{20} & \tb{20} & \tb{20} & 15      & 20  & 20  & \tb{20} & 20      & 20      & 15 \\ \hline
