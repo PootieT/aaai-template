@@ -541,10 +541,11 @@ rely on sampling processes.
 
 To obtain a deeper understanding of the mechanism that generates
 unstable symbols in vanilla SAEs, we
-analyzed the source code of Latplan published on Github.
+analyzed its mathematical model and the public source code of Latplan (commit d48ee62).
 % 
-We found that they are using an alternative loss function for Gumbel-Softmax VAE (GS-VAE),
-and \emph{this very change} turned out to be essential to the success of their experiments
+We found that the source code differs from the original mathematical formulation of Gumbel-Softmax VAE (GS-VAE)
+in that they are using an alternative loss function,
+and we found that \emph{this very change} turned out to be essential to the success of their experiments
 by suppressing the instability of the propositions.
 In the following, we illustrate our finding using the idealized case where the encoder is the Bernoulli distribution,
 although in reality, it is approximated by a Gumbel-softmax distribution.
