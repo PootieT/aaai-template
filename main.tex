@@ -1054,11 +1054,21 @@ Results indicate that ZSAEs are robust on the different hyperparameters and tend
 
 
 
-Next, we compare the planning performance of Z/SAE with AMA$_2$ (\reftbl{tab:ama2}, right).
-Networks in AMA$_2$ (AAE/AD/SD) are trained with the same hyperparameters
-used in the original paper \cite{Asai2018}.
+Next, we compare the planning performance of Z/SAE with AMA$_2$,
+a NN-based AMA model that learns from the example state transitions.
+It consists of two networks:
+(1) Action AutoEncoder (AAE), an autoencoder that learns to cluster the state transitions into a finite action labels.
+It learns to reconstruct the input propositional successor state $t$ in the output $\hat{t}$.
+Its latent layer represents an action label $a$, which is a single Gumbel-Softmax-activated unit of $A$ categories,
+where $A$ is the upper bound of the number of action labels.
+In addition, every layer of AAE is concatenated with the propositional vector of the current state $s$ as the \emph{secondary} input,
+which turns the standard AE formulation of $f(t)=a,\ g(a)=\hat{t}$ into $f(t,s)=a,\ g(a,s)=\hat{t}$,
+where $g$ can be interpreted as a function that \emph{applies} an action $a$ to $s$ and obtains $\hat{t}$.
+(2) Action Discriminator (AD), a binary classifier modeling the action precondition, which takes $(s,t)$ and returns a boolean.
+Combining AAE and AD yields a successor function that can be used for graph search algorithms.
+Networks in AMA$_2$ are trained with the same hyperparameters used in the original paper \cite{Asai2018}.
 % Similar results were obtained; 
-Overall, ZSAEs improve the success ratio over vanilla SAEs.
+\reftbl{tab:ama2} (right) shows that ZSAEs improve the success ratio over vanilla SAEs.
 
 Finally, we compared the search statistics between SAE+AMA$_2$ and ZSAE+AMA$_2$
 in order to measure another harmful effect of the unstable propositions
