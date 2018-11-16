@@ -706,11 +706,11 @@ we can prune the index $n$
 by adding $W_{n0l}$ to $B_l$ and removing $W_{nkl}$ for $\forall k\in\braces{0,1}$, $\forall l \in [1..L]$,
 which removes $2L$ float values for each zero-suppressed bit $b_n$.
 Therefore, if we remove $\Delta N$ bits from the latent space, it removes $2L\Delta N$ float values from the network.
- 
+ % 
 We can similarly prune the weights $W'$ from the previous layer of $M$ neurons.
-When $W'=(W'_{mnk})$ and bias $B'=(B'_{nk})$ ($m\in[1..M], n\in[1..N], k\in \braces{0,1}$),
-we remove $2(M+1)$ for each zero-suppressed bit $b_n$.
-Therefore, if we remove $\Delta N$ bits from the latent space, it removes $2(M+1)\Delta N$ float values from the network.
+% When $W'=(W'_{mnk})$ and bias $B'=(B'_{nk})$ ($m\in[1..M], n\in[1..N], k\in \braces{0,1}$),
+% we remove $2(M+1)$ for each zero-suppressed bit $b_n$.
+% Therefore, if we remove $\Delta N$ bits from the latent space, it removes $2(M+1)\Delta N$ float values from the network.
 
 
 \section{Empirical Evaluation}
