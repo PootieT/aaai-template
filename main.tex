@@ -229,7 +229,7 @@ The first input is the \emph{transition input} $Tr$, a set of pairs of raw data.
 Each pair $tr_i=(\before_i, \after_i) \in Tr$ represents a transition of the environment before and after some action is executed.
 The second input is the \emph{planning input} $(i, g)$, a pair of raw data, which corresponds to the initial and the goal state of the environment.
 The output of \latentplanner is a data sequence representing the plan execution that reaches $g$ from $i$.
-While the original paper uses an image-based implementation (``data'' = raw images),
+While the original paper uses an image-based implementation (``raw data'' = images),
 the type of data is arbitrary as long as it is compatible to NNs.
 
 % Emphasize the type of symbol, as readers are not familier with or haven't deeply thought about symbols
@@ -254,7 +254,8 @@ by allowing it to use the whole set of valid transitions as an oracle.
 In contrast, AMA$_2$ approximates AMA$_1$ by an unsupervised learning from examples.
 
 In Phase 3, a planning problem instance is generated from the planning input $(i,g)$.
-These are converted to the symbolic states by the SAE, and the symbolic planner solves the problem.
+These are converted to the symbolic states by the SAE, and the symbolic planner solves the problem
+combining $(i,g)$ and the generated action model.
 For example, an 8-puzzle problem instance consists of an image of the start (scrambled) configuration of the puzzle ($i$), and an image of the solved state ($g$).
 
 Since the intermediate states comprising the plan are SAE-generated latent bit vectors, the ``meaning'' of each state (and thus the plan) is not clear to a human observer.
@@ -923,7 +924,7 @@ Twisted   &2.1e-5 & 7.1e-4 & 4.5e-4 & 5.1e-6 & 1.6e-7 & 8.8e-5       & 4.2e-6 & 
  \label{sensitivity}
 \end{table}
 
-We tested the sensitivity of ZSAE on its new hyperparameter $\alpha$ (\reftbl{sensitivity}).
+We tested the sensitivity of ZSAE to its new hyperparameter $\alpha$ (\reftbl{sensitivity}).
 The purpose of this experiment is to show that ZSAEs are less sensitive to the choice of both $N$ and $\alpha$,
 while vanilla SAEs are sensitive to $N$.
 % 
