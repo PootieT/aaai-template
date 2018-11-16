@@ -314,7 +314,7 @@ Latplan uses $M=2$ for simplicity, and it does not affect the expressivity of th
 similar to the relation between SAS+ and the propositional representation.
 % 
 \begin{align}
-z_i &= \textbf{if}\ (i \ \text{is}\ \arg \max_i (g_i+\log \pi_i)) \ \textbf{then}\ 1\ \textbf{else}\ 0 \label{eq:gumbelmax} \\
+z_i &= \textbf{if}\ (i \ \text{is}\ \arg \max_i (g_i+\log \pi_i)) \ \textbf{then}\ 1\ \textbf{else}\ 0. \label{eq:gumbelmax} \\
 z_i &= \text{Softmax}((g_i+\log \pi_i)/\tau).                   \label{eq:gumbelsoftmax}
 \end{align}
 % 
@@ -591,7 +591,7 @@ disable the runtime stochasticity of the network.
 After the training is finished, we replace the Gumbel-softmax activation with
 a pure argmax of class probabilities, which makes the network fully deterministic:
 \[
- z_{nk} = [ \text{if}\ k\ \text{is} \arg \max_k (\log \pi_{nk})\ \text{then}\ 1\ \text{else}\ 0 ].
+ z_{i} = \textbf{if}\ (i\ \text{is} \arg \max_i (\log \pi_{i}))\ \textbf{then}\ 1\ \text{else}\ 0.
 \]
 % 
 This technique reduces the inherent stochasticity of the network
