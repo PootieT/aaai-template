@@ -312,33 +312,21 @@ A single Gumbel-Softmax unit in the Neural Network is able to model a categorica
 which includes a Bernoulli distribution ($M=2$) as a special case.
 Latplan uses $M=2$ for simplicity, and it does not affect the expressivity of the representation,
 similar to the relation between SAS+ and the propositional representation.
-
-% Gumbel-Softmax (GS) is a reparametrization trick \cite{jang2016categorical} for categorical distribution.
-% It continuously approximates Gumbel-Max \cite{maddison2014sampling}, a method for drawing categorical samples.
-The output of a single Gumbel-Softmax unit $\mathbf{z}=(z_i)$ $(0\leq i \le M)$ is a one-hot vector representing $M$ categories, e.g.,
-% if the domain is $D=\braces{a,b,c}$, then $\mathbf{z}=\parens{0,1,0}$ represents ``b'',
-when $M=2$ the categories are $\braces{\text{false},\text{true}}$ and $\mathbf{z}=\parens{0,1}$ represents ``true''.
-% The input is a class probability vector $\pi$, e.g. $\parens{.1,.1,.8}$.
-The input of the unit is a class probability vector $\pi$, e.g. $\parens{.2,.8}$.
-% While in our paper we always use the binary categories
-% for we aim to represent the input in a binary vector,
-% Gumbel-softmax itself easily extends to more than two classes such as $D=\braces{a,b,c}$
-% and therefore, in this section, we describe the general case as in the original paper \cite{jang2016categorical}.
 % 
-Gumbel-Softmax is derived from Gumbel-Max technique \cite{maddison2014sampling} for drawing a categorical sample from $\pi$:
-% It is a generalization
-% of the method for drawing a boolean sample from a Bernoulli distribution with parameter $\pi_1/(\pi_0 + \pi_1)$.
-% It draws samples from $D$ with:
-\[
-z_i \equiv [ \text{if}\ i\ \text{is} \arg \max_i (g_i+\log \pi_i) \text{then}\ 1\ \text{else}\ 0 ]
-\]
-where $g_i$ are samples drawn from
- $\text{Gumbel}(0,1) =-\log (-\log u)$ \cite{gumbel1954statistical}, where
-$u$ is a uniform random sample between 0 and 1. %$0\leq u \leq 1$
-Gumbel-Softmax approximates the argmax with a softmax to make it differentiable:
-\[
-z_i = \text{Softmax}((g_i+\log \pi_i)/\tau).
-\]
+\begin{align}
+z_i &= \textbf{if}\ (i \ \text{is}\ \arg \max_i (g_i+\log \pi_i)) \ \textbf{then}\ 1\ \textbf{else}\ 0 \label{eq:gumbelmax} \\
+z_i &= \text{Softmax}((g_i+\log \pi_i)/\tau).                   \label{eq:gumbelsoftmax}
+\end{align}
+% 
+The output of a single Gumbel-Softmax unit $GS(\boldsymbol{\pi}) = \mathbf{z}=(z_i)$ $(0\leq i \le M)$ is a one-hot vector representing $M$ categories, e.g.,
+when $M=2$ the categories can be seen as $\braces{\text{false},\text{true}}$ and $\mathbf{z}=\parens{0,1}$ represents ``true''.
+(Note: There is no explicit meaning assigned to each category.)
+The input $\boldsymbol{\pi}=(\pi_i)$ is a class probability vector, e.g. $\parens{.2,.8}$.
+Gumbel-Softmax is derived from Gumbel-Max technique \cite[\refeq{eq:gumbelmax}]{maddison2014sampling}
+for drawing a categorical sample from $\boldsymbol{\pi}$
+where $g_i$ is a sample drawn from
+ $\text{Gumbel}(0,1) =-\log (-\log u)$ where $u=\text{Uniform}(0,1)$ \cite{gumbel1954statistical}.
+Gumbel-Softmax approximates the argmax with a softmax to make it differentiable (\refeq{eq:gumbelsoftmax}).
 ``Temperature'' $\tau$ controls the magnitude of approximation, which is annealed to 0 by a certain schedule.
 The output $\mathbf{z}$ converges to a discrete one-hot vector when $\tau\rightarrow 0$.
 
