@@ -75,7 +75,7 @@ It is robust against various hyperparameters and eases the tuning effort, and al
 % To enable such a fully automated high-level symbolic computation in a real-world environment,
 % agents should be able to find the symbolic representation of the environment by itself, i.e. solving the symbol grounding problem.
 % 
-Recently, Latplan system \cite[\refig{fig:overview}]{Asai2018} successfully
+Recently, Latplan system \cite{Asai2018} successfully
 connected a subsymbolic neural network (NN) system and a symbolic Classical Planning system
 to solve various visually presented puzzle domains.
 % In contrast to the work by Konidaris et. al. (\citeyear{KonidarisKL14}),
@@ -212,18 +212,19 @@ entirely from the image-based observation of the environment with deep NNs.
 The system was shown to solve various puzzle domains, such as 8-puzzles or Tower of Hanoi,
 that are presented in a form of noisy, continuous visual depiction of the environment.
 
-\begin{figure}[tb]
- \centering
- \includegraphics[width=\linewidth]{img/planning.pdf}
- \caption{Classical planning in latent space:
-It uses the learned State AutoEncoder (\refig{sae}) to convert pairs of images $(\before,\after)$ to symbolic transitions,
- from which the Action Model Acquisition (AMA) component generates an action model.
-A classical planner finds the symbolic solution plan for symbolic initial/goal states encoded from images.
-Finally, intermediate states in the plan are decoded back to a human-comprehensible image sequence.}
-\label{fig:overview}
-\end{figure}
+% \begin{figure}[tb]
+%  \centering
+%  \includegraphics[width=\linewidth]{img/planning.pdf}
+%  \caption{Classical planning in latent space:
+% It uses the learned State AutoEncoder (\refig{sae}) to convert pairs of images $(\before,\after)$ to symbolic transitions,
+%  from which the Action Model Acquisition (AMA) component generates an action model.
+% A classical planner finds the symbolic solution plan for symbolic initial/goal states encoded from images.
+% Finally, intermediate states in the plan are decoded back to a human-comprehensible image sequence.}
+% \label{fig:overview}
+% \end{figure}
 
-\latentplanner (\refig{fig:overview}) takes two inputs.
+% \latentplanner (\refig{fig:overview}) takes two inputs.
+\latentplanner takes two inputs.
 The first input is the \emph{transition input} $Tr$, a set of pairs of raw data.
 Each pair $tr_i=(\before_i, \after_i) \in Tr$ represents a transition of the environment before and after some action is executed.
 The second input is the \emph{planning input} $(i, g)$, a pair of raw data, which corresponds to the initial and the goal state of the environment.
