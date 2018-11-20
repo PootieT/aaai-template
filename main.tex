@@ -594,8 +594,9 @@ a pure argmax of class probabilities, which makes the network fully deterministi
  z_{i} = \textbf{if}\ (i\ \text{is} \arg \max_i (\log \pi_{i}))\ \textbf{then}\ 1\ \text{else}\ 0.
 \]
 % 
-This technique reduces the inherent stochasticity of the network
-but does not reduce the stochasticity originated from the noisy input.
+This technique reduces the inherent stochasticity of the network.
+%% We actually haven't prove anything about this, so let's remove it for safety
+% but does not reduce the stochasticity originated from the noisy input.
 
 \section{Zero-Suppressed State AutoEncoder}
 \label{zsae}
