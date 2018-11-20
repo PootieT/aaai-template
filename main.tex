@@ -586,8 +586,8 @@ a much higher instability compared to the GS-VAE with the Entropy regularization
 \subsubsection{Removing the Run-Time Stochasticity}
 \label{argmax}
 
-Another observation we made from the source code is that we can
-disable the runtime stochasticity of the network.
+Another improvement we made from the original approach in Latplan is that we can
+disable the stochasticity of the network while performing the planning.
 After the training is finished, we replace the Gumbel-softmax activation with
 a pure argmax of class probabilities, which makes the network fully deterministic:
 \[
