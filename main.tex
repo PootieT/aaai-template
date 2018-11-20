@@ -648,9 +648,10 @@ but we focus on the binary representation in this paper.
 
 % Saying ``similarities'': novelty in disguise.
 The proposed method has some similarities to the common technique called $\ell_1$ regularization \cite{Goodfellow-et-al-2016},
-which is applied uniformly to the continuous activations of the neurons or the training weights.
-$\ell_1$ regularization achieves a sparse representation where the continuous values become closer to zero,
-while the proposed zero-suppression is applied to the discrete values and is applied asymmetrically.
+which is applied to the continuous activations of the neurons or the training weights
+and achieves a sparse representation where the continuous values become closer to zero.
+$\ell_1$ regularization is applied to all neurons in the same layer
+while the proposed zero-suppression is applied to a subset of neurons representing a particular discrete value.
 % 
 Moreover, regularization is traditionally applied in order to suppress overfitting and improve the predictive performance
 while our focus is rather on the stability of the representation.
