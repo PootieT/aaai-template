@@ -641,16 +641,16 @@ The resulting loss is
  \brackets{\text{loss}} = & \brackets{\text{\small vanilla SAE loss}} + \alpha \sum_n \sum_{k\not=0} z_{nk} % q(b_n=1 \mid x)
 \end{align*}
 where $\alpha$ is the magnitude of regularization.
-Readers may notice that this formulation takes a general form
+This formulation takes a general form
 that also covers the multi-valued representation with $k\geq 2$.
 In principle, this method could also be used for finding SAS+ representation,
 but we focus on the binary representation in this paper.
 
 % Saying ``similarities'': novelty in disguise.
-The proposed method has some similarities to the $\ell_1$ regularization
-applied uniformly to the continuous activations of the neurons or the training weights.
+The proposed method has some similarities to the common technique called $\ell_1$ regularization \cite{Goodfellow-et-al-2016},
+which is applied uniformly to the continuous activations of the neurons or the training weights.
 $\ell_1$ regularization achieves a sparse representation where the continuous values become closer to zero,
-while the proposed zero-suppression is applied to the discrete values.
+while the proposed zero-suppression is applied to the discrete values and is applied asymmetrically.
 % 
 Moreover, regularization is traditionally applied in order to suppress overfitting and improve the predictive performance
 while our focus is rather on the stability of the representation.
