@@ -111,11 +111,16 @@ given the identical or nearly identical image input.
 % 
 % Prevent reviewers from reaching the early conclusion that this is about robustness.
 % 
-Curiously, instability does not affect the output accuracy of SAE.
+We also found out that instability does not affect the reconstruction accuracy of SAE.
 This indicates that \emph{unstable} propositions are also ``unused'' and ``uninformative''.
 % ,
 % just as the boy who cried wolf was ignored by the villagers.
  % in the Aesop's Fables.
+While this is typically less of a problem from the machine learning
+perspective where the task is to obtain the accurate autoencoder, its
+unstable latent representation poses a great threat to the reasoning ability of
+the planners.
+% 
 
 Unstable symbols are harmful for symbolic reasoning because
 they break the identity assumption built into the reasoning algorithms.
@@ -124,6 +129,11 @@ a single image may map to multiple propositional states due to stochasticity,
 therefore the duplication detection in search algorithms such as \astar \cite{hart1968formal}
 fails to realize that a single real-world state is visited multiple times through
 different symbolic state representations.
+% 
+In a machine learning task, the mapping between images and the binary representation
+could be a many-to-many relationship, while the symbolic planning requires a mapping
+that abstracts many images into a single symbolic state, i.e. many-to-one mapping.
+
 
 \begin{figure}[tb]
  % It is better to have this figure in the first page --- whatever figure it is, it hooks
