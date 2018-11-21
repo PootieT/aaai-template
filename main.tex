@@ -158,10 +158,10 @@ NNs are known to robustly predict the correct output, but they do not guarantee
 the quality of the internal representation.
 It is also unrelated to the numerical stability of the training or the reproducibility of the results.
 
-The second contribution of this paper is the formal analysis comparing
-the original mathematical model of Gumbel-Softmax
-\cite{jang2016categorical} and the published source code of Latplan
-\cite{Asai2018}. The analysis revealed that Latplan's Gumbel-Softmax has a deviation from
+The second contribution of this paper is the formal analysis of the Latplan system,
+in particular the comparison to the original mathematical model of Gumbel-Softmax
+\cite{jang2016categorical}.
+The analysis revealed that Latplan's Gumbel-Softmax has a deviation from
 the original, which was the key to its first success: The slight
 modification acted as an \emph{Entropy Regularization} term for the SAE neural
 network that suppresses the randomness to some extent.  Through a personal
