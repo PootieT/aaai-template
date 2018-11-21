@@ -688,11 +688,12 @@ later pipelines of the neural networks.
 The pruning for a discrete representation complements the existing pruning methods for continuous representation.
 
 Assume the propositional layer $z_{nk}$ is connected to the next layer of $L$ neurons
-by a fully-connected network $h_l=\sigma\parens{\sum_{nk} W_{nkl}z_{nk}+B_l}$
+by a fully-connected network $h_l=\sigma\parens{\sum_{n=1}^N \sum_{k\in\braces{0,1}} W_{nkl}z_{nk}+B_l}$
 with weights $W_{nkl}$, biases $B_l$, and a nonlinear activation $\sigma$.
+($1\leq l \leq L$.)
 When we assume that $z_{n0}=1$ and $z_{n1}=0$ always holds ($b_n=0$ for all inputs),
 we can prune the index $n$
-by adding $W_{n0l}$ to $B_l$ and removing $W_{nkl}$ for $\forall k\in\braces{0,1}$, $\forall l \in [1..L]$,
+by adding $W_{n0l}$ to $B_l$ and removing $W_{nkl}$ for $\forall k\in\braces{0,1}$, $\forall l \in \braces{1,...L}$,
 which removes $2L$ float values for each zero-suppressed bit $b_n$.
 Therefore, if we remove $\Delta N$ bits from the latent space, it removes $2L\Delta N$ float values from the network.
  % 
