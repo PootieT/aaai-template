@@ -102,25 +102,29 @@ Another approach replacing SAE/AMA$_2$ with InfoGAN was also proposed recently \
 Despite its success,
 % the propositional representations learned by SAE have a problematic behavior
 %%%%%% SAE -> NN because we also want to cover the InfoGan case
-the propositional representations learned by NNs may have a problematic behavior
-because NNs in general do not have strong guarantees on the learned results.
-They are not always ``stable'', i.e.,
+the propositional representations learned by SAEs have a problematic behavior
+because NNs do not have strong guarantees on the learned results.
+% 
+Although the SAE outputs a highly accurate reconstruction of the input,
+the learned latent representations are not ``stable'', i.e.,
 some propositions may flip the value (true/false) randomly
 given the identical or nearly identical image input.
+% \footnote{
+% The reason the randomness does not harm the reconstruction accuracy is that
+% the later pipeline of the network learns to ignore the random neurons by assigning a negligible weight.
+% }
 % only slightly perturbed image input.
 % 
 % Prevent reviewers from reaching the early conclusion that this is about robustness.
 % 
-We also found out that instability does not affect the reconstruction accuracy of SAE.
-This indicates that \emph{unstable} propositions are also ``unused'' and ``uninformative''.
+% We also found out that instability does not harm the reconstruction accuracy of SAE.
+% This indicates that \emph{unstable} propositions are also ``unused'' and ``uninformative''.
 % ,
 % just as the boy who cried wolf was ignored by the villagers.
- % in the Aesop's Fables.
-While this is typically less of a problem from the machine learning
-perspective where the task is to obtain the accurate autoencoder, its
-unstable latent representation poses a great threat to the reasoning ability of
-the planners.
-% 
+% in the Aesop's Fables.
+This is mainly because SAE learns the mapping between images and binary representations as a many-to-many relationship.
+While this property has not been considered as an issue in the machine learning community because it does not affect the reconstruction accuracy,
+its unstable latent representation poses a great threat to the reasoning ability of the planners.
 
 Unstable symbols are harmful for symbolic reasoning because
 they break the identity assumption built into the reasoning algorithms.
@@ -130,10 +134,13 @@ therefore the duplication detection in search algorithms such as \astar \cite{ha
 fails to realize that a single real-world state is visited multiple times through
 different symbolic state representations.
 % 
-In a machine learning task, the mapping between images and the binary representation
-could be a many-to-many relationship, while the symbolic planning requires a mapping
+Unlike machine learning tasks,
+% the mapping between images and the binary representation could be a many-to-many relationship, while
+the symbolic planning requires a mapping
 that abstracts many images into a single symbolic state, i.e. many-to-one mapping.
-
+% 
+To this end, it is necessary to develop an autoencoder that learns a
+many-to-one relationship between images and binary representations.
 
 \begin{figure}[tb]
  % It is better to have this figure in the first page --- whatever figure it is, it hooks
