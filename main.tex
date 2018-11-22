@@ -1098,16 +1098,21 @@ we extended the maximum runtime limit of 1 hour
 and reduced the input noise so that SAE can solve a sufficient number of problem instances.
 The parameters for the Gaussian noise and the salt/pepper noise applied to the input
 are $\sigma=0.3$ and $p=0.06$, respectively, compared to $\sigma=0.6$ and $p=0.12$ in \reftbl{tab:ama2}.
+In this setting, the gap between ZSAE and SAE narrowed: ZSAE solved 266 instances and SAE solved 262 instances in total.
 % 
 The plots support our claim that
 the randomness in the state encoding of vanilla SAE confuses the duplicate detection and
 increase the search effort.
 % 
-ZSAE resulted in a smaller node expansion in 109 out of 149 instances solved by both SAE and ZSAE,
-and in a shorter runtime in 119 out of 149 instances (about 4/5 of the instances).
+ZSAE resulted in a smaller node expansion in 172 out of 238 instances solved by both SAE and ZSAE,
+and in a shorter runtime in 191 out of 238 instances.
 % ???
 % Since the planner uses a blind search and the problem is unit-cost, all nodes under the solution depth are generated
 % (note: mind the difference between evaluation, expansion, generation).
+
+% (:TYPE "exp" :ZSAE-WIN 172 :SAE-WIN 66)
+% (:TYPE "time" :ZSAE-WIN 191 :SAE-WIN 47)
+
 
 \begin{figure}[tb]
  \centering
