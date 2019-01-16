@@ -36,7 +36,29 @@ Individual responses come after the overall response.
 # 
 # This paper is about an important problem: with all the deep learning success, it is good to look at how such models can be used to obtain representations that are useful for (symbolic) planning, and especially how we can obtain stable representations. The problem setting is very clear from the start, all the sub-steps and problems are well introduced and also covered in the experiments, and terminology is clear throughout the paper. Most of the questions I had while reading were answered right away or through the experiments. The first half of the paper could use a more extensive example to get hands-on with the problem of stability; I agree that the pictures do introduce it, but on a slightly more abstract level though. Some of the language can be improved (some small things like literals missing, but overall the paper is quite polished already). Figure 4 is not very clear (compared to the rest of the paper).
 # 
-# Section 3 might overdo it a little when explaining things related to the main theme of the paper; I guess some of it is redundant. I think that all experiments "before" the actual planning tests are insightful and convincing (also the comparisons). For the planning experiments themselves, I think these are not overly convincing. I do see the effects of the new regularization on the latent representation, and the effect on planning, but these are not too large if we only look at success (Table 3, right). The number of solved instances is almost the same, but according to the end of section 6.3. search efforts and runtimes do differ, but I think more experiments/analysis is needed here. This is the only weaker point of the paper, since it is the main focus (seeing how better representations enable "better" planning). I also feel that if one leaves the planning domain aside, the experimental section could have appealed to other methods too that work on compression of (auto-encoder based) learning. The related work could also be expanded somewhat if looking more in this direction.
+# Section 3 might overdo it a little when explaining things related to the main theme of the paper; I guess some of it is redundant.
+
+# I think that all experiments "before" the actual planning tests are insightful and convincing (also the comparisons).
+
+# For the planning experiments themselves, I think these are not overly convincing.
+> I do see the effects of the new regularization on the latent representation, and the effect on planning,
+> but these are not too large if we only look at success (Table 3, right).
+
+We discussed that the source of stochasticity is either internal or external,
+and that argmax supresses the internal stochasticity, and the regularization
+supresses the external one. (Sec.3,par.1)
+
+**The main result is therefore the evaluation with the noisy input**, which is of the practical importance,
+not the clean input, which lacks external stochasticity.
+
+Notice that for the strong gaussian noise (σ=0.6 for pixel values between 0.0 and 1.0), the number of instances solved with AMA2 have more than doubled. The noise is so strong that we hardly recognize the original content (e.g. mandrill, numbers) in the image (see [anonymous image link]), but the system is able to map it to the appropriate propositional state and solves it successfully.
+
+Also, note that N=36 for SAE is a result of hyperparameter search, thus comparing this best case with a ZSAE with different N is unfair.
+
+# The number of solved instances is almost the same, but according to the end of section 6.3. search efforts and runtimes do differ, but I think more experiments/analysis is needed here.
+# This is the only weaker point of the paper, since it is the main focus (seeing how better representations enable "better" planning).
+# I also feel that if one leaves the planning domain aside, the experimental section could have appealed to other methods too that work on compression of (auto-encoder based) learning.
+# The related work could also be expanded somewhat if looking more in this direction.
 # 
 # Nevertheless, this is a nice paper with interesting results.
 
@@ -66,7 +88,40 @@ Individual responses come after the overall response.
  
 # The ZSAE method is a minor extension of the earlier LatPlan framework. The experimental results suggest that this extension achieves its objective of making the learned discrete representation more stable in the presence of noise, with a corresponding benefit to planning success. The observation that a *low entropy* objective for the latent representation makes it more stable is quite interesting and may be useful for other applications of VAEs with discrete latent variables.
  
-# The paper's main weakness is an overall lack of clarity and completeness. I was able to get a general understanding of the modified LatPlan framework from the paper, but there are many important details missing. The most important missing pieces relate to how action models are created and how planning performance is actually evaluated. The two "AMA" methods are hardly described at all. I gather from reading the LatPlan paper that AMA1 exhaustively examines all possible (s, a, s') transitions for the true actions $a$ and learned state representations $s,s'$. So in this case the planner has access to the true actions and we can verify whether the computed plan actually succeeds in the real world. In the AMA2 method, though, the system is *learning* the action space as the latent space of an autoencoder that reconstructs successor states. The planner can plan in this entirely-learned space, but how do we know which real action a learned action corresponds to, so that we know what the planner actually wants to do in a given state and what the real reaults of that action are?
+# The paper's main weakness is an overall lack of clarity and completeness. I was able to get a general understanding of the modified LatPlan framework from the paper, but there are many important details missing. The most important missing pieces relate to how action models are created and how planning performance is actually evaluated. The two "AMA" methods are hardly described at all.
+# I gather from reading the LatPlan paper that AMA1 exhaustively examines all possible (s, a, s') transitions for the true actions $a$ and learned state representations $s,s'$.
+# So in this case the planner has access to the true actions and we can verify whether the computed plan actually succeeds in the real world.
+
+# In the AMA2 method, though, the system is *learning* the action space as the latent space of an autoencoder that reconstructs successor states. The planner can plan in this entirely-learned space, but how do we know which real action a learned action corresponds to, so that we know what the planner actually wants to do in a given state and what the real reaults of that action are?
+
+> I gather from reading the LatPlan paper
+
+There is no need to read the previous work as long as understanding that the problem is a simple graph search.
+We described AMA1 in sec.6.3:
+
+> idealistic AMA that ... generates the entire propositional state transitions from the entire image transitions
+
+The resulting problem to be solved is nothing more than a simple pathfinding over a graph defined by nodes and edges,
+thus it is straightforward to convert it into a PDDL without further explanation.
+In fact, we do not have to use a PDDL solver (other than presentation/demonstration purpose) --- in-memory graph search would do.
+
+> all possible (s, a, s') transitions for the true actions $a$
+
+There are no action labels assigned to the state pairs by humans.
+Thus when converting the state space into a PDDL, each (s, s') pair becomes a single zero-ary (grounded) pddl action.
+N edges become N action schema.
+
+> has access to the true actions and we can verify whether the computed plan actually succeeds
+
+There are no "true actions", e.g. human-understandable labels such as "move-up", "move-down".
+We verify the results by looking at the visualized state transitions extracted by the decoder.
+(In the experiments, we used Latplan's domain-specific validator which works on the output images.)
+
+> In the AMA2 ... how do we know which real action a learned action corresponds to
+
+We don't. The input lacks supervised labels for actions, and AAE in AMA2 finds its own set of actions by clustering the transitions (e.g. "this transition and this transition look similar, thus should belong to the same action")
+We verify the final visualized results only.
+
 
 * R3
 
@@ -83,34 +138,48 @@ Individual responses come after the overall response.
 # Overall evaluation: 	
 # -1: (weak reject)
 
-# Review: 	Summary: This paper presents an improvement on existing image-based planning
+# This paper presents an improvement on existing image-based planning
 # leveraging classical planners. The idea is to first learn the set of state
 # variables (propositions), then learn an action model, followed by classical
 # planning. The drawback of the standard approach as well as previous work
 # (State AutoEncoder) is the high stochasticity, which the authors call the
 # stability problem of the learned propositional encoding.
-# 
+
 # It is notable that the authors found a bug in the implementation of the primary
 # previous work SAE that differed from the paper, that helped LatPlan work better
 # than expected. Besides this, the insights and proposed algorithm here are
 # incremental and the results not surprising, not substantial enough for an ICAPS
 # paper.
 # 
-# The paper starts off with the VAE model with discrete latent variables. The
-# paper does not discuss the earlier AE models with naturally sparse
-# representations e.g. Sparse AutoEncoder. Sparse Auto Encoder impose a sparsity
-# constraint on the discrete latent space, which is different from the ones
-# proposed in this paper. The proposed method must be compared to this.
-# 
+> The paper does not discuss ... Sparse AutoEncoder ... impose a sparsity constraint on the discrete latent space
+
+We discussed (Sec5,bottom,left) Sparse AE, which is a synonym for a l1-regularized AE with *continuous* activations (Sec14.2.1,Sparse Autoencoders,Goodfellow et.al,2016).
+Discrete representation learning with NN is a fairly new topic which made the first success in (Jang et.al,ICLR17).
+To our knowledge, there is no regularization proposed for such discrete representation.
+Assymmetric treatement of categorical activations is clearly different from the standard l1-regularization.
+
 # Definition 1 and Definition 2 seem to be loosely stated "under some equivalence
 # relation". Further, it seems the definitions are not used elsewhere in the
 # paper?
-# 
+
+> "under some equivalence relation"
+
+In the particular cases in this paper, this is the threshold on the error noticeable by humans.
+
+Other instances include a symbolic representation "A is adjascent to B" of a picture depicting A and B,
+which is rotation and translation invariant to the absolute coordinates of A and B.
+
 # One trick used in VAEs is to turn off the stochasticity in the input->latent
 # mapping --- simply take the mean or most likely outcome of the distribution.
 # Would this satisfy the stability criterion? This needs to be shown as the basic
 # remedy to the stochasticity/stability problem.
-# 
+
+Even if the entire network becomes determinsitic with the argmax trick,
+the external purturbation in the input (image) alters the latent representation.
+We can see this from both Table 2 ---
+AMA1-based planner with argmax can successfully solve all problems with the clean inputs, while it fails in multiple instances with the noisy input.
+Therefore, argmax is not sufficient for addressing the external stochasticity and zero-suppression is necessary for the noisy inputs.
+ 
 # Similarly, in GS-VAE as temperature goes to zero, the stochasticity in the
 # latent encodings should also tend to deterministic. It seems the stability
 # problem stems more from stochasticity in the input rather than encodings. The
