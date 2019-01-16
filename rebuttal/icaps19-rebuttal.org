@@ -20,9 +20,113 @@ All minor issues reported in the reviews will be revised.
 In the following, we abbreviate Reviewer #X to RX.
 Individual responses come after the overall response.
 
+* R1
 
+# Significance: 2: (modest contribution or average impact)
+# Soundness: 3: (correct)
+# Scholarship: 2: (relevant literature cited but could be expanded)
+# Clarity: 3: (well organized and well written)
+# Reproducibility: 3: (authors describe the implementation and domains in sufficient detail)
+# Overall evaluation: 2: (accept)
+# Review:
 
+# This paper extends an existing approach for learning symbolic state representations in planning domains (well.. that is what it is used for, but it coule be used for other things). The idea is to put more constraints on an auto-encoder network setup such that the latent space is forced into a more "stable" bit representation. The authors define what that means and contribute the algorithm, an analysis of the previous algorithm (using a novel viewpoint) and the introduction of the symbol stability problem. Many experiments are included to test various aspects and to compare to two previous approaches.
+# 
+# This paper is well-written, focused and it contains insightful experiments for what the authors claim to contribute. It is interesting to see that in addition to a new algorithm, the authors also analyze the original algorithm and find out (confirmed by contact with the original authors) that even the original algorithm was different from its description.
+# 
+# This paper is about an important problem: with all the deep learning success, it is good to look at how such models can be used to obtain representations that are useful for (symbolic) planning, and especially how we can obtain stable representations. The problem setting is very clear from the start, all the sub-steps and problems are well introduced and also covered in the experiments, and terminology is clear throughout the paper. Most of the questions I had while reading were answered right away or through the experiments. The first half of the paper could use a more extensive example to get hands-on with the problem of stability; I agree that the pictures do introduce it, but on a slightly more abstract level though. Some of the language can be improved (some small things like literals missing, but overall the paper is quite polished already). Figure 4 is not very clear (compared to the rest of the paper).
+# 
+# Section 3 might overdo it a little when explaining things related to the main theme of the paper; I guess some of it is redundant. I think that all experiments "before" the actual planning tests are insightful and convincing (also the comparisons). For the planning experiments themselves, I think these are not overly convincing. I do see the effects of the new regularization on the latent representation, and the effect on planning, but these are not too large if we only look at success (Table 3, right). The number of solved instances is almost the same, but according to the end of section 6.3. search efforts and runtimes do differ, but I think more experiments/analysis is needed here. This is the only weaker point of the paper, since it is the main focus (seeing how better representations enable "better" planning). I also feel that if one leaves the planning domain aside, the experimental section could have appealed to other methods too that work on compression of (auto-encoder based) learning. The related work could also be expanded somewhat if looking more in this direction.
+# 
+# Nevertheless, this is a nice paper with interesting results.
 
+* R2
+
+# Significance: 1: (minimal contribution or weak impact) Minor extension of an already-published method
+# Soundness: 2: (minor inconsistencies or small fixable errors)
+# Scholarship: 2: (relevant literature cited but could be expanded)
+# Clarity: 2: (mostly readable with some room for improvement)
+# 
+# Many important details are not described precisely. Understanding the system requires reading the earlier LatPlan paper (Asai and Fukunaga, 2018), which is itself difficult to parse.
+# 
+# Reproducibility: 	
+# 3: (authors describe the implementation and domains in sufficient detail)
+# Would be very difficult to reproduce from this paper alone, but the work is an extension of the LatPlan system, which has available source code.
+# 
+# Overall evaluation: 	
+# -1: (weak reject)
+# 
+# Review: 	Summary:
+
+# The paper proposes an extension to the LatPlan system (Asai and Fukunaga, 2018) to improve the "stability" of the learned discrete state representation. The paper first notes that LatPlan relies on (apparently accidentally) minimizing entropy in the discrete latent representation for its success. The paper then proposes a "zero-suppression" (which actually encourages *more* zeros in the latent representation) with the goal of encouraging a sparse representation that might be more resistent to "flipping" bits due to noise. Compared to the original LatPlan framework, the "zero-suppressed" version has lower variance in the latent states given noisy inputs, and solves more planning problems in the presence of noise.
+ 
+# Review:
+ 
+# First of all, "zero-suppressed" suggests the opposite of what the proposed method actually does. "Zero-enhanced" or "sparse" or "L0-regularized" would all be better names. I'll call the method "ZSAE" in the remainder of the review.
+ 
+# The ZSAE method is a minor extension of the earlier LatPlan framework. The experimental results suggest that this extension achieves its objective of making the learned discrete representation more stable in the presence of noise, with a corresponding benefit to planning success. The observation that a *low entropy* objective for the latent representation makes it more stable is quite interesting and may be useful for other applications of VAEs with discrete latent variables.
+ 
+# The paper's main weakness is an overall lack of clarity and completeness. I was able to get a general understanding of the modified LatPlan framework from the paper, but there are many important details missing. The most important missing pieces relate to how action models are created and how planning performance is actually evaluated. The two "AMA" methods are hardly described at all. I gather from reading the LatPlan paper that AMA1 exhaustively examines all possible (s, a, s') transitions for the true actions $a$ and learned state representations $s,s'$. So in this case the planner has access to the true actions and we can verify whether the computed plan actually succeeds in the real world. In the AMA2 method, though, the system is *learning* the action space as the latent space of an autoencoder that reconstructs successor states. The planner can plan in this entirely-learned space, but how do we know which real action a learned action corresponds to, so that we know what the planner actually wants to do in a given state and what the real reaults of that action are?
+
+* R3
+
+# Significance: 	
+# 1: (minimal contribution or weak impact)
+# Soundness: 	
+# 3: (correct)
+# Scholarship: 	
+# 1: (important related work missing, or mischaracterizes prior research)
+# Clarity: 	
+# 2: (mostly readable with some room for improvement)
+# Reproducibility: 	
+# 3: (authors describe the implementation and domains in sufficient detail)
+# Overall evaluation: 	
+# -1: (weak reject)
+
+# Review: 	Summary: This paper presents an improvement on existing image-based planning
+# leveraging classical planners. The idea is to first learn the set of state
+# variables (propositions), then learn an action model, followed by classical
+# planning. The drawback of the standard approach as well as previous work
+# (State AutoEncoder) is the high stochasticity, which the authors call the
+# stability problem of the learned propositional encoding.
+# 
+# It is notable that the authors found a bug in the implementation of the primary
+# previous work SAE that differed from the paper, that helped LatPlan work better
+# than expected. Besides this, the insights and proposed algorithm here are
+# incremental and the results not surprising, not substantial enough for an ICAPS
+# paper.
+# 
+# The paper starts off with the VAE model with discrete latent variables. The
+# paper does not discuss the earlier AE models with naturally sparse
+# representations e.g. Sparse AutoEncoder. Sparse Auto Encoder impose a sparsity
+# constraint on the discrete latent space, which is different from the ones
+# proposed in this paper. The proposed method must be compared to this.
+# 
+# Definition 1 and Definition 2 seem to be loosely stated "under some equivalence
+# relation". Further, it seems the definitions are not used elsewhere in the
+# paper?
+# 
+# One trick used in VAEs is to turn off the stochasticity in the input->latent
+# mapping --- simply take the mean or most likely outcome of the distribution.
+# Would this satisfy the stability criterion? This needs to be shown as the basic
+# remedy to the stochasticity/stability problem.
+# 
+# Similarly, in GS-VAE as temperature goes to zero, the stochasticity in the
+# latent encodings should also tend to deterministic. It seems the stability
+# problem stems more from stochasticity in the input rather than encodings. The
+# issue with small variations in input leading to large deviations in NN outputs
+# is well known, and perhaps a look at these adversarial examples might shed some
+# light in to the symbol stability problem.
+# 
+# At a more fundamental level, stable symbols are not as import as predictive
+# symbols that learn meaningful action models, beyond reconstruction of the
+# current image. It would be interesting if the authors expand the discussion
+# around the different design choices for symbolic learning.
+# 
+# I really like the flavor of experiments and the domains used. However, it is
+# hard to judge the differences based on the total sample variance alone.
+# They do not show the reconstruction error or any generated samples.
+# The authors show planning performance in Table 3, but it could be expanded.
 
 * local variables                                                  :noexport:
 
