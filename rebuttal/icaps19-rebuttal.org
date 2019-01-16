@@ -191,7 +191,9 @@ Therefore, argmax is not sufficient for addressing the external stochasticity an
 # symbols that learn meaningful action models, beyond reconstruction of the
 # current image. It would be interesting if the authors expand the discussion
 # around the different design choices for symbolic learning.
-# 
+
+# don' answer, not clear what he means
+
 # I really like the flavor of experiments and the domains used. However, it is
 # hard to judge the differences based on the total sample variance alone.
 # They do not show the reconstruction error or any generated samples.
