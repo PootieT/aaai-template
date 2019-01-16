@@ -21,7 +21,7 @@
     (shell-command (format "./count-word-cmt.sh %s" filename)))
   t)
 
-(add-hook 'after-save-hook 'publish-and-count-word-for-cmt nil t)
+(add-hook 'after-save-hook 'publish-and-count-word-for-easychair nil t)
 
 
   
