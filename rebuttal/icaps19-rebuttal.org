@@ -59,8 +59,7 @@ We further discuss this in reply to R2.
 # I think that all experiments "before" the actual planning tests are insightful and convincing (also the comparisons).
 
 # For the planning experiments themselves, I think these are not overly convincing.
-> I do see the effects of the new regularization on the latent representation, and the effect on planning,
-> but these are not too large
+> the effect on planning...are not too large
 
 > The number of solved instances is almost the same
 
@@ -78,6 +77,14 @@ Indeed, while the ZSAE may have only a small effect when the input is clean,
 it does not reduce its impact at all because virtually all real-world data contain various forms of noise/perturbation, and obtaining the clean input is extremely rare.
 
 Also, note that N=36 for SAE is a result of hyperparameter search, thus comparing this best case with a ZSAE with different N is unfair.
+
+
+
+> the effects of the new regularization on the latent representation...are not too large
+
+While the effect of Entropy Regularization by SAE over NG-SAE on the variance is 1 to 2 orders of magnitude,
+the effect of Zero-Suppression is mostly 2 to 3, and up to 4 orders of magnitude (2.5e-4 -> 4.5e-8).
+
 
 # The number of solved instances is almost the same, but according to the end of section 6.3. search efforts and runtimes do differ, but I think more experiments/analysis is needed here.
 # This is the only weaker point of the paper, since it is the main focus (seeing how better representations enable "better" planning).
