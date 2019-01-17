@@ -61,18 +61,18 @@ Finally, we learned that many still believes Latplan is a workshop paper at KEPS
 # I think that all experiments "before" the actual planning tests are insightful and convincing (also the comparisons).
 
 # For the planning experiments themselves, I think these are not overly convincing.
-> the effect on planning...are not too large
+> the effect on planning...not too large
 
-> The number of solved instances is almost the same
+> solved instances is almost the same
 
-**The main scores (table 3) have more than tripled with AMA1 (14-43,6-48,6-33) and more than doubled with AMA2 (29->81,24->62).**
+**The main scores (Table.3) have more than tripled with AMA1 (14-43,6-48,6-33) and more than doubled with AMA2 (29->81,24->62).**
 
 We discussed that the source of stochasticity is either internal or external(Sec.3,paragraph.1),
 that argmax supresses the internal one(Sec.4,last par),
 and that the ZSAE regularization suppresses the external one(Sec.6.1). 
 
-**The main evaluation result of ZSAE is therefore the evaluation with the noisy input**, NOT the clean input which lacks external stochasticity -- We will clarify this in the revision.
-The gaussian noise (σ=0.6 for pixel values between 0.0 and 1.0) is so strong that we hardly recognize the original content (e.g. mandrill) in the image (see [anonymous image link]),
+**The main evaluation of ZSAE is therefore the evaluation with the noisy input**, NOT the clean input which lacks external stochasticity -- We will clarify this in the revision.
+The gaussian noise (σ=0.6 for pixel values between 0.0 and 1.0) is so strong that we hardly recognize the original content (e.g. mandrill) in the image (anonymous image link imgur.com/a/j0U9Zcq ),
 but the system is able to map it to the appropriate propositional state and solves it successfully.
 
 Indeed, while the ZSAE may have only a small effect when the input is clean,
@@ -196,7 +196,7 @@ These are all included in the evaluation suite that comes with Latplan's source 
 # 
 > The paper does not discuss... Sparse AutoEncoder... impose a sparsity constraint on the discrete latent space
 
-We discussed (Sec5,bottom,left) Sparse AE, which is a synonym for a l1-regularized AE with *continuous* activations (Sec14.2.1,Sparse Autoencoders,Goodfellow et.al,2016,http://deeplearningbook.org/).
+We discussed (Sec5,bottom,left) Sparse AE, which is a synonym for a l1-regularized AE with *continuous* activations (Sec14.2.1,Sparse Autoencoders,Goodfellow et.al,2016,deeplearningbook.org).
 Discrete representation learning with NN is a fairly new topic which made the first success in (Jang et.al,ICLR17).
 To our knowledge, there is no regularization proposed for such discrete representation.
 Assymmetric treatement of categorical activations is clearly different from the standard l1-regularization.
@@ -256,7 +256,7 @@ Argmax is not sufficient and zero-suppression is necessary for addressing the ex
 > They do not show the reconstruction error or any generated samples.
 
 Table.1 shows MSE for the test dataset and we spent entire 6.2 for discussing the accuracy.
-We did not include the visualizations as we already showed the absolute numbers.
+# We did not include the visualizations as we already showed the absolute numbers.
 
 * local variables                                                  :noexport:
 
