@@ -224,15 +224,15 @@ Despite that, we did not try to claim its novelty as a general machine learning 
 
 Argmax trick does not fully satisfy the stability criterion.
 Even with the trick,
-the external purturbation in the input (image) alters the latent representation.
-We can see this from both Table 2:
+the external purturbation (image nose) alters the latent representation.
+We can see this from Table 2:
 AMA1-based planner with argmax can successfully solve all problems with the clean inputs, while it fails in multiple instances with the noisy input.
-Therefore, argmax is not sufficient for addressing the external stochasticity and zero-suppression is necessary for the noisy inputs.
+Argmax is not sufficient and zero-suppression is necessary for addressing the external stochasticity.
  
-> as temperature goes to zero, the stochasticity...tend to deterministic...
-> ...the stability problem stems more from stochasticity in the input
-
-Hard to say which effect is larger (internal/external stochasticity).
+# > as temperature goes to zero, the stochasticity...tend to deterministic...
+# > ...the stability problem stems more from stochasticity in the input
+# 
+# Hard to say which effect is larger (internal/external stochasticity).
 
 # Similarly, in GS-VAE as temperature goes to zero, the stochasticity in the
 # latent encodings should also tend to deterministic. It seems the stability
