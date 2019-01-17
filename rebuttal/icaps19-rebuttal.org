@@ -38,7 +38,7 @@ We further discuss this in reply to R2.
 
 # This is an almost verbatim copy from Latplan paper with authors' permission.
 
-Finally, we learned that some may still believe that Latplan is a workshop paper at KEPS17. This is false. It was presented in AAAI18 main track.
+Finally, note that Latplan is an established work published at AAAI18, not the workshop paper at KEPS17.
 
 * R1
 
