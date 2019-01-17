@@ -157,11 +157,11 @@ Thus when converting the state space into a PDDL, each (s, s') pair becomes a si
 
 We also described AMA2 in sec.6.3. This is much more detailed compared to AMA1.
 AMA2 finds its own set of actions by clustering the unlabelled transitions (page7,left,paragraph.2) (e.g. "this transition and this transition look similar, thus they should belong to the same action schema, whatever it is"),
-Since the action labels are made up by the NN itself and their meaning unknown, there is no way to verify the plan from the action labels.
+Since the action labels are made up by the NN itself and their meanings are unknown, there is no way to verify the plan from the action labels.
 
-Latplan verifies the results by looking at the visualized state transitions extracted by the decoder.
+Latplan instead verifies the results by looking at the visualized state transitions extracted by the decoder.
 In the experiments, we used Latplan's domain-specific validator which works on the output images.
-These are all included in the black-box evaluation suite that comes with Latplan's source code.
+These are all included in the evaluation suite that comes with Latplan's source code and is treated as a black-box.
 
 
 * R3
