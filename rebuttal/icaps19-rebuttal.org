@@ -74,8 +74,8 @@ and that the ZSAE regularization suppresses the external one(Sec.6.1).
 The gaussian noise (σ=0.6 for pixel values between 0.0 and 1.0) is so strong that we hardly recognize the original content (e.g. mandrill) in the image (see [anonymous image link]),
 but the system is able to map it to the appropriate propositional state and solves it successfully.
 
-Indeed, while it might be possible to conclude that the ZSAE has only a small effect when the input is clean,
-virtually all real-world data contain various forms of noise/perturbation, and obtaining the clean input is extremely rare.
+Indeed, while the ZSAE may have only a small effect when the input is clean,
+it does not reduce its impact at all because virtually all real-world data contain various forms of noise/perturbation, and obtaining the clean input is extremely rare.
 
 Also, note that N=36 for SAE is a result of hyperparameter search, thus comparing this best case with a ZSAE with different N is unfair.
 
