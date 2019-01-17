@@ -19,11 +19,17 @@ All minor issues reported in the reviews will be revised.
 In the following, we abbreviate Reviewer #X to RX.
 Individual responses come after the overall response.
 
-Re: Reproducibility.
+
+
+
+   Re: Reproducibility.
+
 ZSAE code is heavily based on the original Latplan. We are planning to publish it.
 The dataset is equivalent to the one in Latplan.
 
-Re: Details of Latplan.
+
+
+   Re: Details of Latplan.
 
 We described all the important details that are directly related to this paper's contribution(ZSAE), which is NNs,AE,GumbelSoftmaxVAE,SAE,training,and its probabilistic model.
 
@@ -38,7 +44,28 @@ We further discuss this in reply to R2.
 
 # This is an almost verbatim copy from Latplan paper with authors' permission.
 
-Finally, note that Latplan is an established work published at AAAI18, not the workshop paper at KEPS17.
+Also note that Latplan is an established work published at AAAI18, not the workshop paper at KEPS17.
+
+
+
+   Re: Significance.
+
+We believe we raised an important and very broad problem regarding obtaining a symbolic model using machine learning.
+We are glad that R1 has resonated with our message.
+
+As a technical contribution, we theoretically analyzed the SAE and proposed a new regularization method for categorical latent representation.
+
+While R3 stated that:
+
+> The paper does not discuss... Sparse AutoEncoder... impose a sparsity constraint on the discrete latent space
+
+We *discussed* (Sec5,bottom,left) Sparse AE, which is a synonym for a l1-regularized AE with *continuous* activations (Sec14.2.1,Sparse Autoencoders,Goodfellow et.al,2016,deeplearningbook.org).
+Discrete representation learning with NN is a fairly new topic which made the first success in (Jang et.al,ICLR17).
+To our knowledge, there is no regularization proposed for such discrete representation.
+Assymmetric treatement of categorical activations is clearly different from the standard l1-regularization.
+
+While we focused on the planning aspect and symbol stability, the regularization method for discrete representations is novel by itself.
+# Despite that, we did not try to claim its novelty as a general machine learning method, as 
 
 * R1
 
@@ -196,14 +223,6 @@ These are all included in the evaluation suite that comes with Latplan's source 
 # incremental and the results not surprising, not substantial enough for an ICAPS
 # paper.
 # 
-> The paper does not discuss... Sparse AutoEncoder... impose a sparsity constraint on the discrete latent space
-
-We discussed (Sec5,bottom,left) Sparse AE, which is a synonym for a l1-regularized AE with *continuous* activations (Sec14.2.1,Sparse Autoencoders,Goodfellow et.al,2016,deeplearningbook.org).
-Discrete representation learning with NN is a fairly new topic which made the first success in (Jang et.al,ICLR17).
-To our knowledge, there is no regularization proposed for such discrete representation.
-Assymmetric treatement of categorical activations is clearly different from the standard l1-regularization.
-
-Despite that, we did not try to claim its novelty as a general machine learning method, as we focused on the planning aspect and symbol stability.
 
 # Definition 1 and Definition 2 seem to be loosely stated "under some equivalence
 # relation". Further, it seems the definitions are not used elsewhere in the
