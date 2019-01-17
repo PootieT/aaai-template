@@ -20,23 +20,25 @@ In the following, we abbreviate Reviewer #X to RX.
 Individual responses come after the overall response.
 
 Re: Reproducibility.
-ZSAE code is heavily based on the original Latplan. We are planning to publish the source code similarly.
+ZSAE code is heavily based on the original Latplan. We are planning to publish it.
 The dataset is equivalent to the one in Latplan.
-
 
 Re: Details of Latplan.
 
-We described all the important details that are directly related to this paper's contribution(ZSAE), which is NNs, GumbelSoftmaxVAE, SAE, training, and its probabilistic model.
+We described all the important details that are directly related to this paper's contribution(ZSAE), which is NNs,AE,GumbelSoftmaxVAE,SAE,training,and its probabilistic model.
 
-While we fully understand the inner workings of Latplan, we described its AMA/planning/validation part as a black box in this paper, just as treating Fast Downward/VAL as a black box planner/validator.
-We did not modify the other parts of Latplan and Latplan itself is not our contribution.
+In this paper, we treated Latplan's remaining AMA/planning/validation modules as a black box, just as treating Fast Downward/VAL as a black box planner/validator.
+We did not modify those modules and Latplan itself is not our contribution.
 
-Still, we described AMA1 and AMA2 in Sec.6.3.
+Still, Sec.6.3 describes AMA1 and AMA2 in detail.
 AMA1 directly encodes the state space graph into a PDDL, with all state transitions provided (oracular model).
 AMA2 has two networks, (1) AAE is a modified autoencoder model with GumbelSoftmax that learns action labels unsupervised, and (2) AD is a binary classifier for learning action preconditions.
 Also note that we provided further elaborated details of AMA1/AMA2 in the section 5 of the supplement.
-This is an almost verbatim copy from Latplan paper with authors' permission.
 We further discuss this in reply to R2.
+
+# This is an almost verbatim copy from Latplan paper with authors' permission.
+
+Finally, we learned that many still believes Latplan is a workshop paper at KEPS17. This is false. It was presented in AAAI18 main track.
 
 * R1
 
@@ -74,9 +76,9 @@ The gaussian noise (σ=0.6 for pixel values between 0.0 and 1.0) is so strong th
 but the system is able to map it to the appropriate propositional state and solves it successfully.
 
 Indeed, while the ZSAE may have only a small effect when the input is clean,
-it does not reduce its impact at all because virtually all real-world data contain various forms of noise/perturbation, and obtaining the clean input is extremely rare.
+it does not reduce its impact at all because virtually all real-world data contain various forms of noise/perturbation.
 
-Also, note that N=36 for SAE is a result of hyperparameter search, thus comparing this best case with a ZSAE with different N is unfair.
+Also note that N=36 is a result of hyperparameter search for SAE, thus comparing this best case with a ZSAE with different N is unfair.
 
 
 
@@ -119,10 +121,10 @@ the effect of Zero-Suppression is mostly 2 to 3, and up to 4 orders of magnitude
  
 # First of all, "zero-suppressed" suggests the opposite of what the proposed method actually does. "Zero-enhanced" or "sparse" or "L0-regularized" would all be better names. I'll call the method "ZSAE" in the remainder of the review.
 
-> "zero-suppressed"
-
-The name comes from Zero-Suppressed Decision Diagram [Minato ACM93], an established method which prunes DD nodes that points to constant 0 node. ZSAE also allows to prune constant 0 neurons.
-Minato gave an invited talk in SoCS+ICAPS in 2017.
+# > "zero-suppressed"
+# 
+# The name comes from Zero-Suppressed Decision Diagram [Minato ACM93], an established method which prunes DD nodes that points to constant 0 node. ZSAE also allows to prune constant 0 neurons.
+# Minato gave an invited talk in SoCS+ICAPS in 2017.
 
 # The ZSAE method is a minor extension of the earlier LatPlan framework. The experimental results suggest that this extension achieves its objective of making the learned discrete representation more stable in the presence of noise, with a corresponding benefit to planning success. The observation that a *low entropy* objective for the latent representation makes it more stable is quite interesting and may be useful for other applications of VAEs with discrete latent variables.
  
@@ -205,12 +207,13 @@ Despite that, we did not try to claim its novelty as a general machine learning 
 # relation". Further, it seems the definitions are not used elsewhere in the
 # paper?
 
-> "under some equivalence relation"
 
-In the particular cases in this paper, this is the equivalence under the error threshold noticeable by humans.
-
-Other instances include a symbolic representation "A is adjascent to B" of a picture depicting A and B,
-which is rotation and translation invariant to the absolute coordinates of A and B in the picture.
+# > "under some equivalence relation"
+# 
+# In the particular cases in this paper, this is the equivalence under the error threshold noticeable by humans.
+# 
+# Other instances include a symbolic representation "A is adjascent to B" of a picture depicting A and B,
+# which is rotation and translation invariant to the absolute coordinates of A and B in the picture.
 
 # One trick used in VAEs is to turn off the stochasticity in the input->latent
 # mapping --- simply take the mean or most likely outcome of the distribution.
