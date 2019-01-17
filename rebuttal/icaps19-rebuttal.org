@@ -70,7 +70,7 @@ We discussed that the source of stochasticity is either internal or external(Sec
 that argmax supresses the internal one(Sec.4,last par),
 and that the ZSAE regularization suppresses the external one(Sec.6.1). 
 
-**The main evaluation result of ZSAE is therefore the evaluation with the noisy input**, NOT the clean input which lacks external stochasticity.
+**The main evaluation result of ZSAE is therefore the evaluation with the noisy input**, NOT the clean input which lacks external stochasticity -- We will clarify this in the revision.
 The gaussian noise (σ=0.6 for pixel values between 0.0 and 1.0) is so strong that we hardly recognize the original content (e.g. mandrill) in the image (see [anonymous image link]),
 but the system is able to map it to the appropriate propositional state and solves it successfully.
 
