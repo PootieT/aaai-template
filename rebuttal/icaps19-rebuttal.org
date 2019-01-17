@@ -14,11 +14,29 @@
 #+SELECT_TAGS: export
 
 
-
 Thank you for the thoughtful reviews.
 All minor issues reported in the reviews will be revised.
 In the following, we abbreviate Reviewer #X to RX.
 Individual responses come after the overall response.
+
+Re: Reproducibility.
+ZSAE code is heavily based on the original Latplan. We are planning to publish the source code similarly.
+The dataset is equivalent to the one in Latplan.
+
+
+Re: Details of Latplan.
+
+We described all the important details that are directly related to this paper's contribution(ZSAE), which is NNs, GumbelSoftmaxVAE, SAE, training, and its probabilistic model.
+
+While we fully understand the inner workings of Latplan, we described its AMA/planning/validation part as a black box in this paper, just as treating Fast Downward/VAL as a black box planner/validator.
+We did not modify the other parts of Latplan and Latplan itself is not our contribution.
+
+Still, we described AMA1 and AMA2 in Sec.6.3.
+AMA1 directly encodes the state space graph into a PDDL, with all state transitions provided (oracular model).
+AMA2 has two networks, (1) AAE is a modified autoencoder model with GumbelSoftmax that learns action labels unsupervised, and (2) AD is a binary classifier for learning action preconditions.
+Also note that we provided further elaborated details of AMA1/AMA2 in the section 5 of the supplement.
+This is an almost verbatim copy from Latplan paper with authors' permission.
+We further discuss this in reply to R2.
 
 * R1
 
@@ -42,16 +60,22 @@ Individual responses come after the overall response.
 
 # For the planning experiments themselves, I think these are not overly convincing.
 > I do see the effects of the new regularization on the latent representation, and the effect on planning,
-> but these are not too large if we only look at success (Table 3, right).
+> but these are not too large
 
-We discussed that the source of stochasticity is either internal or external,
-and that argmax supresses the internal stochasticity, and the regularization
-supresses the external one. (Sec.3,par.1)
+> The number of solved instances is almost the same
 
-**The main result is therefore the evaluation with the noisy input**, which is of the practical importance,
-not the clean input, which lacks external stochasticity.
+**The main scores (table 3) have more than tripled with AMA1 (14-43,6-48,6-33) and more than doubled with AMA2 (29->81,24->62).**
 
-Notice that for the strong gaussian noise (σ=0.6 for pixel values between 0.0 and 1.0), the number of instances solved with AMA2 have more than doubled. The noise is so strong that we hardly recognize the original content (e.g. mandrill, numbers) in the image (see [anonymous image link]), but the system is able to map it to the appropriate propositional state and solves it successfully.
+We discussed that the source of stochasticity is either internal or external(Sec.3,paragraph.1),
+that argmax supresses the internal one(Sec.4,last par),
+and that the ZSAE regularization suppresses the external one(Sec.6.1). 
+
+**The main evaluation result of ZSAE is therefore the evaluation with the noisy input**, NOT the clean input which lacks external stochasticity.
+The gaussian noise (σ=0.6 for pixel values between 0.0 and 1.0) is so strong that we hardly recognize the original content (e.g. mandrill) in the image (see [anonymous image link]),
+but the system is able to map it to the appropriate propositional state and solves it successfully.
+
+Indeed, while it might be possible to conclude that the ZSAE has only a small effect when the input is clean,
+virtually all real-world data contain various forms of noise/perturbation, and obtaining the clean input is extremely rare.
 
 Also, note that N=36 for SAE is a result of hyperparameter search, thus comparing this best case with a ZSAE with different N is unfair.
 
@@ -74,7 +98,9 @@ Also, note that N=36 for SAE is a result of hyperparameter search, thus comparin
 # Reproducibility: 	
 # 3: (authors describe the implementation and domains in sufficient detail)
 # Would be very difficult to reproduce from this paper alone, but the work is an extension of the LatPlan system, which has available source code.
-# 
+
+# # shared comments
+ 
 # Overall evaluation: 	
 # -1: (weak reject)
 # 
@@ -85,7 +111,12 @@ Also, note that N=36 for SAE is a result of hyperparameter search, thus comparin
 # Review:
  
 # First of all, "zero-suppressed" suggests the opposite of what the proposed method actually does. "Zero-enhanced" or "sparse" or "L0-regularized" would all be better names. I'll call the method "ZSAE" in the remainder of the review.
- 
+
+> "zero-suppressed"
+
+The name comes from Zero-Suppressed Decision Diagram [Minato ACM93], an established method which prunes DD nodes that points to constant 0 node. ZSAE also allows to prune constant 0 neurons.
+Minato gave an invited talk in SoCS+ICAPS in 2017.
+
 # The ZSAE method is a minor extension of the earlier LatPlan framework. The experimental results suggest that this extension achieves its objective of making the learned discrete representation more stable in the presence of noise, with a corresponding benefit to planning success. The observation that a *low entropy* objective for the latent representation makes it more stable is quite interesting and may be useful for other applications of VAEs with discrete latent variables.
  
 # The paper's main weakness is an overall lack of clarity and completeness. I was able to get a general understanding of the modified LatPlan framework from the paper, but there are many important details missing. The most important missing pieces relate to how action models are created and how planning performance is actually evaluated. The two "AMA" methods are hardly described at all.
@@ -94,33 +125,36 @@ Also, note that N=36 for SAE is a result of hyperparameter search, thus comparin
 
 # In the AMA2 method, though, the system is *learning* the action space as the latent space of an autoencoder that reconstructs successor states. The planner can plan in this entirely-learned space, but how do we know which real action a learned action corresponds to, so that we know what the planner actually wants to do in a given state and what the real reaults of that action are?
 
-> I gather from reading the LatPlan paper
+# > I gather from reading the LatPlan paper
+# 
+# There is no need to read the previous work as long as understanding that the problem is a simple graph search.
 
-There is no need to read the previous work as long as understanding that the problem is a simple graph search.
-We described AMA1 in sec.6.3:
+> completeness
 
-> idealistic AMA that ... generates the entire propositional state transitions from the entire image transitions
+We did not modify any AMA/planning/validation modules of Latplan and thus treating them as a black box.
+
+We still described AMA1 in sec.6.3:
+
+  idealistic AMA that ... generates the entire propositional state transitions from the entire image transitions
 
 The resulting problem to be solved is nothing more than a simple pathfinding over a graph defined by nodes and edges,
-thus it is straightforward to convert it into a PDDL without further explanation.
+thus the conversion into PDDL is trivial.
 In fact, we do not have to use a PDDL solver (other than presentation/demonstration purpose) --- in-memory graph search would do.
 
-> all possible (s, a, s') transitions for the true actions $a$
-
-There are no action labels assigned to the state pairs by humans.
-Thus when converting the state space into a PDDL, each (s, s') pair becomes a single zero-ary (grounded) pddl action.
-N edges become N action schema.
-
-> has access to the true actions and we can verify whether the computed plan actually succeeds
-
-There are no "true actions", e.g. human-understandable labels such as "move-up", "move-down".
-We verify the results by looking at the visualized state transitions extracted by the decoder.
-(In the experiments, we used Latplan's domain-specific validator which works on the output images.)
-
+> ...all possible (s, a, s') transitions for the true actions $a$
+> ...has access to the true actions and we can verify whether the computed plan actually succeeds
 > In the AMA2 ... how do we know which real action a learned action corresponds to
 
-We don't. The input lacks supervised labels for actions, and AAE in AMA2 finds its own set of actions by clustering the transitions (e.g. "this transition and this transition look similar, thus should belong to the same action")
-We verify the final visualized results only.
+As noted in (Sec.2, input specification), there are no ground-truth action labels assigned to the state pairs by humans, such as "move-up", "move-down".
+Thus when converting the state space into a PDDL, each (s, s') pair becomes a single zero-ary (grounded) action. N edges become N action schema.
+
+We also described AMA2 in sec.6.3. This is much more detailed compared to AMA1.
+AMA2 finds its own set of actions by clustering the unlabelled transitions (page7,left,paragraph.2) (e.g. "this transition and this transition look similar, thus they should belong to the same action schema, whatever it is"),
+Since the action labels are made up by the NN itself and their meaning unknown, there is no way to verify the plan from the action labels.
+
+Latplan verifies the results by looking at the visualized state transitions extracted by the decoder.
+In the experiments, we used Latplan's domain-specific validator which works on the output images.
+These are all included in the black-box evaluation suite that comes with Latplan's source code.
 
 
 * R3
@@ -151,12 +185,14 @@ We verify the final visualized results only.
 # incremental and the results not surprising, not substantial enough for an ICAPS
 # paper.
 # 
-> The paper does not discuss ... Sparse AutoEncoder ... impose a sparsity constraint on the discrete latent space
+> The paper does not discuss... Sparse AutoEncoder... impose a sparsity constraint on the discrete latent space
 
-We discussed (Sec5,bottom,left) Sparse AE, which is a synonym for a l1-regularized AE with *continuous* activations (Sec14.2.1,Sparse Autoencoders,Goodfellow et.al,2016).
+We discussed (Sec5,bottom,left) Sparse AE, which is a synonym for a l1-regularized AE with *continuous* activations (Sec14.2.1,Sparse Autoencoders,Goodfellow et.al,2016,http://deeplearningbook.org/).
 Discrete representation learning with NN is a fairly new topic which made the first success in (Jang et.al,ICLR17).
 To our knowledge, there is no regularization proposed for such discrete representation.
 Assymmetric treatement of categorical activations is clearly different from the standard l1-regularization.
+
+Despite that, we did not try to claim its novelty as a general machine learning method, as we focused on the planning aspect and symbol stability.
 
 # Definition 1 and Definition 2 seem to be loosely stated "under some equivalence
 # relation". Further, it seems the definitions are not used elsewhere in the
@@ -164,22 +200,30 @@ Assymmetric treatement of categorical activations is clearly different from the 
 
 > "under some equivalence relation"
 
-In the particular cases in this paper, this is the threshold on the error noticeable by humans.
+In the particular cases in this paper, this is the equivalence under the error threshold noticeable by humans.
 
 Other instances include a symbolic representation "A is adjascent to B" of a picture depicting A and B,
-which is rotation and translation invariant to the absolute coordinates of A and B.
+which is rotation and translation invariant to the absolute coordinates of A and B in the picture.
 
 # One trick used in VAEs is to turn off the stochasticity in the input->latent
 # mapping --- simply take the mean or most likely outcome of the distribution.
 # Would this satisfy the stability criterion? This needs to be shown as the basic
 # remedy to the stochasticity/stability problem.
 
-Even if the entire network becomes determinsitic with the argmax trick,
+> turn off the stochasticity...Would this satisfy the stability criterion?
+
+Argmax trick does not fully satisfy the stability criterion.
+Even with the trick,
 the external purturbation in the input (image) alters the latent representation.
-We can see this from both Table 2 ---
+We can see this from both Table 2:
 AMA1-based planner with argmax can successfully solve all problems with the clean inputs, while it fails in multiple instances with the noisy input.
 Therefore, argmax is not sufficient for addressing the external stochasticity and zero-suppression is necessary for the noisy inputs.
  
+> as temperature goes to zero, the stochasticity...tend to deterministic...
+> ...the stability problem stems more from stochasticity in the input
+
+Hard to say which effect is larger (internal/external stochasticity).
+
 # Similarly, in GS-VAE as temperature goes to zero, the stochasticity in the
 # latent encodings should also tend to deterministic. It seems the stability
 # problem stems more from stochasticity in the input rather than encodings. The
@@ -198,6 +242,11 @@ Therefore, argmax is not sufficient for addressing the external stochasticity an
 # hard to judge the differences based on the total sample variance alone.
 # They do not show the reconstruction error or any generated samples.
 # The authors show planning performance in Table 3, but it could be expanded.
+
+> They do not show the reconstruction error or any generated samples.
+
+Table.1 shows MSE for the test dataset and we spent entire 6.2 for discussing the accuracy.
+We did not include the visualizations as we already showed the absolute numbers.
 
 * local variables                                                  :noexport:
 
