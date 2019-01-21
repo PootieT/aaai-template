@@ -23,14 +23,14 @@ In the following, we abbreviate Reviewer #X to RX.
 Overall response.
 
 
-Re: Reproducibility.
+Re:Reproducibility.
 
 ZSAE code is heavily based on the original Latplan. We are planning to publish it.
 The dataset is equivalent to the one in Latplan.
 
 
 
-Re: Significance.
+Re:Significance.
 
 We thank for R1's comment on the problem we raised, we would like to refer R2/R3 to it.
 
@@ -51,7 +51,7 @@ Assymmetric treatement of categorical activations is clearly different from the 
 
 
 
-Re: Details of Latplan.
+Re:Details of Latplan.
 
 We described all the important details that are directly related to this paper's contribution(ZSAE), which is NNs,AE,GumbelSoftmaxVAE,SAE,training,and its probabilistic model.
 
@@ -95,6 +95,8 @@ Just in case, Latplan is an established work(AAAI18), not the workshop paper(KEP
 > the effect on planning...not too large
 
 > solved instances is almost the same
+
+> This is the only weaker point of the paper
 
 **The main evaluation of ZSAE is the evaluation with the noisy input, and the main scores (Table.3) have more than tripled with AMA1 (14→43,6→48,6→33) and more than doubled with AMA2 (29→81,24→62).** We will clarify this in the revision.
 
@@ -175,7 +177,8 @@ compared to the effect of Zero-Suppression which is mostly 2-3, and up to 4 orde
 # 
 # There is no need to read the previous work as long as understanding that the problem is a simple graph search.
 
-The reviewer is confused by the presumption that there should be true action labels.
+The reviewer is confused by having the assumption that there should be true action labels (such as "move").
+Neither Latplan paper nor this paper states that.
 
 > ...(s,a,s') transitions for the true actions $a$...
 
@@ -183,27 +186,27 @@ The reviewer is confused by the presumption that there should be true action lab
 
 > In the AMA2...how do we know which real action a learned action corresponds to...
 
-As noted in Sec.2(input specification), no labels (such as "move") are assigned to the state pairs.
-This is one of the difficulties addressed by Latplan.
+Sec.2(input specification) describes that no labels are assigned to the state pairs.
+In fact, this is one of the difficulties addressed by Latplan.
 
-In sec.6.3:
+# In sec.6.3:
+# 
+# > AMA1...generates the entire propositional state transitions from the entire image transitions
 
-> AMA1...generates the entire propositional state transitions from the entire image transitions
-
-When converting the state space into a PDDL, each (s,s') pair becomes a single zero-ary (grounded) action. N edges become N action schema.
+When AMA1 converts the state space into a PDDL, each (s,s') pair becomes a single zero-ary (grounded) action. N edges become N action schema.
 
 The resulting problem to be solved is a simple pathfinding over a graph defined by all edges,
 thus the conversion to PDDL is trivial.
 In fact, we do not have to use a PDDL solver --- in-memory graph search would do.
 
-As in sec.6.3, AMA2 finds its own set of actions by clustering the unlabeled transitions (page7,left,paragraph.2) into an integer action ID (0~127)(e.g. "these transitions look similar, thus let's assign them to ID=25").
+As described in sec.6.3, AMA2 finds its own set of actions by clustering the unlabeled transitions (page7,left,paragraph.2) and assigning integer action IDs (0<a<127)(e.g. "these transitions look similar, thus let's assign them to a=25").
 Since the assignment is made by the NN unsupervised, the meaning of each ID is unknown, thus we cannot verify the plan from the action labels.
 
-Latplan instead verifies the visualized state transitions extracted by the decoder.
+Latplan's output(Sec.2,output specification) is the visualized state transitions extracted by the decoder, and thus does not contain action labels.
 In the experiments, we used Latplan's domain-specific validator which works on the output image sequence.
 These are all included in the evaluation suite that comes with Latplan's source code and is treated as a black-box.
 
-Our contribution is unrelated to these details.
+Having said that, our contribution is unrelated to these details. We evaluated the specific latent space characteristics and the planning success based on a black-box planner/validator.
 
 # > completeness
 # 
@@ -257,16 +260,15 @@ Our contribution is unrelated to these details.
 # Would this satisfy the stability criterion? This needs to be shown as the basic
 # remedy to the stochasticity/stability problem.
 
-> turn off the stochasticity...satisfy the stability...?
+> Would [argmax] satisfy the stability criterion?
 
-Argmax alone does not satisfy the stability criterion.
-Even with the argmax,
-the external perturbation (image noise) alters the latent representation.
+Argmax alone does not satisfy the criterion.
+Even with the argmax, the external perturbation (image noise) alters the latent representation.
 
 Table 2 shows this:
 While the clean inputs allowed AMA1 with argmax to solve all problems,
-the noisy input caused it fails in multiple instances.
-Argmax is not sufficient and zero-suppression is necessary for addressing the external stochasticity.
+the noisy input caused it to fail in multiple instances.
+Thus zero-suppression is necessary for addressing the external stochasticity (noise).
  
 # > as temperature goes to zero, the stochasticity...tend to deterministic...
 # > ...the stability problem stems more from stochasticity in the input
@@ -294,7 +296,7 @@ Argmax is not sufficient and zero-suppression is necessary for addressing the ex
 
 > They do not show the reconstruction error or any generated samples.
 
-Table.1 shows MSE(Mean Square Error) for the test dataset and we spent entire Sec.6.2 for discussing the accuracy.
+Table.1 shows MSE(Mean Square Error) for the test dataset and we spent the entire Sec.6.2 for discussing the accuracy.
 # We did not include the visualizations as we already showed the absolute numbers.
 
 
