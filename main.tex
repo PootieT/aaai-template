@@ -45,9 +45,9 @@ Informally, symbols are
 \emph{stable} when their referents (e.g. propositional values) do not change against small perturbation of the observation,
 and unstable symbols are harmful for symbolic reasoning.
 We analyze the problem in Latplan both formally and empirically, and
-propose ``Zero-Suppressed SAE'', an enhancement that stabilizes the propositions.
+propose ``Zero-Suppressed SAE'', an enhancement that stabilizes the propositions
 %% Add this back in the camera-ready version
-% uses the idea of closed-world assumption as a prior for NN optimization and
+using the idea of closed-world assumption as a prior for NN optimization.
 % 
 We show that
 it finds the more stable propositions and the more compact representations, resulting in an improved success rate of \latentplanner.
@@ -433,7 +433,8 @@ and insufficient $N$ makes the network hard to train.
 % As we have seen, unstable propositional representations are harmful to symbolic reasoning algorithms (search)
 % in various ways.
 Fundamentally,
-the first two harmful effects are caused by breaking a critical feature of symbols, \emph{designation} \cite{newell1976computer,newell1980physical},
+the first two harmful effects are caused by breaking a critical feature of symbols, \emph{designation} \cite{newell1976computer},
+% ,newell1980physical --- removed for space
 that each symbol uniquely refers to an entity (referent, concept, meaning),
 e.g., the referents of the symbols grounded by SAEs are the truth assignments.
 If a meaning of a symbol changes frequently and in an unexpected manner, the entire symbolic manipulation is fruitless
@@ -690,7 +691,8 @@ while our focus is rather on the stability of the representation.
 
 One additional advantage of the ZSAE is that
 several neurons are completely deactivated, i.e. they always take the value of zero
-and can be pruned afterward to reduce the network size.
+and can be pruned afterward to reduce the network size,
+similar to Zero-Suppressed Decision Diagrams \cite{minato1993zero}.
 Unlike traditional NN compression methods \cite{cheng2017survey}, it does not suffer from
 accuracy degradation because the activations are discrete and therefore no additional retraining is required.
 In the continuous cases, even the minuscule activations could be amplified by the weights and significantly affect the
@@ -712,6 +714,7 @@ We can similarly prune the weights $W'$ from the previous layer of $M$ neurons.
 % we remove $2(M+1)$ for each zero-suppressed bit $b_n$.
 % Therefore, if we remove $\Delta N$ bits from the latent space, it removes $2(M+1)\Delta N$ float values from the network.
 
+\input{unused/closed-world.tex}
 
 \section{Empirical Evaluation}
 \label{evaluation}
@@ -1324,7 +1327,7 @@ therefore do not have to address the stability of the symbols.
 
 
 
-\section{Conclusion}
+\section{Discussion and Conclusion}
 \label{conclusion}
 
 In this paper, we provided a formal analysis of the State AutoEncoder
@@ -1345,8 +1348,9 @@ also removes the need for aggressive hyperparameter tuning.
 % 
 Moreover, 
 ZSAE makes it possible to prune some neurons without accuracy degradation
-when their activations are constantly zero, due to discreteness.
-% similar to Zero-Suppressed Decision Diagram \cite{minato1993zero}.
+when their activations are constantly zero due to discreteness,
+similar to the Zero-Suppressed Decision Diagrams \cite{minato1993zero} and
+knowledge bases with closed world assumption.
 % ?
 % An interesting avenue for future work is to 
 % find an online, adaptive tuning of $\alpha$, the hyperparameter for the penalty.
