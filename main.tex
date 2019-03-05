@@ -359,7 +359,6 @@ the boolean variables are retrieved by $b_n=z_{n1}$.
 % % that approximates the Bernoulli distribution, %, resulting in a $N\times 2$ matrix,
 % and therefore, the latent representation can be regarded as $N$ binary propositional variables.
 % 
-The detailed mathematical background of Gumbel-Softmax VAE is included in the supplement.
 
 % It is necessary for the mapping to be bidirectional, because the
 % propositional variables are machine-generated symbols, and also the
@@ -676,7 +675,6 @@ while our focus is rather on the stability of the representation.
 % The technical novelty of the method is in its implementation adapted for Gumbel-Softmax output,
 % which is a collection of one-hot vectors $z_{nk} (n\in [1..N], k\in \braces{0,1})$
 % where $\forall n; z_{n0} + z_{n1} = 1$ and  $b_n = z_{n1}$.
-% (Details in the supplement, \refsec{zsae-implementation}.)
 
 %% This paragraph is unnecessary
 % This technique alters $p(\mathbf{b})$, the target distribution of GS-VAE.
@@ -725,7 +723,6 @@ image domains depicting 8-puzzles or Lights Out puzzle game \cite{lightsout}.
 % Experiments were performed on a compute cluster with Xeon Ivy Bridge
 % processors and Tesla K40 GPUs.
 Each training takes at most 30 minutes.
-Network details are in the supplement (\refsec{network-implementation}).
 
 \textbf{MNIST 8-puzzle}
 is an image-based version of the 8-puzzle, where tiles contain hand-written digits (0-9) from the  MNIST database \cite{lecun1998gradient}.
@@ -745,7 +742,6 @@ The goal is all lights Off.
 % This demonstrates that \latentplanner is not limited to domains with highly local effects and static objects.
 \textbf{Twisted LightsOut} distorts the original LightsOut game image by a swirl effect.
 % showing that \latentplanner is not limited to handling rectangular ``objects''/regions.
-See supplements for the visual examples (\refig{fig:mnist}).
 
 % There are three versions of 8-puzzles (MNIST, Mandrill, Spider).
 % MNIST 8-puzzle is an image-based versions of the 8-puzzle, where tiles contain
@@ -789,7 +785,6 @@ See supplements for the visual examples (\refig{fig:mnist}).
 % On all configurations, $\alpha$ is initially set to 0 during the first 50 epochs until set to the specified value.
 % This is in order to make the network sufficiently trained to
 % reconstruct the environment before trying to stabilize the propositions.
-% Further details are in the supplement.
 
 \subsection{The Quality of the Latent Representation}
 
@@ -817,8 +812,7 @@ We evaluated three versions of the SAE:
 The first thing we tested is to replace the Gumbel-softmax activation with a deterministic argmax function
 after the training (\refsec{argmax}).
 In all SAEs, this reduced the variance to 0 for a single input because all networks become deterministic.
-We omit the results because it is rather obvious and due to space
-(see supplement \reftbl{tab:variance-stochastic} for the result without this technique).
+We omit the results due to space because it is rather obvious.
 In the following experiments, we always replace the activation function with argmax during testing.
 
 We next measured the variance of SAEs in a noisy setting, where
@@ -944,7 +938,7 @@ In contrast,
 the worst case for the ZSAEs is 1.1e-4 on Twisted with $(N,\alpha)$=(100,0.2),
 which is still better than the vanilla SAE with the same $N$.
 % 
-They also have similar reconstruction loss (MSE) and the effective bits (supplement \reftbl{tab:more-sensitivity}).
+They also have similar reconstruction loss (MSE) and the effective bits.
 Therefore, we conclude that while ZSAE introduces an additional parameter,
 the selection of $N$ and $\alpha$ is easy compared to the selection of $N$ in SAE.
 %%
