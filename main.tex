@@ -537,10 +537,10 @@ In principle, GS-VAE is trained by minimizing the following objective function w
 % From ``2019 Formatting Instructions'': For mathematical environments, you may reduce fontsize but not below 6.5 point.
 \relsize{-1}
 \begin{align}
-\label{vae-obj} \sum_{\mathbf{x}\in \mathcal{X}} \left(\mathbb{E}_{q(\mathbf{b}\mid \mathbf{x})}\left[-\log p(\mathbf{x}\mid \mathbf{b})\right] + \mathrm{KL}(q(\mathbf{b}\mid \mathbf{x}) \parallel p(\mathbf{b}))\right),
+\label{vae-obj} \sum_{\mathbf{x}\in \mathcal{X}} \left(\mathbb{E}_{q(\mathbf{b}\mid \mathbf{x})}\left[-\log p(\mathbf{x}\mid \mathbf{b})\right] + \mathrm{KL}(q(\mathbf{b}\mid \mathbf{x}) \parallel p(\mathbf{b}))\right)
 \end{align}
 }
-where $p(\mathbf{b}) = \prod_{n=1}^N p(b_n) = \prod_{n=1}^N \mathrm{Bern}(0.5)$ is the target, $N$-dimensional Bernoulli distribution with uniform probabilities
+\\\noindent where $p(\mathbf{b}) = \prod_{n=1}^N p(b_n) = \prod_{n=1}^N \mathrm{Bern}(0.5)$ is the target, $N$-dimensional Bernoulli distribution with uniform probabilities
 % emphasize that this Bernoulli is the target distrib, consistent with the notation p*    ^^^^^^ 
 % (``*'' usually means ``goal'' or ``optimal'' also in planning)
 % $i$ is the index for each data point, 
