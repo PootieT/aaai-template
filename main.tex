@@ -103,9 +103,9 @@ Despite its success,
 % the propositional representations learned by SAE have a problematic behavior
 %%%%%% SAE -> NN because we also want to cover the InfoGan case
 the propositional representations learned by SAEs have a problematic behavior
-because NNs do not have strong guarantees on the learned results.
+due to its lack of strong guarantees on the learned results.
 % 
-Although the SAE outputs a highly accurate reconstruction of the input,
+That is, while the SAE can reconstruct the input with high accuracy,
 the learned latent representations are not ``stable'', i.e.,
 some propositions may flip the value (true/false) randomly
 given the identical or nearly identical image input.
@@ -123,7 +123,7 @@ given the identical or nearly identical image input.
 % just as the boy who cried wolf was ignored by the villagers.
 % in the Aesop's Fables.
 This is mainly because SAE learns the mapping between images and binary representations as a many-to-many relationship.
-While this property has not been considered as an issue in the machine learning community because it does not affect the reconstruction accuracy,
+While this property has not been considered as an issue in the machine learning community where only the accuracy matters,
 its unstable latent representation poses a great threat to the reasoning ability of the planners.
 
 Unstable symbols are harmful for symbolic reasoning because
@@ -482,7 +482,7 @@ This is because the former exclusively deals with the output accuracy,
 while the latter evaluates the quality of the \emph{latent} activations while maintaining the same output accuracy.
 In fact, vanilla SAEs already achieve the almost perfect reconstruction accuracy
 where the input and the output are indiscernible to human eyes
-(e.g. in \refig{unstable}, the pixel values in the output is different from the input, but we cannot tell the difference),
+(e.g. in \refig{unstable}, the pixel value output are different from the input, but we cannot recognize it),
 while they still exhibit instability.
 
 % stability
@@ -492,7 +492,7 @@ on
 its inherent stochasticity during the runtime (as opposed to the training time) as well as
 the stochasticity of the environment.
 % 
-These observations indicate that \emph{any} symbol grounding systems potentially suffer from 
+These observations indicate that \emph{any} symbol grounding system potentially suffers from 
 the symbol stability problem.
 % 
 As for the stochasticity of the environment,
@@ -652,12 +652,12 @@ The resulting loss is
 \end{align*}
 where $\alpha$ is the magnitude of regularization.
 This formulation takes a general form
-that also covers the multi-valued representation with $k\geq 2$.
-In principle, this method could also be used for finding SAS+ representation,
+that also covers the multi-valued SAS+ representation with $k\geq 2$.
+In principle, this method could also be used for a SAS+ representation,
 but we focus on the binary representation in this paper.
 
 % Saying ``similarities'': novelty in disguise.
-The proposed method has some similarities to the common technique called $\ell_1$ regularization \cite{Goodfellow-et-al-2016},
+The proposed method has some similarities to the common technique called $\ell_1$ regularization \cite[Sparse AE]{Goodfellow-et-al-2016},
 which is applied to the continuous activations of the neurons or the training weights
 and achieves a sparse representation where the continuous values become closer to zero.
 $\ell_1$ regularization is applied to all neurons in the same layer
