@@ -1329,12 +1329,14 @@ In this paper, we provided a formal analysis of the State AutoEncoder
 (SAE) neural network (NN) in \latentplanner \cite{Asai2018} to
 understand its success and 
 the issue of its \emph{unstable propositions}.
-% 
-To address the issue,
+In the analysis, we identified that the SAE accidentally
+uses a different formulation of Gumbel-Softmax VAE \cite{jang2016categorical}
+that we named \emph{Entropy Regularization} which stabilizes the truth values.
+
+To further improve the stability,
 we introduced Zero-Suppressed State AutoEncoder (ZSAE) which
 improves the vanilla SAE by
-adding an additional optimization penalty to the NN
-that minimizes the number of true propositions in the representation.
+minimizing the number of true propositions in the representation.
 % 
 ZSAE improves the success rate and the efficiency of planning performed on
 the generated state space and
