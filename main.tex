@@ -281,6 +281,9 @@ Since the intermediate states comprising the plan are SAE-generated latent bit v
 However, in the final step, \latentplanner obtains a step-by-step visualization of the plan execution
 by $Decode$'ing the latent bit vectors for each intermediate state.
 % This necessitates the bidirectionality of the mapping between the input and the propositional states.
+The plans or the state transitions are validated based on the visualized result using a custom domain-specific validator implemented in Latplan.
+This is because the intermediate latent representation is learned unsupervised
+and is not directly verifiable through human knowledge.
 
 \begin{figure}[tb]
  \includegraphics[width=\linewidth]{img/train-state-ae.pdf}
