@@ -1,5 +1,5 @@
 
-name       = asai
+name       = PLT-AsaiM.37
 reference  = confs.bib journals.bib
 emacs 	   = emacs
 latexmk    = latexmk/latexmk.pl
