@@ -1,47 +1,26 @@
-% Created 2013-10-07 月 18:04
-% aaai
-\documentclass[10pt,letterpaper]{article}
+\documentclass[letterpaper]{article}
 \usepackage{aaai19}
-% \usepackage{aaai}
-% ecai
-% \documentclass{ecai}
-% \usepackage{times}
-% jair
-% \documentclass[11pt]{article}
-% \usepackage{jair}
-% \usepackage{theapa}
-%%%%%%%%%%%%
-\usepackage{adjustbox}
-\usepackage{xparse}
 \usepackage{times}
 \usepackage{helvet}
 \usepackage{courier}
+\usepackage[hyphens]{url} 
+\usepackage{graphicx}
+\urlstyle{rm}
+\def\UrlFont{\rm}
+\usepackage{graphicx}
+\frenchspacing
+\setlength{\pdfpagewidth}{8.5in}
+\setlength{\pdfpageheight}{11in}
+
+\usepackage{adjustbox}
+\usepackage{xparse}
 \usepackage{amsmath}
 \usepackage{amsthm}
 \usepackage{amssymb}
 \usepackage{xspace}
 \usepackage{relsize}
-\usepackage{graphicx}
 \usepackage{multirow}
 \usepackage{comment}
-% package minted.
-% \usepackage[draft]{minted}
-% during the camera-ready,
-% 1. comment the above line
-% 2. uncomment the line below to obtain the full \input source in _minted-$NAME directory.
-% \usepackage[finalizecache]{minted}
-% 3. then, comment the line above again, and uncomment the lines below.
-% \input{_minted-asai/default.pygstyle}
-% \input{_minted-asai/default-pyg-prefix.pygstyle}
-% 4. finally, replace each minted command in the document with 
-% corresponding \input source to make it recognized by inline-tex .
-
-% \usepackage{algorithm}
-% \usepackage[noend]{algorithmic}
-% for conference submission with supplements. AAAI camera-ready does not allow them
-% \usepackage{xr}
-\usepackage{url}
-% \externaldocument{supplemental}
 
 % custom commands
 \input{aaai_my.sty}
@@ -61,9 +40,6 @@
 % \setlength{\LTcapwidth}{\textwidth}
 % \setcounter{LTchunksize}{10}
 
-\frenchspacing
-\setlength{\pdfpagewidth}{8.5in}
-\setlength{\pdfpageheight}{11in}
 \pdfinfo{
 /Title (Zero-Suppressed State AutoEncoder)
 /Keywords (Planning, Deep Learning, Symbol Grounding)
@@ -130,13 +106,4 @@ Hiroshi Kajino \\ IBM Research}
  
 \bibliography{journals,confs}
 \bibliographystyle{aaai}
-% ijcai
-% \bibliographystyle{named}
-% jsai
-% \bibliographystyle{jsai}
-% ecai
-% \bibliographystyle{ecai}
-% jair
-% \bibliographystyle{theapa}
-
 \end{document}
