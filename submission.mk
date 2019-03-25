@@ -39,6 +39,9 @@ submission: en all.subm_fromto
 	cd submission ; pdflatex $(name).tex
 	cd submission ; pdflatex $(name).tex
 	cd submission ; pdflatex $(name).tex
+
+	latexmk/pdfdiff.py $(name).pdf submission/$(name).pdf 
+
 	find submission -name "*\.log" -delete
 	find submission -name "*\.bbl" -delete
 	find submission -name "*\.aux" -delete
