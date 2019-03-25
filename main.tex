@@ -830,7 +830,7 @@ Due to the poor performance of NG-SAE, we do not study it any further in the lat
 
 \begin{table*}[tbp]
  \centering
- \begin{adjustbox}{width={\linewidth},keepaspectratio}
+ \resizebox{.95\textwidth}{!}{
  \begin{tabular}{|r|*{17}{c|}}
        & \multicolumn{6}{c|}{Mean variance over bits (with noisy images)}
        % & \multicolumn{4}{c|}{True ratio}
@@ -851,7 +851,7 @@ Spider    & 8.5e-4 & 4.9e-4 & \textbf{6.3e-6} & 2.3e-4 & 4.2e-4 & \textbf{7.3e-7
 L-Out     & 9.0e-3 & 2.0e-4 & \textbf{3.9e-6} & 8.1e-3 & 1.4e-4 & \textbf{7.5e-6} & 100 & \textbf{16} & 1000 & 66   & 16       & $<$1e-4 &$<$1e-4 &$<$1e-4 &$<$1e-4 &2.9e-4  &{2.8e-4}        \\ 
 Twisted   & 1.0e-2 & 7.1e-4 & \textbf{5.1e-6} & 1.0e-2 & 4.5e-4 & \textbf{1.6e-7} & 100 & \textbf{16} & 1000 & 49   & 16       & $<$1e-4 &$<$1e-4 &$<$1e-4 &$<$1e-4 &$<$1e-4 &\uline{5.7e-3}  \\ 
 \end{tabular}
-\end{adjustbox}
+}
  \caption{\textbf{Representation characteristics.}
 Results comparing the NG-SAE, vanilla SAE and ZSAE ($\alpha$=0.7).
 (\tb{Left}) Comparing the representation variance over 100 randomly generated images encoded 100 times with Gaussian noise added each time.
@@ -904,7 +904,7 @@ since ZSAE then automatically compresses the representation.
 
 \begin{table}[htb]
  \centering
- \begin{adjustbox}{width={\linewidth},keepaspectratio}
+ \resizebox{.95\textwidth}{!}{
  \begin{tabular}{|r|*{8}{c|}}
      & \multicolumn{8}{c|}{Mean variance over bits (with noisy images)} \\
      & \multicolumn{3}{c|}{SAE} 
@@ -918,7 +918,7 @@ Spider    &5.8e-6 & 4.9e-4 & 4.2e-4 & 6.3e-6 & 7.3e-7 & 4.6e-6       & 8.3e-6 & 
 L-Out     &2.5e-6 & 2.0e-4 & 1.4e-4 & 3.9e-6 & 7.5e-6 & 1.1e-4       & 1.5e-5 & 3.9e-6 \\
 Twisted   &2.1e-5 & 7.1e-4 & 4.5e-4 & 5.1e-6 & 1.6e-7 & 8.8e-5       & 4.2e-6 & 5.1e-6 \\
 \end{tabular}
-\end{adjustbox}
+}
  \caption{Sensitivity of ZSAE to the hyperparameter $\alpha,N$ compared to that of SAE to the hyperparameter $N$.}
  \label{sensitivity}
 \end{table}
@@ -988,8 +988,7 @@ discussed in the previous subsection.
 
 \begin{table*}[tb]
 \centering
-\begin{adjustbox}{width={\linewidth},keepaspectratio}
-\Large
+\resizebox{.95\textwidth}{!}{
 \begin{tabular}{|l|*{6}{*{3}{r}|}|*{6}{*{3}{r}|}}
  \hline
  & \multicolumn{18}{c||}{\textbf{AMA$_1$ results}} & \multicolumn{18}{c|}{\textbf{AMA$_2$ results}}
@@ -1039,7 +1038,7 @@ Twisted        & 1       & 0  & 0       & \tb{4}  & \tb{20} & \tb{3}  & \tb{17} 
 \multicolumn{3}{|l|}{}                           & 36      & \tb{41} & \tb{27} & & & & 56 & \tb{81} & \tb{65} & & & & 59  & \tb{92} & \tb{72} \\
 \hline
 \end{tabular}
-\end{adjustbox}
+}
 \caption{
 \textbf{Planning Results.}
 (\textbf{Left})
