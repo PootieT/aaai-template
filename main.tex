@@ -312,12 +312,12 @@ For example, in Figure~\ref{sae}, the mapping from the leftmost image to the vec
 AEs are trained so that the encoder maps a data point~(e.g., an image) into a low-dimensional latent space, and the decoder pulls the latent representation of the input back to the original data point.
 Technically, they are trained by a \emph{backpropagation} algorithm so as to minimize the reconstruction loss, the distance between the input and the output measured by Euclidean distance or binary cross entropy.
 Since the encoder is modeled by a continuous function, its latent representation is also continuous, which makes it difficult to integrate AEs with propositional reasoners.
-\if0
-Since it is trained solely by the raw input data, it is a unsupervised learning method that do not require the human-assigned labels.
-Its intermediate layer (typically smaller than the input) has a compressed, \emph{latent representation} of the input.
-% AEs are commonly used for pretraining a NN.
-NNs, including AEs, typically have continuous activations and integrating them with propositional reasoners is not straightforward.
-\fi
+% \if0
+% Since it is trained solely by the raw input data, it is a unsupervised learning method that do not require the human-assigned labels.
+% Its intermediate layer (typically smaller than the input) has a compressed, \emph{latent representation} of the input.
+% % AEs are commonly used for pretraining a NN.
+% NNs, including AEs, typically have continuous activations and integrating them with propositional reasoners is not straightforward.
+% \fi
 
 A variational autoencoder (VAE) \cite{kingma2013auto} is a probabilistic variant of AEs, whose encoder and decoder are modeled by probabilistic distributions rather than deterministic functions.
 For instance,
