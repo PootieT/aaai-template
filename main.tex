@@ -699,7 +699,8 @@ Unlike traditional NN compression methods \cite{cheng2017survey}, it does not su
 accuracy degradation because the activations are discrete and therefore no additional retraining is required.
 In the continuous cases, even the minuscule activations could be amplified by the weights and significantly affect the
 later pipelines of the neural networks.
-The pruning for a discrete representation complements the existing pruning methods for continuous representation.
+Our method for the discrete representations complements
+the prior work for the continuous ones.
 
 Assume the propositional layer $z_{nk}$ is connected to the next layer of $L$ neurons
 by a fully-connected network $h_l=\sigma\parens{\sum_{n=1}^N \sum_{k\in\braces{0,1}} W_{nkl}z_{nk}+B_l}$
