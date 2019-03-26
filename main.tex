@@ -719,6 +719,13 @@ We can similarly prune the weights $W'$ from the previous layer of $M$ neurons.
 
 \input{unused/closed-world.tex}
 
+\textbf{Implementation Note.} Regardless of $\alpha$,
+the regularization tends to be too strong near the beginning of the training.
+In practice, we set $\alpha=0$ until 1/3 of the total epochs.
+We also confirmed that gradually increasing $\alpha$ work,
+but we did not use it in the later experiments.
+
+
 \section{Empirical Evaluation}
 \label{evaluation}
 
