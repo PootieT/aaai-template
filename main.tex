@@ -67,13 +67,13 @@ an agent with high-level intelligence performs tasks by efficiently manipulating
 Symbolic manipulation
 % consists of mechanical applications of composable rules which 
 allows for
-development of highly optimized and generalized, domain-independent heuristics \cite{Hoffmann01,Helmert2009}
+the development of highly optimized and generalized, domain-independent heuristics \cite{Hoffmann01,Helmert2009}
 % (e.g. FF \cite{Hoffmann01} or LMcut \cite{Helmert2009})
 that can be easily applied to multiple tasks with few or no data,
 while the current learning-based approaches struggle to improve its multi-task performance and data efficiency.
 % For example, training AlphaGo \cite{alphago} takes days on a huge cluster of custom-made Tensor Processing Units.
 % 
-To enable such an automated symbolic computation in a real-world environment,
+To enable such a symbolic computation in a real-world environment,
 agents should be able to find the symbolic representation of the environment by itself.
 
 Recently, Latplan system \cite{Asai2018} successfully
@@ -82,7 +82,7 @@ to solve various visually presented puzzle domains.
 % In contrast to the work by Konidaris et. al. (\citeyear{KonidarisKL14}),
 % Latplan is a straightforward NN built upon a \lsota framework.
 The State AutoEncoder (SAE) neural network in \latentplanner
-generates a set of propositional symbols from the training images with no additional information,
+generates a set of propositional symbols from the training images with no additional information
 and provides a bidirectional mapping between images and propositional states.
 % 
 The system then solves the propositional planning problem using a classical planner Fast Downward \cite{Helmert04}
@@ -125,12 +125,12 @@ given the identical or nearly identical image input.
 % in the Aesop's Fables.
 This is mainly because SAE learns the mapping between images and binary representations as a many-to-many relationship.
 While this property has not been considered as an issue in the machine learning community where only the accuracy matters,
-its unstable latent representation poses a great threat to the reasoning ability of the planners.
+its unstable latent representation poses a significant threat to the reasoning ability of the planners.
 
 Unstable symbols are harmful for symbolic reasoning because
 they break the identity assumption built into the reasoning algorithms.
 For instance, in \latentplanner, 
-a single image may map to multiple propositional states due to stochasticity,
+a single image may map to multiple propositional states due to stochasticity;
 therefore the duplication detection in search algorithms such as \astar \cite{hart1968formal}
 fails to realize that a single real-world state is visited multiple times through
 different symbolic state representations.
@@ -138,7 +138,7 @@ different symbolic state representations.
 Unlike machine learning tasks,
 % the mapping between images and the binary representation could be a many-to-many relationship, while
 the symbolic planning requires a mapping
-that abstracts many images into a single symbolic state, i.e. many-to-one mapping.
+that abstracts many images into a single symbolic state, i.e., many-to-one mapping.
 % 
 To this end, it is necessary to develop an autoencoder that learns a
 many-to-one relationship between images and binary representations.
@@ -162,12 +162,12 @@ The first contribution of this paper is the identification of a sub-problem of s
 called ``symbol \emph{stability} problem'' (SSP), which seeks to find a set of symbols
 whose values/referents stays the same for the same/similar raw inputs.
 Stability is orthogonal to the \emph{performance/accuracy} of NNs:
-NNs are known to robustly predict the correct output, but they do not guarantee
+NNs are known to predict the correct output robustly, but they do not guarantee
 the quality of the internal representation.
 It is also unrelated to the numerical stability of the training or the reproducibility of the results.
 
 The second contribution of this paper is the formal analysis of the Latplan system,
-in particular the comparison to the original mathematical model of Gumbel-Softmax
+in particular, the comparison to the original mathematical model of Gumbel-Softmax
 \cite{jang2016categorical}.
 The analysis revealed that Latplan's Gumbel-Softmax has a deviation from
 the original, which was the key to its first success: The slight
@@ -186,7 +186,7 @@ take the value of zero (false) instead of random values.
 % 
 The stable representation results in a higher success rate of classical planning.
 Also, the network is less sensitive to the network size (hyperparameters)
-as it automatically reduces the number of bits being used.
+as it automatically reduces the number of bits used.
 Moreover, we show that we can reduce the memory usage of the network
 by pruning some unused neurons
 that now have a constant activation of zero instead of random values.
@@ -212,7 +212,7 @@ discrete, identifiable (structured) entities, i.e., symbols \cite{harnad1990symb
 PDDL \cite{McDermott00} has six kinds of symbols: Objects, predicates, propositions, actions, problems and domains.
 Each type of symbol requires its own mechanism for grounding.
 For example, the large body of work in the image processing community on recognizing 
-objects (e.g. faces) and their attributes (male, female) in images, or scenes in videos (e.g. cooking)
+objects (e.g., faces) and their attributes (male, female) in images, or scenes in videos (e.g., cooking)
 can be viewed as corresponding to grounding the object, predicate and action symbols, respectively.
 In this paper, we focus on grounding the propositional symbols.
 
@@ -229,7 +229,7 @@ In contrast, \latentplanner learns the state representation as well as the trans
 entirely from the image-based observation of the environment with deep NNs.
 % , and also claims to extend its capability on text/audio-based dialog data in the future.
 The system was shown to solve various puzzle domains, such as 8-puzzles or Tower of Hanoi,
-that are presented in a form of noisy, continuous visual depiction of the environment.
+that are presented in the form of noisy, continuous visual depiction of the environment.
 
 % \begin{figure}[tb]
 %  \centering
@@ -249,7 +249,7 @@ Each pair $tr_i=(\before_i, \after_i) \in Tr$ represents a transition of the env
 The second input is the \emph{planning input} $(i, g)$, a pair of raw data, which corresponds to the initial and the goal state of the environment.
 The output of \latentplanner is a data sequence representing the plan execution that reaches $g$ from $i$.
 While the original paper uses an image-based implementation (``raw data'' = images),
-the type of data is arbitrary as long as it is compatible to NNs.
+the type of data is arbitrary as long as it is compatible with NNs.
 
 % Emphasize the type of symbol, as readers are not familier with or haven't deeply thought about symbols
 
@@ -267,10 +267,10 @@ After training the SAE from $\braces{\before_i, \after_i\ldots}$,
 it applies $Encode$ to each $tr_i \in Tr$ and obtains $(Encode(\before_i),$ $Encode(\after_i))=$ $(s_i,t_i)=$ $\overline{tr}_i\in \overline{Tr}$,
 the symbolic representations (latent space vectors) of the transitions.
 
-In Phase 2, an Action Model Acquisition (AMA) method learns an action model (e.g. PDDL, successor function) from $\overline{Tr}$ in an unsupervised manner.
+In Phase 2, an Action Model Acquisition (AMA) method learns an action model (e.g., PDDL, successor function) from $\overline{Tr}$ in an unsupervised manner.
 The original paper proposed two approaches: AMA$_1$ is an oracle which directly generates a PDDL without learning,
 by allowing it to use the whole set of valid transitions as an oracle.
-In contrast, AMA$_2$ approximates AMA$_1$ by an unsupervised learning from examples.
+In contrast, AMA$_2$ approximates AMA$_1$ by unsupervised learning from examples.
 
 In Phase 3, a planning problem instance is generated from the planning input $(i,g)$.
 These are converted to the symbolic states by the SAE, and the symbolic planner solves the problem
@@ -311,7 +311,7 @@ An autoencoder~(AE)~\cite{hinton2006reducing} is a feed-forward NN that consists
 For example, in Figure~\ref{sae}, the mapping from the leftmost image to the vector in the middle corresponds to the encoder, and the mapping from the middle to the rightmost image corresponds to the decoder.
 AEs are trained so that the encoder maps a data point~(e.g., an image) into a low-dimensional latent space, and the decoder pulls the latent representation of the input back to the original data point.
 Technically, they are trained by a \emph{backpropagation} algorithm so as to minimize the reconstruction loss, the distance between the input and the output measured by Euclidean distance or binary cross entropy.
-Since the encoder is modeled by a continuous function, its latent representation is also continuous, which makes it difficult to integrate AEs with propositional reasoners.
+Since the encoder is modeled by a continuous function, its latent representation is also continuous, which makes it challenging to integrate AEs with propositional reasoners.
 % \if0
 % Since it is trained solely by the raw input data, it is a unsupervised learning method that do not require the human-assigned labels.
 % Its intermediate layer (typically smaller than the input) has a compressed, \emph{latent representation} of the input.
@@ -402,11 +402,11 @@ In contrast, humans still regard the corrupted image as the ``same'' image.
 \end{figure}
 
 This stochastic behavior of the propositional representation
-introduces several serious problems to the recipient symbolic systems such as classical planners.
+introduces several issues to the recipient symbolic systems such as classical planners.
 % 
 Firstly,
 search algorithms that run on the state space generated by the propositional vectors
-are confused by many variations of the essentially identical real world states.
+are confused by many variations of the essentially identical real-world states.
 It could visit the ``same'' real world state several times because
 it could be encoded into different propositional vectors
 which are not detected by the duplicate detection in the search algorithms (e.g. \astar).
@@ -417,8 +417,8 @@ Secondly, the state space could be disconnected due to such random variations (\
 Some states may be reached only via a single variation of the real world state and is not connected to
 another propositional variation of the same real-world state.
 In fact, in the appendix section in the Arxiv version of the original paper \cite{Asai2018},
-the authors stated that they used \emph{state augmentation} technique
-which circumvents this problem by sampling states from the same image multiple times.
+the planning part used a so-called \emph{state augmentation} technique
+which circumvents this issue by sampling states from the same image multiple times.
 
 Thirdly, in order to reduce the stochasticity of the propositions, we encounter a hyperparameter tuning problem
 which is costly when we train a large NN.
@@ -426,7 +426,7 @@ which is costly when we train a large NN.
 The neurons that behave randomly for the same or perturbed input do not affect the output,
 i.e., they are unused and uninformative.
 Unused neurons appear because the network has an excessive capacity to 
-model the entire state space, i.e. they are surplus neurons.
+model the entire state space, i.e., they are surplus neurons.
 Therefore, a straightforward way to reduce those neurons is to reduce the size of the latent space $N$.
 On the other hand, if $N$ is too small, it lacks the capacity to represent the state space
 and the SAE no longer learns to reconstruct the real world image.
@@ -440,7 +440,7 @@ the first two harmful effects are caused by breaking a critical feature of symbo
 % ,newell1980physical --- removed for space
 that each symbol uniquely refers to an entity (referent, concept, meaning),
 e.g., the referents of the symbols grounded by SAEs are the truth assignments.
-If a meaning of a symbol changes frequently and in an unexpected manner, the entire symbolic manipulation is fruitless
+If meaning of a symbol changes frequently and unexpectedly, the entire symbolic manipulation is fruitless
 because the underlying symbols are not tied to any particular concept, and does not represent the real world.
 % just as the famous boy in the Aesop's Fables who cried wolf was ignored by the villagers.
 % [more intuitive example?]
@@ -449,20 +449,20 @@ because the underlying symbols are not tied to any particular concept, and does 
 
 
 Thus, for a symbol grounding procedure to produce a set of symbols for symbolic reasoning,
-it is insufficient to find a set of symbols that is \emph{just able to} represent the environment;
+it is insufficient to find a set of symbols that are \emph{just able to} represent the environment;
 It should find a \emph{stable} symbolic representation that \emph{uniquely} represents the environment.
 % i.e., to solve the \emph{Symbol Stability Problem}.
 % This stability should be checked 
 
 \begin{defi}
-A \emph{symbolic representation} of an environment is a set of symbols with referents
-from which the environment can be reconstructed with a sufficient accuracy.
+\emph{Symbolic representation} of an environment is a set of symbols with referents
+from which the environment can be reconstructed with sufficient accuracy.
 \end{defi}
 
 \begin{defi}
-A symbolic representation is \emph{stable} when its referents are identical
+Symbolic representation is \emph{stable} when its referents are identical
  %  (e.g. truth assignment for propositional symbols)
-for the same environment, under some equivalence relation (e.g. invariance, noise threshold).
+for the same environment, under some equivalence relation (e.g., invariance, noise threshold).
 \end{defi}
 
 %% wanted to include, but not during the submission
@@ -486,7 +486,7 @@ This is because the former exclusively deals with the output accuracy,
 while the latter evaluates the quality of the \emph{latent} activations while maintaining the same output accuracy.
 In fact, vanilla SAEs already achieve the almost perfect reconstruction accuracy
 where the input and the output are indiscernible to human eyes
-(e.g. in \refig{unstable}, the pixel value output is different from the input, but we cannot recognize it),
+(e.g., in \refig{unstable}, the pixel value output is different from the input, but we cannot recognize it),
 while they still exhibit instability.
 
 % stability
@@ -624,7 +624,7 @@ This technique reduces the inherent stochasticity of the network.
 \label{zsae}
 
 In Latplan, Entropy Regularization was the key to address the symbol stability (see \refsec{evaluation})
-while it was accidentally introduced by the original authors.
+while it was only accidentally introduced.
 In this context, a natural next step toward obtaining the more stable symbols is to introduce a new regularization
 for the propositional representation.
 % To further address the symbol stability problem in Latplan,
@@ -633,10 +633,10 @@ for the propositional representation.
 %  (\emph{robust performance}).
 % We address it by Zero-Suppressed State AutoEncoder (ZSAE),
 We propose Zero-Suppressed State AutoEncoder (ZSAE),
-a SAE with an additional regularization designed for the discrete representation that we call \emph{zero-suppression}.
+an SAE with an additional regularization designed for the discrete representation that we call \emph{zero-suppression}.
 % 
 Its fundamental idea is to penalize the
-true propositions in the latent layer so that no propositions unnecessarily flip to true at random,
+true propositions in the latent layer so that no propositions unnecessarily flip to true at random
 while preserving the propositions that are absolutely necessary for maintaining the reconstruction accuracy.
 % Since Gumbel-Softmax (GS) is basically a Softmax function,
 % and SAE uses 2 categories,
@@ -882,7 +882,7 @@ for 100 randomly generated images.
 The results indicate that the zero-suppression does not significantly affect the output accuracy for $N$=100,1000.
 However, for $N$=36 (a parameter tuned for vanilla SAEs to have the least variance), the zero-suppression
 harmed the accuracy because the network is already small and the further penalty affected the training.
-In other words, it is better to combine ZSAE with a overcapacity network,
+In other words, it is better to combine ZSAE with an overcapacity network,
 since ZSAE then automatically compresses the representation.
 % If the network size is already optimally tuned for vanilla SAE (i.e. $N$=36),
 % the additional regularization may trade accuracy for stability.
@@ -919,7 +919,7 @@ between the vanilla SAE and the ZSAE with $\alpha=$0.2,0.5,0.7, $N$=100,1000.
 We also added $N$=36 as the best case for the vanilla SAE.
 % 
 We observed that the ZSAEs achieve the comparable state variance with various $\alpha$ and $N$,
-while the vanilla SAEs are significantly affected by the choice of $N$.
+while the vanilla SAEs are significantly affected by $N$.
 For instance,
 the variance for the vanilla SAE with $N$=100 is up to two orders of magnitude larger than that for the SAE with $N$=36.
 In contrast,
@@ -964,7 +964,7 @@ ZSAE showed a robust performance across $N$=36,64,100
 while SAE achieves a good performance only in a single parameter $N$=36.
 % 
 Due to the small size of the state space compared to the usual classical planning benchmark domains,
-the search is done in a fraction of a second, which means \textbf{the failure is due to graph disconnectedness at the initial/goal nodes}.
+the search finishes in a fraction of a second, which means \textbf{the failure is due to graph disconnectedness at the initial/goal nodes}.
 % emphasized for contrasting it against the later node expansion experiments
 ZSAE tends to fail in $N$=36 in LightsOut and Twisted because of the higher reconstruction error
 discussed in the previous subsection.
@@ -1038,7 +1038,7 @@ ZSAEs are robust on the different $N$ and tend to solve more problems than the v
 (\textbf{Right})
 The numbers of instances solved under 180 sec using AMA$_2$ unsupervised learning method for Action Model Acquisition.
 % Same highlightation rule as \reftbl{tab:ama1} is applied.
-Results indicate that ZSAEs are robust on the different hyperparameters and tend to achieve the better performance than vanilla SAEs.
+Results indicate that ZSAEs are robust on the different hyperparameters and tend to achieve better performance than vanilla SAEs.
 }
 \label{tab:ama1}
 \label{tab:ama2}
@@ -1049,7 +1049,7 @@ Results indicate that ZSAEs are robust on the different hyperparameters and tend
 Next, we compare the planning performance of Z/SAE with AMA$_2$,
 a NN-based AMA model that learns from the example state transitions.
 It consists of two networks:
-(1) Action AutoEncoder (AAE), an autoencoder that learns to cluster the state transitions into a finite action labels.
+(1) Action AutoEncoder (AAE), an autoencoder that learns to cluster the state transitions into a finite number of action labels.
 It learns to reconstruct the input propositional successor state $t$ in the output $\hat{t}$.
 Its latent layer represents an action label $a$, which is a single Gumbel-Softmax-activated unit of $A$ categories,
 where $A$ is the upper bound of the number of action labels.
@@ -1073,9 +1073,8 @@ This effect cannot be measured with AMA$_1$
 because it creates PDDL/SAS instances based on the fixed set of
 input images and both SAE/ZSAE are deterministic (using argmax),
 therefore the search graph contains a single node for a single image.
-This is not the case with AMA$_2$ because the successor states
- % (which might not be included in the training examples)
-are generated by the NNs on the fly.
+This is not the case with AMA$_2$ because the NNs generate the successor states on the fly.
+% (which might not be included in the training examples)
 % 
 % To demonstrate that this effect is also reduced by ZSAE,
 We measured the number of node expansions (left) and the runtime (right)
@@ -1170,7 +1169,7 @@ and achieves a sparse representation where the continuous values become closer t
 $\ell_1$ regularization is applied to all neurons in the same layer
 while the proposed zero-suppression is applied to a subset of neurons representing a particular discrete value.
 % 
-Moreover, regularization is traditionally applied in order to suppress overfitting and improve the predictive performance
+Moreover, regularization is traditionally applied in order to suppress overfitting and improve predictive performance
 while our focus is rather on the stability of the representation.
 % Unlike the traditional regularization methods,
 % regularization is applied on the activations rather than the training weights.
@@ -1205,7 +1204,7 @@ require symbolic or near-symbolic, structured inputs.
 % but requires a clear grammatical structure and word consistency. %, i.e. more symbolic.
 % 
 Konidaris et al. (\citeyear{KonidarisKL18}) generates a symbolic state space from
-the low-level sensor inputs, but requires the high-level action symbols.
+the low-level sensor inputs but requires the high-level action symbols.
 % 
 % while Latplan finds both the symbolic state space 
 % and the high-level action symbols by itself, using NN-based machine learning methods,
@@ -1213,7 +1212,7 @@ the low-level sensor inputs, but requires the high-level action symbols.
 % 
 % The fact that all of these methods require the (near) symbolic inputs indicates
 % that their usability will be increased by our approach.
-Our approach complements the usability of these approaches by providing the more stable symbols.
+Our approach complements the usability of these approaches by providing more stable symbols.
 
 % \citeauthor{KonidarisKL18} generated a symbolic state space from
 % % a low-level, sensor actuator space of an agent characterized as a
