@@ -53,6 +53,6 @@ clean-submission:
 
 archive: submission
 	-rm submission/*.sty submission/*.bst
-	-rm ../$(name).tar.gz ../$(name).zip
+	-rm $(name).tar.gz $(name).zip
 	cd submission ; tar cvzf ../$(name).tar.gz *
 	cd submission ; zip -r ../$(name).zip *
